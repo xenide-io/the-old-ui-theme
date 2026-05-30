@@ -1,0 +1,110 @@
+:root {
+  --ph-shadow-elevation-3000: 0 3px 0 var(--ph-border-3000);
+  --ph-chrome-depth: 0.1875rem;
+  --ph-chrome-inset-solid-top: inset 0 1px 0 hsl(0deg 0% 100% / 0.26);
+  --ph-chrome-inset-solid-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.14);
+  --ph-radius-app: 0.375rem;
+  --ph-border-control: color-mix(in oklab, var(--ph-border) 68%, var(--ph-border-strong));
+  /** Tailwind `ph.brand` maps to `--ph-accent`; plain CSS controls used only this name, so it must exist. */
+  --ph-brand: var(--ph-accent);
+}
+[data-theme="sheets"] {
+  color-scheme: light;
+
+  --ph-canvas: #f3f2f1;
+  --ph-surface: #ffffff;
+  --ph-muted: #edebe9;
+  --ph-toolbar: #e1dfdd;
+  --ph-border: #d2d0ce;
+  --ph-border-strong: #a19f9d;
+
+  --ph-text-primary: #323130;
+  --ph-text-secondary: #605e5c;
+  --ph-text-tertiary: #8a8886;
+
+  --ph-accent: #217346;
+  --ph-accent-hover: #185c37;
+  --ph-blue: #185abd;
+  --ph-violet: #5c2d91;
+  --ph-purple: #8764b8;
+
+  --ph-success: #217346;
+  --ph-warning: #ca5010;
+  --ph-danger: #a4262c;
+  --ph-info: #185abd;
+
+  --ph-text-3000: #323130;
+  --ph-primary-button-face: #ffffff;
+  --ph-primary-button-border: #185c37;
+  --ph-primary-button-border-hover: #134a2c;
+  --ph-primary-frame-bg: #2d9660;
+  --ph-secondary-button-bg: #f3f2f1;
+  --ph-secondary-frame-bg: #e1dfdd;
+  --ph-secondary-button-border: #c8c6c4;
+  --ph-secondary-button-border-hover: #a19f9d;
+
+  --ph-border-3000: #d2d0ce;
+  --ph-chrome-inset-face-top: inset 0 1px 0 hsl(0deg 0% 100% / 0.88);
+  --ph-chrome-inset-face-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.05);
+  --ph-accent-highlight-secondary: hsla(152deg 61% 29% / 10%);
+
+  --ph-data-1: #185abd;
+  --ph-data-2: #217346;
+  --ph-data-3: #498205;
+  --ph-data-4: #a4262c;
+  --ph-data-5: #ca5010;
+  --ph-data-6: #0078d4;
+  --ph-data-7: #8764b8;
+
+  --ph-product-session-replay: #217346;
+  --ph-product-product-analytics: #185abd;
+  --ph-product-data-pipeline: #0078d4;
+  --ph-product-feature-flags: #498205;
+  --ph-product-experiments: #8764b8;
+  --ph-product-data-warehouse: #5c2d91;
+  --ph-product-surveys: #a4262c;
+
+  --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%238a8886' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+[data-theme="sheets-dark"] {
+  color-scheme: dark;
+
+  --ph-canvas: #1b1a19;
+  --ph-surface: #252423;
+  --ph-muted: #2d2c2b;
+  --ph-toolbar: #323130;
+  --ph-border: #484644;
+  --ph-border-strong: #797775;
+
+  --ph-text-primary: #f3f2f1;
+  --ph-text-secondary: #c8c6c4;
+  --ph-text-tertiary: #a19f9d;
+
+  --ph-accent: #33a867;
+  --ph-accent-hover: #4abe7a;
+  --ph-blue: #4f9ff5;
+  --ph-violet: #a78bfa;
+  --ph-purple: #8764b8;
+
+  --ph-success: #33a867;
+  --ph-warning: #e67e22;
+  --ph-danger: #f87171;
+  --ph-info: #4f9ff5;
+
+  --ph-text-3000: #f3f2f1;
+  --ph-primary-button-face: #252423;
+  --ph-primary-button-border: #217346;
+  --ph-primary-button-border-hover: #33a867;
+  --ph-primary-frame-bg: #33a867;
+  --ph-secondary-button-bg: #2d2c2b;
+  --ph-secondary-frame-bg: #484644;
+  --ph-secondary-button-border: #605e5c;
+  --ph-secondary-button-border-hover: #797775;
+
+  --ph-border-3000: #323130;
+  --ph-chrome-inset-face-top: inset 0 1px 0 hsl(0deg 0% 100% / 0.07);
+  --ph-chrome-inset-face-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.35);
+  --ph-accent-highlight-secondary: hsla(146deg 55% 45% / 14%);
+
+  --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%23a19f9d' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}

@@ -1,0 +1,19 @@
+/**
+ * Font stacks — `next/font` only injects `--font-inter`; glyphs & canvas should match body.
+ *
+ * `@tailwindcss/typography`: not wired here on purpose — this repo uses PostHog-style
+ * component-level sizes (`.ph-btn`, `.ph-table`, `.ph-h2-rule`) instead of prose blocks.
+ */
+
+:root {
+  /* Code / CSV / token chips — monospace with clear ASCII */
+  --ph-font-monospace-stack:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+  /**
+   * Modifier keys ⌘ ⌥ ⇧ etc. Need system UI glyphs (Apple Symbols on macOS, Segoe on Windows).
+   * Inter latin subset lacks many symbol codepoints; monospace stacks worsen tofu.
+   */
+  --ph-font-shortcut-stack: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+}
