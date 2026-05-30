@@ -250,15 +250,3 @@ bunx tsc --noEmit
 bun run build
 bun run clean   # drops .next/ and TS cache; run before a fresh build if needed
 ```
-
-### What lives on disk vs what you ship
-
-| Path | Purpose | In git? |
-|------|---------|--------|
-| `src/` | Your theme + demo app (~76 files) | Yes |
-| `package.json` | **8 runtime deps** (Next, React, Chart.js, d3-scale, …) | Yes |
-| `node_modules/` | Bun install output (~270MB) — thousands of transitive packages | **No** (`.gitignore`) |
-| `.next/` | Next.js build cache (~130MB) | **No** |
-
-You only declare a handful of packages; Bun pulls in the rest (Next alone brings most of `node_modules`). That is normal — delete and recreate anytime with `rm -rf node_modules && bun install`.
-# the-old-one-theme
