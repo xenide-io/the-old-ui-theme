@@ -1,6 +1,6 @@
 {
   "name": "@xenide-io/the-old-ui",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Props-driven React components and theme tokens inspired by classic interface design — optimized for Next.js apps and internal tools.",
   "author": "Xenide",
   "license": "MIT",
