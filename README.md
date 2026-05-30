@@ -5,9 +5,9 @@ Props-driven React components and theme tokens in the spirit of PostHog’s dash
 ## Install
 
 ```bash
-npm install the-old-ui
+npm install @xenide-io/the-old-ui
 # or
-bun add the-old-ui
+bun add @xenide-io/the-old-ui
 ```
 
 For full setup instructions, see [`INSTALL.md`](./INSTALL.md).
@@ -20,7 +20,7 @@ Import the library CSS once at your app root. This gives you the theme variables
 
 ```tsx
 // app/layout.tsx or pages/_app.tsx
-import "the-old-ui/styles.css";
+import "@xenide-io/the-old-ui/styles.css";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -35,14 +35,14 @@ Add the Tailwind preset so `bg-ph-*`, `text-ph-*`, Lemon radii, and shadows reso
 
 ```ts
 // tailwind.config.ts
-import theOldUiPreset from "the-old-ui/tailwind-preset";
+import theOldUiPreset from "@xenide-io/the-old-ui/tailwind-preset";
 
 export default {
   presets: [theOldUiPreset],
   content: [
     "./src/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
-    "./node_modules/the-old-ui/dist/**/*.{js,mjs}",
+    "./node_modules/@xenide-io/the-old-ui/dist/**/*.{js,mjs}",
   ],
 };
 ```
@@ -50,7 +50,7 @@ export default {
 Use components from the package root.
 
 ```tsx
-import { Button, Card, H1, P } from "the-old-ui";
+import { Button, Card, H1, P } from "@xenide-io/the-old-ui";
 
 export function Example() {
   return (
@@ -68,7 +68,7 @@ export function Example() {
 Use components through props first. `className` is only an escape hatch for layout or one-off overrides.
 
 ```tsx
-import { Alert, Badge, Button, Card, Input, H1, H2, P } from "the-old-ui";
+import { Alert, Badge, Button, Card, Input, H1, H2, P } from "@xenide-io/the-old-ui";
 
 <H1>Dashboard</H1>
 <H2 tone="subtle">Overview</H2>
@@ -131,7 +131,7 @@ All theme colors live in `src/styles/themes.css`. The master registry of IDs, di
 ### Programmatic usage
 
 ```tsx
-import { persistTheme, readStoredTheme } from "the-old-ui";
+import { persistTheme, readStoredTheme } from "@xenide-io/the-old-ui";
 
 // Switch theme — persists to localStorage and updates html[data-theme]
 persistTheme("sheets");
@@ -145,7 +145,7 @@ const themeId = readStoredTheme(); // "hedgehog-light" | "sheets" | ...
 Use the built-in theme switcher when you want users to change themes. `ThemeDomSync` reapplies the stored theme after hydration.
 
 ```tsx
-import { ThemeDomSync, ThemeSwitcher } from "the-old-ui";
+import { ThemeDomSync, ThemeSwitcher } from "@xenide-io/the-old-ui";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
@@ -171,7 +171,7 @@ document.documentElement.setAttribute("data-theme", "chats-dark");
 For persisted switching, use the helper.
 
 ```tsx
-import { persistTheme } from "the-old-ui";
+import { persistTheme } from "@xenide-io/the-old-ui";
 
 persistTheme("presentation");
 ```
@@ -182,7 +182,7 @@ Custom themes work like DaisyUI: create a new `data-theme` block and override th
 
 ```css
 /* app/globals.css */
-@import "the-old-ui/styles.css";
+@import "@xenide-io/the-old-ui/styles.css";
 
 [data-theme="my-theme"] {
   color-scheme: light;
@@ -230,11 +230,11 @@ If you want it to appear inside `ThemeSwitcher`, add it to `src/themes/registry.
 
 ### In another Next.js app
 
-1. Install `the-old-ui`.
-2. Import `the-old-ui/styles.css` once in your app root.
+1. Install `@xenide-io/the-old-ui`.
+2. Import `@xenide-io/the-old-ui/styles.css` once in your app root.
 3. Set `<html data-theme="hedgehog-light">` or use `persistTheme()` / `ThemeSwitcher`.
-4. Add `the-old-ui/tailwind-preset` to `tailwind.config.ts`.
-5. If you consume this repo through `file:`, add `the-old-ui` to `transpilePackages` in `next.config.mjs`.
+4. Add `@xenide-io/the-old-ui/tailwind-preset` to `tailwind.config.ts`.
+5. If you consume this repo through `file:`, add `@xenide-io/the-old-ui` to `transpilePackages` in `next.config.mjs`.
 
 Optional chart usage: peer‑install `chart.js` and `react-chartjs-2`, import `@/lib/chart/register-chartjs` once near your chart trees, and pass options built from `usePhChartTokens` / `build*Demo` helpers (or copy the pattern).
 
