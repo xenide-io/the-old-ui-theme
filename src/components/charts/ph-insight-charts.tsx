@@ -18,23 +18,6 @@ import {
   Tooltip,
 } from "chart.js";
 
-if (!(ChartJS as any).__oldUiRegistered) {
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    RadialLinearScale,
-    BarController,
-    BarElement,
-    DoughnutController,
-    PolarAreaController,
-    ArcElement,
-    Title,
-    Tooltip,
-    Legend,
-  );
-  (ChartJS as any).__oldUiRegistered = true;
-}
-
 import { Bar, Doughnut, PolarArea } from "react-chartjs-2";
 
 import {
@@ -50,10 +33,36 @@ import { CanvasTrendLineChart } from "@/lib/hog-charts-lite/CanvasTrendLineChart
 
 const DEMO_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+// Register Chart.js components once
+let chartJsRegistered = false;
+
+function registerChartJs() {
+  if (chartJsRegistered) return;
+  if (typeof window === "undefined") return;
+  
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    RadialLinearScale,
+    BarController,
+    BarElement,
+    DoughnutController,
+    PolarAreaController,
+    ArcElement,
+    Title,
+    Tooltip,
+    Legend,
+  );
+  chartJsRegistered = true;
+}
+
 function useClientMounted(): boolean {
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    registerChartJs();
+  }, []);
 
   return mounted;
 }
