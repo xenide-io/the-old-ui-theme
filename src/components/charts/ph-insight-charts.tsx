@@ -1,23 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-
-// Register Chart.js components BEFORE importing react-chartjs-2
-import {
-  ArcElement,
-  BarController,
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  DoughnutController,
-  Legend,
-  LinearScale,
-  PolarAreaController,
-  RadialLinearScale,
-  Title,
-  Tooltip,
-} from "chart.js";
-
+import "@/lib/chart/register-chartjs";
 import { Bar, Doughnut, PolarArea } from "react-chartjs-2";
 
 import {
@@ -33,42 +17,15 @@ import { CanvasTrendLineChart } from "@/lib/hog-charts-lite/CanvasTrendLineChart
 
 const DEMO_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-// Register Chart.js components once
-let chartJsRegistered = false;
-
-function registerChartJs() {
-  if (chartJsRegistered) return;
-  if (typeof window === "undefined") return;
-  
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    RadialLinearScale,
-    BarController,
-    BarElement,
-    DoughnutController,
-    PolarAreaController,
-    ArcElement,
-    Title,
-    Tooltip,
-    Legend,
-  );
-  chartJsRegistered = true;
-}
-
 function useClientMounted(): boolean {
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-    registerChartJs();
-  }, []);
+  useEffect(() => setMounted(true), []);
 
   return mounted;
 }
 
 interface ChartSkeletonProps {
-  /** Tailwind height class */
   className?: string;
 }
 
@@ -81,9 +38,6 @@ function ChartSkeleton({ className = "h-[280px]" }: ChartSkeletonProps) {
   );
 }
 
-/**
- * Canvas + `d3-scale` trend — same **model** as PostHog `lib/hog-charts` (MIT), not a pixel-perfect port.
- */
 export function HogTrendLineChart() {
   const mounted = useClientMounted();
   const tokens = useChartTokens();
