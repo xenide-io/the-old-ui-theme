@@ -171,6 +171,20 @@ export const THEMES: ThemeDefinition[] = [
     colorScheme: "dark",
     group: "Rosé Pine",
   },
+  {
+    id: "notion",
+    name: "Notion",
+    description: "Notion light — warm off-white canvas, Notion blue accent, signature dark text.",
+    colorScheme: "light",
+    group: "Productivity",
+  },
+  {
+    id: "notion-dark",
+    name: "Notion Dark",
+    description: "Notion dark mode — dark charcoal canvas with blue accent and clean typography.",
+    colorScheme: "dark",
+    group: "Productivity",
+  },
 ];
 
 export const THEME_GROUPS = Array.from(new Set(THEMES.map((theme) => theme.group)));

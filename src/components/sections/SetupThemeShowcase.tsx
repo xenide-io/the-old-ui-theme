@@ -17,6 +17,7 @@ const themePairs = [
   { name: "Rose Pine", light: "rosepine-light", dark: "rosepine-dark" },
   { name: "TurtleTime", light: "turtletime", dark: "turtletime-dark" },
   { name: "Bikini Bottom", light: "bikini-bottom", dark: "bikini-bottom-dark" },
+  { name: "Notion", light: "notion", dark: "notion-dark" },
 ] as const;
 
 const guideTokens = [

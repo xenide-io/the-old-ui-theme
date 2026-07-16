@@ -1332,3 +1332,121 @@
 
   --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%23908caa' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
+
+[data-theme="notion"] {
+  color-scheme: light;
+
+  --ph-canvas: #ffffff;
+  --ph-surface: #f7f6f3;
+  --ph-muted: #f0efeb;
+  --ph-toolbar: #ebe9e4;
+  --ph-border: #e2e1dd;
+  --ph-border-strong: #c4c3bf;
+
+  --ph-text-primary: #37352f;
+  --ph-text-secondary: #6b6b6b;
+  --ph-text-tertiary: #9b9a97;
+
+  --ph-accent: #2f7cf6;
+  --ph-accent-hover: #2160d4;
+  --ph-blue: #2f7cf6;
+  --ph-violet: #6940a5;
+  --ph-purple: #6940a5;
+
+  --ph-success: #0f7b6c;
+  --ph-warning: #dfab00;
+  --ph-danger: #e03e3e;
+  --ph-info: #2f7cf6;
+
+  --ph-text-3000: #37352f;
+  --ph-primary-button-face: #ffffff;
+  --ph-primary-button-border: #2160d4;
+  --ph-primary-button-border-hover: #1a4fa8;
+  --ph-primary-frame-bg: #2f7cf6;
+  --ph-secondary-button-bg: #ffffff;
+  --ph-secondary-frame-bg: #f0efeb;
+  --ph-secondary-button-border: #e2e1dd;
+  --ph-secondary-button-border-hover: #c4c3bf;
+
+  --ph-border-3000: #e2e1dd;
+  --ph-chrome-inset-face-top: inset 0 1px 0 hsl(0deg 0% 100% / 0.95);
+  --ph-chrome-inset-face-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.06);
+  --ph-accent-highlight-secondary: hsla(220deg 100% 56% / 10%);
+
+  --ph-data-1: #2f7cf6;
+  --ph-data-2: #6940a5;
+  --ph-data-3: #dfab00;
+  --ph-data-4: #0f7b6c;
+  --ph-data-5: #e03e3e;
+  --ph-data-6: #d9730d;
+  --ph-data-7: #ad1a72;
+
+  --ph-product-session-replay: #dfab00;
+  --ph-product-product-analytics: #2f7cf6;
+  --ph-product-data-pipeline: #0f7b6c;
+  --ph-product-feature-flags: #6940a5;
+  --ph-product-experiments: #e03e3e;
+  --ph-product-data-warehouse: #d9730d;
+  --ph-product-surveys: #ad1a72;
+
+  --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%239b9a97' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+[data-theme="notion-dark"] {
+  color-scheme: dark;
+
+  --ph-canvas: #191919;
+  --ph-surface: #212121;
+  --ph-muted: #2a2a2a;
+  --ph-toolbar: #333333;
+  --ph-border: #373737;
+  --ph-border-strong: #4a4a4a;
+
+  --ph-text-primary: #ffffff;
+  --ph-text-secondary: #cdcdcd;
+  --ph-text-tertiary: #6b6b6b;
+
+  --ph-accent: #4a9eff;
+  --ph-accent-hover: #3381e6;
+  --ph-blue: #4a9eff;
+  --ph-violet: #a06cd5;
+  --ph-purple: #a06cd5;
+
+  --ph-success: #45c4a0;
+  --ph-warning: #eac54f;
+  --ph-danger: #f15e5e;
+  --ph-info: #4a9eff;
+
+  --ph-text-3000: #ffffff;
+  --ph-primary-button-face: #ffffff;
+  --ph-primary-button-border: #3381e6;
+  --ph-primary-button-border-hover: #2663b8;
+  --ph-primary-frame-bg: #4a9eff;
+  --ph-secondary-button-bg: #2a2a2a;
+  --ph-secondary-frame-bg: #333333;
+  --ph-secondary-button-border: #373737;
+  --ph-secondary-button-border-hover: #4a4a4a;
+
+  --ph-border-3000: #333333;
+  --ph-chrome-inset-face-top: inset 0 1px 0 hsl(0deg 0% 100% / 0.06);
+  --ph-chrome-inset-face-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.4);
+  --ph-accent-highlight-secondary: hsla(215deg 100% 65% / 14%);
+
+  --ph-data-1: #4a9eff;
+  --ph-data-2: #a06cd5;
+  --ph-data-3: #eac54f;
+  --ph-data-4: #45c4a0;
+  --ph-data-5: #f15e5e;
+  --ph-data-6: #f5a623;
+  --ph-data-7: #d355a0;
+
+  --ph-product-session-replay: #eac54f;
+  --ph-product-product-analytics: #4a9eff;
+  --ph-product-data-pipeline: #45c4a0;
+  --ph-product-feature-flags: #a06cd5;
+  --ph-product-experiments: #f15e5e;
+  --ph-product-data-warehouse: #f5a623;
+  --ph-product-surveys: #d355a0;
+
+  --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%236b6b6b' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}

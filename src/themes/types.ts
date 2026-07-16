@@ -22,7 +22,9 @@ export type ThemeId =
   | "github-light"
   | "github-dark"
   | "rosepine-light"
-  | "rosepine-dark";
+  | "rosepine-dark"
+  | "notion"
+  | "notion-dark";
 
 export interface ThemeDefinition {
   id: ThemeId;
