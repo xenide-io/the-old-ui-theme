@@ -1,6 +1,6 @@
 {
   "name": "@xenide-io/the-old-ui-theme",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Props-driven React components and theme tokens inspired by classic interface design — optimized for Next.js apps and internal tools.",
   "author": "Xenide",
   "license": "MIT",
@@ -22,7 +22,8 @@
     "node": ">=18.0.0"
   },
   "sideEffects": [
-    "*.css"
+    "*.css",
+    "src/lib/chart/register-chartjs.ts"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -36,6 +37,12 @@
     },
     "./styles.css": "./src/app/globals.css",
     "./themes.css": "./src/styles/themes.css",
+    "./ui": {
+      "types": "./dist/ui.d.ts",
+      "import": "./dist/ui.mjs",
+      "require": "./dist/ui.js",
+      "default": "./dist/ui.mjs"
+    },
     "./tailwind-preset": {
       "types": "./dist/tailwind-preset.d.ts",
       "import": "./dist/tailwind-preset.mjs",
@@ -46,13 +53,14 @@
   "files": [
     "dist",
     "src/app/globals.css",
+    "src/components",
     "src/styles",
     "tailwind-preset.ts"
   ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:lib": "tsup --entry.index src/index.ts --entry.tailwind-preset tailwind-preset.ts --format cjs,esm --dts --external react,react-dom,next --clean --tsconfig ./tsconfig.lib.json",
+    "build:lib": "tsup --entry.index src/index.ts --entry.ui src/components/ui/index.ts --entry.tailwind-preset tailwind-preset.ts --format cjs,esm --dts --external react,react-dom,next --clean --tsconfig ./tsconfig.lib.json",
     "start": "next start",
     "lint": "next lint",
     "test": "tsc --noEmit",
