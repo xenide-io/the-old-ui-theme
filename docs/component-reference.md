@@ -34,6 +34,8 @@ Component: `Button`
 | `split` | `boolean` | `false` |
 | `icon` | `ReactNode` | - |
 | `sideIcon` | `ReactNode` | - |
+| `loading` | `boolean` | `false` |
+| `loadingLabel` | `ReactNode` | current label |
 
 ## Dropdowns
 
@@ -65,6 +67,7 @@ Component: `Alert`
 | `description` | `string` | - |
 | `icon` | `ReactNode` | status icon |
 | `onDismiss` | `() => void` | - |
+| `live` | `off`, `polite`, `assertive` | - |
 
 ## Toast
 
@@ -89,13 +92,16 @@ Component: `Card`
 | `actions` | `ReactNode` | - |
 | `footer` | `ReactNode` | - |
 | `media` | `ReactNode` | - |
+| `interactive` | `boolean` | `false` |
+| `titleAs` | `h2`, `h3`, `h4` | `h3` |
 
 ## Inputs
 
-Components: `Input`, `Select`, `Textarea`, `Checkbox`, `Radio`, `Toggle`, `Range`, `FileUpload`, `Rating`, `SearchInput`, `SearchGroup`
+Components: `FormField`, `Input`, `Select`, `Textarea`, `Checkbox`, `Radio`, `Toggle`, `Range`, `FileUpload`, `Rating`, `SearchInput`, `SearchGroup`
 
 | Component | Important Props |
 |---|---|
+| `FormField` | `controlId`, `label`, `hideLabel`, `helperText`, `error`, `required`, render-function `children` |
 | `Input` | `label`, `hideLabel`, `error`, `helperText`, `size`, `variant`, `wrapperClassName` |
 | `Select` | `label`, `hideLabel`, `error`, `helperText`, `size`, `wrapperClassName`, `children` |
 | `Textarea` | `label`, `hideLabel`, `error`, `helperText`, `size`, `wrapperClassName` |
@@ -128,6 +134,9 @@ Component: `Modal`
 | `description` | `string` | - |
 | `footer` | `ReactNode` | - |
 | `showCloseButton` | `boolean` | `true` |
+| `closeOnOutsideClick` | `boolean` | `true` |
+| `closeOnEscape` | `boolean` | `true` |
+| `aria-label` | `string` | fallback when no visible title exists |
 
 ## Drawer
 
@@ -303,8 +312,28 @@ type TimelineEvent = {
 | `HoverCard` | `trigger`, `children` |
 | `EmptyState` | `icon`, `title`, `description`, `action` |
 | `FilterChips` | `chips`, `onToggle`, `onRemove` |
+| `FilterControls` | `children`, `barProps`, `chipsProps`, `emptyState` |
+| `FilterBar` | `children`, `onClear`, `clearLabel`, `resultCount` |
+| `FilterMenu` | `label`, `value`, `options`, `onValueChange`, adaptive menu placement |
+| `SortMenu` | `label`, `value`, `options`, `onValueChange`, `direction` |
+| `Loader` | `variant` (`spinner`, `dots`, `pulse`), `size`, `label` |
+| `Skeleton` | `shape` (`title`, `text`, `short-text`, `avatar`, `button`, `block`) |
+| `LoadingState` | `label`, `title`, `description`, `variant`, `size` |
+| `AuthLayout` | `brand`, `aside`, `footer`, `children` |
+| `AuthCard` | `title`, `description`, `footer`, `children` |
+| `SettingsLayout` | `title`, `description`, `actions`, `navigation`, `children` |
+| `SettingsNav` | grouped route links with `aria-current` support |
 | `CodeBlock` | `code`, `language`, `filename` |
-| `Kbd` | `keys`, `variant` (`shortcut`, `key`, `token`) |
+| `Kbd` | `keys`, `variant` (`shortcut`, `key`, `token`), `platform` (`text`, `mac`, `windows`), `separator` |
+
+## Icons
+
+- `CANONICAL_ICONS` is the authoritative registry for documentation and new dynamic usage.
+- `PH_ICON_ALIASES` contains compatibility names such as `grid`, `play`, and `warning`.
+- `PH_ICONS` combines both registries so existing `IconByName` calls continue to work.
+- `OLD_UI_ICONS` contains original 24×24 analytics and retro-interface SVGs authored for this library.
+- `IconByName` accepts every `IconName`, forwards its SVG ref, and preserves alias behavior.
+- Individual icons accept `size`, SVG attributes, `aria-label`, and `aria-labelledby`.
 
 ## Charts
 

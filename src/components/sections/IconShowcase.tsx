@@ -1,247 +1,127 @@
-/**
- * Bespoke Lemon glyphs from PostHog open source — filled Material / product paths,
- * not Lucide stroke icons.
- */
+import type { ComponentType, CSSProperties } from "react";
 import {
-  IconActivity,
+  CANONICAL_ICONS,
+  OLD_UI_ICONS,
   IconAreaChart,
-  IconArrowDown,
-  IconArrowUp,
-  IconBell,
-  IconBellOff,
-  IconBolt,
-  IconBox,
-  IconCancel,
-  IconCheck,
-  IconCheckCircle,
-  IconChevronDown,
-  IconChevronLeft,
-  IconChevronRight,
-  IconClipboardEdit,
-  IconClose,
-  IconCohort,
-  IconCopy,
-  IconCumulativeChart,
   IconDatabase,
-  IconDownload,
-  IconEdit,
-  IconErrorOutline,
-  IconExclamation,
   IconFlag,
-  IconFlare,
   IconFlask,
-  IconGift,
   IconGridView,
-  IconHandClick,
-  IconHome,
-  IconLayers,
-  IconListView,
-  IconLogout,
-  IconMail,
-  IconMoon,
-  IconPanelRight,
-  IconPerson,
-  IconPlayCircle,
-  IconPlus,
-  IconPremium,
-  IconQueryEditor,
-  IconRadar,
   IconRecording,
-  IconRobot,
-  IconRocket,
-  IconSave,
-  IconSearch,
-  IconSelectEvents,
-  IconStar,
-  IconSubArrowRight,
-  IconSun,
   IconSurveys,
-  IconSync,
-  IconTableChart,
-  IconTerminal,
-  IconToggle,
-  IconTrash,
-  IconTuning,
-  IconUpload,
-  IconVolume,
-  IconVolumeOff,
-  PH_ICONS,
-  type IconName,
+  type CanonicalIconName,
+  type IconProps,
 } from "@/components/icons";
-import { ShowcaseWrapper } from "@/components/ui";
+import { Kbd, ShowcaseWrapper } from "@/components/ui";
 
-const iconCells: { name: IconName; Icon: (typeof PH_ICONS)[IconName] }[] = [
-  { name: "activity", Icon: IconActivity },
-  { name: "areaChart", Icon: IconAreaChart },
-  { name: "arrowUp", Icon: IconArrowUp },
-  { name: "arrowDown", Icon: IconArrowDown },
-  { name: "bell", Icon: IconBell },
-  { name: "bellOff", Icon: IconBellOff },
-  { name: "bolt", Icon: IconBolt },
-  { name: "box", Icon: IconBox },
-  { name: "cancel", Icon: IconCancel },
-  { name: "check", Icon: IconCheck },
-  { name: "checkCircle", Icon: IconCheckCircle },
-  { name: "chevronDown", Icon: IconChevronDown },
-  { name: "chevronLeft", Icon: IconChevronLeft },
-  { name: "chevronRight", Icon: IconChevronRight },
-  { name: "clipboard", Icon: IconClipboardEdit },
-  { name: "close", Icon: IconClose },
-  { name: "cohort", Icon: IconCohort },
-  { name: "copy", Icon: IconCopy },
-  { name: "cumulativeChart", Icon: IconCumulativeChart },
-  { name: "database", Icon: IconDatabase },
-  { name: "download", Icon: IconDownload },
-  { name: "edit", Icon: IconEdit },
-  { name: "errorOutline", Icon: IconErrorOutline },
-  { name: "exclamation", Icon: IconExclamation },
-  { name: "flag", Icon: IconFlag },
-  { name: "flare", Icon: IconFlare },
-  { name: "flask", Icon: IconFlask },
-  { name: "gift", Icon: IconGift },
-  { name: "grid", Icon: IconGridView },
-  { name: "handClick", Icon: IconHandClick },
-  { name: "home", Icon: IconHome },
-  { name: "layers", Icon: IconLayers },
-  { name: "list", Icon: IconListView },
-  { name: "logout", Icon: IconLogout },
-  { name: "mail", Icon: IconMail },
-  { name: "moon", Icon: IconMoon },
-  { name: "panelRight", Icon: IconPanelRight },
-  { name: "person", Icon: IconPerson },
-  { name: "play", Icon: IconPlayCircle },
-  { name: "plus", Icon: IconPlus },
-  { name: "premium", Icon: IconPremium },
-  { name: "queryEditor", Icon: IconQueryEditor },
-  { name: "radar", Icon: IconRadar },
-  { name: "recording", Icon: IconRecording },
-  { name: "robot", Icon: IconRobot },
-  { name: "rocket", Icon: IconRocket },
-  { name: "save", Icon: IconSave },
-  { name: "search", Icon: IconSearch },
-  { name: "selectEvents", Icon: IconSelectEvents },
-  { name: "settings", Icon: IconTuning },
-  { name: "star", Icon: IconStar },
-  { name: "subArrowRight", Icon: IconSubArrowRight },
-  { name: "sun", Icon: IconSun },
-  { name: "surveys", Icon: IconSurveys },
-  { name: "sync", Icon: IconSync },
-  { name: "tableChart", Icon: IconTableChart },
-  { name: "terminal", Icon: IconTerminal },
-  { name: "toggle", Icon: IconToggle },
-  { name: "trash", Icon: IconTrash },
-  { name: "upload", Icon: IconUpload },
-  { name: "volume", Icon: IconVolume },
-  { name: "volumeOff", Icon: IconVolumeOff },
-];
+const iconCells = Object.entries(CANONICAL_ICONS) as Array<[
+  CanonicalIconName,
+  ComponentType<IconProps>,
+]>;
 
-const colourTiles = [
-  { label: "Session replay", Icon: IconRecording, fg: "--ph-product-session-replay" as const },
-  { label: "Product analytics", Icon: IconAreaChart, fg: "--ph-product-product-analytics" as const },
-  { label: "Data pipeline", Icon: IconGridView, fg: "--ph-product-data-pipeline" as const },
-  { label: "Feature flags", Icon: IconFlag, fg: "--ph-product-feature-flags" as const },
-  { label: "Experiments", Icon: IconFlask, fg: "--ph-product-experiments" as const },
-  { label: "Data warehouse", Icon: IconDatabase, fg: "--ph-product-data-warehouse" as const },
-  { label: "Surveys", Icon: IconSurveys, fg: "--ph-product-surveys" as const },
+const originalIcons = Object.entries(OLD_UI_ICONS) as Array<[
+  keyof typeof OLD_UI_ICONS,
+  ComponentType<IconProps>,
+]>;
+
+const productTiles = [
+  { label: "Session replay", Icon: IconRecording, color: "--ph-product-session-replay" },
+  { label: "Product analytics", Icon: IconAreaChart, color: "--ph-product-product-analytics" },
+  { label: "Data pipeline", Icon: IconGridView, color: "--ph-product-data-pipeline" },
+  { label: "Feature flags", Icon: IconFlag, color: "--ph-product-feature-flags" },
+  { label: "Experiments", Icon: IconFlask, color: "--ph-product-experiments" },
+  { label: "Data warehouse", Icon: IconDatabase, color: "--ph-product-data-warehouse" },
+  { label: "Surveys", Icon: IconSurveys, color: "--ph-product-surveys" },
 ];
 
 export default function IconShowcase() {
-  const code = `import { IconActivity, IconAreaChart, IconArrowDown, IconArrowUp, IconBell, IconBellOff, IconBolt, IconBox, IconCancel, IconCheck, IconCheckCircle, IconChevronDown, IconChevronLeft, IconChevronRight, IconClipboardEdit, IconClose, IconCohort, IconCopy, IconCumulativeChart, IconDatabase, IconDownload, IconEdit, IconErrorOutline, IconExclamation, IconFlag, IconFlare, IconFlask, IconGift, IconGridView, IconHandClick, IconHome, IconLayers, IconListView, IconLogout, IconMail, IconMoon, IconPanelRight, IconPerson, IconPlayCircle, IconPlus, IconPremium, IconQueryEditor, IconRadar, IconRecording, IconRobot, IconRocket, IconSave, IconSearch, IconSelectEvents, IconStar, IconSubArrowRight, IconSun, IconSurveys, IconSync, IconTableChart, IconTerminal, IconToggle, IconTrash, IconTuning, IconUpload, IconVolume, IconVolumeOff, PH_ICONS, type IconName } from "the-old-ui";
+  const code = `import {
+  IconCommandCursor,
+  IconDataReel,
+  IconInsightBoard,
+  IconOldWindow,
+} from "@xenide-io/the-old-ui-theme";
 
-<div className="space-y-8">
-  <div className="ph-panel space-y-4">
-    <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Bespoke Lemon glyphs</h3>
-    <p className="text-sm leading-relaxed text-ph-subtle">
-      Paths mirror PostHog&apos;s Lemon UI — filled{" "}
-      <code className="ph-kbd">currentColor</code> SVGs at <code className="ph-kbd">1em</code>, vendored in{" "}
-      <code className="ph-kbd">the-old-ui</code> (no Lucide).
-    </p>
-
-    <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
-      {iconCells.map(({ name, Icon }) => (
-        <div
-          key={name}
-          className="flex flex-col items-center gap-2 rounded-[var(--ph-radius-app)] border border-ph-border bg-ph-surface p-4 text-center"
-          style={{ boxShadow: "var(--ph-shadow-elevation-3000)" }}
-        >
-          <Icon className="h-6 w-6 text-ph-ink" />
-          <span className="text-[10px] font-medium uppercase tracking-wide text-ph-mutedtext">{name}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-
-  <div className="ph-panel space-y-4">
-    <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Product rail hues</h3>
-    <p className="text-sm leading-relaxed text-ph-subtle">
-      In-app nav tiles use saturated backgrounds with light glyphs — tokens map to{" "}
-      <code className="ph-kbd">--ph-product-*</code> in <code className="ph-kbd">globals.css</code>.
-    </p>
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
-      {colourTiles.map(({ label, Icon, fg }) => (
-        <div
-          key={label}
-          className="ph-icon-tile border-white/15 text-white"
-          style={{ backgroundColor: \`var(\${fg})\` }}
-        >
-          <Icon className="mb-1 h-7 w-7 drop-shadow-sm" />
-          <span className="max-w-full truncate px-1 text-center normal-case tracking-normal">{label}</span>
-        </div>
-      ))}
-    </div>
-  </div>
+<div className="flex items-center gap-4 text-ph-ink">
+  <IconOldWindow size={16} />
+  <IconCommandCursor size={20} />
+  <IconDataReel size={24} />
+  <IconInsightBoard size={24} aria-label="Insights" />
 </div>`;
 
   return (
     <ShowcaseWrapper
       title="Icons"
-      description="Bespoke Lemon glyphs from PostHog open source — filled Material / product paths, not Lucide stroke icons."
+      description="A canonical filled SVG registry with PostHog/Material foundations and clearly identified Old UI originals."
       code={code}
       filename="IconExample.tsx"
     >
       <div className="space-y-8">
-        <div className="ph-panel space-y-4">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Bespoke Lemon glyphs</h3>
-          <p className="text-sm leading-relaxed text-ph-subtle">
-            Paths mirror PostHog&apos;s Lemon UI — filled{" "}
-            <code className="ph-kbd">currentColor</code> SVGs at <code className="ph-kbd">1em</code>, vendored in{" "}
-            <code className="ph-kbd">the-old-ui</code> (no Lucide).
-          </p>
-
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
-            {iconCells.map(({ name, Icon }) => (
-              <div
-                key={name}
-                className="flex flex-col items-center gap-2 rounded-[var(--ph-radius-app)] border border-ph-border bg-ph-surface p-4 text-center"
-                style={{ boxShadow: "var(--ph-shadow-elevation-3000)" }}
-              >
-                <Icon className="h-6 w-6 text-ph-ink" />
-                <span className="text-[10px] font-medium uppercase tracking-wide text-ph-mutedtext">{name}</span>
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Old UI originals</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              Authored 24px glyphs for retro interface and analytics concepts. Each uses <Kbd variant="token">currentColor</Kbd>, a filled silhouette, and enough negative space to survive at 16px.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+            {originalIcons.map(([name, Icon]) => (
+              <div key={name} className="flex flex-col items-center gap-3 rounded-lg border border-ph-border-subtle bg-ph-raised p-4 text-center">
+                <div className="flex h-9 items-center gap-2 text-ph-ink">
+                  <Icon size={16} />
+                  <Icon size={24} />
+                </div>
+                <span className="max-w-full break-words text-xs font-medium text-ph-subtle">{formatName(name)}</span>
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        <div className="ph-panel space-y-4">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Product rail hues</h3>
-          <p className="text-sm leading-relaxed text-ph-subtle">
-            In-app nav tiles use saturated backgrounds with light glyphs — tokens map to{" "}
-            <code className="ph-kbd">--ph-product-*</code> in <code className="ph-kbd">globals.css</code>.
-          </p>
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Canonical registry</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              Documentation is generated from <Kbd variant="token">CANONICAL_ICONS</Kbd>. Compatibility aliases remain available through <Kbd variant="token">PH_ICONS</Kbd> without duplicating this inventory.
+            </p>
+          </div>
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+            {iconCells.map(([name, Icon]) => (
+              <div key={name} className="flex min-w-0 flex-col items-center gap-2 rounded-lg border border-ph-border-subtle bg-ph-raised p-3 text-center">
+                <div className="flex h-8 items-center gap-2 text-ph-ink">
+                  <Icon size={16} />
+                  <Icon size={24} />
+                </div>
+                <span className="max-w-full break-words text-[10px] font-medium tracking-wide text-ph-mutedtext">{name}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Product hues</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              Product color is used as a subtle tint and icon accent instead of assuming white foregrounds on every theme.
+            </p>
+          </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
-            {colourTiles.map(({ label, Icon, fg }) => (
+            {productTiles.map(({ label, Icon, color }) => (
               <div
                 key={label}
-                className="ph-icon-tile border-white/15 text-white"
-                style={{ backgroundColor: `var(${fg})` }}
+                className="ph-icon-tile ph-product-icon-tile"
+                style={{ "--ph-icon-tile-color": `var(${color})` } as CSSProperties}
               >
-                <Icon className="mb-1 h-7 w-7 drop-shadow-sm" />
-                <span className="max-w-full truncate px-1 text-center normal-case tracking-normal">{label}</span>
+                <Icon className="mb-1" size={28} />
+                <span className="max-w-full px-1 text-center normal-case tracking-normal">{label}</span>
               </div>
             ))}
           </div>
-        </div>
+        </section>
       </div>
     </ShowcaseWrapper>
   );
+}
+
+function formatName(name: string) {
+  return name.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^./, (letter) => letter.toUpperCase());
 }

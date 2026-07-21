@@ -98,7 +98,7 @@ import { Checkbox, FileUpload, Input, Radio, Range, Rating, SearchGroup, SearchI
 ## Layout
 
 ```tsx
-import { Card, Drawer, Modal, Panel, Accordion, HoverCard } from "the-old-ui";
+import { Card, Drawer, Modal, Panel, Accordion, HoverCard } from "@xenide-io/the-old-ui-theme";
 
 <Panel title="Settings">Content</Panel>
 <Card title="Insight saved" description="Dashboard tile copy." />
@@ -111,7 +111,7 @@ import { Card, Drawer, Modal, Panel, Accordion, HoverCard } from "the-old-ui";
 ## Navigation
 
 ```tsx
-import { Breadcrumbs, CommandPalette, FilterChips, Pagination, SegmentedControl, Stepper, Tabs } from "the-old-ui";
+import { Breadcrumbs, CommandPalette, FilterBar, FilterChips, FilterMenu, Pagination, SegmentedControl, SortMenu, Stepper, Tabs } from "@xenide-io/the-old-ui-theme";
 
 <Tabs items={items} value={active} onChange={setActive} />
 <Breadcrumbs items={[{ label: "Project", href: "#" }, { label: "Trends", current: true }]} />
@@ -119,13 +119,42 @@ import { Breadcrumbs, CommandPalette, FilterChips, Pagination, SegmentedControl,
 <SegmentedControl options={options} value={view} onChange={setView} />
 <Stepper steps={steps} currentStep={1} />
 <CommandPalette items={commands} isOpen={open} onClose={close} />
-<FilterChips chips={chips} onToggle={toggleChip} onRemove={removeChip} />
+<FilterBar onClear={clearFilters} resultCount="24 insights">
+  <FilterMenu label="Status" value={status} options={statusOptions} onValueChange={setStatus} />
+  <SortMenu label="Sort" value={sort} options={sortOptions} onValueChange={setSort} />
+</FilterBar>
+<FilterChips chips={appliedFilters} onRemove={removeFilter} />
+```
+
+## Product Layouts
+
+```tsx
+import {
+  AuthCard,
+  AuthLayout,
+  FilterControls,
+  Loader,
+  SettingsLayout,
+  SettingsNav,
+  Skeleton,
+} from "@xenide-io/the-old-ui-theme";
+
+<AuthLayout brand="Acme">
+  <AuthCard title="Welcome back">Sign-in form</AuthCard>
+</AuthLayout>
+
+<SettingsLayout title="Settings" navigation={<SettingsNav groups={groups} />}>
+  Settings panels
+</SettingsLayout>
+
+<Loader variant="dots" label="Loading events" />
+<Skeleton shape="block" />
 ```
 
 ## Data And Display
 
 ```tsx
-import { Avatar, AvatarGroup, ChatBubble, Indicator, Kbd, Stat, Table, Terminal, Timeline } from "the-old-ui";
+import { Avatar, AvatarGroup, ChatBubble, Indicator, Kbd, Stat, Table, Terminal, Timeline } from "@xenide-io/the-old-ui-theme";
 
 <Stat label="Total volume" value="2.6M" tone="brand" />
 
@@ -142,7 +171,9 @@ import { Avatar, AvatarGroup, ChatBubble, Indicator, Kbd, Stat, Table, Terminal,
 
 <Timeline events={events} alternate />
 
-<Kbd keys={["⌘", "K"]} />
+<Kbd keys={["Command", "K"]} platform="mac" />
+<Kbd variant="key">Escape</Kbd>
+<Kbd variant="token">HogQL</Kbd>
 ```
 
 ## Calendar
@@ -158,11 +189,15 @@ const [date, setDate] = useState<Date | undefined>(new Date());
 ## Icons
 
 ```tsx
-import { IconPlus, IconSearch, IconPerson } from "the-old-ui";
+import { IconCommandCursor, IconDataReel, IconOldWindow, IconPlus, IconSearch } from "@xenide-io/the-old-ui-theme";
 
 <IconPlus className="h-4 w-4" />
 <IconSearch className="h-5 w-5 text-ph-mutedtext" />
-<IconPerson className="h-5 w-5" />
+<IconOldWindow size={20} />
+<IconCommandCursor size={20} />
+<IconDataReel size={20} aria-label="Data reel" />
 ```
 
-Icons use `currentColor`, so apply color with `text-ph-*` classes.
+Icons use `currentColor`, so apply color with `text-ph-*` classes. Unlabelled icons are decorative and hidden from assistive technology; passing `aria-label` exposes an icon as an image.
+
+Old UI originals follow a 24×24 filled grid, use strong silhouettes, retain at least 1.5px negative space, and must remain recognizable at 16, 20, and 24px. Add distinctive product metaphors deliberately rather than copying a large generic icon catalog.

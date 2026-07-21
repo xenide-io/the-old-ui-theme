@@ -1,7 +1,7 @@
 /**
- * Bespoke PostHog Lemon glyphs — paths sourced from PostHog open source
- * (`frontend/src/lib/lemon-ui/icons/icons.tsx`) and Material Design where noted.
+ * Filled product glyphs from PostHog/Material sources plus clearly labeled Old UI originals.
  */
+import { forwardRef } from "react";
 import type { IconProps } from "@/components/icons/IconBase";
 import { createIconBase, createIconBasePath } from "@/components/icons/createIconBase";
 import { cn } from "@/lib/cn";
@@ -141,6 +141,13 @@ export const IconErrorOutline = createIconBase({
   ),
 });
 
+export const IconInfo = createIconBase({
+  name: "IconInfo",
+  paths: fill(
+    "M11 10h2v7h-2v-7zm0-3h2v2h-2V7zm1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z",
+  ),
+});
+
 export const IconCancel = createIconBase({
   paths: fill(
     "m12 2c-5.53 0-10 4.47-10 10s4.47 10 10 10 10-4.47 10-10-4.47-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.59-13-3.59 3.59-3.59-3.59-1.41 1.41 3.59 3.59-3.59 3.59 1.41 1.41 3.59-3.59 3.59 3.59 1.41-1.41-3.59-3.59 3.59-3.59z",
@@ -272,7 +279,152 @@ export const IconRocket = createIconBasePath(
   "M9.19 6.35c-2.04 2.29-3.44 5.58-3.57 5.89L2 10.69l4.05-4.05c.47-.47 1.15-.68 1.81-.55l1.33 1.26zm5.45 8.67l-1.33-1.26c-.66-.13-1.34.08-1.81.55L2 18.31l3.62 3.57c.31-.13 3.6-1.53 5.89-3.57 1.53-1.72 2.52-3.76 2.87-5.02zM12 2c-1.1 0-2 .9-2 2v1.09c2.84.48 5 2.94 5 5.91 0 2.97-2.16 5.43-5 5.91V20c0 1.1.9 2 2 2s2-.9 2-2v-1.09c-2.84-.48-5-2.94-5-5.91 0-2.97 2.16-5.43 5-5.91V4c0-1.1-.9-2-2-2z",
 );
 
-export const IconTerminal = createIconBasePath("M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8l8 5 8-5v10zm-8-7L4 6h16l-8 5z");
+export const IconTerminal = createIconBase({
+  name: "IconTerminal",
+  paths: (
+    <path
+      d="M3 4v16h18V4H3zm2 2h14v12H5V6zm2 2.2L10.8 12 7 15.8 8.4 17.2l5.2-5.2-5.2-5.2L7 8.2zM13 17h5v-2h-5v2z"
+      fill="currentColor"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    />
+  ),
+});
+
+// —— Old UI originals: authored for this library's tactile product language ——
+export const IconOldWindow = createIconBase({
+  name: "IconOldWindow",
+  paths: (
+    <path
+      d="M3 3v18h18V3H3zm2 7v9h14v-9H5zm1-4h2v1H6V6zm3 0h2v1H9V6z"
+      fill="currentColor"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    />
+  ),
+});
+
+export const IconCommandCursor = createIconBase({
+  name: "IconCommandCursor",
+  paths: (
+    <path
+      d="M4 3v18h16V3H4zm2 2h12v14H6V5zm1.5 3.5L11 12l-3.5 3.5L9 17l5-5-5-5-1.5 1.5zM13 17h4v-2h-4v2z"
+      fill="currentColor"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    />
+  ),
+});
+
+export const IconDataReel = createIconBase({
+  name: "IconDataReel",
+  paths: (
+    <path
+      d="M3 5v14h18V5H3zm2 2h14v10H5V7zm3 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm8 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM10 11h4v1.5h-4V11z"
+      fill="currentColor"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    />
+  ),
+});
+
+export const IconCodePreview = createIconBase({
+  name: "IconCodePreview",
+  paths: (
+    <path
+      d="M3 3v15h18V3H3zm2 2h14v11H5V5zm3.5 2L5 10.5 8.5 14l1.4-1.4-2.1-2.1 2.1-2.1L8.5 7zm7 0-1.4 1.4 2.1 2.1-2.1 2.1 1.4 1.4 3.5-3.5L15.5 7zM9 20h6v2H9v-2z"
+      fill="currentColor"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    />
+  ),
+});
+
+export const IconInsightBoard = createIconBase({
+  name: "IconInsightBoard",
+  paths: (
+    <path
+      d="M3 3v18h18V3H3zm2 2h14v3H5V5zm0 5h6v9H5v-9zm8 0h6v4h-6v-4zm0 6h6v3h-6v-3zM6 6h2v1H6V6zm3 0h2v1H9V6z"
+      fill="currentColor"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    />
+  ),
+});
+
+export const IconEventStream = createIconBase({
+  name: "IconEventStream",
+  paths: (
+    <>
+      <path d="M5 4h2v16H5V4z" fill="currentColor" opacity="0.45" />
+      {fill("M6 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 8a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm5-6h10v2H11V5zm0 8h7v2h-7v-2zm0 5h10v2H11v-2z")}
+    </>
+  ),
+});
+
+export const IconFeatureGate = createIconBase({
+  name: "IconFeatureGate",
+  paths: (
+    <path
+      d="M4 3h2v18H4V3zm3 2h12l-3 4 3 4H7V5zm4 1-2.2 4H12l-1 4 4.2-5H12l1-3h-2z"
+      fill="currentColor"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    />
+  ),
+});
+
+export const IconReplayFrame = createIconBase({
+  name: "IconReplayFrame",
+  paths: (
+    <path
+      d="M3 3v18h18V3H3zm2 2h14v11H5V5zm5 2v7l6-3.5L10 7zm-5 11h9v1H5v-1zm11 0h3v1h-3v-1z"
+      fill="currentColor"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    />
+  ),
+});
+
+export const IconQueryStack = createIconBase({
+  name: "IconQueryStack",
+  paths: fill(
+    "M4 5c0-1.66 3.58-3 8-3s8 1.34 8 3-3.58 3-8 3-8-1.34-8-3zm0 3v3c0 1.66 3.58 3 8 3 .7 0 1.38-.04 2-.12V11.8c-.64.13-1.31.2-2 .2-4.42 0-8-1.34-8-3zm0 6v3c0 1.66 3.58 3 8 3 .7 0 1.38-.04 2-.12v-2.08c-.64.13-1.31.2-2 .2-4.42 0-8-1.34-8-3zm12-1 5 4-5 4v-3h-4v-2h4v-3z",
+  ),
+});
+
+export const IconExperimentSplit = createIconBase({
+  name: "IconExperimentSplit",
+  paths: fill(
+    "M5 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm14 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM5 15a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm1-6h2c0 2.2 1.8 4 4 4h2.17A3 3 0 0 1 19 11v2a3 3 0 0 1-4.83-2H12a6 6 0 0 1-6-6v4zm0 4a6 6 0 0 0 6-6h2a8 8 0 0 1-8 8v-2z",
+  ),
+});
+
+export const IconSurveyCard = createIconBase({
+  name: "IconSurveyCard",
+  paths: (
+    <path
+      d="M3 3v18h18V3H3zm2 2h14v14H5V5zm2 2h7v2H7V7zm0 4h4v2H7v-2zm7-.4-2.5 2.5-1-1-1.4 1.4 2.4 2.4 3.9-3.9-1.4-1.4zM7 16h10v1H7v-1z"
+      fill="currentColor"
+      fillRule="evenodd"
+      clipRule="evenodd"
+    />
+  ),
+});
+
+export const OLD_UI_ICONS = {
+  oldWindow: IconOldWindow,
+  commandCursor: IconCommandCursor,
+  dataReel: IconDataReel,
+  codePreview: IconCodePreview,
+  insightBoard: IconInsightBoard,
+  eventStream: IconEventStream,
+  featureGate: IconFeatureGate,
+  replayFrame: IconReplayFrame,
+  queryStack: IconQueryStack,
+  experimentSplit: IconExperimentSplit,
+  surveyCard: IconSurveyCard,
+} as const;
 
 export const IconActivity = createIconBasePath(
   "M22 12h-4l-3 9L9 3l-3 9H2v2h6.76l2.24-6.72L15 15l2.24-6.72L19 14h3v-2z",
@@ -283,12 +435,14 @@ export const IconFlask = createIconBasePath(
 );
 
 /** Busy-state spinner — PostHog `IconSync` with spin animation. */
-export function IconSpinner({ className, ...props }: IconProps) {
-  return <IconSync className={cn("ph-icon-spin", className)} {...props} />;
-}
+export const IconSpinner = forwardRef<SVGSVGElement, IconProps>(function IconSpinner({ className, ...props }, ref) {
+  return <IconSync ref={ref} className={cn("ph-icon-spin", className)} {...props} />;
+});
 
-/** Alias map for showcase / migration from Lucide names. */
-export const PH_ICONS = {
+IconSpinner.displayName = "IconSpinner";
+
+/** Canonical names power documentation and new dynamic-icon usage. */
+export const CANONICAL_ICONS = {
   activity: IconActivity,
   areaChart: IconAreaChart,
   arrowDown: IconArrowDown,
@@ -303,65 +457,101 @@ export const PH_ICONS = {
   chevronDown: IconChevronDown,
   chevronLeft: IconChevronLeft,
   chevronRight: IconChevronRight,
-  clipboard: IconClipboardEdit,
+  clipboardEdit: IconClipboardEdit,
   close: IconClose,
+  codePreview: IconCodePreview,
   cohort: IconCohort,
+  commandCursor: IconCommandCursor,
   copy: IconCopy,
   cumulativeChart: IconCumulativeChart,
+  dataReel: IconDataReel,
   database: IconDatabase,
   download: IconDownload,
   edit: IconEdit,
   errorOutline: IconErrorOutline,
+  eventStream: IconEventStream,
   exclamation: IconExclamation,
+  experimentSplit: IconExperimentSplit,
+  featureGate: IconFeatureGate,
   flag: IconFlag,
   flare: IconFlare,
   flask: IconFlask,
   gift: IconGift,
-  grid: IconGridView,
+  gridView: IconGridView,
   handClick: IconHandClick,
   home: IconHome,
-  info: IconErrorOutline,
+  info: IconInfo,
+  insightBoard: IconInsightBoard,
   layers: IconLayers,
-  list: IconListView,
+  listView: IconListView,
   logout: IconLogout,
   mail: IconMail,
   moon: IconMoon,
+  oldWindow: IconOldWindow,
   panelRight: IconPanelRight,
   person: IconPerson,
-  play: IconPlayCircle,
+  playCircle: IconPlayCircle,
   plus: IconPlus,
   premium: IconPremium,
   queryEditor: IconQueryEditor,
+  queryStack: IconQueryStack,
   radar: IconRadar,
   recording: IconRecording,
+  replayFrame: IconReplayFrame,
   robot: IconRobot,
   rocket: IconRocket,
   save: IconSave,
   search: IconSearch,
   selectEvents: IconSelectEvents,
-  settings: IconTuning,
   shoppingCart: IconShoppingCart,
   spinner: IconSpinner,
   star: IconStar,
   subArrowRight: IconSubArrowRight,
   sun: IconSun,
+  surveyCard: IconSurveyCard,
   surveys: IconSurveys,
   sync: IconSync,
   tableChart: IconTableChart,
   terminal: IconTerminal,
   toggle: IconToggle,
   trash: IconTrash,
-  trendingUp: IconArrowUp,
+  tuning: IconTuning,
   upload: IconUpload,
   volume: IconVolume,
   volumeOff: IconVolumeOff,
+} as const;
+
+/** Compatibility names remain runtime-identical to their canonical glyphs. */
+export const PH_ICON_ALIASES = {
+  clipboard: IconClipboardEdit,
+  grid: IconGridView,
+  list: IconListView,
+  play: IconPlayCircle,
+  settings: IconTuning,
+  trendingUp: IconArrowUp,
   warning: IconExclamation,
   xCircle: IconCancel,
 } as const;
 
+export const PH_ICONS = {
+  ...CANONICAL_ICONS,
+  ...PH_ICON_ALIASES,
+} as const;
+
+for (const [name, Icon] of Object.entries(CANONICAL_ICONS)) {
+  const namedIcon = Icon as typeof Icon & { displayName?: string };
+  if (!namedIcon.displayName || namedIcon.displayName === "IconGlyph") {
+    namedIcon.displayName = `Icon${name[0].toUpperCase()}${name.slice(1)}`;
+  }
+}
+
+export type CanonicalIconName = keyof typeof CANONICAL_ICONS;
+export type IconAliasName = keyof typeof PH_ICON_ALIASES;
 export type IconName = keyof typeof PH_ICONS;
 
-export function IconByName({ name, ...props }: IconProps & { name: IconName }) {
+export const IconByName = forwardRef<SVGSVGElement, IconProps & { name: IconName }>(function IconByName({ name, ...props }, ref) {
   const Icon = PH_ICONS[name];
-  return <Icon {...props} />;
-}
+  return <Icon ref={ref} {...props} />;
+});
+
+IconByName.displayName = "IconByName";

@@ -1,5 +1,6 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import { useId } from "react";
+import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { FormField } from "@/components/ui/FormField";
+import { IconCheck } from "@/components/icons";
 import { cn } from "@/lib/cn";
 
 export type InputSize = "sm" | "md" | "lg";
@@ -21,7 +22,12 @@ const sizeMap: Record<InputSize, string> = {
   lg: "ph-input-lg",
 };
 
-export function Input({
+function joinIds(...ids: Array<string | undefined>) {
+  const value = ids.filter(Boolean).join(" ");
+  return value || undefined;
+}
+
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
   id: idProp,
   label,
   hideLabel = false,
@@ -32,49 +38,48 @@ export function Input({
   className,
   wrapperClassName,
   disabled,
+  required,
+  "aria-describedby": ariaDescribedBy,
   ...props
-}: InputProps) {
+}, ref) {
   const autoId = useId();
   const id = idProp ?? autoId;
   const hasError = Boolean(error);
 
   return (
-    <div className={cn("ph-field", wrapperClassName)}>
-      {label && (
-        <label
-          htmlFor={id}
+    <FormField
+      controlId={id}
+      label={label}
+      hideLabel={hideLabel}
+      helperText={helperText}
+      error={error}
+      required={required}
+      disabled={disabled}
+      className={wrapperClassName}
+    >
+      {(fieldProps) => (
+        <input
+          {...fieldProps}
+          ref={ref}
+          disabled={disabled}
+          required={required}
+          aria-describedby={joinIds(ariaDescribedBy, fieldProps["aria-describedby"])}
           className={cn(
-            "ph-label",
-            hideLabel && "sr-only",
-            disabled && "opacity-50"
+            "ph-input w-full",
+            sizeMap[size],
+            variant === "ghost" && "ph-input-ghost",
+            hasError && "ph-input-error",
+            disabled && "cursor-not-allowed opacity-60",
+            className
           )}
-        >
-          {label}
-        </label>
+          {...props}
+        />
       )}
-      <input
-        id={id}
-        disabled={disabled}
-        aria-invalid={hasError || undefined}
-        className={cn(
-          "ph-input w-full",
-          sizeMap[size],
-          variant === "ghost" && "ph-input-ghost",
-          hasError && "ph-input-error",
-          disabled && "cursor-not-allowed opacity-60",
-          className
-        )}
-        {...props}
-      />
-      {helperText && !hasError && (
-        <p className="mt-1 text-xs text-ph-subtle">{helperText}</p>
-      )}
-      {error && (
-        <p className="mt-1 text-xs font-medium text-ph-danger">{error}</p>
-      )}
-    </div>
+    </FormField>
   );
-}
+});
+
+Input.displayName = "Input";
 
 export interface SelectProps extends Omit<ComponentPropsWithoutRef<"select">, "size"> {
   label?: string;
@@ -86,7 +91,7 @@ export interface SelectProps extends Omit<ComponentPropsWithoutRef<"select">, "s
   children: ReactNode;
 }
 
-export function Select({
+export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select({
   id: idProp,
   label,
   hideLabel = false,
@@ -97,46 +102,40 @@ export function Select({
   wrapperClassName,
   disabled,
   children,
+  required,
+  "aria-describedby": ariaDescribedBy,
   ...props
-}: SelectProps) {
+}, ref) {
   const autoId = useId();
   const id = idProp ?? autoId;
   const hasError = Boolean(error);
 
   return (
-    <div className={cn("ph-field", wrapperClassName)}>
-      {label && (
-        <label
-          htmlFor={id}
-          className={cn("ph-label", hideLabel && "sr-only", disabled && "opacity-50")}
+    <FormField controlId={id} label={label} hideLabel={hideLabel} helperText={helperText} error={error} required={required} disabled={disabled} className={wrapperClassName}>
+      {(fieldProps) => (
+        <select
+          {...fieldProps}
+          ref={ref}
+          disabled={disabled}
+          required={required}
+          aria-describedby={joinIds(ariaDescribedBy, fieldProps["aria-describedby"])}
+          className={cn(
+            "ph-select w-full",
+            sizeMap[size],
+            hasError && "ph-input-error",
+            disabled && "cursor-not-allowed opacity-60",
+            className
+          )}
+          {...props}
         >
-          {label}
-        </label>
+          {children}
+        </select>
       )}
-      <select
-        id={id}
-        disabled={disabled}
-        aria-invalid={hasError || undefined}
-        className={cn(
-          "ph-select w-full",
-          sizeMap[size],
-          hasError && "border-ph-danger focus:border-ph-danger focus:ring-ph-danger/20",
-          disabled && "cursor-not-allowed opacity-60",
-          className
-        )}
-        {...props}
-      >
-        {children}
-      </select>
-      {helperText && !hasError && (
-        <p className="mt-1 text-xs text-ph-subtle">{helperText}</p>
-      )}
-      {error && (
-        <p className="mt-1 text-xs font-medium text-ph-danger">{error}</p>
-      )}
-    </div>
+    </FormField>
   );
-}
+});
+
+Select.displayName = "Select";
 
 export interface TextareaProps extends Omit<ComponentPropsWithoutRef<"textarea">, "size"> {
   label?: string;
@@ -147,7 +146,7 @@ export interface TextareaProps extends Omit<ComponentPropsWithoutRef<"textarea">
   wrapperClassName?: string;
 }
 
-export function Textarea({
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea({
   id: idProp,
   label,
   hideLabel = false,
@@ -157,44 +156,38 @@ export function Textarea({
   className,
   wrapperClassName,
   disabled,
+  required,
+  "aria-describedby": ariaDescribedBy,
   ...props
-}: TextareaProps) {
+}, ref) {
   const autoId = useId();
   const id = idProp ?? autoId;
   const hasError = Boolean(error);
 
   return (
-    <div className={cn("ph-field", wrapperClassName)}>
-      {label && (
-        <label
-          htmlFor={id}
-          className={cn("ph-label", hideLabel && "sr-only", disabled && "opacity-50")}
-        >
-          {label}
-        </label>
+    <FormField controlId={id} label={label} hideLabel={hideLabel} helperText={helperText} error={error} required={required} disabled={disabled} className={wrapperClassName}>
+      {(fieldProps) => (
+        <textarea
+          {...fieldProps}
+          ref={ref}
+          disabled={disabled}
+          required={required}
+          aria-describedby={joinIds(ariaDescribedBy, fieldProps["aria-describedby"])}
+          className={cn(
+            "ph-textarea w-full",
+            sizeMap[size],
+            hasError && "ph-input-error",
+            disabled && "cursor-not-allowed opacity-60",
+            className
+          )}
+          {...props}
+        />
       )}
-      <textarea
-        id={id}
-        disabled={disabled}
-        aria-invalid={hasError || undefined}
-        className={cn(
-          "ph-textarea w-full",
-          sizeMap[size],
-          hasError && "border-ph-danger focus:border-ph-danger focus:ring-ph-danger/20",
-          disabled && "cursor-not-allowed opacity-60",
-          className
-        )}
-        {...props}
-      />
-      {helperText && !hasError && (
-        <p className="mt-1 text-xs text-ph-subtle">{helperText}</p>
-      )}
-      {error && (
-        <p className="mt-1 text-xs font-medium text-ph-danger">{error}</p>
-      )}
-    </div>
+    </FormField>
   );
-}
+});
+
+Textarea.displayName = "Textarea";
 
 export interface CheckboxProps extends Omit<ComponentPropsWithoutRef<"input">, "type"> {
   label?: ReactNode;
@@ -203,7 +196,7 @@ export interface CheckboxProps extends Omit<ComponentPropsWithoutRef<"input">, "
   wrapperClassName?: string;
 }
 
-export function Checkbox({
+export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox({
   id: idProp,
   label,
   error,
@@ -211,59 +204,69 @@ export function Checkbox({
   className,
   wrapperClassName,
   disabled,
+  "aria-describedby": ariaDescribedBy,
   ...props
-}: CheckboxProps) {
+}, ref) {
   const autoId = useId();
   const id = idProp ?? autoId;
   const hasError = Boolean(error);
+  const descriptionId = helperText && !hasError ? `${id}-description` : undefined;
+  const errorId = error ? `${id}-error` : undefined;
 
   return (
     <div className={cn("ph-control-row", wrapperClassName)}>
-      <input
-        id={id}
-        type="checkbox"
-        disabled={disabled}
-        aria-invalid={hasError || undefined}
-        className={cn(
-          "ph-checkbox",
-          hasError && "border-ph-danger",
-          disabled && "cursor-not-allowed opacity-60",
-          className
-        )}
-        {...props}
-      />
-      <label htmlFor={id} className={cn("cursor-pointer", disabled && "opacity-60")}>
-        {label}
-      </label>
-      {helperText && !hasError && (
-        <p className="mt-0.5 text-xs text-ph-subtle">{helperText}</p>
-      )}
-      {error && (
-        <p className="mt-0.5 text-xs font-medium text-ph-danger">{error}</p>
-      )}
+      <span className="ph-checkbox-wrap">
+        <input
+          ref={ref}
+          id={id}
+          type="checkbox"
+          disabled={disabled}
+          aria-invalid={hasError || undefined}
+          aria-describedby={joinIds(ariaDescribedBy, descriptionId)}
+          aria-errormessage={errorId}
+          className={cn(
+            "ph-checkbox",
+            hasError && "border-ph-danger",
+            disabled && "cursor-not-allowed opacity-60",
+            className
+          )}
+          {...props}
+        />
+        <IconCheck className="ph-checkbox-icon" aria-hidden />
+      </span>
+      <div className="ph-control-copy">
+        <label htmlFor={id} className={cn("cursor-pointer", disabled && "opacity-60")}>
+          {label}
+        </label>
+        {descriptionId ? <p id={descriptionId} className="text-xs text-ph-subtle">{helperText}</p> : null}
+        {errorId ? <p id={errorId} className="text-xs font-medium text-ph-danger">{error}</p> : null}
+      </div>
     </div>
   );
-}
+});
+
+Checkbox.displayName = "Checkbox";
 
 export interface RadioProps extends Omit<ComponentPropsWithoutRef<"input">, "type"> {
   label?: ReactNode;
   wrapperClassName?: string;
 }
 
-export function Radio({
+export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio({
   id: idProp,
   label,
   className,
   wrapperClassName,
   disabled,
   ...props
-}: RadioProps) {
+}, ref) {
   const autoId = useId();
   const id = idProp ?? autoId;
 
   return (
     <div className={cn("ph-control-row", wrapperClassName, disabled && "opacity-60")}>
       <input
+        ref={ref}
         id={id}
         type="radio"
         disabled={disabled}
@@ -275,21 +278,23 @@ export function Radio({
       </label>
     </div>
   );
-}
+});
+
+Radio.displayName = "Radio";
 
 export interface ToggleProps extends Omit<ComponentPropsWithoutRef<"input">, "type"> {
   label?: ReactNode;
   wrapperClassName?: string;
 }
 
-export function Toggle({
+export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(function Toggle({
   id: idProp,
   label,
   className,
   wrapperClassName,
   disabled,
   ...props
-}: ToggleProps) {
+}, ref) {
   const autoId = useId();
   const id = idProp ?? autoId;
 
@@ -297,6 +302,7 @@ export function Toggle({
     <label className={cn("ph-control-row-between", wrapperClassName, disabled && "opacity-60")}>
       <span className={disabled ? "opacity-60" : undefined}>{label}</span>
       <input
+        ref={ref}
         id={id}
         type="checkbox"
         role="switch"
@@ -306,7 +312,9 @@ export function Toggle({
       />
     </label>
   );
-}
+});
+
+Toggle.displayName = "Toggle";
 
 export interface RangeProps extends Omit<ComponentPropsWithoutRef<"input">, "type"> {
   label?: string;
@@ -316,7 +324,8 @@ export interface RangeProps extends Omit<ComponentPropsWithoutRef<"input">, "typ
   wrapperClassName?: string;
 }
 
-export function Range({
+export const Range = forwardRef<HTMLInputElement, RangeProps>(function Range({
+  id: idProp,
   label,
   minLabel,
   maxLabel,
@@ -324,11 +333,14 @@ export function Range({
   wrapperClassName,
   className,
   ...props
-}: RangeProps) {
+}, ref) {
+  const autoId = useId();
+  const id = idProp ?? autoId;
+
   return (
     <div className={cn("ph-field", wrapperClassName)}>
-      {label && <label className="ph-label">{label}</label>}
-      <input type="range" className={cn("ph-range", className)} {...props} />
+      {label && <label htmlFor={id} className="ph-label">{label}</label>}
+      <input ref={ref} id={id} type="range" className={cn("ph-range", className)} {...props} />
       {(minLabel || valueLabel || maxLabel) && (
         <div className="flex justify-between text-xs text-ph-mutedtext">
           <span>{minLabel}</span>
@@ -338,7 +350,9 @@ export function Range({
       )}
     </div>
   );
-}
+});
+
+Range.displayName = "Range";
 
 export interface FileUploadProps extends Omit<ComponentPropsWithoutRef<"input">, "type"> {
   label?: string;
@@ -346,14 +360,26 @@ export interface FileUploadProps extends Omit<ComponentPropsWithoutRef<"input">,
   wrapperClassName?: string;
 }
 
-export function FileUpload({ label, prompt = "Drop file or browse", wrapperClassName, className, ...props }: FileUploadProps) {
+export const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(function FileUpload({
+  id: idProp,
+  label,
+  prompt = "Drop file or browse",
+  wrapperClassName,
+  className,
+  ...props
+}, ref) {
+  const autoId = useId();
+  const id = idProp ?? autoId;
+
   return (
     <div className={cn("ph-field", wrapperClassName)}>
-      {label && <label className="ph-label">{label}</label>}
-      <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-ph-border bg-ph-surface px-4 py-6 text-sm text-ph-subtle transition hover:bg-ph-muted/60">
-        <input type="file" className={cn("sr-only", className)} {...props} />
+      {label && <label htmlFor={id} className="ph-label">{label}</label>}
+      <label htmlFor={id} className="ph-file-upload">
+        <input ref={ref} id={id} type="file" className={cn("sr-only", className)} {...props} />
         {prompt}
       </label>
     </div>
   );
-}
+});
+
+FileUpload.displayName = "FileUpload";

@@ -1,7 +1,7 @@
 import { Alert, ComponentDocs, ShowcaseWrapper } from "@/components/ui";
 
 export default function AlertShowcase() {
-  const code = `import { Alert } from "the-old-ui";
+  const code = `import { Alert } from "@xenide-io/the-old-ui-theme";
 
 <div className="space-y-4">
   <Alert status="info" title="Pipeline delay" description="Events are flowing; warehouse sync may lag by ~2 minutes." />
@@ -24,6 +24,7 @@ export default function AlertShowcase() {
             { name: "description", type: "string", description: "Supporting message copy." },
             { name: "onDismiss", type: "() => void", description: "Shows a close button when provided." },
             { name: "icon", type: "ReactNode", description: "Optional custom icon override." },
+            { name: "live", type: "off | polite | assertive", description: "Opt into live-region announcements for content that appears dynamically." },
           ]}
         />
       }

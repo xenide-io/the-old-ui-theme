@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { CodeBlock } from "@/components/ui";
+import { IconCodePreview } from "@/components/icons";
 
 interface ShowcaseWrapperProps {
   id?: string;
@@ -39,26 +40,13 @@ export function ShowcaseWrapper({
             className={cn(
               "flex h-10 w-10 items-center justify-center rounded-full border transition-all",
               showCode
-                ? "border-ph-brand bg-ph-brand text-white shadow-lg shadow-ph-brand/25"
+                ? "border-ph-brand bg-ph-brand text-[var(--ph-on-accent)] shadow-lg shadow-ph-brand/25"
                 : "border-ph-border bg-ph-surface text-ph-subtle hover:border-ph-brand hover:text-ph-brand"
             )}
             title={showCode ? "Hide code" : "Show code"}
+            aria-label={showCode ? "Hide code" : "Show code"}
           >
-            <svg
-              className="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-              <line x1="8" y1="21" x2="16" y2="21" />
-              <line x1="12" y1="17" x2="12" y2="21" />
-              <line x1="6" y1="8" x2="6" y2="8" />
-              <line x1="10" y1="8" x2="10" y2="8" />
-            </svg>
+            <IconCodePreview className="h-5 w-5" aria-hidden />
           </button>
         </div>
         <hr />

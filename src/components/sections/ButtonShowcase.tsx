@@ -3,7 +3,6 @@ import {
   IconPlayCircle,
   IconPlus,
   IconSave,
-  IconSpinner,
   IconSubArrowRight,
   IconTrash,
   IconUpload,
@@ -11,8 +10,7 @@ import {
 import { Button, ComponentDocs, DropdownButton, DropdownItem, Panel, ShowcaseWrapper } from "@/components/ui";
 
 export default function ButtonShowcase() {
-  const code = `import { IconDownload, IconPlayCircle, IconPlus, IconSave, IconSpinner, IconSubArrowRight, IconTrash, IconUpload } from "the-old-ui";
-import { Button, DropdownButton, DropdownItem, Panel } from "the-old-ui";
+  const code = `import { Button, DropdownButton, DropdownItem, IconDownload, IconPlayCircle, IconPlus, IconSave, IconSubArrowRight, IconTrash, IconUpload, Panel } from "@xenide-io/the-old-ui-theme";
 
 <div className="space-y-8">
   <Panel className="space-y-4">
@@ -144,9 +142,7 @@ import { Button, DropdownButton, DropdownItem, Panel } from "the-old-ui";
       <Button variant="primary" disabled>
         Disabled
       </Button>
-      <Button variant="primary" icon={<IconSpinner className="h-4 w-4" aria-hidden />}>
-        Loading
-      </Button>
+      <Button variant="primary" loading>Loading</Button>
     </div>
   </Panel>
 </div>`;
@@ -154,7 +150,7 @@ import { Button, DropdownButton, DropdownItem, Panel } from "the-old-ui";
   return (
     <ShowcaseWrapper
       title="Buttons"
-      description="Reusable primitives from the-old-ui — Button, DropdownButton, SearchInput. Primary/secondary Lemon chrome from PostHog LemonButton.scss."
+      description="Every filled variant shares the same bordered face, lower frame, hover lift, and pressed depth. Ghost and link actions stay flat."
       code={code}
       filename="ButtonExample.tsx"
       docs={
@@ -167,6 +163,8 @@ import { Button, DropdownButton, DropdownItem, Panel } from "the-old-ui";
             { name: "icon", type: "ReactNode", description: "Leading icon slot." },
             { name: "sideIcon", type: "ReactNode", description: "Trailing icon slot." },
             { name: "split", type: "boolean", defaultValue: "false", description: "Adds split divider before the trailing slot." },
+            { name: "loading", type: "boolean", defaultValue: "false", description: "Disables the action, exposes aria-busy, and replaces the leading icon with a spinner." },
+            { name: "loadingLabel", type: "ReactNode", description: "Optional label shown while loading; the normal label stays in place by default." },
           ]}
         />
       }
@@ -301,9 +299,7 @@ import { Button, DropdownButton, DropdownItem, Panel } from "the-old-ui";
             <Button variant="primary" disabled>
               Disabled
             </Button>
-            <Button variant="primary" icon={<IconSpinner className="h-4 w-4" aria-hidden />}>
-              Loading
-            </Button>
+            <Button variant="primary" loading>Loading</Button>
           </div>
         </Panel>
       </div>

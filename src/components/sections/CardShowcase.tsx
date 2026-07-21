@@ -1,12 +1,12 @@
 import { Badge, Button, Card, ComponentDocs, ShowcaseWrapper } from "@/components/ui";
 
 export default function CardShowcase() {
-  const code = `import { Badge, Button, Card } from "the-old-ui";
+  const code = `import { Badge, Button, Card } from "@xenide-io/the-old-ui-theme";
 
 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
   <Card
     title="Insight saved"
-    description="White surface, hairline border, orange hover ring — mimics dashboard tiles."
+    description="A quiet, static surface. Depth is reserved for interactive or elevated content."
     actions={
       <>
         <Button variant="secondary" outline>
@@ -19,7 +19,7 @@ export default function CardShowcase() {
 
   <Card
     title="With visual"
-    description="Same card shell — media sits flush to the border like product cards."
+    description="Media sits flush to the card edge with a semantic divider."
     media={<div className="flex h-40 items-center justify-center bg-gradient-to-br from-orange-400 via-ph-brand to-ph-blue text-lg font-bold text-white">Hero stripe</div>}
     actions={
       <Button variant="primary" size="sm">
@@ -60,12 +60,19 @@ export default function CardShowcase() {
     description="Grey trays on canvas — mirrors secondary surfaces in-app."
     actions={<Button variant="primary" outline>Inspect</Button>}
   />
+
+  <Card
+    interactive
+    title="Interactive surface"
+    description="Hover depth is opt-in for cards containing an action."
+    actions={<Button variant="tertiary">Review</Button>}
+  />
 </div>`;
 
   return (
     <ShowcaseWrapper
       title="Cards"
-      description="Reusable card shell with title, description, actions, media, footer, and variant props."
+      description="Static by default, with explicit elevated, highlighted, and interactive treatments."
       code={code}
       filename="CardExample.tsx"
       docs={
@@ -76,6 +83,8 @@ export default function CardShowcase() {
             { name: "description", type: "ReactNode", description: "Optional supporting copy." },
             { name: "actions", type: "ReactNode", description: "Button row rendered with card action spacing." },
             { name: "media", type: "ReactNode", description: "Optional visual block rendered above the card body." },
+            { name: "interactive", type: "boolean", defaultValue: "false", description: "Adds hover and focus-within depth for a card containing an action." },
+            { name: "titleAs", type: "h2 | h3 | h4", defaultValue: "h3", description: "Selects the semantic heading level without changing the card style." },
           ]}
         />
       }
@@ -83,7 +92,7 @@ export default function CardShowcase() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card
           title="Insight saved"
-          description="White surface, hairline border, orange hover ring — mimics dashboard tiles."
+          description="A quiet, static surface. Depth is reserved for interactive or elevated content."
           actions={
             <>
               <Button variant="secondary" outline>
@@ -96,7 +105,7 @@ export default function CardShowcase() {
 
         <Card
           title="With visual"
-          description="Same card shell — media sits flush to the border like product cards."
+          description="Media sits flush to the card edge with a semantic divider."
           media={<div className="flex h-40 items-center justify-center bg-gradient-to-br from-orange-400 via-ph-brand to-ph-blue text-lg font-bold text-white">Hero stripe</div>}
           actions={
             <Button variant="primary" size="sm">
@@ -136,6 +145,13 @@ export default function CardShowcase() {
           title="Panel inset"
           description="Grey trays on canvas — mirrors secondary surfaces in-app."
           actions={<Button variant="primary" outline>Inspect</Button>}
+        />
+
+        <Card
+          interactive
+          title="Interactive surface"
+          description="Hover depth is opt-in for cards containing an action."
+          actions={<Button variant="tertiary">Review</Button>}
         />
       </div>
     </ShowcaseWrapper>

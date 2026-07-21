@@ -1,10 +1,10 @@
-import type { ReactNode } from "react";
-import { IconCancel, IconCheckCircle, IconErrorOutline, IconExclamation } from "@/components/icons";
+import { forwardRef, type AriaAttributes, type HTMLAttributes, type ReactNode } from "react";
+import { IconCancel, IconCheckCircle, IconClose, IconExclamation, IconInfo } from "@/components/icons";
 import { cn } from "@/lib/cn";
 
 export type AlertStatus = "info" | "success" | "warning" | "danger";
 
-export interface AlertProps {
+export interface AlertProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
   status?: AlertStatus;
   title?: string;
   description?: string;
@@ -12,13 +12,15 @@ export interface AlertProps {
   children?: ReactNode;
   className?: string;
   onDismiss?: () => void;
+  live?: AriaAttributes["aria-live"];
+  dismissLabel?: string;
 }
 
-const statusConfig: Record<AlertStatus, { icon: typeof IconErrorOutline; color: string } > = {
-  info: { icon: IconErrorOutline, color: "text-ph-info" },
-  success: { icon: IconCheckCircle, color: "text-ph-success" },
-  warning: { icon: IconExclamation, color: "text-ph-warning" },
-  danger: { icon: IconCancel, color: "text-ph-danger" },
+const statusConfig: Record<AlertStatus, { icon: typeof IconInfo } > = {
+  info: { icon: IconInfo },
+  success: { icon: IconCheckCircle },
+  warning: { icon: IconExclamation },
+  danger: { icon: IconCancel },
 };
 
 const statusClassMap: Record<AlertStatus, string > = {
@@ -28,7 +30,7 @@ const statusClassMap: Record<AlertStatus, string > = {
   danger: "ph-alert-danger",
 };
 
-export function Alert({
+export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert({
   status = "info",
   title,
   description,
@@ -36,17 +38,24 @@ export function Alert({
   children,
   className,
   onDismiss,
-}: AlertProps) {
+  live,
+  dismissLabel = "Dismiss notification",
+  role,
+  ...props
+}, ref) {
   const config = statusConfig[status];
   const Icon = config.icon;
 
   return (
     <div
-      role="alert"
+      ref={ref}
+      role={role ?? (live === "assertive" ? "alert" : live === "polite" ? "status" : undefined)}
+      aria-live={live}
       className={cn("ph-alert", statusClassMap[status], className)}
+      {...props}
     >
-      {icon ?? <Icon className={cn("mt-0.5 h-5 w-5 shrink-0", config.color)} />}
-      <div className="flex-1">
+      {icon ?? <Icon className="ph-alert-icon mt-0.5 h-5 w-5 shrink-0" aria-hidden />}
+      <div className="min-w-0 flex-1">
         {title && <p className="font-semibold">{title}</p>}
         {description && <p className="mt-1 text-sm text-ph-subtle">{description}</p>}
         {children}
@@ -55,14 +64,14 @@ export function Alert({
         <button
           type="button"
           onClick={onDismiss}
-          className="shrink-0 rounded-md p-1 text-ph-subtle hover:bg-black/5 hover:text-ph-ink"
-          aria-label="Dismiss"
+          className="ph-alert-dismiss"
+          aria-label={dismissLabel}
         >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M18 6L6 18M6 6l12 12" />
-          </svg>
+          <IconClose className="h-4 w-4" aria-hidden />
         </button>
       )}
     </div>
   );
-}
+});
+
+Alert.displayName = "Alert";

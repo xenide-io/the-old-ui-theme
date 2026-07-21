@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/cn";
+import { IconCheck } from "@/components/icons";
 
 interface Step {
   id: string;
@@ -30,16 +31,14 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
               <div
                 className={cn(
                   "flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold transition-colors",
-                  isCompleted && "bg-ph-success text-white",
-                  isCurrent && !isError && "bg-ph-brand text-white ring-4 ring-ph-brand/20",
-                  isCurrent && isError && "bg-ph-danger text-white",
+                  isCompleted && "bg-ph-success text-[var(--ph-on-success)]",
+                  isCurrent && !isError && "bg-ph-brand text-[var(--ph-on-accent)] ring-4 ring-ph-brand/20",
+                  isCurrent && isError && "bg-ph-danger text-[var(--ph-on-danger)]",
                   isPending && "bg-ph-muted text-ph-mutedtext"
                 )}
               >
                 {isCompleted ? (
-                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                    <path d="M5 13l4 4L19 7" />
-                  </svg>
+                  <IconCheck className="h-5 w-5" aria-hidden />
                 ) : (
                   index + 1
                 )}

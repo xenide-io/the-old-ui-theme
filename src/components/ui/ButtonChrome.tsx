@@ -7,7 +7,7 @@ export interface ButtonChromeProps {
   split?: boolean;
 }
 
-/** Inner face for Lemon primary/secondary — keeps labels above ::after ridge. */
+/** Content layer for tactile variants; CSS moves it with the independently rendered face. */
 export function ButtonChrome({ label, icon, sideIcon, split }: ButtonChromeProps) {
   return (
     <span className="ph-btn-chrome">

@@ -9,8 +9,7 @@ export default function ModalShowcase() {
 
   const close = () => setOpenModal(null);
 
-  const code = `import { IconCheck, IconClose, IconPlus } from "the-old-ui";
-import { Button, Input, Modal, Select, Textarea } from "the-old-ui";
+  const code = `import { Button, IconCheck, IconClose, IconPlus, Input, Modal, Select, Textarea } from "@xenide-io/the-old-ui-theme";
 
 <div className="ph-panel space-y-4">
   <h3 className="text-sm font-semibold uppercase tracking-wider text-ph-mutedtext">Patterns</h3>
@@ -45,7 +44,7 @@ import { Button, Input, Modal, Select, Textarea } from "the-old-ui";
     footer={<Button variant="success" onClick={close}>Continue</Button>}
   >
     <div className="flex items-start gap-3">
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-ph-success">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--ph-success-bg)] text-[var(--ph-success-text)]">
         <IconCheck className="h-5 w-5" />
       </div>
       <div>
@@ -67,7 +66,7 @@ import { Button, Input, Modal, Select, Textarea } from "the-old-ui";
     }
   >
     <div className="flex items-start gap-3">
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-100 text-ph-danger">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--ph-danger-bg)] text-[var(--ph-danger-text)]">
         <IconClose className="h-5 w-5" />
       </div>
       <div>
@@ -114,6 +113,8 @@ import { Button, Input, Modal, Select, Textarea } from "the-old-ui";
             { name: "size", type: "sm | md | lg | xl | full", defaultValue: "md", description: "Controls panel max width." },
             { name: "title", type: "string", description: "Accessible dialog heading." },
             { name: "footer", type: "ReactNode", description: "Renders action row with consistent spacing." },
+            { name: "closeOnOutsideClick", type: "boolean", defaultValue: "true", description: "Controls pointer dismissal outside the dialog." },
+            { name: "closeOnEscape", type: "boolean", defaultValue: "true", description: "Controls Escape-key dismissal." },
           ]}
         />
       }
@@ -151,7 +152,7 @@ import { Button, Input, Modal, Select, Textarea } from "the-old-ui";
           footer={<Button variant="success" onClick={close}>Continue</Button>}
         >
           <div className="flex items-start gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-ph-success">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--ph-success-bg)] text-[var(--ph-success-text)]">
               <IconCheck className="h-5 w-5" />
             </div>
             <div>
@@ -173,7 +174,7 @@ import { Button, Input, Modal, Select, Textarea } from "the-old-ui";
           }
         >
           <div className="flex items-start gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-100 text-ph-danger">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--ph-danger-bg)] text-[var(--ph-danger-text)]">
               <IconClose className="h-5 w-5" />
             </div>
             <div>

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui";
 
 export default function FormShowcase() {
-  const code = `import { Checkbox, FileUpload, Input, Panel, Radio, Range, Rating, SearchGroup, Select, Textarea, Toggle } from "the-old-ui";
+  const code = `import { Checkbox, FileUpload, Input, Panel, Radio, Range, Rating, SearchGroup, Select, Textarea, Toggle } from "@xenide-io/the-old-ui-theme";
 
 <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
   <Panel title="Text inputs" className="space-y-6">
@@ -67,6 +67,7 @@ export default function FormShowcase() {
         <ComponentDocs
           title="Input components"
           rows={[
+            { name: "FormField", type: "component", description: "Shared label, description, error, required-state, and generated-ID composition for custom controls." },
             { name: "Input", type: "text | search | email | password", description: "Labelled input with error, helperText, size, and variant props." },
             { name: "Select", type: "select", description: "Labelled select with error, helperText, size, and disabled props." },
             { name: "Textarea", type: "textarea", description: "Labelled multiline input with the same state props as Input." },

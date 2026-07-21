@@ -24,7 +24,11 @@ export type ThemeId =
   | "rosepine-light"
   | "rosepine-dark"
   | "notion"
-  | "notion-dark";
+  | "notion-dark"
+  | "deepsea-light"
+  | "deepsea-dark"
+  | "kraken-light"
+  | "kraken-dark";
 
 export interface ThemeDefinition {
   id: ThemeId;

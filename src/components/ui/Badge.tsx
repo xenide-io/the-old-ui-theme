@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export type BadgeVariant =
@@ -12,7 +12,7 @@ export type BadgeVariant =
 
 export type BadgeSize = "sm" | "md";
 
-export interface BadgeProps {
+export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
   size?: BadgeSize;
   children?: ReactNode;
@@ -34,22 +34,27 @@ const sizeMap: Record<BadgeSize, string> = {
   md: "",
 };
 
-export function Badge({
+export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge({
   variant = "neutral",
   size = "md",
   children,
   className,
-}: BadgeProps) {
+  ...props
+}, ref) {
   return (
     <span
+      ref={ref}
       className={cn(
         "ph-badge",
         variantMap[variant],
         sizeMap[size],
         className
       )}
+      {...props}
     >
       {children}
     </span>
   );
-}
+});
+
+Badge.displayName = "Badge";

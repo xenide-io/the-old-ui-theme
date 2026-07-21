@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { ButtonChrome } from "@/components/ui/ButtonChrome";
 import { cn } from "@/lib/cn";
 
@@ -29,6 +29,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: ReactNode;
   sideIcon?: ReactNode;
   children?: ReactNode;
+  loading?: boolean;
+  loadingLabel?: ReactNode;
 }
 
 const variantClass: Record<ButtonVariant, string> = {
@@ -60,11 +62,8 @@ const shapeClass: Record<ButtonShape, string> = {
   wide: "ph-btn-wide",
 };
 
-/**
- * PostHog LemonButton parity — primary/secondary use ::before border ring + ::after face/ridge
- * (see PostHog `LemonButton.scss`). Prefer this over raw `<button className="ph-btn …">`.
- */
-export function Button({
+/** Filled variants keep a stationary depth plate while the face and content move together. */
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({
   variant = "secondary",
   size = "md",
   shape = "default",
@@ -72,19 +71,24 @@ export function Button({
   split = false,
   icon,
   sideIcon,
+  loading = false,
+  loadingLabel,
   className,
   children,
   type = "button",
+  disabled,
   ...props
-}: ButtonProps) {
-  const usesLemonChrome = variant === "primary" || variant === "secondary";
+}, ref) {
+  const usesLemonChrome = !["tertiary", "ghost", "link"].includes(variant);
+  const label = loadingLabel ?? children;
+  const leadingIcon = loading ? <span className="ph-btn-spinner" aria-hidden /> : icon;
 
   const content = usesLemonChrome ? (
-    <ButtonChrome label={children} icon={icon} sideIcon={sideIcon} split={split} />
+    <ButtonChrome label={label} icon={leadingIcon} sideIcon={sideIcon} split={split} />
   ) : (
     <>
-      {icon != null ? <span className="ph-btn-icon">{icon}</span> : null}
-      {children != null ? <span className="ph-btn-label">{children}</span> : null}
+      {leadingIcon != null ? <span className="ph-btn-icon">{leadingIcon}</span> : null}
+      {label != null ? <span className="ph-btn-label">{label}</span> : null}
       {split ? <span className="ph-btn-split-divider" aria-hidden /> : null}
       {sideIcon != null ? <span className="ph-btn-side-icon">{sideIcon}</span> : null}
     </>
@@ -92,9 +96,13 @@ export function Button({
 
   return (
     <button
+      ref={ref}
       type={type}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
       className={cn(
         "ph-btn",
+        usesLemonChrome && "ph-btn-raised",
         outline && "ph-btn-outline",
         variantClass[variant],
         sizeClass[size],
@@ -107,4 +115,6 @@ export function Button({
       {content}
     </button>
   );
-}
+});
+
+Button.displayName = "Button";

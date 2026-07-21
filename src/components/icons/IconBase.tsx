@@ -1,13 +1,13 @@
-import type { SVGAttributes } from "react";
+import { forwardRef, type SVGAttributes } from "react";
 import { cn } from "@/lib/cn";
 
 export interface IconProps extends SVGAttributes<SVGSVGElement> {
-  /** Pixel size or CSS length — defaults to `1em` (Lemon parity). */
+  /** Pixel size or CSS length; defaults to `1em`. */
   size?: number | string;
 }
 
-/** Base SVG wrapper — mirrors PostHog `LemonIconBase` + `.LemonIcon` metrics. */
-export function IconBase({
+/** Shared SVG wrapper with predictable sizing and accessible-name behavior. */
+export const IconBase = forwardRef<SVGSVGElement, IconProps>(function IconBase({
   className,
   size,
   children,
@@ -15,25 +15,33 @@ export function IconBase({
   fill = "none",
   xmlns = "http://www.w3.org/2000/svg",
   focusable = "false",
+  style,
+  role,
+  "aria-hidden": ariaHidden,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
   ...props
-}: IconProps) {
-  const dimensionProps =
-    size != null
-      ? { width: size, height: size }
-      : {};
+}, ref) {
+  const hasAccessibleName = Boolean(ariaLabel || ariaLabelledBy);
 
   return (
     <svg
+      ref={ref}
       className={cn("ph-icon", className)}
-      {...dimensionProps}
       viewBox={viewBox}
       fill={fill}
       xmlns={xmlns}
       focusable={focusable}
-      aria-hidden={props["aria-hidden"] ?? true}
+      role={role ?? (hasAccessibleName ? "img" : undefined)}
+      aria-hidden={ariaHidden ?? (hasAccessibleName ? undefined : true)}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+      style={{ width: size, height: size, ...style }}
       {...props}
     >
       {children}
     </svg>
   );
-}
+});
+
+IconBase.displayName = "IconBase";

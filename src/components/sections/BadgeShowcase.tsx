@@ -1,7 +1,7 @@
 import { Badge, ComponentDocs, ShowcaseWrapper } from "@/components/ui";
 
 export default function BadgeShowcase() {
-  const code = `import { Badge } from "the-old-ui";
+  const code = `import { Badge } from "@xenide-io/the-old-ui-theme";
 
 <div className="ph-panel space-y-6">
   <div>

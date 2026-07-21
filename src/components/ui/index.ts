@@ -4,14 +4,47 @@ export { Alert as Alert, type AlertProps as AlertProps, type AlertStatus as Aler
 export { Badge as Badge, type BadgeProps as BadgeProps, type BadgeSize as BadgeSize, type BadgeVariant as BadgeVariant } from "@/components/ui/Badge";
 export { Card as Card, type CardProps as CardProps, type CardVariant as CardVariant } from "@/components/ui/Card";
 export { Drawer as Drawer, type DrawerProps as DrawerProps, type DrawerSide as DrawerSide, type DrawerSize as DrawerSize } from "@/components/ui/Drawer";
-export { Kbd as Kbd, type KbdProps as KbdProps, type KbdVariant as KbdVariant } from "@/components/ui/Kbd";
+export { Kbd as Kbd, type KbdPlatform as KbdPlatform, type KbdProps as KbdProps, type KbdVariant as KbdVariant } from "@/components/ui/Kbd";
+export {
+  Loader,
+  LoadingState,
+  Skeleton,
+  type LoaderProps,
+  type LoaderSize,
+  type LoaderVariant,
+  type LoadingStateProps,
+  type SkeletonProps,
+  type SkeletonShape,
+} from "@/components/ui/Loader";
+export {
+  AuthCard,
+  AuthDivider,
+  AuthLayout,
+  type AuthCardProps,
+  type AuthDividerProps,
+  type AuthLayoutProps,
+} from "@/components/ui/AuthLayout";
+export {
+  SettingsLayout,
+  SettingsNav,
+  type SettingsLayoutProps,
+  type SettingsNavGroup,
+  type SettingsNavItem,
+  type SettingsNavProps,
+} from "@/components/ui/SettingsLayout";
 export {
   DropdownButton as DropdownButton,
   DropdownItem as DropdownItem,
   DropdownMenu as DropdownMenu,
+  DropdownRadioGroup as DropdownRadioGroup,
+  DropdownRadioItem as DropdownRadioItem,
   type DropdownAlign as DropdownAlign,
   type DropdownButtonProps as DropdownButtonProps,
+  type DropdownItemProps as DropdownItemProps,
   type DropdownMenuProps as DropdownMenuProps,
+  type DropdownRadioGroupProps as DropdownRadioGroupProps,
+  type DropdownRadioItemProps as DropdownRadioItemProps,
+  type DropdownSide as DropdownSide,
 } from "@/components/ui/DropdownMenu";
 export {
   Checkbox as Checkbox,
@@ -33,6 +66,11 @@ export {
   type TextareaProps as TextareaProps,
   type ToggleProps as ToggleProps,
 } from "@/components/ui/Input";
+export {
+  FormField as FormField,
+  type FormFieldControlProps as FormFieldControlProps,
+  type FormFieldProps as FormFieldProps,
+} from "@/components/ui/FormField";
 export { Modal as Modal, type ModalProps as ModalProps, type ModalSize as ModalSize } from "@/components/ui/Modal";
 export { Breadcrumbs as Breadcrumbs, Pagination as Pagination, type BreadcrumbItem as BreadcrumbItem, type BreadcrumbsProps as BreadcrumbsProps, type PaginationProps as PaginationProps } from "@/components/ui/Navigation";
 export { Panel as Panel, type PanelProps as PanelProps } from "@/components/ui/Panel";
@@ -45,7 +83,14 @@ export { Tabs as Tabs, type TabItem as TabItem, type TabsProps as TabsProps, typ
 export { ThemeDomSync } from "@/components/ui/ThemeDomSync";
 export { ThemeManager, type ThemeManagerProps } from "@/components/ui/ThemeManager";
 export { ThemeSwitcher, type ThemeSwitcherProps } from "@/components/ui/ThemeSwitcher";
-export { IconBase as Icon, IconByName as IconByName, type IconProps as IconProps, type IconName as IconName } from "@/components/icons";
+export {
+  IconBase as Icon,
+  IconByName as IconByName,
+  type CanonicalIconName as CanonicalIconName,
+  type IconAliasName as IconAliasName,
+  type IconProps as IconProps,
+  type IconName as IconName,
+} from "@/components/icons";
 export { Accordion } from "@/components/ui/Accordion";
 export { Stepper } from "@/components/ui/Stepper";
 export { SegmentedControl } from "@/components/ui/SegmentedControl";
@@ -53,7 +98,21 @@ export { CommandPalette } from "@/components/ui/CommandPalette";
 export { Calendar } from "@/components/ui/Calendar";
 export { HoverCard } from "@/components/ui/HoverCard";
 export { EmptyState } from "@/components/ui/EmptyState";
-export { FilterChips } from "@/components/ui/FilterChips";
+export {
+  FilterChips,
+  type FilterChip,
+  type FilterChipsProps,
+} from "@/components/ui/FilterChips";
+export {
+  FilterBar,
+  FilterMenu,
+  SortMenu,
+  type FilterBarProps,
+  type FilterMenuOption,
+  type FilterMenuProps,
+  type SortMenuProps,
+} from "@/components/ui/FilterBar";
+export { FilterControls, type FilterControlsProps } from "@/components/ui/FilterControls";
 export { CodeBlock } from "@/components/ui/CodeBlock";
 export { ComponentDocs, type ComponentDocsProps, type ComponentPropRow } from "@/components/ui/ComponentDocs";
 export { ShowcaseWrapper } from "@/components/ui/ShowcaseWrapper";

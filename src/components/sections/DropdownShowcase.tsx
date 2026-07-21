@@ -4,8 +4,8 @@ import { IconCopy, IconEdit, IconLogout, IconPerson, IconTrash, IconTuning } fro
 import { DropdownButton, DropdownItem, ShowcaseWrapper } from "@/components/ui";
 
 export default function DropdownShowcase() {
-  const code = `import { IconCopy, IconEdit, IconLogout, IconPerson, IconTrash, IconTuning } from "the-old-ui";
-import { DropdownButton, DropdownItem } from "the-old-ui";
+  const code = `import { IconCopy, IconEdit, IconLogout, IconPerson, IconTrash, IconTuning } from "@xenide-io/the-old-ui-theme";
+import { DropdownButton, DropdownItem } from "@xenide-io/the-old-ui-theme";
 
 <div className="ph-panel space-y-6">
   <p className="text-sm text-ph-subtle">
@@ -51,15 +51,13 @@ import { DropdownButton, DropdownItem } from "the-old-ui";
   return (
     <ShowcaseWrapper
       title="Dropdowns"
-      description="Use DropdownButton from the-old-ui — labelled Lemon triggers + DropdownItem menu rows."
+      description="Accessible menu buttons with keyboard navigation and automatic viewport-aware side flipping and alignment shifting."
       code={code}
       filename="DropdownExample.tsx"
     >
       <div className="ph-panel space-y-6">
         <p className="text-sm text-ph-subtle">
-          Use <code className="ph-kbd">DropdownButton</code> from{" "}
-          <code className="ph-kbd">the-old-ui</code> — labelled Lemon triggers +{" "}
-          <code className="ph-kbd">DropdownItem</code> menu rows.
+          Menus prefer the requested side, then flip above or sideways and shift start/end alignment to remain visible.
         </p>
 
         <div className="flex flex-wrap items-start gap-6">

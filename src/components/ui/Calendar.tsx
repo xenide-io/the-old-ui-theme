@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { IconChevronLeft, IconChevronRight } from "@/components/icons";
 import { cn } from "@/lib/cn";
 
 interface CalendarProps {
@@ -64,11 +65,10 @@ export function Calendar({ value, onChange, className }: CalendarProps) {
         <button
           type="button"
           onClick={prevMonth}
+          aria-label="Previous month"
           className="rounded-lg p-1 text-ph-subtle transition hover:bg-ph-muted hover:text-ph-ink"
         >
-          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
+          <IconChevronLeft className="h-5 w-5" aria-hidden />
         </button>
         <span className="text-sm font-semibold text-ph-ink">
           {monthNames[month]} {year}
@@ -76,11 +76,10 @@ export function Calendar({ value, onChange, className }: CalendarProps) {
         <button
           type="button"
           onClick={nextMonth}
+          aria-label="Next month"
           className="rounded-lg p-1 text-ph-subtle transition hover:bg-ph-muted hover:text-ph-ink"
         >
-          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M9 18l6-6-6-6" />
-          </svg>
+          <IconChevronRight className="h-5 w-5" aria-hidden />
         </button>
       </div>
 
@@ -99,7 +98,7 @@ export function Calendar({ value, onChange, className }: CalendarProps) {
                 className={cn(
                   "flex h-full w-full items-center justify-center rounded-lg text-sm transition-colors",
                   isSelected(day)
-                    ? "bg-ph-brand font-semibold text-white shadow-ph"
+                    ? "bg-ph-brand font-semibold text-[var(--ph-on-accent)] shadow-ph"
                     : isToday(day)
                     ? "bg-ph-muted font-semibold text-ph-brand ring-1 ring-ph-brand/30"
                     : "text-ph-ink hover:bg-ph-muted"

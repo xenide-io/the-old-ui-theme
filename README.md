@@ -85,7 +85,7 @@ import { Alert, Badge, Button, Card, Input, H1, H2, P } from "@xenide-io/the-old
 | ---- | ---------- |
 | Actions | `Button`, `DropdownButton`, `DropdownMenu`, `DropdownItem` |
 | Feedback | `Alert`, `Badge`, `Toast`, `ToastStack`, `EmptyState`, `Progress` demos |
-| Inputs | `Input`, `Select`, `Textarea`, `Checkbox`, `Radio`, `Toggle`, `Range`, `Rating`, `FileUpload`, `SearchInput`, `SearchGroup` |
+| Inputs | `FormField`, `Input`, `Select`, `Textarea`, `Checkbox`, `Radio`, `Toggle`, `Range`, `Rating`, `FileUpload`, `SearchInput`, `SearchGroup` |
 | Layout | `Card`, `Modal`, `Drawer`, `Panel`, `Accordion`, `HoverCard` |
 | Navigation | `Tabs`, `Breadcrumbs`, `Pagination`, `SegmentedControl`, `Stepper`, `CommandPalette`, `FilterChips` |
 | Data | `Table`, `Stat`, chart components, dashboard shell components |

@@ -1,9 +1,9 @@
-import type { ReactNode } from "react";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export type CardVariant = "default" | "outlined" | "elevated" | "highlighted";
 
-export interface CardProps {
+export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
   children?: ReactNode;
   title?: ReactNode;
   description?: ReactNode;
@@ -13,16 +13,18 @@ export interface CardProps {
   variant?: CardVariant;
   className?: string;
   bodyClassName?: string;
+  interactive?: boolean;
+  titleAs?: "h2" | "h3" | "h4";
 }
 
 const variantMap: Record<CardVariant, string> = {
-  default: "bg-ph-surface",
-  outlined: "border-2 border-ph-border bg-ph-surface",
-  elevated: "bg-ph-surface shadow-ph-md",
-  highlighted: "border border-ph-brand/35 bg-orange-50/40 shadow-ph",
+  default: "",
+  outlined: "border-2 border-ph-border",
+  elevated: "ph-card-elevated",
+  highlighted: "ph-card-highlighted",
 };
 
-export function Card({
+export const Card = forwardRef<HTMLDivElement, CardProps>(function Card({
   children,
   title,
   description,
@@ -32,19 +34,25 @@ export function Card({
   variant = "default",
   className,
   bodyClassName,
-}: CardProps) {
+  interactive = false,
+  titleAs: Title = "h3",
+  ...props
+}, ref) {
   return (
     <div
+      ref={ref}
       className={cn(
         "ph-card",
         variantMap[variant],
+        interactive && "ph-card-interactive",
         className
       )}
+      {...props}
     >
-      {media && <div className="-mx-6 -mt-6 mb-4">{media}</div>}
+      {media && <div className="ph-card-media">{media}</div>}
       <div className={cn("ph-card-body", bodyClassName)}>
         {title && (
-          <h3 className="ph-card-title">{title}</h3>
+          <Title className="ph-card-title">{title}</Title>
         )}
         {description && (
           <p className="text-sm text-ph-subtle">{description}</p>
@@ -57,4 +65,6 @@ export function Card({
       )}
     </div>
   );
-}
+});
+
+Card.displayName = "Card";

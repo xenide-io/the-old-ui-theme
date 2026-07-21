@@ -36,7 +36,9 @@ import CalendarShowcase from "@/components/sections/CalendarShowcase";
 import HoverCardShowcase from "@/components/sections/HoverCardShowcase";
 import EmptyStateShowcase from "@/components/sections/EmptyStateShowcase";
 import FilterChipsShowcase from "@/components/sections/FilterChipsShowcase";
+import ProductLayoutsShowcase from "@/components/sections/ProductLayoutsShowcase";
 import { ThemeSwitcher, CollapsibleSection } from "@/components/ui";
+import { IconChevronDown } from "@/components/icons";
 
   const navGroups = [
   {
@@ -72,6 +74,9 @@ import { ThemeSwitcher, CollapsibleSection } from "@/components/ui";
       { label: "Stepper", href: "#stepper" },
       { label: "Command", href: "#command" },
       { label: "Filters", href: "#filters" },
+      { label: "Authentication", href: "#auth" },
+      { label: "Settings", href: "#settings" },
+      { label: "Loading", href: "#progress" },
       { label: "Empty State", href: "#emptystate" },
     ],
   },
@@ -99,9 +104,7 @@ export default function Home() {
                 <div key={group.label} className="group relative">
                   <button className="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm font-medium text-ph-subtle transition hover:bg-ph-muted hover:text-ph-ink">
                     {group.label}
-                    <svg className="h-3.5 w-3.5 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M6 9l6 6 6-6"/>
-                    </svg>
+                    <IconChevronDown className="h-3.5 w-3.5 opacity-60" aria-hidden />
                   </button>
                   <div className="invisible absolute left-0 top-full z-50 mt-1 min-w-[180px] rounded-lg border border-ph-border bg-ph-surface p-1.5 shadow-ph-md opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100">
                     {group.links.map((link) => (
@@ -136,7 +139,7 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <a href="#icons" className="ph-btn ph-btn-signal ph-btn-lg rounded-full px-8">
-              Browse components
+              <span>Browse components</span>
             </a>
             <a
               href="https://github.com/lauridskern/open-runde"
@@ -144,7 +147,7 @@ export default function Home() {
               target="_blank"
               rel="noreferrer"
             >
-              Open Runde typeface
+              <span>Open Runde typeface</span>
             </a>
           </div>
         </div>
@@ -171,6 +174,7 @@ export default function Home() {
         <DropdownShowcase />
         <TabShowcase />
         <NavigationShowcase />
+        <ProductLayoutsShowcase />
         <UtilityShowcase />
         <ProgressShowcase />
         <TooltipShowcase />

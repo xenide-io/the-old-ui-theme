@@ -1,82 +1,79 @@
-import { IconSpinner } from "@/components/icons";
-import { ComponentDocs, Progress, ShowcaseWrapper } from "@/components/ui";
+import {
+  ComponentDocs,
+  Loader,
+  LoadingState,
+  Progress,
+  ShowcaseWrapper,
+  Skeleton,
+} from "@/components/ui";
 
 export default function ProgressShowcase() {
-  const code = `import { Progress } from "the-old-ui";
+  const code = `import { Loader, LoadingState, Progress, Skeleton } from "@xenide-io/the-old-ui-theme";
 
-<div className="space-y-8">
-  <div className="ph-panel space-y-6">
-    <Progress label="Ingest backlog" value={72} color="bg-ph-brand" showPercentage />
-    <Progress label="Exports" value={45} color="bg-ph-blue" showPercentage />
-    <Progress label="LLM evaluations" value={28} color="bg-ph-purple" showPercentage />
-  </div>
-
-  <div className="ph-panel flex flex-wrap items-center gap-10">
-    <Progress value={72} color="bg-ph-brand" size="lg" className="w-48" />
-    <Progress value={45} color="bg-ph-blue" size="lg" className="w-48" />
-  </div>
-
-  <div className="ph-panel flex flex-wrap items-center gap-8">
-    <span className="ph-loading" role="status" aria-label="Loading" />
-    <IconSpinner className="h-6 w-6 text-ph-brand" role="status" aria-label="Loading" />
-    <div className="ph-loading-dots" role="status" aria-label="Loading">
-      <span />
-      <span />
-      <span />
-    </div>
-  </div>
+<Progress label="Ingest backlog" value={72} showPercentage />
+<Loader variant="spinner" label="Refreshing insight" />
+<Loader variant="dots" label="Loading events" />
+<Loader variant="pulse" label="Connecting" />
+<LoadingState title="Loading dashboard" description="Restoring the latest results." />
+<div role="status" aria-label="Loading account">
+  <Skeleton shape="title" />
+  <Skeleton shape="text" />
+  <Skeleton shape="short-text" />
 </div>`;
 
   return (
     <ShowcaseWrapper
       title="Progress & loading"
-      description="Linear progress bars, spinners, and skeleton placeholders with semantic colour support."
+      description="Determinate progress, compact action loaders, full-region loading states, and structure-matching cold-load skeletons."
       code={code}
-      filename="ProgressExample.tsx"
+      filename="LoadingExample.tsx"
       docs={
         <ComponentDocs
           rows={[
-            { name: "value", type: "number", description: "Current value." },
-            { name: "max", type: "number", defaultValue: "100", description: "Maximum value." },
-            { name: "color", type: "string", defaultValue: "bg-ph-brand", description: "Tailwind colour class for the bar." },
-            { name: "label", type: "string", description: "Label shown above the bar." },
-            { name: "showPercentage", type: "boolean", defaultValue: "false", description: "Show percentage text." },
-            { name: "size", type: "sm | md | lg", defaultValue: "md", description: "Bar height." },
+            { name: "Loader.variant", type: "spinner | dots | pulse", defaultValue: "spinner", description: "Indeterminate treatment for compact asynchronous work." },
+            { name: "Loader.size", type: "sm | md | lg", defaultValue: "md", description: "Visual loader size." },
+            { name: "LoadingState", type: "LoadingStateProps", description: "Centered region state with one accessible status message." },
+            { name: "Skeleton.shape", type: "title | text | short-text | avatar | button | block", defaultValue: "text", description: "Decorative skeleton matching expected content geometry." },
+            { name: "Progress.value", type: "number", description: "Real determinate progress value." },
           ]}
         />
       }
     >
-      <div className="space-y-8">
+      <div className="space-y-6">
         <div className="ph-panel space-y-6">
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-ph-mutedtext">Linear bars</h3>
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-ph-mutedtext">Determinate progress</h3>
           <Progress label="Ingest backlog" value={72} color="bg-ph-brand" showPercentage />
           <Progress label="Exports" value={45} color="bg-ph-blue" showPercentage />
           <Progress label="LLM evaluations" value={28} color="bg-ph-purple" showPercentage />
         </div>
 
-        <div className="ph-panel flex flex-wrap items-center gap-10">
-          <div className="w-full">
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-ph-mutedtext">Large bars</h3>
-            <div className="flex gap-10">
-              <Progress value={72} color="bg-ph-brand" size="lg" className="w-48" />
-              <Progress value={45} color="bg-ph-blue" size="lg" className="w-48" />
+        <div className="grid gap-4 md:grid-cols-3">
+          {(["spinner", "dots", "pulse"] as const).map((variant) => (
+            <div key={variant} className="ph-panel flex min-h-28 flex-col items-center justify-center gap-3">
+              <Loader variant={variant} size="lg" label={`${variant} loader`} />
+              <code className="ph-kbd">{variant}</code>
             </div>
-          </div>
+          ))}
         </div>
 
-        <div className="ph-panel flex flex-wrap items-center gap-8">
-          <div className="flex items-center gap-3 text-ph-subtle">
-            <span className="ph-loading" role="status" aria-label="Loading" />
-            <code className="ph-kbd">ph-loading</code> — CSS spinner
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="ph-panel p-0">
+            <LoadingState
+              label="Loading dashboard"
+              title="Loading dashboard"
+              description="Restoring the latest results without pretending progress is measurable."
+            />
           </div>
-          <div className="flex items-center gap-3 text-ph-subtle">
-            <IconSpinner className="h-6 w-6 text-ph-brand" role="status" aria-label="Loading" />
-            <code className="ph-kbd">IconSpinner</code> — Animated icon
-          </div>
-          <div className="ph-loading-dots" role="status" aria-label="Loading">
-            <span />
-            <span />
-            <span />
+          <div className="ph-panel" role="status" aria-label="Loading account summary">
+            <div className="mb-5 flex items-center gap-3">
+              <Skeleton shape="avatar" />
+              <div className="min-w-0 flex-1">
+                <Skeleton shape="title" className="mb-2 w-1/2" />
+                <Skeleton shape="short-text" className="w-2/3" />
+              </div>
+            </div>
+            <Skeleton shape="block" className="mb-4" />
+            <div className="flex justify-end"><Skeleton shape="button" /></div>
           </div>
         </div>
       </div>

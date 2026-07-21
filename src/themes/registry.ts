@@ -185,6 +185,34 @@ export const THEMES: ThemeDefinition[] = [
     colorScheme: "dark",
     group: "Productivity",
   },
+  {
+    id: "deepsea-light",
+    name: "Tokyo Night Day",
+    description: "Tokyo Night Day — soft bluish greys with vivid blue and purple accents.",
+    colorScheme: "light",
+    group: "Tokyo Night",
+  },
+  {
+    id: "deepsea-dark",
+    name: "Tokyo Night",
+    description: "Tokyo Night — #1a1b26 base with signature blue, cyan, and purple.",
+    colorScheme: "dark",
+    group: "Tokyo Night",
+  },
+  {
+    id: "kraken-light",
+    name: "Kraken Light",
+    description: "Medium-inspired warm paper, editorial black actions, and classic publication yellow.",
+    colorScheme: "light",
+    group: "Kraken",
+  },
+  {
+    id: "kraken-dark",
+    name: "Kraken Dark",
+    description: "Medium-inspired night reading canvas with white actions and classic publication yellow.",
+    colorScheme: "dark",
+    group: "Kraken",
+  },
 ];
 
 export const THEME_GROUPS = Array.from(new Set(THEMES.map((theme) => theme.group)));

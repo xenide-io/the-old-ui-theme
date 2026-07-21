@@ -63,6 +63,24 @@
   --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%236b6b6b' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 
+:root:not([data-theme]),
+[data-theme="hedgehog-light"] {
+  --ph-surface-inset: hsl(70 16% 93%);
+  --ph-surface-raised: #ffffff;
+  --ph-surface-overlay: #ffffff;
+  --ph-border-subtle: hsl(75 14% 90%);
+  --ph-on-accent: #211108;
+  --ph-on-violet: #ffffff;
+  --ph-on-success: #071b10;
+  --ph-on-warning: #1c1504;
+  --ph-on-danger: #ffffff;
+  --ph-on-info: #ffffff;
+  --ph-focus-ring: hsl(217deg 90% 52%);
+  --ph-selected-bg: hsl(19deg 100% 95%);
+  --ph-selected-text: hsl(19deg 88% 30%);
+  --ph-selected-border: hsl(19deg 90% 58%);
+}
+
 [data-theme="hedgehog-dark"] {
   color-scheme: dark;
 
@@ -70,7 +88,11 @@
   --ph-surface: hsl(220 10% 13%);
   --ph-muted: hsl(220 9% 16%);
   --ph-toolbar: hsl(220 8% 19%);
+  --ph-surface-inset: hsl(220 12% 10%);
+  --ph-surface-raised: hsl(220 9% 16%);
+  --ph-surface-overlay: hsl(220 8% 18%);
   --ph-border: hsl(220 7% 24%);
+  --ph-border-subtle: hsl(220 8% 19%);
   --ph-border-strong: hsl(220 6% 38%);
 
   --ph-text-primary: hsl(0 0% 96%);
@@ -87,6 +109,16 @@
   --ph-warning: hsl(43deg 85% 52%);
   --ph-danger: hsl(9deg 65% 55%);
   --ph-info: hsl(217deg 85% 58%);
+  --ph-on-accent: hsl(220 14% 8%);
+  --ph-on-violet: hsl(220 14% 8%);
+  --ph-on-success: hsl(220 14% 8%);
+  --ph-on-warning: hsl(220 14% 8%);
+  --ph-on-danger: hsl(220 14% 8%);
+  --ph-on-info: hsl(220 14% 8%);
+  --ph-focus-ring: hsl(217deg 95% 72%);
+  --ph-selected-bg: hsl(19deg 70% 18%);
+  --ph-selected-text: hsl(19deg 100% 72%);
+  --ph-selected-border: hsl(19deg 90% 55%);
 
   --ph-text-3000: hsl(0 0% 96%);
   --ph-primary-button-face: hsl(220 10% 15%);
@@ -1417,7 +1449,7 @@
   --ph-danger: #f15e5e;
   --ph-info: #4a9eff;
 
-  --ph-text-3000: #ffffff;
+  --ph-text-3000: #191919;
   --ph-primary-button-face: #ffffff;
   --ph-primary-button-border: #3381e6;
   --ph-primary-button-border-hover: #2663b8;
@@ -1449,4 +1481,382 @@
   --ph-product-surveys: #d355a0;
 
   --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%236b6b6b' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* Tokyo Night Day — soft bluish greys with vivid blue and purple accents */
+[data-theme="deepsea-light"] {
+  color-scheme: light;
+
+  --ph-canvas: #e1e2e7;
+  --ph-surface: #f2f3f8;
+  --ph-muted: #e9eaf1;
+  --ph-toolbar: #d0d5e3;
+  --ph-border: #c4c8da;
+  --ph-border-strong: #a8aecb;
+
+  --ph-text-primary: #343b58;
+  --ph-text-secondary: #6172b0;
+  --ph-text-tertiary: #848cb5;
+
+  /* Tokyo Night blue */
+  --ph-accent: #2e7de9;
+  --ph-accent-hover: #2368c6;
+  --ph-blue: #2e7de9;
+  /* Day magenta */
+  --ph-violet: #9854f1;
+  /* Day purple */
+  --ph-purple: #7847bd;
+
+  /* Day green */
+  --ph-success: #587539;
+  /* Day orange */
+  --ph-warning: #b15c00;
+  /* Day red */
+  --ph-danger: #f52a65;
+  /* Day cyan */
+  --ph-info: #007197;
+
+  --ph-text-3000: #343b58;
+  --ph-primary-button-face: #ffffff;
+  --ph-primary-button-border: #2368c6;
+  --ph-primary-button-border-hover: #1a52a3;
+  --ph-primary-frame-bg: #2e7de9;
+  --ph-secondary-button-bg: #f2f3f8;
+  --ph-secondary-frame-bg: #d0d5e3;
+  --ph-secondary-button-border: #c4c8da;
+  --ph-secondary-button-border-hover: #2e7de9;
+
+  --ph-border-3000: #c4c8da;
+  --ph-chrome-inset-face-top: inset 0 1px 0 hsl(0deg 0% 100% / 0.84);
+  --ph-chrome-inset-face-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.06);
+  --ph-accent-highlight-secondary: hsla(215deg 81% 55% / 12%);
+
+  --ph-data-1: #2e7de9;
+  --ph-data-2: #9854f1;
+  --ph-data-3: #007197;
+  --ph-data-4: #b15c00;
+  --ph-data-5: #587539;
+  --ph-data-6: #f52a65;
+  --ph-data-7: #8c6c3e;
+
+  --ph-product-session-replay: #b15c00;
+  --ph-product-product-analytics: #2e7de9;
+  --ph-product-data-pipeline: #007197;
+  --ph-product-feature-flags: #9854f1;
+  --ph-product-experiments: #f52a65;
+  --ph-product-data-warehouse: #8c6c3e;
+  --ph-product-surveys: #587539;
+
+  --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%23848cb5' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* Tokyo Night — #1a1b26 base with signature blue, cyan, and purple */
+[data-theme="deepsea-dark"] {
+  color-scheme: dark;
+
+  --ph-canvas: #1a1b26;
+  --ph-surface: #1f2335;
+  --ph-muted: #24283b;
+  --ph-toolbar: #292e42;
+  --ph-border: #3b4261;
+  --ph-border-strong: #565f89;
+
+  --ph-text-primary: #c0caf5;
+  --ph-text-secondary: #a9b1d6;
+  --ph-text-tertiary: #565f89;
+
+  /* Signature blue */
+  --ph-accent: #7aa2f7;
+  --ph-accent-hover: #97b4f9;
+  --ph-blue: #7aa2f7;
+  /* Purple */
+  --ph-violet: #bb9af7;
+  --ph-purple: #9d7cd8;
+
+  /* Green */
+  --ph-success: #9ece6a;
+  /* Yellow */
+  --ph-warning: #e0af68;
+  /* Red */
+  --ph-danger: #f7768e;
+  /* Cyan */
+  --ph-info: #7dcfff;
+
+  --ph-text-3000: #c0caf5;
+  --ph-primary-button-face: #1f2335;
+  --ph-primary-button-border: #3d59a1;
+  --ph-primary-button-border-hover: #7aa2f7;
+  --ph-primary-frame-bg: #7aa2f7;
+  --ph-secondary-button-bg: #24283b;
+  --ph-secondary-frame-bg: #3b4261;
+  --ph-secondary-button-border: #414868;
+  --ph-secondary-button-border-hover: #565f89;
+
+  --ph-border-3000: #292e42;
+  --ph-chrome-inset-face-top: inset 0 1px 0 hsl(0deg 0% 100% / 0.07);
+  --ph-chrome-inset-face-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.4);
+  --ph-accent-highlight-secondary: hsla(221deg 89% 72% / 16%);
+
+  --ph-data-1: #7aa2f7;
+  --ph-data-2: #bb9af7;
+  --ph-data-3: #7dcfff;
+  --ph-data-4: #e0af68;
+  --ph-data-5: #9ece6a;
+  --ph-data-6: #f7768e;
+  --ph-data-7: #ff9e64;
+
+  --ph-product-session-replay: #e0af68;
+  --ph-product-product-analytics: #7aa2f7;
+  --ph-product-data-pipeline: #7dcfff;
+  --ph-product-feature-flags: #bb9af7;
+  --ph-product-experiments: #f7768e;
+  --ph-product-data-warehouse: #ff9e64;
+  --ph-product-surveys: #9ece6a;
+
+  --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%23565f89' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* Kraken Light — Medium-inspired paper, editorial ink, and publication green. */
+[data-theme="kraken-light"] {
+  color-scheme: light;
+
+  --ph-canvas: #f7f4ed;
+  --ph-surface: #ffffff;
+  --ph-muted: #f2f2f2;
+  --ph-toolbar: #e8e8e6;
+  --ph-surface-inset: #f2f2f2;
+  --ph-surface-raised: #ffffff;
+  --ph-surface-overlay: #ffffff;
+  --ph-border: #e2e2df;
+  --ph-border-subtle: #ededeb;
+  --ph-border-strong: #a8a8a3;
+
+  --ph-text-primary: #242424;
+  --ph-text-secondary: #4f4f4f;
+  --ph-text-tertiary: #6b6b6b;
+
+  --ph-accent: #242424;
+  --ph-accent-hover: #000000;
+  --ph-blue: #437aff;
+  --ph-violet: #ffc017;
+  --ph-purple: #e6ad15;
+
+  --ph-success: #1a8917;
+  --ph-warning: #b26a00;
+  --ph-danger: #c7463a;
+  --ph-info: #1769aa;
+  --ph-on-accent: #ffffff;
+  --ph-on-violet: #242424;
+  --ph-on-success: #ffffff;
+  --ph-on-warning: #050505;
+  --ph-on-danger: #ffffff;
+  --ph-on-info: #ffffff;
+  --ph-focus-ring: #242424;
+  --ph-selected-bg: #f2f2f2;
+  --ph-selected-text: #242424;
+  --ph-selected-border: #8b8b86;
+
+  --ph-text-3000: #ffffff;
+  --ph-primary-button-face: #242424;
+  --ph-primary-button-border: #171717;
+  --ph-primary-button-border-hover: #000000;
+  --ph-primary-frame-bg: #000000;
+  --ph-secondary-button-bg: #ffffff;
+  --ph-secondary-frame-bg: #d7d7d4;
+  --ph-secondary-button-border: #b7b7b2;
+  --ph-secondary-button-border-hover: #777772;
+
+  --ph-border-3000: #d7d7d4;
+  --ph-chrome-inset-face-top: inset 0 1px 0 hsl(0deg 0% 100% / 0.9);
+  --ph-chrome-inset-face-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.06);
+  --ph-accent-highlight-secondary: rgb(36 36 36 / 8%);
+
+  --ph-data-1: #242424;
+  --ph-data-2: #ffc017;
+  --ph-data-3: #437aff;
+  --ph-data-4: #00838f;
+  --ph-data-5: #b26a00;
+  --ph-data-6: #c7463a;
+  --ph-data-7: #ad1457;
+
+  --ph-product-session-replay: #b26a00;
+  --ph-product-product-analytics: #1769aa;
+  --ph-product-data-pipeline: #00838f;
+  --ph-product-feature-flags: #ffc017;
+  --ph-product-experiments: #437aff;
+  --ph-product-data-warehouse: #7b5e3b;
+  --ph-product-surveys: #c7463a;
+
+  --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%236b6b6b' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* Kraken Dark — Medium-inspired night reading canvas and soft editorial contrast. */
+[data-theme="kraken-dark"] {
+  color-scheme: dark;
+
+  --ph-canvas: #191919;
+  --ph-surface: #222222;
+  --ph-muted: #292929;
+  --ph-toolbar: #323232;
+  --ph-surface-inset: #1d1d1d;
+  --ph-surface-raised: #262626;
+  --ph-surface-overlay: #2b2b2b;
+  --ph-border: #3a3a3a;
+  --ph-border-subtle: #303030;
+  --ph-border-strong: #686868;
+
+  --ph-text-primary: #f2f2f2;
+  --ph-text-secondary: #c4c4c4;
+  --ph-text-tertiary: #929292;
+
+  --ph-accent: #f2f2f2;
+  --ph-accent-hover: #ffffff;
+  --ph-blue: #7da3ff;
+  --ph-violet: #ffc017;
+  --ph-purple: #ffcd45;
+
+  --ph-success: #1a8917;
+  --ph-warning: #e0a34a;
+  --ph-danger: #c7463a;
+  --ph-info: #1769aa;
+  --ph-on-accent: #191919;
+  --ph-on-violet: #242424;
+  --ph-on-success: #ffffff;
+  --ph-on-warning: #211606;
+  --ph-on-danger: #ffffff;
+  --ph-on-info: #ffffff;
+  --ph-focus-ring: #f2f2f2;
+  --ph-selected-bg: #333333;
+  --ph-selected-text: #ffffff;
+  --ph-selected-border: #858585;
+
+  --ph-text-3000: #191919;
+  --ph-primary-button-face: #f2f2f2;
+  --ph-primary-button-border: #d6d6d6;
+  --ph-primary-button-border-hover: #ffffff;
+  --ph-primary-frame-bg: #a9a9a9;
+  --ph-secondary-button-bg: #2b2b2b;
+  --ph-secondary-frame-bg: #414141;
+  --ph-secondary-button-border: #505050;
+  --ph-secondary-button-border-hover: #777777;
+
+  --ph-border-3000: #303030;
+  --ph-chrome-inset-face-top: inset 0 1px 0 hsl(0deg 0% 100% / 0.08);
+  --ph-chrome-inset-face-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.4);
+  --ph-accent-highlight-secondary: rgb(242 242 242 / 10%);
+
+  --ph-data-1: #f2f2f2;
+  --ph-data-2: #ffc017;
+  --ph-data-3: #7da3ff;
+  --ph-data-4: #58c4c7;
+  --ph-data-5: #e0a34a;
+  --ph-data-6: #e77b70;
+  --ph-data-7: #e183ae;
+
+  --ph-product-session-replay: #e0a34a;
+  --ph-product-product-analytics: #6ba7d6;
+  --ph-product-data-pipeline: #58c4c7;
+  --ph-product-feature-flags: #ffc017;
+  --ph-product-experiments: #7da3ff;
+  --ph-product-data-warehouse: #c59a6b;
+  --ph-product-surveys: #e77b70;
+
+  --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%23929292' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* Semantic button contrast is scoped to buttons so other token consumers keep theme-native ink. */
+:is(
+  [data-theme="hedgehog-dark"],
+  [data-theme="catppuccin-dark"],
+  [data-theme="sheets-dark"],
+  [data-theme="note-dark"],
+  [data-theme="presentation-dark"],
+  [data-theme="socials-dark"],
+  [data-theme="chats-dark"],
+  [data-theme="xenide-dark"],
+  [data-theme="bikini-bottom-dark"],
+  [data-theme="turtletime-dark"],
+  [data-theme="github-dark"],
+  [data-theme="rosepine-dark"],
+  [data-theme="notion-dark"],
+  [data-theme="deepsea-dark"],
+  [data-theme="kraken-dark"]
+) {
+  .ph-btn-signal {
+    --ph-btn-face: color-mix(in oklab, var(--ph-accent) 62%, black);
+    --ph-btn-ink: #ffffff;
+  }
+
+  .ph-btn-accent {
+    --ph-btn-face: color-mix(in oklab, var(--ph-violet) 62%, black);
+    --ph-btn-ink: #ffffff;
+  }
+
+  .ph-btn-info {
+    --ph-btn-face: color-mix(in oklab, var(--ph-info) 62%, black);
+    --ph-btn-ink: #ffffff;
+  }
+
+  .ph-btn-success {
+    --ph-btn-face: color-mix(in oklab, var(--ph-success) 62%, black);
+    --ph-btn-ink: #ffffff;
+  }
+
+  .ph-btn-warning {
+    --ph-btn-face: color-mix(in oklab, var(--ph-warning) 62%, black);
+    --ph-btn-ink: #ffffff;
+  }
+
+  .ph-btn-danger {
+    --ph-btn-face: color-mix(in oklab, var(--ph-danger) 62%, black);
+    --ph-btn-ink: #ffffff;
+  }
+}
+
+:is(
+  [data-theme="socials"],
+  [data-theme="bikini-bottom"],
+  [data-theme="rosepine-light"],
+  [data-theme="notion"],
+  [data-theme="deepsea-light"],
+  [data-theme="presentation"]
+) .ph-btn-signal,
+:is(
+  [data-theme="socials"],
+  [data-theme="bikini-bottom"],
+  [data-theme="rosepine-light"],
+  [data-theme="deepsea-light"]
+) .ph-btn-accent,
+:is(
+  [data-theme="catppuccin-light"],
+  [data-theme="socials"],
+  [data-theme="xenide-light"],
+  [data-theme="bikini-bottom"],
+  [data-theme="chats-light"]
+) .ph-btn-success,
+:is(
+  [data-theme="xenide-light"],
+  [data-theme="bikini-bottom"],
+  [data-theme="rosepine-light"],
+  [data-theme="notion"],
+  [data-theme="deepsea-light"]
+) .ph-btn-danger,
+:is(
+  [data-theme="socials"],
+  [data-theme="bikini-bottom"],
+  [data-theme="chats-light"],
+  [data-theme="rosepine-light"],
+  [data-theme="notion"]
+) .ph-btn-info {
+  --ph-btn-ink: #050505;
+}
+
+:is(
+  [data-theme="sheets"],
+  [data-theme="note"],
+  [data-theme="presentation"],
+  [data-theme="github-light"],
+  [data-theme="deepsea-light"]
+) .ph-btn-warning {
+  --ph-btn-ink: #ffffff;
 }

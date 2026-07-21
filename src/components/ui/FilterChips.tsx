@@ -1,50 +1,80 @@
 "use client";
 
-import { cn } from "@/lib/cn";
+import type { ReactNode } from "react";
 import { IconClose } from "@/components/icons";
+import { cn } from "@/lib/cn";
 
-interface FilterChip {
+export interface FilterChip {
   id: string;
-  label: string;
+  label: ReactNode;
+  value?: ReactNode;
   active?: boolean;
+  removeLabel?: string;
 }
 
-interface FilterChipsProps {
-  chips: FilterChip[];
-  onToggle: (id: string) => void;
-  onRemove: (id: string) => void;
+export interface FilterChipsProps {
+  chips: readonly FilterChip[];
+  onToggle?: (id: string) => void;
+  onRemove?: (id: string) => void;
   className?: string;
+  "aria-label"?: string;
 }
 
-export function FilterChips({ chips, onToggle, onRemove, className }: FilterChipsProps) {
+export function FilterChips({
+  chips,
+  onToggle,
+  onRemove,
+  className,
+  "aria-label": ariaLabel = "Applied filters",
+}: FilterChipsProps) {
   return (
-    <div className={cn("flex flex-wrap gap-2", className)}>
-      {chips.map((chip) => (
-        <button
-          key={chip.id}
-          type="button"
-          onClick={() => onToggle(chip.id)}
-          className={cn(
-            "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
-            chip.active
-              ? "bg-ph-brand text-white"
-              : "bg-ph-muted text-ph-subtle hover:bg-ph-border hover:text-ph-ink"
-          )}
-        >
-          {chip.label}
-          {chip.active && (
-            <span
-              onClick={(e) => {
-                e.stopPropagation();
-                onRemove(chip.id);
-              }}
-              className="ml-0.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded-full hover:bg-white/20"
-            >
-              <IconClose className="h-3 w-3" />
-            </span>
-          )}
-        </button>
-      ))}
+    <div className={cn("ph-filter-chips", className)} role="group" aria-label={ariaLabel}>
+      {chips.map((chip) => {
+        const label = chip.removeLabel ?? getChipText(chip);
+        const content = (
+          <>
+            <span className="ph-filter-chip__label">{chip.label}</span>
+            {chip.value != null ? <span className="ph-filter-chip__value">{chip.value}</span> : null}
+          </>
+        );
+
+        return (
+          <span
+            key={chip.id}
+            className={cn("ph-filter-chip", chip.active && "ph-filter-chip--active")}
+            data-state={chip.active ? "on" : "off"}
+          >
+            {onToggle ? (
+              <button
+                type="button"
+                className="ph-filter-chip__main"
+                aria-pressed={Boolean(chip.active)}
+                onClick={() => onToggle(chip.id)}
+              >
+                {content}
+              </button>
+            ) : (
+              <span className="ph-filter-chip__main">{content}</span>
+            )}
+            {chip.active && onRemove ? (
+              <button
+                type="button"
+                className="ph-filter-chip__remove"
+                aria-label={`Remove ${label} filter`}
+                onClick={() => onRemove(chip.id)}
+              >
+                <IconClose className="h-3 w-3" aria-hidden />
+              </button>
+            ) : null}
+          </span>
+        );
+      })}
     </div>
   );
+}
+
+function getChipText(chip: FilterChip) {
+  const label = typeof chip.label === "string" || typeof chip.label === "number" ? String(chip.label) : chip.id;
+  const value = typeof chip.value === "string" || typeof chip.value === "number" ? String(chip.value) : null;
+  return value ? `${label}: ${value}` : label;
 }
