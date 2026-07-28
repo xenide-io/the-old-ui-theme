@@ -1,42 +1,43 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { FALLBACK_CHART_TOKENS, readChartTokens } from "@/lib/chart/ph-chart-tokens";
-import type { ChartTokens } from "@/lib/chart/ph-chart-tokens";
+import { useEffect, useState } from "react";
 
-function tokensEqual(a: ChartTokens, b: ChartTokens): boolean {
-  if (a.series.length !== b.series.length) return false;
-  for (let i = 0; i < a.series.length; i++) {
-    if (a.series[i] !== b.series[i]) return false;
-  }
-  return (
-    a.grid === b.grid &&
-    a.text === b.text &&
-    a.textMuted === b.textMuted &&
-    a.surface === b.surface &&
-    a.borderStrong === b.borderStrong &&
-    a.accent === b.accent
-  );
+export interface ChartTokens {
+  series: string[];
+  muted: string;
+  surface: string;
 }
 
-/** Re-reads `--ph-data-*` / border / text tokens whenever `data-theme` changes. */
+const DEFAULT_TOKENS: ChartTokens = {
+  series: ["#1d4aff", "#621da6", "#42827e", "#ce0e74", "#f14f58", "#529a0a", "#fe729e"],
+  muted: "hsl(220 9% 90%)",
+  surface: "#ffffff",
+};
+
+function readTokens(): ChartTokens {
+  if (typeof document === "undefined") return DEFAULT_TOKENS;
+  const style = getComputedStyle(document.documentElement);
+  const read = (key: string, fallback: string) => style.getPropertyValue(key).trim() || fallback;
+  return {
+    series: [
+      read("--ph-data-1", DEFAULT_TOKENS.series[0]),
+      read("--ph-data-2", DEFAULT_TOKENS.series[1]),
+      read("--ph-data-3", DEFAULT_TOKENS.series[2]),
+      read("--ph-data-4", DEFAULT_TOKENS.series[3]),
+      read("--ph-data-5", DEFAULT_TOKENS.series[4]),
+      read("--ph-data-6", DEFAULT_TOKENS.series[5]),
+      read("--ph-data-7", DEFAULT_TOKENS.series[6]),
+    ],
+    muted: read("--ph-muted", DEFAULT_TOKENS.muted),
+    surface: read("--ph-surface", DEFAULT_TOKENS.surface),
+  };
+}
+
 export function useChartTokens(): ChartTokens {
-  const [tokens, setTokens] = useState<ChartTokens>(FALLBACK_CHART_TOKENS);
-  const tokensRef = useRef<ChartTokens>(FALLBACK_CHART_TOKENS);
+  const [tokens, setTokens] = useState(DEFAULT_TOKENS);
 
   useEffect(() => {
-    const root = document.documentElement;
-    const refresh = () => {
-      const next = readChartTokens(root);
-      if (!tokensEqual(tokensRef.current, next)) {
-        tokensRef.current = next;
-        setTokens(next);
-      }
-    };
-    refresh();
-    const observer = new MutationObserver(refresh);
-    observer.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
-    return () => observer.disconnect();
+    setTokens(readTokens());
   }, []);
 
   return tokens;

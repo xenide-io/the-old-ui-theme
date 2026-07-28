@@ -1,6 +1,8 @@
 // Main library entry point — everything consumers import from "the-old-ui"
 
 // UI Components (clean names, no Ph prefix)
+"use client";
+
 export {
   Button,
   ButtonChrome,
@@ -69,6 +71,8 @@ export {
   CommandPalette,
   Calendar,
   HoverCard,
+  Tooltip,
+  TooltipProvider,
   EmptyState,
   FilterChips,
   FilterBar,
@@ -84,6 +88,38 @@ export {
   CollapsibleSection,
   ComponentDocs,
   ShowcaseWrapper,
+  Banner,
+  Dialog,
+  Divider,
+  Tag,
+  ProgressCircle,
+  Row,
+  Widget,
+  Lettermark,
+  Splotch,
+  Popover,
+  LoadingBar,
+  Link,
+  Spinner,
+  Snack,
+  Combobox,
+  Autocomplete,
+  ContextMenu,
+  Resizable,
+  ScrollArea,
+  NumberField,
+  InputGroup,
+  ButtonGroup,
+  ToggleButton,
+  ToggleGroup,
+  Menubar,
+  AlertDialog,
+  Dot,
+  Collapsible,
+  Metric,
+  Chip,
+  DataTable,
+  DatePicker,
 } from "@/components/ui";
 
 // Type exports (clean names)
@@ -184,47 +220,96 @@ export type {
   FilterMenuProps,
   SortMenuProps,
   FilterControlsProps,
+  TooltipAlign,
+  TooltipProps,
+  TooltipProviderProps,
+  TooltipSide,
+  BannerProps,
+  BannerType,
+  DialogProps,
+  DividerProps,
+  TagProps,
+  TagType,
+  ProgressCircleProps,
+  RowProps,
+  WidgetProps,
+  LettermarkProps,
+  SplotchProps,
+  SplotchColor,
+  PopoverProps,
+  LoadingBarProps,
+  LinkProps,
+  SpinnerProps,
+  SnackProps,
+  ComboboxProps,
+  ComboboxOption,
+  AutocompleteProps,
+  AutocompleteOption,
+  ContextMenuProps,
+  ContextMenuItem,
+  ResizableProps,
+  ScrollAreaProps,
+  NumberFieldProps,
+  InputGroupProps,
+  ButtonGroupProps,
+  ToggleButtonProps,
+  ToggleGroupProps,
+  MenubarProps,
+  MenubarItem,
+  AlertDialogProps,
+  DotProps,
+  CollapsibleProps,
+  MetricProps,
+  ChipProps,
+  DataTableProps,
+  DataTableColumn,
+  DatePickerProps,
+  AppLayoutProps,
+  SidebarProps,
+  SidebarGroup,
+  SidebarItemDef,
 } from "@/components/ui";
+
+export { AppLayout, Sidebar } from "@/components/ui";
 
 // Themes
 export type { ThemeDefinition, ThemeId } from "@/themes/types";
-export { DEFAULT_THEME_ID, THEMES, THEME_GROUPS, getTheme, isThemeId } from "@/themes/registry";
-export { persistTheme, readStoredTheme, THEME_INIT_SCRIPT } from "@/themes/init-theme";
-
-// Charts
 export {
-  HogTrendLineChart,
-  InsightDoughnutChart,
-  InsightHorizontalBarChart,
-  InsightPolarAreaChart,
-  InsightStackedBarChart,
-  InsightVerticalBarChart,
+  DEFAULT_THEME_ID,
+  THEMES,
+  THEME_GROUPS,
+  getTheme,
+  isThemeId,
+} from "@/themes/registry";
+export {
+  persistTheme,
+  readStoredTheme,
+  THEME_INIT_SCRIPT,
+} from "@/themes/init-theme";
+
+// Quill-style charts (replaces old Chart.js)
+export {
+  TimeSeriesLineChart,
+  BarChart,
+  PieChart,
+  Sparkline,
+  MetricCard,
+  FunnelChart,
+} from "@/components/charts";
+export type {
+  TimeSeriesLineChartProps,
+  TimeSeriesLineChartSeries,
+  BarChartProps,
+  BarChartSeries,
+  PieChartProps,
+  PieChartSlice,
+  SparklineProps,
+  MetricCardProps,
+  FunnelChartProps,
+  FunnelStep,
 } from "@/components/charts";
 
-// Dashboard primitives
-export {
-  DashboardWell,
-  DashboardToolbar,
-  DashboardGrid,
-  DashboardFiltersBar,
-  DashboardKpiCard,
-  DashboardInsightPlaceholder,
-  InsightShell,
-  InsightShellHeader,
-  MiniTrendBars,
-  InsightMiniCard,
-} from "@/components/dashboard";
-export type {
-  DashboardWellProps,
-  DashboardToolbarProps,
-  DashboardGridProps,
-  DashboardKpiCardProps,
-  DashboardInsightPlaceholderProps,
-  InsightShellProps,
-  InsightShellHeaderProps,
-  MiniTrendBarsProps,
-  InsightMiniCardProps,
-} from "@/components/dashboard";
+
 
 // Tailwind preset — import directly from "the-old-ui/tailwind-preset"
 

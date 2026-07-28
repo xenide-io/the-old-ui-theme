@@ -1,5 +1,6 @@
 # Dependencies & installs (regenerate: bun install)
 node_modules/
+posthog/
 
 # Next.js build output (regenerate: bun run build)
 .next/

@@ -2,13 +2,18 @@ import type { ComponentType, CSSProperties } from "react";
 import {
   CANONICAL_ICONS,
   OLD_UI_ICONS,
-  IconAreaChart,
-  IconDatabase,
-  IconFlag,
-  IconFlask,
-  IconGridView,
-  IconRecording,
-  IconSurveys,
+  IconAreaChart, IconDatabase, IconFlag, IconFlask, IconGridView, IconRecording, IconSurveys,
+  IconChrome, IconFirefox, IconSafari, IconFacebook, IconGoogle, IconGitlab, IconSlack, IconMicrosoftTeams,
+  IconMacOS, IconAppleIOS, IconWindows, IconLinux, IconAndroidOS,
+  IconWeb, IconMonitor, IconBold, IconItalic, IconLink, IconPreview, IconEyeHidden,
+  IconFullScreen, IconMenu, IconGhost, IconReplay, IconHeatmap, IconPauseCircle,
+  IconSkipBackward, IconSkipStart, IconSkipEnd, IconDragHandle, IconFingerprint, IconNodeJS, IconStamphog,
+  IconPalette, IconMegaphone, IconMap, IconMapPin, IconCoffee, IconBook, IconCalendar,
+  IconClock, IconGlobe, IconCloud, IconBug, IconCrown, IconConfetti, IconLightBulb,
+  IconHourglass, IconStore, IconCart, IconEye, IconPeople, IconGroups, IconDocument,
+  IconAI, IconArchive, IconAtSign, IconBinary, IconGear, IconChat, IconFolder,
+  IconHeart, IconHomeFilled, IconImage, IconLock, IconMic, IconMusic, IconPhone,
+  IconRefresh, IconReply, IconReport, IconFilter, IconPlus, IconCheck, IconClose,
   type CanonicalIconName,
   type IconProps,
 } from "@/components/icons";
@@ -23,6 +28,64 @@ const originalIcons = Object.entries(OLD_UI_ICONS) as Array<[
   keyof typeof OLD_UI_ICONS,
   ComponentType<IconProps>,
 ]>;
+
+const categoryIcons = [
+  { Icon: IconPalette, label: "Palette" }, { Icon: IconMegaphone, label: "Megaphone" },
+  { Icon: IconMap, label: "Map" }, { Icon: IconMapPin, label: "Pin" },
+  { Icon: IconCoffee, label: "Coffee" }, { Icon: IconBook, label: "Book" },
+  { Icon: IconCalendar, label: "Calendar" }, { Icon: IconClock, label: "Clock" },
+  { Icon: IconGlobe, label: "Globe" }, { Icon: IconCloud, label: "Cloud" },
+  { Icon: IconBug, label: "Bug" }, { Icon: IconCrown, label: "Crown" },
+  { Icon: IconConfetti, label: "Confetti" }, { Icon: IconLightBulb, label: "Bulb" },
+  { Icon: IconHourglass, label: "Hourglass" }, { Icon: IconStore, label: "Store" },
+  { Icon: IconCart, label: "Cart" }, { Icon: IconEye, label: "Eye" },
+  { Icon: IconPeople, label: "People" }, { Icon: IconGroups, label: "Groups" },
+  { Icon: IconDocument, label: "Document" }, { Icon: IconAI, label: "AI" },
+  { Icon: IconArchive, label: "Archive" }, { Icon: IconAtSign, label: "At" },
+  { Icon: IconBinary, label: "Binary" }, { Icon: IconGear, label: "Gear" },
+  { Icon: IconChat, label: "Chat" }, { Icon: IconFolder, label: "Folder" },
+  { Icon: IconHeart, label: "Heart" }, { Icon: IconImage, label: "Image" },
+  { Icon: IconLock, label: "Lock" }, { Icon: IconMic, label: "Mic" },
+  { Icon: IconMusic, label: "Music" }, { Icon: IconPhone, label: "Phone" },
+  { Icon: IconRefresh, label: "Refresh" }, { Icon: IconReply, label: "Reply" },
+  { Icon: IconReport, label: "Report" }, { Icon: IconFilter, label: "Filter" },
+];
+
+const lemonIcons = [
+  { Icon: IconChrome, label: "Chrome" },
+  { Icon: IconFirefox, label: "Firefox" },
+  { Icon: IconSafari, label: "Safari" },
+  { Icon: IconFacebook, label: "Facebook" },
+  { Icon: IconGoogle, label: "Google" },
+  { Icon: IconGitlab, label: "Gitlab" },
+  { Icon: IconSlack, label: "Slack" },
+  { Icon: IconMicrosoftTeams, label: "Teams" },
+  { Icon: IconMacOS, label: "macOS" },
+  { Icon: IconAppleIOS, label: "iOS" },
+  { Icon: IconWindows, label: "Windows" },
+  { Icon: IconLinux, label: "Linux" },
+  { Icon: IconAndroidOS, label: "Android" },
+  { Icon: IconWeb, label: "Web" },
+  { Icon: IconMonitor, label: "Monitor" },
+  { Icon: IconBold, label: "Bold" },
+  { Icon: IconItalic, label: "Italic" },
+  { Icon: IconLink, label: "Link" },
+  { Icon: IconPreview, label: "Preview" },
+  { Icon: IconEyeHidden, label: "EyeHidden" },
+  { Icon: IconFullScreen, label: "FullScreen" },
+  { Icon: IconMenu, label: "Menu" },
+  { Icon: IconGhost, label: "Ghost" },
+  { Icon: IconReplay, label: "Replay" },
+  { Icon: IconHeatmap, label: "Heatmap" },
+  { Icon: IconPauseCircle, label: "Pause" },
+  { Icon: IconSkipBackward, label: "SkipBack" },
+  { Icon: IconSkipStart, label: "SkipStart" },
+  { Icon: IconSkipEnd, label: "SkipEnd" },
+  { Icon: IconDragHandle, label: "DragHandle" },
+  { Icon: IconFingerprint, label: "Fingerprint" },
+  { Icon: IconNodeJS, label: "NodeJS" },
+  { Icon: IconStamphog, label: "Stamphog" },
+];
 
 const productTiles = [
   { label: "Session replay", Icon: IconRecording, color: "--ph-product-session-replay" },
@@ -92,6 +155,46 @@ export default function IconShowcase() {
                   <Icon size={24} />
                 </div>
                 <span className="max-w-full break-words text-[10px] font-medium tracking-wide text-ph-mutedtext">{name}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Common icons (PostHog categories)</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              Everyday UI icons ported from PostHog&apos;s categories set.
+            </p>
+          </div>
+          <div className="grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10">
+            {categoryIcons.map(({ Icon, label }) => (
+              <div key={label} className="flex min-w-0 flex-col items-center gap-2 rounded-lg border border-ph-border-subtle bg-ph-raised p-3 text-center">
+                <div className="flex h-8 items-center gap-2 text-ph-ink">
+                  <Icon size={16} />
+                  <Icon size={24} />
+                </div>
+                <span className="max-w-full break-words text-[10px] font-medium tracking-wide text-ph-mutedtext">{label}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Lemon icons (PostHog port)</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              Browser, OS, brand, and UI icons ported from PostHog&apos;s lemon-ui icon set.
+            </p>
+          </div>
+          <div className="grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10">
+            {lemonIcons.map(({ Icon, label }) => (
+              <div key={label} className="flex min-w-0 flex-col items-center gap-2 rounded-lg border border-ph-border-subtle bg-ph-raised p-3 text-center">
+                <div className="flex h-8 items-center gap-2 text-ph-ink">
+                  <Icon size={16} />
+                  <Icon size={24} />
+                </div>
+                <span className="max-w-full break-words text-[10px] font-medium tracking-wide text-ph-mutedtext">{label}</span>
               </div>
             ))}
           </div>

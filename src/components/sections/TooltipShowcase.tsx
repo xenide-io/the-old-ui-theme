@@ -1,44 +1,38 @@
-import { Button, ShowcaseWrapper } from "@/components/ui";
+import { Button, ShowcaseWrapper, Tooltip, TooltipProvider } from "@/components/ui";
 
 export default function TooltipShowcase() {
-  const code = `import { Button } from "the-old-ui";
+  const code = `import { Button, Tooltip, TooltipProvider } from "the-old-ui";
 
-<div className="ph-panel space-y-8">
-  <div className="flex flex-wrap items-center gap-10">
-    <div className="group relative inline-block">
+<TooltipProvider delayDuration={300}>
+  <div className="ph-panel flex flex-wrap items-center gap-10">
+    <Tooltip content="Run a HogQL query (Command + /)" side="top">
       <Button variant="secondary">Hover me</Button>
-      <span className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-neutral-900 px-2 py-1 text-[11px] font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-        HogQL <span className="ph-shortcut border-neutral-700 bg-neutral-800 text-neutral-100">⌘ /</span>
-      </span>
-    </div>
+    </Tooltip>
 
-    <span className="ph-tip cursor-help" title="Native title tooltip for zero-JS parity">
-      Dashed chrome (title attribute)
-    </span>
+    <Tooltip content="Available on hover and keyboard focus" side="bottom">
+      <button type="button" className="ph-tip cursor-help">Dashed chrome</button>
+    </Tooltip>
   </div>
-</div>`;
+</TooltipProvider>`;
 
   return (
     <ShowcaseWrapper
       title="Tooltips"
-      description="PostHog tooltips lean on muted inverse surfaces. Here we fake the vibe with charcoal chips + blur for contrast on light canvas."
+      description="Accessible supporting text on an adaptive inverse surface. Tooltips open on hover or focus, avoid viewport collisions, and dismiss with Escape."
       code={code}
       filename="TooltipExample.tsx"
     >
-      <div className="ph-panel space-y-8">
-        <div className="flex flex-wrap items-center gap-10">
-          <div className="group relative inline-block">
+      <TooltipProvider delayDuration={300}>
+        <div className="ph-panel flex flex-wrap items-center gap-10">
+          <Tooltip content="Run a HogQL query (Command + /)" side="top">
             <Button variant="secondary">Hover me</Button>
-            <span className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-neutral-900 px-2 py-1 text-[11px] font-medium text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
-              HogQL <span className="ph-shortcut border-neutral-700 bg-neutral-800 text-neutral-100">⌘ /</span>
-            </span>
-          </div>
+          </Tooltip>
 
-          <span className="ph-tip cursor-help" title="Native title tooltip for zero-JS parity">
-            Dashed chrome (title attribute)
-          </span>
+          <Tooltip content="Available on hover and keyboard focus" side="bottom">
+            <button type="button" className="ph-tip cursor-help">Dashed chrome</button>
+          </Tooltip>
         </div>
-      </div>
+      </TooltipProvider>
     </ShowcaseWrapper>
   );
 }

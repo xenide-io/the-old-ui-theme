@@ -325,6 +325,38 @@ type TimelineEvent = {
 | `SettingsNav` | grouped route links with `aria-current` support |
 | `CodeBlock` | `code`, `language`, `filename` |
 | `Kbd` | `keys`, `variant` (`shortcut`, `key`, `token`), `platform` (`text`, `mac`, `windows`), `separator` |
+| `Banner` | `type` (`info`, `success`, `warning`, `danger`, `ai`), `onClose`, `action`, `hideIcon`, `square` |
+| `Dialog` | `isOpen`, `onClose`, `onConfirm`, `confirmText`, `cancelText`, `title` |
+| `Divider` | `vertical`, `dashed`, `thick`, `label` |
+| `Tag` | `type` (`default`, `primary`, `success`, `warning`, `danger`, `info`, `muted`, `highlight`), `size`, `icon`, `closable`, `onClose` |
+| `ProgressCircle` | `progress` (0-1), `size`, `strokeWidth`, `children` |
+| `Row` | `icon`, `sideIcon`, `status`, `fullWidth`, `center`, `size` |
+| `Widget` | `title`, `onClose`, `actions`, `children` |
+| `Lettermark` | `name`, `index`, `rounded`, `outlined`, `size` |
+| `Splotch` | `color` (`purple`, `blue`, `green`, `black`, `white`, `orange`, `red`, `yellow`) |
+| `Popover` | `trigger`, `children`, `open`, `onOpenChange`, `placement`, `matchTriggerWidth`, `padded` |
+| `LoadingBar` | `active` |
+| `Link` | `href`, `disabled`, standard anchor attributes |
+| `Spinner` | `size` (`sm`, `md`, `lg`), `textColored` |
+| `Snack` | `type` (`regular`, `pill`), `onClose`, `wrap` |
+| `Combobox` | `options`, `value`, `onChange`, `placeholder` |
+| `Autocomplete` | `options`, `onSelect`, `placeholder` |
+| `ContextMenu` | `items` (label, onClick, disabled, separator, icon), `children` |
+| `Resizable` | `left`, `right`, `defaultLeftWidth`, `minLeftWidth`, `minRightWidth` |
+| `ScrollArea` | `children`, `orientation` (`vertical`, `horizontal`, `both`) |
+| `NumberField` | `value`, `onChange`, `min`, `max`, `step`, `label` |
+| `InputGroup` | `children` (groups inputs/addons together) |
+| `ButtonGroup` | `children` (groups buttons together) |
+| `ToggleButton` | `pressed`, `onPressedChange`, `icon`, `children` |
+| `ToggleGroup` | `type` (`single`, `multiple`), `value`, `onValueChange` |
+| `Menubar` | `items` (label, sub-items) |
+| `AlertDialog` | `isOpen`, `onClose`, `onConfirm`, `confirmText`, `cancelText` |
+| `Dot` | `color` (`green`, `yellow`, `red`, `blue`, `gray`), `size` (`sm`, `md`) |
+| `Collapsible` | `trigger`, `open`, `onOpenChange`, `children` |
+| `Metric` | `value`, `label`, `badge`, `trend`, `icon` |
+| `Chip` | `selected`, `onRemove`, `children` |
+| `DataTable` | `columns`, `data`, `pageSize`, `searchable` |
+| `DatePicker` | `value`, `onChange` |
 
 ## Icons
 
@@ -340,6 +372,16 @@ type TimelineEvent = {
 Components: `HogTrendLineChart`, `InsightDoughnutChart`, `InsightHorizontalBarChart`, `InsightPolarAreaChart`, `InsightStackedBarChart`, `InsightVerticalBarChart`
 
 These components render themed demo charts using the package color tokens. They are client components and require the package peer dependencies used by the chart bundle.
+
+## Quill Charts (new)
+
+| Component | Props | Description |
+|---|---|---|
+| `TimeSeriesLineChart` | `series`, `labels`, `showGrid`, `showCrosshair`, `height` | Canvas-based trend line chart with d3 scales — matching PostHog Quill's `TimeSeriesLineChart` API |
+| `BarChart` | `series`, `labels`, `horizontal`, `stacked`, `height` | Vertical/horizontal bar chart |
+| `PieChart` | `slices`, `size`, `donut` | Donut/pie chart with legend |
+| `Sparkline` | `data`, `color`, `width`, `height`, `strokeWidth` | Inline SVG mini-chart |
+| `MetricCard` | `value`, `label`, `change`, `sparklineData`, `icon` | Metric stat tile with optional change badge and sparkline |
 
 ## Dashboard Primitives
 

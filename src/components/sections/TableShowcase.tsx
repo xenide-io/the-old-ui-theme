@@ -1,3 +1,5 @@
+"use client";
+
 import type { CSSProperties } from "react";
 import { Badge, ComponentDocs, ShowcaseWrapper, Table, type TableColumn } from "@/components/ui";
 
