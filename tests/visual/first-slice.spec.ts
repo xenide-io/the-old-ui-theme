@@ -92,7 +92,7 @@ test("auth, settings, loading, and filter patterns", async ({ page }) => {
   }).toPass({ intervals: [250, 500, 1_000], timeout: 30_000 });
   await page.evaluate(() => document.fonts.ready);
   await page.locator("nextjs-portal").evaluateAll((portals) => portals.forEach((portal) => portal.remove()));
-  await page.locator("body > main > header").evaluate((header) => {
+  await page.locator(".ph-app-layout__content > div > header").first().evaluate((header) => {
     (header as HTMLElement).style.display = "none";
   });
   await expect(page.locator(".ph-auth-layout").first()).toHaveCSS("display", "grid");
@@ -122,6 +122,7 @@ test("semantic solid buttons maintain readable foreground contrast", async ({ pa
     await page.evaluate(() => new Promise<void>((resolve) => {
       requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
     }));
+    await page.waitForTimeout(200);
 
     const measurements = await solidButtons.evaluateAll((buttons) => {
       const luminance = (color: string) => {

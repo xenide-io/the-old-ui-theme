@@ -184,7 +184,7 @@ body {
   ) {
     --ph-btn-depth: 0px;
     --ph-btn-chrome-depth: var(--ph-chrome-depth);
-    --ph-btn-border-width: 1.5px;
+    --ph-btn-border-width: 1px;
     --ph-btn-face: var(--ph-secondary-button-bg);
     --ph-btn-border: var(--ph-secondary-button-border);
     --ph-btn-border-hover: var(--ph-secondary-button-border-hover);
@@ -512,6 +512,71 @@ body {
     border-top-color: currentColor;
     border-radius: 9999px;
     animation: ph-spin 0.65s linear infinite;
+  }
+
+  /* A real face over a real frame stays connected at every interaction state. */
+  .ph-btn.ph-btn-raised {
+    --ph-btn-face-offset: -2px;
+    position: relative;
+    min-height: var(--ph-btn-control-size);
+    border: var(--ph-btn-border-width) solid var(--ph-btn-border);
+    border-radius: var(--ph-radius-control);
+    background: var(--ph-btn-frame);
+    transition:
+      border-color var(--ph-motion-fast) ease,
+      color var(--ph-motion-fast) ease,
+      opacity var(--ph-motion-fast) ease;
+  }
+
+  .ph-btn.ph-btn-raised .ph-btn-chrome {
+    z-index: 1;
+    box-sizing: border-box;
+    flex: 1;
+    width: auto;
+    min-height: calc(var(--ph-btn-control-size) - 2 * var(--ph-btn-border-width));
+    margin-inline: calc(-1 * var(--ph-btn-border-width));
+    background: var(--ph-btn-face);
+    border: var(--ph-btn-border-width) solid var(--ph-btn-border);
+    border-radius: var(--ph-radius-control);
+    transform: translateY(var(--ph-btn-face-offset));
+    transition:
+      border-color var(--ph-motion-fast) ease,
+      color var(--ph-motion-fast) ease,
+      transform 50ms ease-out;
+  }
+
+  .ph-btn.ph-btn-raised .ph-btn-chrome::before,
+  .ph-btn.ph-btn-raised .ph-btn-chrome::after {
+    content: none;
+  }
+
+  .ph-btn.ph-btn-raised:hover:not(:disabled) {
+    --ph-btn-face-offset: -3px;
+    border-color: var(--ph-btn-border-hover);
+  }
+
+  .ph-btn.ph-btn-raised:hover:not(:disabled) .ph-btn-chrome {
+    color: var(--ph-btn-ink);
+    border-color: var(--ph-btn-border-hover);
+    transform: translateY(var(--ph-btn-face-offset));
+  }
+
+  .ph-btn.ph-btn-raised:active:not(:disabled) {
+    --ph-btn-face-offset: -1px;
+  }
+
+  .ph-btn.ph-btn-raised:active:not(:disabled) .ph-btn-chrome {
+    transform: translateY(var(--ph-btn-face-offset));
+    transition-duration: 0ms;
+  }
+
+  .ph-btn.ph-btn-circle.ph-btn-raised,
+  .ph-btn-circle.ph-btn-raised .ph-btn-chrome {
+    border-radius: 9999px;
+  }
+
+  .ph-btn-outline.ph-btn-raised .ph-btn-chrome {
+    background: var(--ph-surface-raised);
   }
 
   /* Surfaces — crisp edge + faint top lip beside elevation */

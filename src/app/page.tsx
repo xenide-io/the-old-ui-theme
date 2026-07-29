@@ -40,7 +40,7 @@ import ToastShowcase from "@/components/sections/ToastShowcase";
 import TooltipShowcase from "@/components/sections/TooltipShowcase";
 import UtilityShowcase from "@/components/sections/UtilityShowcase";
 
-import { AppLayout, Sidebar, ThemeSwitcher, CollapsibleSection } from "@/components/ui";
+import { AppLayout, Button, Sidebar, ThemeSwitcher, CollapsibleSection } from "@/components/ui";
 import ProductLayoutsShowcase from "@/components/sections/ProductLayoutsShowcase";
 import { Home as LucideHome, Search, Flag, Bell, Zap, Plus } from "lucide-react";
 import { IconAreaChart } from "@/components/icons";
@@ -114,7 +114,7 @@ export default function Home() {
           }
           footer={
             <div className="flex items-center justify-between px-3 py-3">
-              <span className="text-xs text-ph-mutedtext">v0.4.0</span>
+              <span className="text-xs text-ph-mutedtext">v0.3.2</span>
             </div>
           }
         />
@@ -136,10 +136,14 @@ export default function Home() {
             </nav>
             <div className="flex items-center gap-3">
               <ThemeSwitcher />
-              <button className="ph-btn ph-btn-primary ph-btn-sm" onClick={() => document.getElementById("icons")?.scrollIntoView({ behavior: "smooth" })}>
-                <Plus className="h-3.5 w-3.5" />
-                <span>New</span>
-              </button>
+              <Button
+                variant="primary"
+                size="sm"
+                icon={<Plus className="h-3.5 w-3.5" aria-hidden />}
+                onClick={() => document.getElementById("icons")?.scrollIntoView({ behavior: "smooth" })}
+              >
+                New
+              </Button>
             </div>
           </div>
         </header>

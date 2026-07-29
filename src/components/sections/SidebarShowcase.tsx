@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AppLayout, Sidebar, ShowcaseWrapper, Badge } from "@/components/ui";
+import { AppLayout, Sidebar, ShowcaseWrapper, Badge, Button } from "@/components/ui";
 import { Home, Bell, Flag, User, Search, Zap } from "lucide-react";
 
 const sampleGroups = [
@@ -54,12 +54,13 @@ export default function SidebarShowcase() {
 </AppLayout>`}
       >
         <div className="space-y-4">
-          <button
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={() => setCollapsed(!collapsed)}
-            className="ph-btn ph-btn-secondary ph-btn-sm"
           >
             {collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          </button>
+          </Button>
           <div className="overflow-hidden rounded-lg border border-ph-border" style={{ height: 360 }}>
             <AppLayout
               sidebarWidth={collapsed ? 56 : 220}
@@ -74,7 +75,7 @@ export default function SidebarShowcase() {
                     </div>
                   }
                   footer={
-                    !collapsed ? <span className="text-xs text-ph-mutedtext px-2">v0.4.0</span> : null
+                    !collapsed ? <span className="text-xs text-ph-mutedtext px-2">v0.3.2</span> : null
                   }
                 />
               }
