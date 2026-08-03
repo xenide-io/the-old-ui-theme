@@ -1,16 +1,58 @@
 "use client";
 
+import { useState, type ComponentPropsWithoutRef } from "react";
 import Image from "next/image";
+import {
+  NavArrowDown as ChevronDown,
+  Home,
+  Calendar,
+  Search,
+  Bell,
+  User,
+  Settings,
+  LogOut,
+  Menu,
+  Xmark,
+  Plus,
+} from "iconoir-react";
 
+import { Button, DropdownMenu, DropdownItem, CommandPalette, ShowcaseWrapper, Spinner } from "@/components/ui";
+import {
+  AppSwitcher,
+  AppSwitcherMark,
+  AppSwitcherChevron,
+  type SuiteAppEntry,
+} from "@/suite/components/app-switcher";
+import { CommandPaletteHost } from "@/suite/components/command-palette-host";
+import type { SuiteCommandItem } from "@/suite/lib/injected";
+import { SuiteMobileHeader } from "@/suite/components/suite-mobile-header";
+import { SuiteBottomNav, type SuiteBottomNavItem } from "@/suite/components/suite-bottom-nav";
+import { SuiteUserMenu } from "@/suite/components/suite-user-menu";
+import {
+  SuiteNotificationBell,
+  type SuiteNotification,
+  type SuiteNotificationsResponse,
+} from "@/suite/components/suite-notification-bell";
+import { SuiteMobileDrawer } from "@/suite/components/suite-mobile-drawer";
+import { SuiteSettingsMobileNav } from "@/suite/components/suite-settings-mobile-nav";
+import { SuiteSkeleton, SuiteSkeletonCard, SuiteSkeletonList } from "@/suite/components/suite-skeleton";
+import {
+  SuitePage,
+  SuitePageHeader,
+  SuiteToolbar,
+  SuiteTabList,
+  SuiteSectionHeader,
+} from "@/suite/components/suite-layout";
+import { TodayPageFrame } from "@/suite/components/today-page-frame";
+import { TodayCalibrating } from "@/suite/components/today-calibrating";
 import {
   SuiteIcon,
   SUITE_ICON_NAMES,
   APP_ACCENTS,
   type SuiteAccentSlug,
 } from "@/suite/icons";
-import { ShowcaseWrapper } from "@/components/ui";
 
-const REAL_APPS = ["turtletime", "tides", "kraken", "shellstack"] as const;
+const REAL_APPS = ["kraken", "shellstack", "tides", "turtletime"] as const;
 type RealAppSlug = (typeof REAL_APPS)[number];
 
 const APP_ICON_SRC: Record<RealAppSlug, string> = {
@@ -22,19 +64,98 @@ const APP_ICON_SRC: Record<RealAppSlug, string> = {
 
 const ICON_SIZE = 44;
 
+const SUITE_APPS: SuiteAppEntry[] = REAL_APPS.map((app) => ({
+  slug: app,
+  name: APP_ACCENTS[app].label,
+  description: `${APP_ACCENTS[app].label} app`,
+  icon: APP_ICON_SRC[app],
+}));
+
+const BOTTOM_NAV_ITEMS: SuiteBottomNavItem[] = [
+  { href: "#suite", label: "Today", icon: Home, active: true },
+  { href: "#suite", label: "Track", icon: Calendar },
+  { href: "#suite", label: "Reports", icon: Search },
+];
+
+const SETTINGS_ITEMS = [
+  { href: "#profile", label: "Profile", icon: User },
+  { href: "#account", label: "Account", icon: Settings },
+  { href: "#notifications", label: "Notifications", icon: Bell },
+];
+
+const NOTIFICATIONS: SuiteNotification[] = [
+  {
+    id: "1",
+    title: "New document shared",
+    body: "Alex shared the Q3 roadmap with you.",
+    href: "#",
+    kind: "document",
+    source_app: "kraken",
+    read_at: null,
+    created_at: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+    workspace: "ShellStack",
+    organisation: "Xenide",
+  },
+  {
+    id: "2",
+    title: "Task assigned",
+    body: "Review TurtleTime weekly report.",
+    href: "#",
+    kind: "task",
+    source_app: "tides",
+    read_at: new Date().toISOString(),
+    created_at: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+    workspace: "ShellStack",
+    organisation: "Xenide",
+  },
+];
+
+const PALETTE_ITEMS: SuiteCommandItem[] = [
+  { id: "today", label: "Go to Today", icon: <Home className="h-4 w-4" />, onSelect: () => {} },
+  { id: "search", label: "Search", icon: <Search className="h-4 w-4" />, onSelect: () => {} },
+  { id: "settings", label: "Settings", icon: <Settings className="h-4 w-4" />, onSelect: () => {} },
+];
+
+function DemoAppIcon({ app }: { app: RealAppSlug }) {
+  return (
+    <div className="relative h-8 w-8 overflow-hidden rounded-lg">
+      <Image
+        src={APP_ICON_SRC[app]}
+        alt={APP_ACCENTS[app].label}
+        width={32}
+        height={32}
+        className="h-full w-full"
+        unoptimized
+      />
+    </div>
+  );
+}
+
+function InjectedDropdownItem(props: ComponentPropsWithoutRef<"button">) {
+  return <DropdownItem {...props} />;
+}
+
 export default function SuiteShowcase() {
+  const [currentApp, setCurrentApp] = useState<string>("turtletime");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [settingsHref, setSettingsHref] = useState("#profile");
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
   return (
     <ShowcaseWrapper
       id="suite"
-      title="Suite icons"
-      description="The actual app favicons for the ShellStack apps, plus the shared suite icon system — programmatic app marks and hand-drawn lucide-grammar glyphs."
-      code={`import Image from "next/image";
-
-<Image src="/turtletime-icon.svg" width={44} height={44} alt="TurtleTime" />
-<SuiteIcon name="today-sun" accent="turtletime" size={24} />`}
-      filename="SuiteIconExample.tsx"
+      title="Suite"
+      description="The shared ShellStack chrome — app switcher, mobile header, bottom nav, account menu, notification bell, command palette, drawer, settings nav, skeletons, page layout, and icon system."
+      code={`import {
+  AppSwitcher, SuiteMobileHeader, SuiteBottomNav,
+  SuiteUserMenu, SuiteNotificationBell, CommandPaletteHost,
+  SuiteMobileDrawer, SuiteSettingsMobileNav,
+  SuiteSkeleton, SuitePage, SuitePageHeader,
+} from "@xenide-io/the-old-ui-theme/suite";`}
+      filename="SuiteExample.tsx"
     >
       <div className="space-y-8">
+        {/* App icons */}
         <section className="ph-panel space-y-4">
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Actual app icons</h3>
@@ -61,6 +182,245 @@ export default function SuiteShowcase() {
           </div>
         </section>
 
+        {/* App switcher */}
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">App switcher</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              Dropdown app launcher with app mark, title, and collapsible rail mode.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-start gap-6 rounded-lg border border-ph-border-subtle bg-ph-raised p-6">
+            <div className="w-64">
+              <AppSwitcher
+                apps={SUITE_APPS}
+                currentApp={currentApp}
+                onSelect={(entry) => setCurrentApp(entry.slug)}
+                mark={<DemoAppIcon app={currentApp as RealAppSlug} />}
+                title={
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="truncate text-sm font-semibold text-ph-ink">{APP_ACCENTS[currentApp as RealAppSlug].label}</span>
+                    <span className="truncate text-xs text-ph-mutedtext">ShellStack workspace</span>
+                  </span>
+                }
+                dropdownMenu={DropdownMenu}
+                dropdownItem={InjectedDropdownItem}
+              />
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-xs text-ph-mutedtext">Collapsed rail</span>
+              <AppSwitcher
+                apps={SUITE_APPS}
+                currentApp={currentApp}
+                onSelect={(entry) => setCurrentApp(entry.slug)}
+                mark={<DemoAppIcon app={currentApp as RealAppSlug} />}
+                title={null}
+                collapsed
+                dropdownMenu={DropdownMenu}
+                dropdownItem={InjectedDropdownItem}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Mobile header + bottom nav */}
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Mobile chrome</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              SuiteMobileHeader and SuiteBottomNav — the standard mobile shell used by every app.
+            </p>
+          </div>
+          <div className="space-y-4 rounded-lg border border-ph-border-subtle bg-ph-raised p-4">
+            <SuiteMobileHeader
+              onMenuClick={() => setDrawerOpen((v) => !v)}
+              title={
+                <div className="flex items-center gap-2">
+                  <DemoAppIcon app="turtletime" />
+                  <span className="font-semibold text-ph-ink">TurtleTime</span>
+                </div>
+              }
+              actions={
+                <>
+                  <Button variant="ghost" size="sm" icon={<Bell className="h-4 w-4" />} aria-label="Notifications" />
+                  <div className="h-8 w-8 rounded-full bg-ph-brand text-xs font-bold text-[var(--ph-on-accent)] flex items-center justify-center">JD</div>
+                </>
+              }
+            />
+            <div className="rounded-lg border border-ph-border bg-ph-surface p-4 text-sm text-ph-subtle">
+              Page content area
+            </div>
+            <SuiteBottomNav items={BOTTOM_NAV_ITEMS} />
+          </div>
+        </section>
+
+        {/* User menu + notification bell */}
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Account & notifications</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              SuiteUserMenu and SuiteNotificationBell with mock data.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-start gap-6 rounded-lg border border-ph-border-subtle bg-ph-raised p-6">
+            <SuiteUserMenu
+              name="Jane Doe"
+              email="jane@xenide.io"
+              settingsHref="#settings"
+              onSignOut={() => {}}
+            />
+            <SuiteNotificationBell
+              fetchNotifications={async () => ({
+                notifications: NOTIFICATIONS,
+                unread_count: 1,
+              })}
+              markRead={async () => {}}
+              markAllRead={async () => {}}
+              dropdownMenu={DropdownMenu}
+            />
+          </div>
+        </section>
+
+        {/* Command palette */}
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Command palette</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              Cmd/Ctrl+K host wired to the theme CommandPalette. Press the button below to open.
+            </p>
+          </div>
+          <div className="rounded-lg border border-ph-border-subtle bg-ph-raised p-6">
+            <CommandPaletteHost
+              items={PALETTE_ITEMS}
+              commandPalette={CommandPalette}
+            />
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setPaletteOpen(true)}
+              className="mt-4"
+            >
+              Open command palette
+            </Button>
+            <CommandPalette
+              items={PALETTE_ITEMS}
+              isOpen={paletteOpen}
+              onClose={() => setPaletteOpen(false)}
+            />
+          </div>
+        </section>
+
+        {/* Mobile drawer */}
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Mobile drawer</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              Slide-in panel with backdrop, Escape close, and body scroll-lock.
+            </p>
+          </div>
+          <div className="rounded-lg border border-ph-border-subtle bg-ph-raised p-6">
+            <Button variant="secondary" size="sm" onClick={() => setDrawerOpen(true)}>
+              Open drawer
+            </Button>
+            <SuiteMobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} showCloseButton dialogLabel="Demo navigation">
+              <div className="p-4 space-y-2">
+                <a href="#suite" className="block rounded-lg px-3 py-2 text-sm text-ph-ink hover:bg-ph-muted">Today</a>
+                <a href="#suite" className="block rounded-lg px-3 py-2 text-sm text-ph-ink hover:bg-ph-muted">Track time</a>
+                <a href="#suite" className="block rounded-lg px-3 py-2 text-sm text-ph-ink hover:bg-ph-muted">Reports</a>
+              </div>
+            </SuiteMobileDrawer>
+          </div>
+        </section>
+
+        {/* Settings mobile nav */}
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Settings mobile nav</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              Horizontal scrollable icon+label pills for mobile settings.
+            </p>
+          </div>
+          <div className="rounded-lg border border-ph-border-subtle bg-ph-raised p-4">
+            <SuiteSettingsMobileNav
+              items={SETTINGS_ITEMS.map((item) => ({ ...item, icon: item.icon }))}
+              activeHref={settingsHref}
+              onSelect={(href) => setSettingsHref(href)}
+            />
+          </div>
+        </section>
+
+        {/* Skeletons */}
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Skeletons</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              Shared loading placeholders using the theme shimmer.
+            </p>
+          </div>
+          <div className="grid gap-4 rounded-lg border border-ph-border-subtle bg-ph-raised p-6 sm:grid-cols-2 lg:grid-cols-3">
+            <SuiteSkeleton lines={3} />
+            <SuiteSkeletonCard rows={3} />
+            <SuiteSkeletonList items={3} />
+          </div>
+        </section>
+
+        {/* Page layout primitives */}
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Page layout primitives</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              SuitePage, SuitePageHeader, SuiteToolbar, SuiteTabList, and SuiteSectionHeader.
+            </p>
+          </div>
+          <div className="rounded-lg border border-ph-border-subtle bg-ph-raised p-6">
+            <SuitePage width="content" inset className="rounded-xl border border-ph-border bg-ph-surface shadow-sm">
+              <SuitePageHeader
+                eyebrow="Workspace"
+                title="Projects"
+                description="Manage client work across the suite."
+                actions={
+                  <SuiteToolbar>
+                    <Button variant="secondary" size="sm">Filter</Button>
+                    <Button variant="primary" size="sm" icon={<Plus className="h-3.5 w-3.5" />}>New</Button>
+                  </SuiteToolbar>
+                }
+              />
+              <SuiteTabList label="Project views" className="mt-6">
+                <Button variant="ghost" size="sm">Board</Button>
+                <Button variant="ghost" size="sm">List</Button>
+                <Button variant="ghost" size="sm">Calendar</Button>
+              </SuiteTabList>
+              <SuiteSectionHeader
+                title="Active projects"
+                description="3 projects with work this week"
+                action={<Button variant="ghost" size="sm">View all</Button>}
+                className="mt-6"
+              />
+            </SuitePage>
+          </div>
+        </section>
+
+        {/* Today frame */}
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Today page chrome</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              TodayPageFrame and TodayCalibrating loading state.
+            </p>
+          </div>
+          <div className="grid gap-4 rounded-lg border border-ph-border-subtle bg-ph-raised p-6 sm:grid-cols-2">
+            <div className="h-48 overflow-hidden rounded-xl">
+              <TodayPageFrame>
+                <div className="p-6 text-sm text-ph-ink">Today page content goes here.</div>
+              </TodayPageFrame>
+            </div>
+            <div className="flex h-48 items-center justify-center rounded-xl border border-ph-border bg-ph-surface">
+              <TodayCalibrating spinner={Spinner} />
+            </div>
+          </div>
+        </section>
+
+        {/* Suite glyphs */}
         <section className="ph-panel space-y-4">
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Suite glyphs</h3>
@@ -85,6 +445,7 @@ export default function SuiteShowcase() {
           </div>
         </section>
 
+        {/* Accent tints */}
         <section className="ph-panel space-y-4">
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Accent tints</h3>
