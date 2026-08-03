@@ -72,9 +72,9 @@ const SUITE_APPS: SuiteAppEntry[] = REAL_APPS.map((app) => ({
 }));
 
 const BOTTOM_NAV_ITEMS: SuiteBottomNavItem[] = [
-  { href: "#suite", label: "Today", icon: Home, active: true },
-  { href: "#suite", label: "Track", icon: Calendar },
-  { href: "#suite", label: "Reports", icon: Search },
+  { href: "#suite-today", label: "Today", icon: Home, active: true },
+  { href: "#suite-track", label: "Track", icon: Calendar },
+  { href: "#suite-reports", label: "Reports", icon: Search },
 ];
 
 const SETTINGS_ITEMS = [
