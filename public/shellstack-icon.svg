@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="256" height="256" role="img" aria-labelledby="term-title term-desc">
+  <title id="term-title">ShellStack logo</title>
+  <desc id="term-desc">The final resolved frame of the ShellStack animated logo.</desc>
+  <g>
+    <path d="M 46 32 L 36 49.3 L 16 49.3 L 6 32 L 16 14.7 L 36 14.7 Z" fill="#5E5893" stroke="#5E5893" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M 37 22 H 15 V 42 H 37 V 28 H 21 V 36 H 31 V 31 H 26" pathLength="100" fill="none" stroke="#c4a7e7" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g>
+    <rect x="30" y="26" width="28" height="26" rx="5" fill="#191724" stroke="#403d52" stroke-width="1"/>
+    <path d="M 36.5 33.5 L 42 39 L 36.5 44.5" fill="none" stroke="#eb6f92" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

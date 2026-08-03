@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, type ReactNode, type HTMLAttributes } from
 import { cn } from "@/lib/cn";
 
 export interface ContextMenuItem {
-  label: string;
+  label?: string;
   onClick?: () => void;
   disabled?: boolean;
   separator?: boolean;

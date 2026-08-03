@@ -5,7 +5,7 @@ import { cn } from "@/lib/cn";
 
 export interface MenubarItem {
   label: string;
-  items?: { label: string; onClick?: () => void; disabled?: boolean; separator?: boolean }[];
+  items?: { label?: string; onClick?: () => void; disabled?: boolean; separator?: boolean }[];
 }
 
 export interface MenubarProps extends HTMLAttributes<HTMLDivElement> {

@@ -32,6 +32,7 @@ import SetupThemeShowcase from "@/components/sections/SetupThemeShowcase";
 import SidebarShowcase from "@/components/sections/SidebarShowcase";
 import StackShowcase from "@/components/sections/StackShowcase";
 import StepperShowcase from "@/components/sections/StepperShowcase";
+import SuiteShowcase from "@/components/sections/SuiteShowcase";
 import SwapShowcase from "@/components/sections/SwapShowcase";
 import TabShowcase from "@/components/sections/TabShowcase";
 import TableShowcase from "@/components/sections/TableShowcase";
@@ -42,23 +43,35 @@ import UtilityShowcase from "@/components/sections/UtilityShowcase";
 
 import { AppLayout, Button, Sidebar, ThemeSwitcher, CollapsibleSection } from "@/components/ui";
 import ProductLayoutsShowcase from "@/components/sections/ProductLayoutsShowcase";
-import { Home as LucideHome, Search, Flag, Bell, Zap, Plus } from "lucide-react";
+import { Home as HomeIcon, Search, TriangleFlag, Bell, Flash, Plus } from "iconoir-react";
 import { IconAreaChart } from "@/components/icons";
+import Image from "next/image";
+
+const APP_ICON_SIZE = 20;
 
 const sidebarGroups = [
   {
+    label: "Suite apps",
+    items: [
+      { label: "TurtleTime", icon: <Image src="/turtletime-icon.svg" alt="TurtleTime" width={APP_ICON_SIZE} height={APP_ICON_SIZE} className="h-4 w-4" unoptimized />, href: "#suite" },
+      { label: "Tides", icon: <Image src="/tides-icon.svg" alt="Tides" width={APP_ICON_SIZE} height={APP_ICON_SIZE} className="h-4 w-4" unoptimized />, href: "#suite" },
+      { label: "Kraken", icon: <Image src="/kraken-icon.svg" alt="Kraken" width={APP_ICON_SIZE} height={APP_ICON_SIZE} className="h-4 w-4" unoptimized />, href: "#suite" },
+      { label: "ShellStack", icon: <Image src="/shellstack-icon.svg" alt="ShellStack" width={APP_ICON_SIZE} height={APP_ICON_SIZE} className="h-4 w-4" unoptimized />, href: "#suite" },
+    ],
+  },
+  {
     label: "Overview",
     items: [
-      { label: "Home", icon: <LucideHome className="h-4 w-4" />, href: "#", active: true },
+      { label: "Home", icon: <HomeIcon className="h-4 w-4" />, href: "#", active: true },
       { label: "Icons", icon: <Search className="h-4 w-4" />, href: "#icons" },
-      { label: "Colours", icon: <Flag className="h-4 w-4" />, href: "#colors" },
+      { label: "Colours", icon: <TriangleFlag className="h-4 w-4" />, href: "#colors" },
     ],
   },
   {
     label: "Components",
     items: [
-      { label: "Buttons", icon: <Zap className="h-4 w-4" />, href: "#buttons" },
-      { label: "Badges", icon: <Flag className="h-4 w-4" />, href: "#badges" },
+      { label: "Buttons", icon: <Flash className="h-4 w-4" />, href: "#buttons" },
+      { label: "Badges", icon: <TriangleFlag className="h-4 w-4" />, href: "#badges" },
       { label: "Alerts", icon: <Bell className="h-4 w-4" />, href: "#alerts" },
       { label: "Cards", icon: <IconAreaChart className="h-4 w-4" />, href: "#cards" },
       { label: "Inputs", href: "#forms" },
@@ -66,6 +79,7 @@ const sidebarGroups = [
       { label: "Modals & Drawers", href: "#modals" },
       { label: "Navigation", href: "#navigation" },
       { label: "Sidebar", href: "#sidebar-demo" },
+      { label: "Suite", href: "#suite" },
       { label: "Settings", href: "#settings" },
     ],
   },
@@ -96,6 +110,7 @@ const sidebarGroups = [
 const headerLinks = [
       { label: "Icons", href: "#icons" },
       { label: "Sidebar", href: "#sidebar-demo" },
+      { label: "Suite", href: "#suite" },
       { label: "Components", href: "#buttons" },
   { label: "Dashboards", href: "#quill-dashboard" },
 ];
@@ -192,6 +207,7 @@ export default function Home() {
           <SidebarShowcase />
           <StackShowcase />
           <StepperShowcase />
+          <SuiteShowcase />
           <SwapShowcase />
           <TabShowcase />
           <TableShowcase />

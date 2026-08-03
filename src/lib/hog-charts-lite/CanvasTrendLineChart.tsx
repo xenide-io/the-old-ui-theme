@@ -2,6 +2,7 @@
 
 import { scaleLinear, scalePoint } from "d3-scale";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { JSX } from "react";
 
 import type { HogChartTheme, HogLineSeries } from "./hog-charts-types";
 
