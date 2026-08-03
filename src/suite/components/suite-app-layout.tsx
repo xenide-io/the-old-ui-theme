@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode } from 'react';
+import { type ReactNode, type PointerEvent } from 'react';
 
 import { cn } from '../lib/cn';
 
@@ -14,7 +14,7 @@ export interface SuiteAppLayoutProps {
   /** True when the sidebar is collapsed to the icon rail. */
   collapsed?: boolean;
   /** Drag this to resize the sidebar. */
-  onStartResize?: () => void;
+  onStartResize?: (e: PointerEvent<HTMLDivElement>) => void;
   /** Double-click to reset sidebar width. */
   onResetWidth?: () => void;
   className?: string;
