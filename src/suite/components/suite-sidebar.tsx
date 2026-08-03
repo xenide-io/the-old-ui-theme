@@ -3,16 +3,16 @@
 import { type ReactNode } from 'react';
 import Image from 'next/image';
 
-import { Sidebar, AppLayout, type SidebarItemDef } from '@/components/ui';
+import { Sidebar, type SidebarItemDef } from '@/components/ui';
 import { cn } from '../lib/cn';
 import {
   AppSwitcher,
-  AppSwitcherMark,
-  AppSwitcherChevron,
   type SuiteAppEntry,
 } from './app-switcher';
 import { DropdownMenu, DropdownItem } from '@/components/ui/DropdownMenu';
 import type { SuiteNavIcon } from './suite-bottom-nav';
+
+type CollapsedNode = ReactNode | ((collapsed: boolean) => ReactNode);
 
 export interface SuiteSidebarNavItem {
   href: string;
@@ -24,21 +24,28 @@ export interface SuiteSidebarNavItem {
 }
 
 export interface SuiteSidebarProps {
-  apps: SuiteAppEntry[];
-  currentApp: string;
-  onAppSelect: (app: SuiteAppEntry) => void;
+  /** Optional custom app switcher node, or a function of collapsed state. If omitted, a default AppSwitcher is rendered from `apps`/`currentApp`/`onAppSelect`. */
+  appSwitcher?: CollapsedNode;
+  apps?: SuiteAppEntry[];
+  currentApp?: string;
+  onAppSelect?: (app: SuiteAppEntry) => void;
   /** Workspace/org/project switcher rendered below the app switcher. */
-  contextSwitcher: ReactNode;
+  contextSwitcher: CollapsedNode;
   navItems: SuiteSidebarNavItem[];
   /** Optional secondary nav / tree rendered below primary nav (e.g. Tides projects, Kraken docs). */
   secondaryNav?: ReactNode;
-  userMenu: ReactNode;
-  notificationBell?: ReactNode;
+  userMenu: CollapsedNode;
+  notificationBell?: CollapsedNode;
   /** Optional extra footer content placed next to the user menu. */
-  footerExtras?: ReactNode;
+  footerExtras?: CollapsedNode;
   collapsed?: boolean;
   onCollapse?: (collapsed: boolean) => void;
   className?: string;
+}
+
+function renderNode(node: CollapsedNode | undefined, collapsed: boolean): ReactNode {
+  if (typeof node === 'function') return node(collapsed);
+  return node;
 }
 
 /**
@@ -48,6 +55,7 @@ export interface SuiteSidebarProps {
  * shares the same chrome.
  */
 export function SuiteSidebar({
+  appSwitcher,
   apps,
   currentApp,
   onAppSelect,
@@ -61,7 +69,37 @@ export function SuiteSidebar({
   onCollapse,
   className,
 }: SuiteSidebarProps) {
-  const current = apps.find((a) => a.slug === currentApp) ?? apps[0];
+  const current = apps?.find((a) => a.slug === currentApp);
+
+  const defaultAppSwitcher =
+    apps && currentApp && onAppSelect && current ? (
+      <AppSwitcher
+        apps={apps}
+        currentApp={currentApp}
+        onSelect={onAppSelect}
+        mark={
+          <div className="relative h-7 w-7 overflow-hidden rounded-lg">
+            <Image
+              src={current.icon}
+              alt={current.name}
+              width={28}
+              height={28}
+              className="h-full w-full"
+              unoptimized
+            />
+          </div>
+        }
+        title={
+          <span className="flex min-w-0 flex-col">
+            <span className="truncate text-sm font-semibold text-ph-ink">{current.name}</span>
+            <span className="truncate text-xs text-ph-mutedtext">ShellStack workspace</span>
+          </span>
+        }
+        collapsed={collapsed}
+        dropdownMenu={DropdownMenu}
+        dropdownItem={DropdownItem}
+      />
+    ) : null;
 
   const header = (
     <div className={cn('flex flex-col gap-3', collapsed && 'items-center')}>
@@ -71,45 +109,16 @@ export function SuiteSidebar({
           collapsed ? 'flex-col' : 'justify-between',
         )}
       >
-        <AppSwitcher
-          apps={apps}
-          currentApp={currentApp}
-          onSelect={onAppSelect}
-          mark={
-            current ? (
-              <div className="relative h-7 w-7 overflow-hidden rounded-lg">
-                <Image
-                  src={current.icon}
-                  alt={current.name}
-                  width={28}
-                  height={28}
-                  className="h-full w-full"
-                  unoptimized
-                />
-              </div>
-            ) : null
-          }
-          title={
-            current ? (
-              <span className="flex min-w-0 flex-col">
-                <span className="truncate text-sm font-semibold text-ph-ink">
-                  {current.name}
-                </span>
-                <span className="truncate text-xs text-ph-mutedtext">
-                  ShellStack workspace
-                </span>
-              </span>
-            ) : null
-          }
-          collapsed={collapsed}
-          dropdownMenu={DropdownMenu}
-          dropdownItem={DropdownItem}
-        />
+        <div className={collapsed ? undefined : 'min-w-0 flex-1'}>
+          {renderNode(appSwitcher, collapsed) ?? defaultAppSwitcher}
+        </div>
         {!collapsed && notificationBell ? (
-          <div className="shrink-0">{notificationBell}</div>
+          <div className="shrink-0">{renderNode(notificationBell, collapsed)}</div>
         ) : null}
       </div>
-      <div className={cn(collapsed && 'flex justify-center')}>{contextSwitcher}</div>
+      <div className={cn(collapsed && 'flex justify-center')}>
+        {renderNode(contextSwitcher, collapsed)}
+      </div>
     </div>
   );
 
@@ -136,8 +145,8 @@ export function SuiteSidebar({
       header={header}
       footer={
         <div className={cn('flex items-center gap-2', collapsed && 'justify-center')}>
-          {userMenu}
-          {!collapsed && footerExtras ? <div className="ml-auto shrink-0">{footerExtras}</div> : null}
+          {renderNode(userMenu, collapsed)}
+          {!collapsed && footerExtras ? <div className="ml-auto shrink-0">{renderNode(footerExtras, collapsed)}</div> : null}
         </div>
       }
       collapsed={collapsed}
