@@ -246,9 +246,22 @@ export default function SuiteShowcase() {
                 sidebarWidth={220}
                 sidebar={
                   <SuiteSidebar
-                    apps={SUITE_APPS}
-                    currentApp={currentApp}
-                    onAppSelect={(entry) => setCurrentApp(entry.slug)}
+                    appSwitcher={
+                      <AppSwitcher
+                        apps={SUITE_APPS}
+                        currentApp={currentApp}
+                        onSelect={(entry) => setCurrentApp(entry.slug)}
+                        mark={<DemoAppIcon app={currentApp as RealAppSlug} />}
+                        title={
+                          <span className="flex min-w-0 flex-col">
+                            <span className="truncate text-sm font-semibold text-ph-ink">{APP_ACCENTS[currentApp as RealAppSlug].label}</span>
+                            <span className="truncate text-xs text-ph-mutedtext">ShellStack workspace</span>
+                          </span>
+                        }
+                        dropdownMenu={DropdownMenu}
+                        dropdownItem={InjectedDropdownItem}
+                      />
+                    }
                     contextSwitcher={
                       <div className="flex items-center gap-2 rounded-lg border border-ph-border bg-ph-surface px-2 py-1.5 text-sm text-ph-ink">
                         <span className="h-5 w-5 rounded bg-ph-brand text-[10px] font-bold text-[var(--ph-on-accent)] flex items-center justify-center">S</span>
@@ -313,9 +326,22 @@ export default function SuiteShowcase() {
                 sidebarWidth={240}
                 sidebar={
                   <SuiteSidebar
-                    apps={SUITE_APPS}
-                    currentApp={currentApp}
-                    onAppSelect={(entry) => setCurrentApp(entry.slug)}
+                    appSwitcher={
+                      <AppSwitcher
+                        apps={SUITE_APPS}
+                        currentApp={currentApp}
+                        onSelect={(entry) => setCurrentApp(entry.slug)}
+                        mark={<DemoAppIcon app={currentApp as RealAppSlug} />}
+                        title={
+                          <span className="flex min-w-0 flex-col">
+                            <span className="truncate text-sm font-semibold text-ph-ink">{APP_ACCENTS[currentApp as RealAppSlug].label}</span>
+                            <span className="truncate text-xs text-ph-mutedtext">ShellStack workspace</span>
+                          </span>
+                        }
+                        dropdownMenu={DropdownMenu}
+                        dropdownItem={InjectedDropdownItem}
+                      />
+                    }
                     contextSwitcher={
                       <div className="flex items-center gap-2 rounded-lg border border-ph-border bg-ph-surface px-2 py-1.5 text-sm text-ph-ink">
                         <span className="h-5 w-5 rounded bg-ph-brand text-[10px] font-bold text-[var(--ph-on-accent)] flex items-center justify-center">W</span>

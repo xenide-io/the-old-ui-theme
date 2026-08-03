@@ -38,7 +38,7 @@ export function SuiteAppLayout({
   className,
 }: SuiteAppLayoutProps) {
   return (
-    <div className={cn('min-h-screen', className)}>
+    <div data-test="app-shell" className={cn('min-h-screen', className)}>
       <div className="hidden lg:flex h-screen overflow-hidden">
         <aside
           className="relative shrink-0 border-r border-ph-border bg-ph-canvas transition-[width] duration-200 ease-out"
