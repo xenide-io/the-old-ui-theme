@@ -95,3 +95,11 @@ export {
   SuiteSettingsMobileNav,
   type SuiteSettingsNavItem,
 } from './components/suite-settings-mobile-nav';
+export {
+  SuiteSidebar,
+  type SuiteSidebarNavItem,
+} from './components/suite-sidebar';
+export {
+  SuiteAppLayout,
+  type SuiteAppLayoutProps,
+} from './components/suite-app-layout';

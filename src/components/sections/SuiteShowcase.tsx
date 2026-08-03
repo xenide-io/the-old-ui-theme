@@ -45,6 +45,8 @@ import {
 } from "@/suite/components/suite-layout";
 import { TodayPageFrame } from "@/suite/components/today-page-frame";
 import { TodayCalibrating } from "@/suite/components/today-calibrating";
+import { SuiteSidebar, type SuiteSidebarNavItem } from "@/suite/components/suite-sidebar";
+import { SuiteAppLayout } from "@/suite/components/suite-app-layout";
 import {
   SuiteIcon,
   SUITE_ICON_NAMES,
@@ -81,6 +83,13 @@ const SETTINGS_ITEMS = [
   { href: "#profile", label: "Profile", icon: User },
   { href: "#account", label: "Account", icon: Settings },
   { href: "#notifications", label: "Notifications", icon: Bell },
+];
+
+const SIDEBAR_NAV_ITEMS: SuiteSidebarNavItem[] = [
+  { href: "#suite-today", label: "Today", icon: Home, active: true },
+  { href: "#suite-track", label: "Tracker", icon: Calendar },
+  { href: "#suite-reports", label: "Reports", icon: Search },
+  { href: "#suite-settings", label: "Settings", icon: Settings },
 ];
 
 const NOTIFICATIONS: SuiteNotification[] = [
@@ -219,6 +228,79 @@ export default function SuiteShowcase() {
                 dropdownMenu={DropdownMenu}
                 dropdownItem={InjectedDropdownItem}
               />
+            </div>
+          </div>
+        </section>
+
+        {/* Sidebar + app layout */}
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Standardised app shell</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              SuiteSidebar + SuiteAppLayout — the same sidebar and responsive shell every app should use.
+            </p>
+          </div>
+          <div className="overflow-hidden rounded-lg border border-ph-border-subtle bg-ph-raised"
+          >
+            <div className="hidden lg:block h-[420px]"
+            >
+              <SuiteAppLayout
+                sidebarWidth={220}
+                sidebar={
+                  <SuiteSidebar
+                    apps={SUITE_APPS}
+                    currentApp={currentApp}
+                    onAppSelect={(entry) => setCurrentApp(entry.slug)}
+                    workspaceSwitcher={
+                      <div className="flex items-center gap-2 rounded-lg border border-ph-border bg-ph-surface px-2 py-1.5 text-sm text-ph-ink"
+                      >
+                        <span className="h-5 w-5 rounded bg-ph-brand text-[10px] font-bold text-[var(--ph-on-accent)] flex items-center justify-center">S</span>
+                        ShellStack
+                      </div>
+                    }
+                    navItems={SIDEBAR_NAV_ITEMS}
+                    notificationBell={
+                      <Button variant="ghost" size="sm" icon={<Bell className="h-4 w-4" />} aria-label="Notifications" />
+                    }
+                    userMenu={
+                      <SuiteUserMenu
+                        name="Jane Doe"
+                        email="jane@xenide.io"
+                        settingsHref="#settings"
+                        onSignOut={() => {}}
+                      />
+                    }
+                  />
+                }
+              >
+                <div className="p-6 text-sm text-ph-subtle"
+                >
+                  Main content area. On desktop the sidebar is fixed; on mobile it collapses to the suite mobile chrome.
+                </div>
+              </SuiteAppLayout>
+            </div>
+            <div className="flex flex-col lg:hidden h-[420px]"
+            >
+              <SuiteMobileHeader
+                onMenuClick={() => setDrawerOpen((v) => !v)}
+                title={
+                  <div className="flex items-center gap-2">
+                    <DemoAppIcon app={currentApp as RealAppSlug} />
+                    <span className="font-semibold text-ph-ink">{APP_ACCENTS[currentApp as RealAppSlug].label}</span>
+                  </div>
+                }
+                actions={
+                  <>
+                    <Button variant="ghost" size="sm" icon={<Bell className="h-4 w-4" />} aria-label="Notifications" />
+                    <div className="h-8 w-8 rounded-full bg-ph-brand text-xs font-bold text-[var(--ph-on-accent)] flex items-center justify-center">JD</div>
+                  </>
+                }
+              />
+              <main className="flex-1 p-4 text-sm text-ph-subtle"
+              >
+                Mobile content area.
+              </main>
+              <SuiteBottomNav items={BOTTOM_NAV_ITEMS} />
             </div>
           </div>
         </section>
