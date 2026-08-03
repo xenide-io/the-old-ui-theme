@@ -134,9 +134,9 @@ export function SuiteSidebar({
     };
   });
 
-  const groups: { label: string; items: SidebarItemDef[] }[] = [{ label: 'Navigation', items }];
+  const groups: { label?: string; items: SidebarItemDef[] }[] = [{ items }];
   if (secondaryNav && !collapsed) {
-    groups.push({ label: '', items: [] });
+    groups.push({ items: [] });
   }
 
   return (
