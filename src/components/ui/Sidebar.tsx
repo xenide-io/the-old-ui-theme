@@ -22,11 +22,12 @@ export interface SidebarProps {
   className?: string;
   header?: ReactNode;
   footer?: ReactNode;
+  children?: ReactNode;
   collapsed?: boolean;
   onCollapse?: (collapsed: boolean) => void;
 }
 
-export function Sidebar({ groups, className, header, footer, collapsed = false, onCollapse }: SidebarProps) {
+export function Sidebar({ groups, className, header, footer, children, collapsed = false, onCollapse }: SidebarProps) {
   return (
     <nav className={cn("ph-sidebar flex flex-col h-full", collapsed && "ph-sidebar--collapsed", className)}>
       {header && <div className="ph-sidebar__header px-3 py-3 border-b border-ph-border-subtle">{header}</div>}
@@ -46,6 +47,7 @@ export function Sidebar({ groups, className, header, footer, collapsed = false, 
           </div>
         ))}
       </div>
+      {children}
       {footer && <div className="ph-sidebar__footer px-3 py-3 border-t border-ph-border-subtle">{footer}</div>}
     </nav>
   );

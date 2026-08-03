@@ -237,13 +237,11 @@ export default function SuiteShowcase() {
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Standardised app shell</h3>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
-              SuiteSidebar + SuiteAppLayout — the same sidebar and responsive shell every app should use.
+              SuiteSidebar + SuiteAppLayout — the same sidebar and responsive shell every app should use. TurtleTime-style: primary nav + account footer.
             </p>
           </div>
-          <div className="overflow-hidden rounded-lg border border-ph-border-subtle bg-ph-raised"
-          >
-            <div className="hidden lg:block h-[420px]"
-            >
+          <div className="overflow-hidden rounded-lg border border-ph-border-subtle bg-ph-raised h-[420px]">
+            <div className="hidden lg:block h-full">
               <SuiteAppLayout
                 sidebarWidth={220}
                 sidebar={
@@ -251,9 +249,8 @@ export default function SuiteShowcase() {
                     apps={SUITE_APPS}
                     currentApp={currentApp}
                     onAppSelect={(entry) => setCurrentApp(entry.slug)}
-                    workspaceSwitcher={
-                      <div className="flex items-center gap-2 rounded-lg border border-ph-border bg-ph-surface px-2 py-1.5 text-sm text-ph-ink"
-                      >
+                    contextSwitcher={
+                      <div className="flex items-center gap-2 rounded-lg border border-ph-border bg-ph-surface px-2 py-1.5 text-sm text-ph-ink">
                         <span className="h-5 w-5 rounded bg-ph-brand text-[10px] font-bold text-[var(--ph-on-accent)] flex items-center justify-center">S</span>
                         ShellStack
                       </div>
@@ -273,14 +270,12 @@ export default function SuiteShowcase() {
                   />
                 }
               >
-                <div className="p-6 text-sm text-ph-subtle"
-                >
+                <div className="p-6 text-sm text-ph-subtle">
                   Main content area. On desktop the sidebar is fixed; on mobile it collapses to the suite mobile chrome.
                 </div>
               </SuiteAppLayout>
             </div>
-            <div className="flex flex-col lg:hidden h-[420px]"
-            >
+            <div className="flex flex-col lg:hidden h-full">
               <SuiteMobileHeader
                 onMenuClick={() => setDrawerOpen((v) => !v)}
                 title={
@@ -296,11 +291,109 @@ export default function SuiteShowcase() {
                   </>
                 }
               />
-              <main className="flex-1 p-4 text-sm text-ph-subtle"
-              >
+              <main className="flex-1 p-4 text-sm text-ph-subtle">
                 Mobile content area.
               </main>
               <SuiteBottomNav items={BOTTOM_NAV_ITEMS} />
+            </div>
+          </div>
+        </section>
+
+        {/* Sidebar with secondary nav / project tree */}
+        <section className="ph-panel space-y-4">
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-ph-mutedtext">Sidebar with project tree</h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ph-subtle">
+              Tides / Kraken pattern: primary nav above, secondary project/document tree below, and a mobile browse button that opens the same tree in a drawer.
+            </p>
+          </div>
+          <div className="overflow-hidden rounded-lg border border-ph-border-subtle bg-ph-raised h-[420px]">
+            <div className="hidden lg:block h-full">
+              <SuiteAppLayout
+                sidebarWidth={240}
+                sidebar={
+                  <SuiteSidebar
+                    apps={SUITE_APPS}
+                    currentApp={currentApp}
+                    onAppSelect={(entry) => setCurrentApp(entry.slug)}
+                    contextSwitcher={
+                      <div className="flex items-center gap-2 rounded-lg border border-ph-border bg-ph-surface px-2 py-1.5 text-sm text-ph-ink">
+                        <span className="h-5 w-5 rounded bg-ph-brand text-[10px] font-bold text-[var(--ph-on-accent)] flex items-center justify-center">W</span>
+                        Workspace
+                      </div>
+                    }
+                    navItems={SIDEBAR_NAV_ITEMS}
+                    secondaryNav={
+                      <div className="space-y-1">
+                        <p className="px-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-ph-mutedtext">Projects</p>
+                        <button type="button" className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-ph-subtle hover:bg-ph-muted">
+                          <span className="h-2 w-2 rounded-full bg-ph-brand" />
+                          Acme Corp
+                        </button>
+                        <button type="button" className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-ph-subtle hover:bg-ph-muted">
+                          <span className="h-2 w-2 rounded-full bg-ph-accent" />
+                          Globex
+                        </button>
+                      </div>
+                    }
+                    notificationBell={
+                      <Button variant="ghost" size="sm" icon={<Bell className="h-4 w-4" />} aria-label="Notifications" />
+                    }
+                    userMenu={
+                      <SuiteUserMenu
+                        name="Jane Doe"
+                        email="jane@xenide.io"
+                        settingsHref="#settings"
+                        onSignOut={() => {}}
+                      />
+                    }
+                  />
+                }
+              >
+                <div className="p-6 text-sm text-ph-subtle">
+                  Desktop content area. The project tree lives inside the sidebar via the <code className="rounded bg-ph-muted px-1 py-0.5 text-xs">secondaryNav</code> prop.
+                </div>
+              </SuiteAppLayout>
+            </div>
+            <div className="flex flex-col lg:hidden h-full">
+              <SuiteMobileHeader
+                title={
+                  <div className="flex items-center gap-2">
+                    <DemoAppIcon app={currentApp as RealAppSlug} />
+                    <span className="font-semibold text-ph-ink">{APP_ACCENTS[currentApp as RealAppSlug].label}</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setDrawerOpen(true)}
+                      icon={<Search className="h-4 w-4" />}
+                      aria-label="Browse projects"
+                    />
+                  </div>
+                }
+                actions={
+                  <>
+                    <Button variant="ghost" size="sm" icon={<Bell className="h-4 w-4" />} aria-label="Notifications" />
+                    <div className="h-8 w-8 rounded-full bg-ph-brand text-xs font-bold text-[var(--ph-on-accent)] flex items-center justify-center">JD</div>
+                  </>
+                }
+              />
+              <main className="flex-1 p-4 text-sm text-ph-subtle">
+                Mobile content area. Tap the search icon in the header to open the project tree drawer.
+              </main>
+              <SuiteBottomNav items={BOTTOM_NAV_ITEMS} />
+              <SuiteMobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} showCloseButton dialogLabel="Browse projects" side="right">
+                <div className="p-4 space-y-1">
+                  <p className="px-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-ph-mutedtext">Projects</p>
+                  <button type="button" className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-ph-subtle hover:bg-ph-muted">
+                    <span className="h-2 w-2 rounded-full bg-ph-brand" />
+                    Acme Corp
+                  </button>
+                  <button type="button" className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-ph-subtle hover:bg-ph-muted">
+                    <span className="h-2 w-2 rounded-full bg-ph-accent" />
+                    Globex
+                  </button>
+                </div>
+              </SuiteMobileDrawer>
             </div>
           </div>
         </section>

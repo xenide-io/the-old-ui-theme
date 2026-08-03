@@ -27,28 +27,36 @@ export interface SuiteSidebarProps {
   apps: SuiteAppEntry[];
   currentApp: string;
   onAppSelect: (app: SuiteAppEntry) => void;
-  workspaceSwitcher: ReactNode;
+  /** Workspace/org/project switcher rendered below the app switcher. */
+  contextSwitcher: ReactNode;
   navItems: SuiteSidebarNavItem[];
+  /** Optional secondary nav / tree rendered below primary nav (e.g. Tides projects, Kraken docs). */
+  secondaryNav?: ReactNode;
   userMenu: ReactNode;
   notificationBell?: ReactNode;
+  /** Optional extra footer content placed next to the user menu. */
+  footerExtras?: ReactNode;
   collapsed?: boolean;
   onCollapse?: (collapsed: boolean) => void;
   className?: string;
 }
 
 /**
- * Standardised ShellStack sidebar — app switcher, workspace switcher,
- * primary navigation, and an account footer. Built on top of the theme
- * `Sidebar` and `AppSwitcher` so every app shares the same chrome.
+ * Standardised ShellStack sidebar — app switcher, context switcher,
+ * primary navigation, optional secondary tree, and an account footer.
+ * Built on top of the theme `Sidebar` and `AppSwitcher` so every app
+ * shares the same chrome.
  */
 export function SuiteSidebar({
   apps,
   currentApp,
   onAppSelect,
-  workspaceSwitcher,
+  contextSwitcher,
   navItems,
+  secondaryNav,
   userMenu,
   notificationBell,
+  footerExtras,
   collapsed = false,
   onCollapse,
   className,
@@ -101,7 +109,7 @@ export function SuiteSidebar({
           <div className="shrink-0">{notificationBell}</div>
         ) : null}
       </div>
-      <div className={cn(collapsed && 'flex justify-center')}>{workspaceSwitcher}</div>
+      <div className={cn(collapsed && 'flex justify-center')}>{contextSwitcher}</div>
     </div>
   );
 
@@ -117,18 +125,30 @@ export function SuiteSidebar({
     };
   });
 
+  const groups: { label: string; items: SidebarItemDef[] }[] = [{ label: 'Navigation', items }];
+  if (secondaryNav && !collapsed) {
+    groups.push({ label: '', items: [] });
+  }
+
   return (
     <Sidebar
-      groups={[{ label: 'Navigation', items }]}
+      groups={groups}
       header={header}
       footer={
         <div className={cn('flex items-center gap-2', collapsed && 'justify-center')}>
           {userMenu}
+          {!collapsed && footerExtras ? <div className="ml-auto shrink-0">{footerExtras}</div> : null}
         </div>
       }
       collapsed={collapsed}
       onCollapse={onCollapse}
       className={className}
-    />
+    >
+      {secondaryNav && !collapsed ? (
+        <div className="px-2 pb-3" data-test="suite-sidebar-secondary-nav">
+          {secondaryNav}
+        </div>
+      ) : null}
+    </Sidebar>
   );
 }
