@@ -80,10 +80,12 @@ export {
 export {
   SuitePage,
   SuitePageHeader,
+  SuiteBreadcrumbs,
   SuiteToolbar,
   SuiteTabList,
   SuiteSectionHeader,
   type SuitePageWidth,
+  type SuiteBreadcrumbsProps,
 } from './components/suite-layout';
 export {
   SuiteSkeleton,
@@ -103,3 +105,4 @@ export {
   SuiteAppLayout,
   type SuiteAppLayoutProps,
 } from './components/suite-app-layout';
+

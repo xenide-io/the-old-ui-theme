@@ -1,7 +1,10 @@
 'use client';
 
-import type { ElementType, ReactNode } from 'react';
+import type { ComponentType, ElementType, ReactNode, SVGProps } from 'react';
 import { cn } from '../lib/cn';
+import { TodayTimeIcon } from './today-ui';
+
+type LucideIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
 const WIDTHS = {
   full: 'max-w-none',
@@ -12,6 +15,51 @@ const WIDTHS = {
 
 export type SuitePageWidth = keyof typeof WIDTHS;
 
+export interface SuiteBreadcrumbsProps {
+  items: { label: ReactNode; href?: string }[];
+  className?: string;
+}
+
+/** Minimal slash-separated breadcrumb line. */
+export function SuiteBreadcrumbs({ items, className }: SuiteBreadcrumbsProps) {
+  return (
+    <nav aria-label="Breadcrumb" className={className}>
+      <ol className="flex min-w-0 items-center gap-1.5">
+        {items.map((item, index) => {
+          const isLast = index === items.length - 1;
+          return (
+            <li key={index} className="flex min-w-0 items-center gap-1.5">
+              {index > 0 ? (
+                <span className="select-none text-ph-border" aria-hidden="true">
+                  /
+                </span>
+              ) : null}
+              {item.href && !isLast ? (
+                <a
+                  href={item.href}
+                  className="truncate transition hover:text-ph-ink"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <span
+                  className={cn(
+                    'truncate',
+                    isLast ? 'font-medium text-ph-ink' : 'text-ph-subtle',
+                  )}
+                  aria-current={isLast ? 'page' : undefined}
+                >
+                  {item.label}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+}
+
 export function SuitePage({
   children,
   width = 'wide',
@@ -19,6 +67,9 @@ export function SuitePage({
   className,
   as: Component = 'div',
   dataTest,
+  id,
+  role,
+  'aria-live': ariaLive,
 }: {
   children: ReactNode;
   width?: SuitePageWidth;
@@ -26,14 +77,23 @@ export function SuitePage({
   className?: string;
   as?: ElementType;
   dataTest?: string;
+  id?: string;
+  role?: string;
+  'aria-live'?: React.AriaAttributes['aria-live'];
 }) {
   return (
     <Component
+      id={id}
       data-test={dataTest}
+      role={role}
+      aria-live={ariaLive}
       className={cn(
         'mx-auto flex w-full min-w-0 flex-col',
         WIDTHS[width],
-        inset && 'px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5 lg:px-8 lg:py-8',
+        // Same inset as TodayPageFrame so every page title sits at the
+        // same baseline regardless of app.
+        inset &&
+          'px-4 pb-10 pt-5 sm:px-6 sm:pt-6 lg:px-8',
         className,
       )}
     >
@@ -50,6 +110,15 @@ export function SuitePageHeader({
   className,
   titleClassName,
   dataTest,
+  /** Optional icon rendered before the title. */
+  icon,
+  /** Use the animated sun/moon icon from the Today page. */
+  todayIcon,
+  todayIconClassName,
+  /** Small badge/pill next to the title (e.g. "Beta", org name). */
+  badge,
+  /** Breadcrumb line rendered above the title. */
+  breadcrumb,
 }: {
   title: ReactNode;
   description?: ReactNode;
@@ -58,37 +127,75 @@ export function SuitePageHeader({
   className?: string;
   titleClassName?: string;
   dataTest?: string;
+  icon?: ReactNode;
+  todayIcon?: boolean;
+  todayIconClassName?: string;
+  badge?: ReactNode;
+  breadcrumb?: ReactNode;
 }) {
+  const resolvedIcon = todayIcon ? (
+    <TodayTimeIcon
+      className={cn(
+        'h-6 w-6 sm:h-7 sm:w-7 text-amber-500',
+        todayIconClassName,
+      )}
+    />
+  ) : (
+    icon
+  );
+
   return (
     <header
       data-test={dataTest}
       className={cn(
-        'flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between',
+        'flex items-start justify-between gap-4 pb-6 sm:pb-7',
         className,
       )}
     >
-      <div className="min-w-0 flex-1">
-        {eyebrow ? (
-          <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-ph-mutedtext">
-            {eyebrow}
+      <div className="flex min-w-0 items-start gap-3">
+        {resolvedIcon ? (
+          <div
+            className="hidden shrink-0 pt-1 sm:block"
+            aria-hidden="true"
+          >
+            {resolvedIcon}
           </div>
         ) : null}
-        <h1
-          className={cn(
-            'font-display text-balance text-[1.5rem] font-bold leading-tight tracking-tight text-ph-ink sm:text-[2.25rem]',
-            titleClassName,
-          )}
-        >
-          {title}
-        </h1>
-        {description ? (
-          <div className="mt-1 max-w-2xl text-pretty text-sm leading-5 text-ph-subtle sm:text-base">
-            {description}
+        <div className="flex min-w-0 flex-col gap-1">
+          {eyebrow ? (
+            <div className="mb-0.5 flex min-w-0 items-center gap-1.5 text-xs text-ph-subtle">
+              {eyebrow}
+            </div>
+          ) : null}
+          {breadcrumb ? (
+            <div className="mb-0.5 flex min-w-0 items-center gap-1.5 text-xs text-ph-subtle">
+              {breadcrumb}
+            </div>
+          ) : null}
+          <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+            <h1
+              className={cn(
+                'font-display text-[1.625rem] font-bold leading-tight tracking-tight text-ph-ink sm:text-[2.25rem]',
+                titleClassName,
+              )}
+            >
+              {title}
+            </h1>
+            {badge ? (
+              <span className="rounded-md bg-ph-muted px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-ph-subtle">
+                {badge}
+              </span>
+            ) : null}
           </div>
-        ) : null}
+          {description ? (
+            <div className="mt-1 max-w-2xl text-pretty text-sm leading-5 text-ph-subtle">
+              {description}
+            </div>
+          ) : null}
+        </div>
       </div>
       {actions ? (
-        <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto sm:shrink-0 sm:justify-end [&_a]:min-h-[48px] [&_button]:min-h-[48px] sm:[&_a]:min-h-[44px] sm:[&_button]:min-h-[44px]">
+        <div className="flex shrink-0 items-center gap-2 pt-1">
           {actions}
         </div>
       ) : null}
@@ -134,10 +241,10 @@ export function SuiteTabList({
     <nav
       aria-label={label}
       data-test={dataTest}
-        className={cn(
-          'flex min-w-0 flex-wrap gap-2 [&_a]:min-h-[48px] [&_button]:min-h-[48px] sm:[&_a]:min-h-[44px] sm:[&_button]:min-h-[44px]',
-          className,
-        )}
+      className={cn(
+        'flex min-w-0 flex-wrap gap-2 [&_a]:min-h-[48px] [&_button]:min-h-[48px] sm:[&_a]:min-h-[44px] sm:[&_button]:min-h-[44px]',
+        className,
+      )}
     >
       {children}
     </nav>

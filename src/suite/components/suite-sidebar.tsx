@@ -82,72 +82,79 @@ export function SuiteSidebar({
       </div>
 
       {/* Nav body */}
-      <nav
-        aria-label="Pages"
+      <div
         className={cn(
-          'flex-1 space-y-1 overflow-y-auto bg-ph-canvas',
+          'flex min-h-0 flex-1 flex-col bg-ph-canvas',
           collapsed ? 'px-1.5 py-2' : 'p-3',
         )}
       >
-        <div className={cn('mb-3', collapsed && 'flex justify-center')}>
-          {renderNode(contextSwitcher, collapsed)}
-        </div>
+        <nav
+          aria-label="Pages"
+          className="shrink-0 space-y-1"
+        >
+          <div className={cn('mb-3', collapsed && 'flex justify-center')}>
+            {renderNode(contextSwitcher, collapsed)}
+          </div>
 
-        <div className="space-y-1">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active = Boolean(item.active);
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                data-test="nav-link"
-                title={collapsed ? item.label : undefined}
-                aria-current={active ? 'page' : undefined}
-                onClick={item.onClick}
-                className={cn(
-                  'relative flex items-center gap-3 rounded-[var(--ph-radius-app)] text-sm font-medium transition-colors',
-                  active
-                    ? 'text-ph-ink'
-                    : 'text-ph-mutedtext hover:bg-ph-muted hover:text-ph-ink',
-                  collapsed
-                    ? 'mx-auto size-11 shrink-0 justify-center gap-0 px-0 py-0'
-                    : 'w-full px-3 py-2.5',
-                )}
-              >
-                {active ? (
-                  <div
-                    className="absolute inset-0 rounded-[var(--ph-radius-app)] border border-ph-border bg-ph-muted shadow-[var(--ph-chrome-inset-face-top),var(--ph-chrome-inset-face-bottom)]"
-                    aria-hidden
-                  />
-                ) : null}
-                <Icon
-                  className="relative h-4 w-4 shrink-0"
-                  strokeWidth={active ? 2 : 1.75}
-                  aria-hidden
-                />
-                <span
+          <div className="space-y-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const active = Boolean(item.active);
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  data-test="nav-link"
+                  title={collapsed ? item.label : undefined}
+                  aria-current={active ? 'page' : undefined}
+                  onClick={item.onClick}
                   className={cn(
-                    'relative truncate',
-                    collapsed && 'sr-only',
+                    'relative flex items-center gap-3 rounded-[var(--ph-radius-app)] text-sm font-medium transition-colors',
+                    active
+                      ? 'text-ph-ink'
+                      : 'text-ph-mutedtext hover:bg-ph-muted hover:text-ph-ink',
+                    collapsed
+                      ? 'mx-auto size-11 shrink-0 justify-center gap-0 px-0 py-0'
+                      : 'w-full px-3 py-2.5',
                   )}
                 >
-                  {item.label}
-                </span>
-                {!collapsed && item.badge ? (
-                  <span className="relative ml-auto shrink-0">{item.badge}</span>
-                ) : null}
-              </Link>
-            );
-          })}
-        </div>
+                  {active ? (
+                    <div
+                      className="absolute inset-0 rounded-[var(--ph-radius-app)] border border-ph-border bg-ph-muted shadow-[var(--ph-chrome-inset-face-top),var(--ph-chrome-inset-face-bottom)]"
+                      aria-hidden
+                    />
+                  ) : null}
+                  <Icon
+                    className="relative h-4 w-4 shrink-0"
+                    strokeWidth={active ? 2 : 1.75}
+                    aria-hidden
+                  />
+                  <span
+                    className={cn(
+                      'relative truncate',
+                      collapsed && 'sr-only',
+                    )}
+                  >
+                    {item.label}
+                  </span>
+                  {!collapsed && item.badge ? (
+                    <span className="relative ml-auto shrink-0">{item.badge}</span>
+                  ) : null}
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
 
-        {secondaryNav && !collapsed ? (
-          <div className="mt-3" data-test="suite-sidebar-secondary-nav">
+        {secondaryNav ? (
+          <div
+            className="min-h-0 flex-1 overflow-y-auto"
+            data-test="suite-sidebar-secondary-nav"
+          >
             {secondaryNav}
           </div>
         ) : null}
-      </nav>
+      </div>
 
       {/* Footer */}
       <div
