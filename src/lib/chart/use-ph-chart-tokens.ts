@@ -6,12 +6,18 @@ export interface ChartTokens {
   series: string[];
   muted: string;
   surface: string;
+  textMuted: string;
+  grid: string;
+  borderStrong: string;
 }
 
 const DEFAULT_TOKENS: ChartTokens = {
   series: ["#1d4aff", "#621da6", "#42827e", "#ce0e74", "#f14f58", "#529a0a", "#fe729e"],
   muted: "hsl(220 9% 90%)",
   surface: "#ffffff",
+  textMuted: "hsl(220 9% 46%)",
+  grid: "hsl(220 13% 91%)",
+  borderStrong: "hsl(220 13% 80%)",
 };
 
 function readTokens(): ChartTokens {
@@ -30,6 +36,9 @@ function readTokens(): ChartTokens {
     ],
     muted: read("--ph-muted", DEFAULT_TOKENS.muted),
     surface: read("--ph-surface", DEFAULT_TOKENS.surface),
+    textMuted: read("--ph-mutedtext", DEFAULT_TOKENS.textMuted),
+    grid: read("--ph-border", DEFAULT_TOKENS.grid),
+    borderStrong: read("--ph-border-strong", DEFAULT_TOKENS.borderStrong),
   };
 }
 

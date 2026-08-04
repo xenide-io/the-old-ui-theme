@@ -1,0 +1,255 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Suite skin — the shared tactile layer for every ShellStack app.
+   Source of truth: the-old-ui/src/styles/suite-skin.css (shipped inside
+   `@xenide-io/the-old-ui-theme`).
+
+   Everything is token-driven (`--ph-*`), so each app's own theme keeps its
+   colours while radius, elevation, motion, and touch behaviour stay
+   identical across the suite. Import AFTER the theme globals: unlayered
+   rules outrank the theme's @layer rules in the cascade, so these win.
+   (No @layer blocks here — Tailwind rejects them in imported files.)
+   ───────────────────────────────────────────────────────────────────────── */
+
+html {
+  /* Native-app touch: no grey flash on tap, no double-tap delay. */
+  -webkit-tap-highlight-color: transparent;
+  /* App-like vertical scrolling: no rubber-band chaining into the page. */
+  overscroll-behavior-y: none;
+}
+
+body {
+  /* OpenRunde optical tweaks — crisper on high-dpi mobile/tablet. */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Cards ──────────────────────────────────────────────────────────────
+   The MASTER spec: 12px radius, resting elevation, hover lift, and a
+   visible press state. Shadows are mixed from the theme's text colour
+   so they adapt to light AND dark themes instead of going muddy. */
+.ph-card {
+  border-radius: var(--suite-radius-card, 12px);
+  border-color: var(--ph-border-subtle);
+  background: var(--ph-surface-raised);
+  box-shadow:
+    0 1px 2px color-mix(in oklab, var(--ph-text-primary) 6%, transparent),
+    0 1px 1px color-mix(in oklab, var(--ph-text-primary) 4%, transparent);
+  transition:
+    border-color 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ph-card-interactive:hover,
+a:hover > .ph-card,
+button:hover > .ph-card {
+  border-color: var(--ph-border-control);
+  box-shadow:
+    0 2px 4px color-mix(in oklab, var(--ph-text-primary) 7%, transparent),
+    0 8px 20px color-mix(in oklab, var(--ph-text-primary) 8%, transparent);
+  transform: translateY(-1px);
+}
+
+/* Press: physical "push in" — the single biggest native-feel signal. */
+.suite-press {
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.suite-press:active {
+  transform: scale(0.98);
+}
+.suite-press-card:active .ph-card,
+.ph-card.suite-press:active {
+  transform: scale(0.985);
+  transition-duration: 80ms;
+}
+
+/* ── App bar (mobile) / top bar (desktop) ───────────────────────────────
+   Translucent, blurred, content scrolls beneath — like every native
+   shell. Colour-mix keeps it on-theme in both modes. */
+.suite-app-bar {
+  background: color-mix(in oklab, var(--ph-canvas) 82%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  padding-top: env(safe-area-inset-top);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .suite-app-bar {
+    background: var(--ph-canvas);
+  }
+}
+
+/* ── Bottom navigation ────────────────────────────────────────────────── */
+/* Fixed to the viewport bottom — never in flow, so browser-chrome resize
+   (URL bar collapse) and page transitions can never move it. A spacer in
+   the layout reserves its height (see component). */
+.suite-bottom-nav {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  background: color-mix(in oklab, var(--ph-canvas) 86%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -1px 0 var(--ph-border-subtle);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .suite-bottom-nav {
+    background: var(--ph-canvas);
+  }
+}
+
+/* Press feedback: the glyph dips, like a native tab bar. */
+.suite-bottom-nav__item svg {
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.suite-bottom-nav__item:active svg {
+  transform: scale(0.88);
+}
+
+/* Active indicator: one soft pill that slides behind the whole active tab —
+   icon AND label — so the selection reads as a single centred unit. The
+   track is one grid column wide and moves with translateX (GPU-composited,
+   no layout work); the visible pill is inset inside the track. Material 3 /
+   iOS-style navigation-bar pattern using the same accent tokens as the
+   sidebar's active link. */
+.suite-bottom-nav__indicator {
+  position: absolute;
+  top: 4px;
+  bottom: calc(4px + env(safe-area-inset-bottom));
+  left: 0;
+  width: calc(100% / var(--suite-nav-items, 5));
+  transform: translateX(calc(var(--suite-nav-active, 0) * 100%));
+  transition: transform 200ms cubic-bezier(0.2, 0.9, 0.3, 1);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+.suite-bottom-nav__indicator::before {
+  content: '';
+  position: absolute;
+  inset: 0 5px;
+  border-radius: 0.9rem;
+  background: var(--ph-accent-highlight-secondary);
+}
+.suite-bottom-nav__icon {
+  transition: color 160ms ease-out;
+}
+.suite-bottom-nav__icon--active {
+  color: var(--ph-accent);
+}
+
+/* ── Today hero: one-shot typography entrance ───────────────────────────
+   Rises and settles when the greeting text arrives (keyed by message).
+   Runs once per message change — never loops, so no battery cost. */
+.today-hero {
+  animation: today-hero-enter 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes today-hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    letter-spacing: 0.01em;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: normal;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .today-hero {
+    animation: none;
+  }
+}
+
+/* ── Today frame: mobile perf ───────────────────────────────────────────
+   blur-3xl + infinite pulse is a GPU/battery hog on phones. Keep the
+   atmosphere on tablet/desktop; flatten it on small screens. */
+@media (max-width: 767px) {
+  .today-page-frame__sun {
+    filter: none;
+    opacity: 0.28;
+    animation: none;
+  }
+  .today-page-frame__cloud {
+    display: none;
+  }
+}
+
+/* ── Mobile bottom sheets ───────────────────────────────────────────────
+   Below lg, every ph-modal becomes a sheet pinned to the bottom edge —
+   the native phone/tablet pattern (Apple HIG, Material 3). Desktop keeps
+   the centred dialog. The overlay's p-4 is removed so the sheet truly
+   touches the screen edges; a grabber handle and safe-area padding come
+   free for every modal in every app. */
+@media (max-width: 1023.98px) {
+  .ph-modal-overlay {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+  .ph-modal-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    max-height: calc(100svh - 3rem) !important;
+    border-radius: 16px 16px 0 0 !important;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* Grabber — first in-flow child, so it sits above flush header rows. */
+  .ph-modal-panel::before {
+    content: '';
+    display: block;
+    flex: none;
+    width: 36px;
+    height: 4px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--ph-text-primary) 18%, transparent);
+    margin: 8px auto 0;
+  }
+}
+
+/* Enter/exit motion is driven by the Modal component (inline transitions)
+   so close animations work too — no CSS keyframes here. */
+
+/* ── Bottom action dock ─────────────────────────────────────────────────
+   The thumb-zone command bar that sits directly above the bottom nav
+   (quick-start, mini-player). Same translucent material as the nav so
+   the two read as one strip of chrome. */
+.suite-dock {
+  background: color-mix(in oklab, var(--ph-canvas) 86%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: 0 -1px 0 var(--ph-border-subtle);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .suite-dock {
+    background: var(--ph-canvas);
+  }
+}
+
+/* ── Drawers / sheets never rubber-band their own scroll ──────────────── */
+.suite-scroll-lock {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Reduced motion: every skin animation honours it ──────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .ph-card,
+  .suite-press,
+  .suite-bottom-nav__item svg,
+  .suite-bottom-nav__indicator,
+  .suite-bottom-nav__icon {
+    transition-duration: 0.01ms;
+  }
+  .suite-press:active,
+  .ph-card.suite-press:active,
+  .suite-press-card:active .ph-card {
+    transform: none;
+  }
+  /* Modal motion is inline (component-driven) — beat it with !important. */
+  .ph-modal-overlay,
+  .ph-modal-panel {
+    transition: none !important;
+  }
+}

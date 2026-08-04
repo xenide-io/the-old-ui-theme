@@ -1,7 +1,7 @@
 /**
  * Maps theme-lab semantic tokens onto hog-charts-style `ChartTheme` colour slots.
  */
-import type { ChartTokens } from "@/lib/chart/ph-chart-tokens";
+import type { ChartTokens } from "@/lib/chart/use-ph-chart-tokens";
 
 import type { HogChartTheme } from "./hog-charts-types";
 

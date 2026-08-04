@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AppLayout, Sidebar, ShowcaseWrapper, Badge, Button } from "@/components/ui";
-import { Home, Bell, Flag, User, Search, Zap } from "lucide-react";
+import { Home, Bell, TriangleFlag, User, Search, Flash } from "iconoir-react";
 
 const sampleGroups = [
   {
@@ -16,9 +16,9 @@ const sampleGroups = [
   {
     label: "Workspace",
     items: [
-      { label: "Projects", icon: <Flag className="h-4 w-4" /> },
+      { label: "Projects", icon: <TriangleFlag className="h-4 w-4" /> },
       { label: "People", icon: <User className="h-4 w-4" /> },
-      { label: "Automations", icon: <Zap className="h-4 w-4" /> },
+      { label: "Automations", icon: <Flash className="h-4 w-4" /> },
     ],
   },
 ];

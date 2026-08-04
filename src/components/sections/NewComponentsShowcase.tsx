@@ -11,7 +11,7 @@ import {
   ComponentDocs, ShowcaseWrapper,
   Button, Card, Badge, Dialog, Input, Checkbox, Textarea, Select,
 } from "@/components/ui";
-import { Bell, Sliders, User, Search, Plus } from "lucide-react";
+import { Bell, Settings, User, Search, Plus } from "iconoir-react";
 
 const bannerCode = `import { Banner } from "@xenide-io/the-old-ui-theme";
 
@@ -42,10 +42,10 @@ const progressCircleCode = `import { ProgressCircle } from "@xenide-io/the-old-u
 </ProgressCircle>`;
 
 const rowCode = `import { Row } from "@xenide-io/the-old-ui-theme";
-import { User, Sliders } from "lucide-react";
+import { User, Settings } from "iconoir-react";
 
 <Row icon={<User className="h-4 w-4" />}>User profile</Row>
-<Row sideIcon={<Sliders className="h-4 w-4" />}>Settings</Row>`;
+<Row sideIcon={<Settings className="h-4 w-4" />}>Settings</Row>`;
 
 const widgetCode = `import { Widget } from "@xenide-io/the-old-ui-theme";
 
@@ -251,7 +251,7 @@ export default function NewComponentsShowcase() {
       >
         <div className="space-y-3">
           <Row icon={<User className="h-4 w-4" />}>User profile</Row>
-          <Row sideIcon={<Sliders className="h-4 w-4" />}>Settings</Row>
+          <Row sideIcon={<Settings className="h-4 w-4" />}>Settings</Row>
           <Row icon={<Bell className="h-4 w-4" />} sideIcon={<Badge variant="danger">3</Badge>}>
             Notifications
           </Row>

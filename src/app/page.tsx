@@ -24,6 +24,7 @@ import KbdShowcase from "@/components/sections/KbdShowcase";
 import ModalShowcase from "@/components/sections/ModalShowcase";
 import NavigationShowcase from "@/components/sections/NavigationShowcase";
 import NewComponentsShowcase from "@/components/sections/NewComponentsShowcase";
+import ProductLayoutsShowcase from "@/components/sections/ProductLayoutsShowcase";
 import ProgressShowcase from "@/components/sections/ProgressShowcase";
 import QuillChartShowcase from "@/components/sections/QuillChartShowcase";
 import QuillDashboardShowcase from "@/components/sections/QuillDashboardShowcase";
@@ -32,6 +33,7 @@ import SetupThemeShowcase from "@/components/sections/SetupThemeShowcase";
 import SidebarShowcase from "@/components/sections/SidebarShowcase";
 import StackShowcase from "@/components/sections/StackShowcase";
 import StepperShowcase from "@/components/sections/StepperShowcase";
+import SuiteShowcase from "@/components/sections/SuiteShowcase";
 import SwapShowcase from "@/components/sections/SwapShowcase";
 import TabShowcase from "@/components/sections/TabShowcase";
 import TableShowcase from "@/components/sections/TableShowcase";
@@ -41,63 +43,83 @@ import TooltipShowcase from "@/components/sections/TooltipShowcase";
 import UtilityShowcase from "@/components/sections/UtilityShowcase";
 
 import { AppLayout, Button, Sidebar, ThemeSwitcher, CollapsibleSection } from "@/components/ui";
-import ProductLayoutsShowcase from "@/components/sections/ProductLayoutsShowcase";
-import { Home as LucideHome, Search, Flag, Bell, Zap, Plus } from "lucide-react";
 import { IconAreaChart } from "@/components/icons";
+import Image from "next/image";
+import {
+  Bell,
+  Flash,
+  Home as HomeIcon,
+  Plus,
+  Search,
+  TriangleFlag,
+} from "iconoir-react";
+
+const APP_ICON_SIZE = 20;
 
 const sidebarGroups = [
   {
+    label: "Suite apps",
+    items: [
+      { label: "Kraken", icon: <Image src="/kraken-icon.svg" alt="Kraken" width={APP_ICON_SIZE} height={APP_ICON_SIZE} className="h-4 w-4" unoptimized />, href: "#suite" },
+      { label: "ShellStack", icon: <Image src="/shellstack-icon.svg" alt="ShellStack" width={APP_ICON_SIZE} height={APP_ICON_SIZE} className="h-4 w-4" unoptimized />, href: "#suite" },
+      { label: "Tides", icon: <Image src="/tides-icon.svg" alt="Tides" width={APP_ICON_SIZE} height={APP_ICON_SIZE} className="h-4 w-4" unoptimized />, href: "#suite" },
+      { label: "TurtleTime", icon: <Image src="/turtletime-icon.svg" alt="TurtleTime" width={APP_ICON_SIZE} height={APP_ICON_SIZE} className="h-4 w-4" unoptimized />, href: "#suite" },
+    ],
+  },
+  {
     label: "Overview",
     items: [
-      { label: "Home", icon: <LucideHome className="h-4 w-4" />, href: "#", active: true },
+      { label: "Colours", icon: <TriangleFlag className="h-4 w-4" />, href: "#colors" },
+      { label: "Home", icon: <HomeIcon className="h-4 w-4" />, href: "#", active: true },
       { label: "Icons", icon: <Search className="h-4 w-4" />, href: "#icons" },
-      { label: "Colours", icon: <Flag className="h-4 w-4" />, href: "#colors" },
     ],
   },
   {
     label: "Components",
     items: [
-      { label: "Buttons", icon: <Zap className="h-4 w-4" />, href: "#buttons" },
-      { label: "Badges", icon: <Flag className="h-4 w-4" />, href: "#badges" },
       { label: "Alerts", icon: <Bell className="h-4 w-4" />, href: "#alerts" },
+      { label: "Badges", icon: <TriangleFlag className="h-4 w-4" />, href: "#badges" },
+      { label: "Buttons", icon: <Flash className="h-4 w-4" />, href: "#buttons" },
       { label: "Cards", icon: <IconAreaChart className="h-4 w-4" />, href: "#cards" },
       { label: "Inputs", href: "#forms" },
-      { label: "Tables", href: "#tables" },
       { label: "Modals & Drawers", href: "#modals" },
       { label: "Navigation", href: "#navigation" },
-      { label: "Sidebar", href: "#sidebar-demo" },
       { label: "Settings", href: "#settings" },
+      { label: "Sidebar", href: "#sidebar-demo" },
+      { label: "Suite", href: "#suite" },
+      { label: "Tables", href: "#tables" },
     ],
   },
   {
     label: "Charts & Data",
     items: [
-      { label: "TimeSeriesLineChart", href: "#quill-timeline" },
       { label: "BarChart", href: "#quill-barchart" },
-      { label: "PieChart", href: "#quill-piechart" },
+      { label: "Charts Overview", href: "#quill-charts-overview" },
+      { label: "Dashboards", href: "#quill-dashboard" },
       { label: "FunnelChart", href: "#quill-funnel" },
       { label: "MetricCard", href: "#quill-metriccard" },
-      { label: "Dashboards", href: "#quill-dashboard" },
-      { label: "Charts Overview", href: "#quill-charts-overview" },
+      { label: "PieChart", href: "#quill-piechart" },
+      { label: "TimeSeriesLineChart", href: "#quill-timeline" },
     ],
   },
   {
     label: "Patterns",
     items: [
-      { label: "Stepper", href: "#stepper" },
+      { label: "Auth & Settings", href: "#auth" },
       { label: "Command Palette", href: "#command" },
       { label: "Filters", href: "#filters" },
-      { label: "Auth & Settings", href: "#auth" },
       { label: "Loading & Empty", href: "#progress" },
+      { label: "Stepper", href: "#stepper" },
     ],
   },
 ];
 
 const headerLinks = [
-      { label: "Icons", href: "#icons" },
-      { label: "Sidebar", href: "#sidebar-demo" },
-      { label: "Components", href: "#buttons" },
+  { label: "Components", href: "#buttons" },
   { label: "Dashboards", href: "#quill-dashboard" },
+  { label: "Icons", href: "#icons" },
+  { label: "Sidebar", href: "#sidebar-demo" },
+  { label: "Suite", href: "#suite" },
 ];
 
 export default function Home() {
@@ -114,7 +136,7 @@ export default function Home() {
           }
           footer={
             <div className="flex items-center justify-between px-3 py-3">
-              <span className="text-xs text-ph-mutedtext">v0.3.2</span>
+              <span className="text-xs text-ph-mutedtext">v0.4.0</span>
             </div>
           }
         />
@@ -155,7 +177,7 @@ export default function Home() {
               The Old UI <span className="text-ph-brand">Lab</span>
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ph-subtle">
-              A curated set of UI primitives with swappable themes, bespoke icons, and dashboard-ready components.
+              A curated set of UI primitives with swappable themes, bespoke icons, dashboard-ready components, and the shared suite chrome used across ShellStack apps.
             </p>
           </section>
 
@@ -192,6 +214,7 @@ export default function Home() {
           <SidebarShowcase />
           <StackShowcase />
           <StepperShowcase />
+          <SuiteShowcase />
           <SwapShowcase />
           <TabShowcase />
           <TableShowcase />

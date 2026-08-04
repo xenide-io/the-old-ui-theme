@@ -5,8 +5,6 @@ import { forwardRef } from "react";
 import type { IconProps } from "@/components/icons/IconBase";
 import { createIconBase, createIconBasePath } from "@/components/icons/createIconBase";
 import { cn } from "@/lib/cn";
-import * as LemonIcons from "@/components/icons/lemon-icons";
-import * as LemonBrandIcons from "@/components/icons/lemon-brand-icons";
 
 const fill = (d: string) => <path d={d} fill="currentColor" />;
 

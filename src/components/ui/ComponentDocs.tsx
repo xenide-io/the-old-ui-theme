@@ -5,7 +5,7 @@ export interface ComponentPropRow {
   name: string;
   type: string;
   defaultValue?: string;
-  description: ReactNode;
+  description?: ReactNode;
 }
 
 export interface ComponentDocsProps {
@@ -41,7 +41,7 @@ export function ComponentDocs({ title = "Props & variants", rows, defaultOpen = 
                 <td className="px-4 py-3 align-top font-mono text-xs text-ph-ink">{row.name}</td>
                 <td className="px-4 py-3 align-top font-mono text-xs text-ph-subtle">{row.type}</td>
                 <td className="px-4 py-3 align-top font-mono text-xs text-ph-subtle">{row.defaultValue ?? "-"}</td>
-                <td className="px-4 py-3 align-top text-ph-subtle">{row.description}</td>
+                <td className="px-4 py-3 align-top text-ph-subtle">{row.description ?? <span className="text-ph-mutedtext">—</span>}</td>
               </tr>
             ))}
           </tbody>

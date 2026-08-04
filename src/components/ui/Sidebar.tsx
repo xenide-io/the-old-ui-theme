@@ -1,10 +1,10 @@
 "use client";
 
-import { type ReactNode, useState } from "react";
+import { type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export interface SidebarGroup {
-  label: string;
+  label?: string;
   items: SidebarItemDef[];
 }
 
@@ -22,18 +22,19 @@ export interface SidebarProps {
   className?: string;
   header?: ReactNode;
   footer?: ReactNode;
+  children?: ReactNode;
   collapsed?: boolean;
   onCollapse?: (collapsed: boolean) => void;
 }
 
-export function Sidebar({ groups, className, header, footer, collapsed = false, onCollapse }: SidebarProps) {
+export function Sidebar({ groups, className, header, footer, children, collapsed = false, onCollapse }: SidebarProps) {
   return (
     <nav className={cn("ph-sidebar flex flex-col h-full", collapsed && "ph-sidebar--collapsed", className)}>
       {header && <div className="ph-sidebar__header px-3 py-3 border-b border-ph-border-subtle">{header}</div>}
       <div className="ph-sidebar__body flex-1 overflow-y-auto px-2 py-3 space-y-5">
         {groups.map((group) => (
-          <div key={group.label} className="ph-sidebar__group">
-            {!collapsed && (
+          <div key={group.label ?? 'default'} className="ph-sidebar__group">
+            {group.label && !collapsed && (
               <h3 className="ph-sidebar__group-label px-2 mb-1 text-[10px] font-semibold uppercase tracking-wider text-ph-mutedtext">
                 {group.label}
               </h3>
@@ -46,17 +47,18 @@ export function Sidebar({ groups, className, header, footer, collapsed = false, 
           </div>
         ))}
       </div>
+      {children}
       {footer && <div className="ph-sidebar__footer px-3 py-3 border-t border-ph-border-subtle">{footer}</div>}
     </nav>
   );
 }
 
-function SidebarItem({ label, icon, badge, active, onClick, collapsed }: SidebarItemDef & { collapsed: boolean }) {
+function SidebarItem({ label, icon, badge, active, href, onClick, collapsed }: SidebarItemDef & { collapsed: boolean }) {
   const Comp = onClick ? "button" : "a";
   return (
     <Comp
       type={onClick ? "button" as const : undefined}
-      href={onClick ? undefined : undefined}
+      href={onClick ? undefined : href}
       onClick={onClick}
       className={cn(
         "ph-sidebar__item flex items-center gap-2.5 w-full rounded-md px-2.5 py-2 text-sm text-left transition",
@@ -67,7 +69,7 @@ function SidebarItem({ label, icon, badge, active, onClick, collapsed }: Sidebar
       )}
       title={collapsed ? label : undefined}
     >
-      {icon && <span className="ph-sidebar__item-icon shrink-0 w-4 h-4 flex items-center justify-center">{icon}</span>}
+      {icon && <span className={cn("ph-sidebar__item-icon shrink-0 flex items-center justify-center", collapsed ? "w-5 h-5" : "w-4 h-4")}>{icon}</span>}
       {!collapsed && <span className="ph-sidebar__item-label truncate flex-1">{label}</span>}
       {!collapsed && badge && <span className="ph-sidebar__item-badge shrink-0">{badge}</span>}
     </Comp>
