@@ -41,7 +41,7 @@ export function SuiteAppLayout({
     <div data-test="app-shell" className={cn('min-h-screen', className)}>
       <div className="hidden lg:flex h-screen overflow-hidden">
         <aside
-          className="relative flex shrink-0 flex-col border-r border-ph-border bg-ph-canvas transition-[width] duration-200 ease-out"
+          className="relative flex shrink-0 flex-col border-r border-ph-border transition-[width] duration-200 ease-out"
           style={{ width: `${sidebarWidth}px` }}
         >
           {sidebar}

@@ -15,6 +15,8 @@ export interface SuiteSidebarNavItem {
   active?: boolean;
   onClick?: () => void;
   badge?: ReactNode;
+  /** Optional colour class for the nav icon. */
+  iconClassName?: string;
 }
 
 export interface SuiteSidebarProps {
@@ -31,6 +33,8 @@ export interface SuiteSidebarProps {
   footerExtras?: CollapsedNode;
   collapsed?: boolean;
   className?: string;
+  /** Use the richer surface background instead of canvas. */
+  surface?: boolean;
 }
 
 function renderNode(node: CollapsedNode | undefined, collapsed: boolean): ReactNode {
@@ -56,18 +60,21 @@ export function SuiteSidebar({
   footerExtras,
   collapsed = false,
   className,
+  surface = false,
 }: SuiteSidebarProps) {
   return (
     <div
       className={cn(
-        'flex h-full w-full min-w-0 flex-col bg-ph-canvas text-ph-ink',
+        'flex h-full w-full min-w-0 flex-col text-ph-ink',
+        surface ? 'bg-ph-surface' : 'bg-ph-canvas',
         className,
       )}
     >
       {/* Header */}
       <div
         className={cn(
-          'flex shrink-0 border-b border-ph-border bg-ph-canvas',
+          'flex shrink-0 border-b border-ph-border',
+          surface ? 'bg-ph-surface' : 'bg-ph-canvas',
           collapsed
             ? 'flex-col items-center gap-1 px-1 py-2'
             : 'h-14 items-center justify-between gap-2 px-3',
@@ -84,19 +91,20 @@ export function SuiteSidebar({
       {/* Nav body */}
       <div
         className={cn(
-          'flex min-h-0 flex-1 flex-col bg-ph-canvas',
-          collapsed ? 'px-1.5 py-2' : 'p-3',
+          'flex min-h-0 flex-1 flex-col',
+          surface ? 'bg-ph-surface' : 'bg-ph-canvas',
+          collapsed ? 'px-1.5 py-2' : 'p-2',
         )}
       >
         <nav
           aria-label="Pages"
-          className="shrink-0 space-y-1"
+          className="shrink-0 space-y-0.5"
         >
           <div className={cn('mb-3', collapsed && 'flex justify-center')}>
             {renderNode(contextSwitcher, collapsed)}
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = Boolean(item.active);
@@ -109,29 +117,31 @@ export function SuiteSidebar({
                   aria-current={active ? 'page' : undefined}
                   onClick={item.onClick}
                   className={cn(
-                    'relative flex items-center gap-3 rounded-[var(--ph-radius-app)] text-sm font-medium transition-colors',
+                    'group relative flex items-center gap-2.5 rounded-[var(--ph-radius-app)] text-sm font-medium transition-colors',
                     active
-                      ? 'text-ph-ink'
-                      : 'text-ph-mutedtext hover:bg-ph-muted hover:text-ph-ink',
+                      ? 'bg-ph-muted'
+                      : 'text-ph-subtle hover:bg-ph-muted hover:text-ph-ink',
                     collapsed
-                      ? 'mx-auto size-11 shrink-0 justify-center gap-0 px-0 py-0'
-                      : 'w-full px-3 py-2.5',
+                      ? 'mx-auto size-10 shrink-0 justify-center gap-0 px-0 py-0'
+                      : 'w-full px-2.5 py-2',
                   )}
                 >
-                  {active ? (
-                    <div
-                      className="absolute inset-0 rounded-[var(--ph-radius-app)] border border-ph-border bg-ph-muted shadow-[var(--ph-chrome-inset-face-top),var(--ph-chrome-inset-face-bottom)]"
-                      aria-hidden
-                    />
-                  ) : null}
-                  <Icon
-                    className="relative h-4 w-4 shrink-0"
-                    strokeWidth={active ? 2 : 1.75}
+                  <span
+                    className={cn(
+                      'relative flex h-4 w-4 shrink-0 items-center justify-center',
+                      item.iconClassName,
+                    )}
                     aria-hidden
-                  />
+                  >
+                    <Icon
+                      className="h-full w-full"
+                      strokeWidth={active ? 2 : 1.75}
+                    />
+                  </span>
                   <span
                     className={cn(
                       'relative truncate',
+                      active ? 'text-ph-ink' : 'text-ph-subtle group-hover:text-ph-ink',
                       collapsed && 'sr-only',
                     )}
                   >
@@ -159,7 +169,8 @@ export function SuiteSidebar({
       {/* Footer */}
       <div
         className={cn(
-          'shrink-0 border-t border-ph-border bg-ph-canvas',
+          'shrink-0 border-t border-ph-border',
+          surface ? 'bg-ph-surface' : 'bg-ph-canvas',
           collapsed ? 'p-1.5' : 'p-3',
         )}
       >
