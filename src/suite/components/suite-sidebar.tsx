@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { type ReactNode } from 'react';
 
 import { cn } from '../lib/cn';
-import { Tooltip } from '../components/ui/Tooltip';
+import { Tooltip } from '../../components/ui/Tooltip';
 import type { SuiteNavIcon } from './suite-bottom-nav';
 
 type CollapsedNode = ReactNode | ((collapsed: boolean) => ReactNode);
