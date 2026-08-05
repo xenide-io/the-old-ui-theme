@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { type ReactNode } from 'react';
 
 import { cn } from '../lib/cn';
+import { Tooltip } from '../components/ui/Tooltip';
 import type { SuiteNavIcon } from './suite-bottom-nav';
 
 type CollapsedNode = ReactNode | ((collapsed: boolean) => ReactNode);
@@ -108,12 +109,11 @@ export function SuiteSidebar({
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = Boolean(item.active);
-              return (
+              const link = (
                 <Link
                   key={item.label}
                   href={item.href}
                   data-test="nav-link"
-                  title={collapsed ? item.label : undefined}
                   aria-current={active ? 'page' : undefined}
                   onClick={item.onClick}
                   className={cn(
@@ -151,6 +151,13 @@ export function SuiteSidebar({
                     <span className="relative ml-auto shrink-0">{item.badge}</span>
                   ) : null}
                 </Link>
+              );
+              return collapsed ? (
+                <Tooltip key={item.label} content={item.label} side="right">
+                  {link}
+                </Tooltip>
+              ) : (
+                link
               );
             })}
           </div>
