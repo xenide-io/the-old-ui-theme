@@ -90,10 +90,8 @@ export function SuitePage({
       className={cn(
         'mx-auto flex w-full min-w-0 flex-col',
         WIDTHS[width],
-        // Same inset as TodayPageFrame so every page title sits at the
-        // same baseline regardless of app.
-        inset &&
-          'px-4 pb-10 pt-5 sm:px-6 sm:pt-6 lg:px-8',
+        // Tight inset keeps page titles aligned without excessive whitespace.
+        inset && 'px-4 pb-6 pt-4 sm:px-6 sm:pb-7 sm:pt-5 lg:px-8',
         className,
       )}
     >
@@ -148,7 +146,7 @@ export function SuitePageHeader({
     <header
       data-test={dataTest}
       className={cn(
-        'flex items-start justify-between gap-4 pb-6 sm:pb-7',
+        'flex items-start justify-between gap-4 pb-4 sm:pb-5',
         className,
       )}
     >

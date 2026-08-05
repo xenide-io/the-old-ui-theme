@@ -1,11 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { LogOut, Settings } from 'iconoir-react';
 
 import { cn } from '../lib/cn';
+import { DropdownMenu, DropdownItem } from '../components/ui/DropdownMenu';
 
 export interface SuiteUserMenuProps {
   name?: string | null;
@@ -47,82 +47,63 @@ export function SuiteUserMenu({
   dataTest = 'suite-user-menu',
   className,
 }: SuiteUserMenuProps) {
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
   const initials = fallbackInitials ?? computeInitials(name, email);
 
+  const avatar = (
+    <span className="inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-ph-muted">
+      {image ? (
+        <Image
+          src={image}
+          alt=""
+          width={32}
+          height={32}
+          className="h-8 w-8 rounded-full object-cover"
+          unoptimized
+        />
+      ) : (
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ph-muted text-sm font-semibold text-ph-brand">
+          {initials}
+        </span>
+      )}
+    </span>
+  );
+
   return (
-    <div className={cn('relative', className)} data-test={dataTest}>
-      <button
-        type="button"
-        aria-label="Account menu"
-        aria-expanded={open}
-        aria-haspopup="menu"
-        title="Account"
-        onClick={() => setOpen((value) => !value)}
-        className="suite-press inline-flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
+    <DropdownMenu
+      trigger={avatar}
+      aria-label="Account menu"
+      align="end"
+      side="bottom"
+      sideOffset={6}
+      collisionPadding={16}
+      modal={false}
+      className={className}
+      data-test={dataTest}
+    >
+      <div className="px-2 py-1.5">
+        <p className="truncate text-sm font-medium text-ph-ink">
+          {name || email || 'Account'}
+        </p>
+        {email ? (
+          <p className="truncate text-xs text-ph-mutedtext">{email}</p>
+        ) : null}
+      </div>
+      <div className="my-1 border-t border-ph-border" />
+      <DropdownItem
+        data-test={`${dataTest}-settings`}
+        onClick={() => router.push(settingsHref)}
       >
-        {image ? (
-          <Image
-            src={image}
-            alt=""
-            width={32}
-            height={32}
-            className="h-8 w-8 rounded-full object-cover"
-            unoptimized
-          />
-        ) : (
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ph-muted text-sm font-semibold text-ph-brand">
-            {initials}
-          </span>
-        )}
-      </button>
-      {open ? (
-        <>
-          <button
-            type="button"
-            aria-label="Close account menu"
-            className="fixed inset-0 z-40 cursor-default"
-            onClick={() => setOpen(false)}
-          />
-          <div
-            role="menu"
-            className="absolute right-0 top-full z-50 mt-1 w-56 rounded-xl border border-ph-border bg-ph-surface p-1 shadow-xl"
-          >
-            <div className="px-2 py-1.5">
-              <p className="truncate text-sm font-medium text-ph-ink">
-                {name || email || 'Account'}
-              </p>
-              {email ? (
-                <p className="truncate text-xs text-ph-mutedtext">{email}</p>
-              ) : null}
-            </div>
-            <div className="my-1 border-t border-ph-border" />
-            <Link
-              role="menuitem"
-              href={settingsHref}
-              data-test={`${dataTest}-settings`}
-              className="flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm text-ph-ink transition-colors hover:bg-ph-muted"
-              onClick={() => setOpen(false)}
-            >
-              <Settings className="h-4 w-4 text-ph-mutedtext" aria-hidden />
-              Profile settings
-            </Link>
-            <button
-              role="menuitem"
-              type="button"
-              data-test={`${dataTest}-sign-out`}
-              className="flex min-h-11 w-full items-center gap-2 rounded-lg px-2 text-left text-sm text-ph-ink transition-colors hover:bg-ph-muted"
-              onClick={() => {
-                setOpen(false);
-                onSignOut();
-              }}
-            >
-              <LogOut className="h-4 w-4 text-ph-mutedtext" aria-hidden />
-              Sign out
-            </button>
-          </div>
-        </>
-      ) : null}
-    </div>
+        <Settings className="h-4 w-4 text-ph-mutedtext" aria-hidden />
+        Profile settings
+      </DropdownItem>
+      <DropdownItem
+        data-test={`${dataTest}-sign-out`}
+        onClick={onSignOut}
+      >
+        <LogOut className="h-4 w-4 text-ph-mutedtext" aria-hidden />
+        Sign out
+      </DropdownItem>
+    </DropdownMenu>
   );
 }

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { type ReactNode } from 'react';
 
 import { cn } from '../lib/cn';
+import { Tooltip } from '../components/ui/Tooltip';
 import type { SuiteNavIcon } from './suite-bottom-nav';
 
 type CollapsedNode = ReactNode | ((collapsed: boolean) => ReactNode);
@@ -91,7 +92,7 @@ export function SuiteSidebar({
       {/* Nav body */}
       <div
         className={cn(
-          'flex min-h-0 flex-1 flex-col',
+          'flex min-h-0 flex-1 flex-col overflow-y-auto',
           surface ? 'bg-ph-surface' : 'bg-ph-canvas',
           collapsed ? 'px-1.5 py-2' : 'p-2',
         )}
@@ -108,12 +109,11 @@ export function SuiteSidebar({
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = Boolean(item.active);
-              return (
+              const link = (
                 <Link
                   key={item.label}
                   href={item.href}
                   data-test="nav-link"
-                  title={collapsed ? item.label : undefined}
                   aria-current={active ? 'page' : undefined}
                   onClick={item.onClick}
                   className={cn(
@@ -152,13 +152,20 @@ export function SuiteSidebar({
                   ) : null}
                 </Link>
               );
+              return collapsed ? (
+                <Tooltip key={item.label} content={item.label} side="right">
+                  {link}
+                </Tooltip>
+              ) : (
+                link
+              );
             })}
           </div>
         </nav>
 
         {secondaryNav ? (
           <div
-            className="min-h-0 flex-1 overflow-y-auto"
+            className="min-h-0 flex-1"
             data-test="suite-sidebar-secondary-nav"
           >
             {secondaryNav}
