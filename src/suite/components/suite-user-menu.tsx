@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { LogOut, Settings } from 'iconoir-react';
 
 import { cn } from '../lib/cn';
-import { DropdownMenu, DropdownItem } from '../components/ui/DropdownMenu';
+import { DropdownMenu, DropdownItem } from '../../components/ui/DropdownMenu';
 
 export interface SuiteUserMenuProps {
   name?: string | null;
