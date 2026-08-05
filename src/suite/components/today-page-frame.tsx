@@ -20,7 +20,7 @@ export function TodayPageFrame({ children }: { children: ReactNode }) {
         <div className="today-page-frame__cloud today-page-frame__cloud--2 absolute -right-20 top-40 h-72 w-80 rounded-[40%]" />
         <div className="today-page-frame__cloud today-page-frame__cloud--3 absolute left-[28%] top-[58%] h-64 w-[22rem] rounded-[50%]" />
       </div>
-      <div className="relative flex-1 px-4 pb-10 pt-5 sm:px-6 sm:pt-6 lg:px-8 [&_.list-row]:min-h-[52px] [&_.list-row]:sm:min-h-[44px]">
+      <div className="relative flex-1 px-4 pb-5 pt-2 sm:px-6 sm:pb-6 sm:pt-3 lg:px-8 [&_.list-row]:min-h-[52px] [&_.list-row]:sm:min-h-[44px]">
         {children}
       </div>
     </div>
