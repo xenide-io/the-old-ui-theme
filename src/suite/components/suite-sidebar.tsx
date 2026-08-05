@@ -91,7 +91,7 @@ export function SuiteSidebar({
       {/* Nav body */}
       <div
         className={cn(
-          'flex min-h-0 flex-1 flex-col',
+          'flex min-h-0 flex-1 flex-col overflow-y-auto',
           surface ? 'bg-ph-surface' : 'bg-ph-canvas',
           collapsed ? 'px-1.5 py-2' : 'p-2',
         )}
@@ -158,7 +158,7 @@ export function SuiteSidebar({
 
         {secondaryNav ? (
           <div
-            className="min-h-0 flex-1 overflow-y-auto"
+            className="min-h-0 flex-1"
             data-test="suite-sidebar-secondary-nav"
           >
             {secondaryNav}

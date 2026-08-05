@@ -26,7 +26,7 @@ export const SUITE_APPS: readonly SuiteAppDefinition[] = [
     slug: 'shellstack',
     name: 'ShellStack',
     description: 'Organisation and billing',
-    icon: '/logo-shellstack-static.svg',
+    icon: '/icon-shellstack.svg',
     landing: '/home',
     baseUrlEnv: 'NEXT_PUBLIC_SHELLSTACK_URL',
     baseUrlFallback: 'http://localhost:3002',
