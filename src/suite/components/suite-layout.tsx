@@ -91,7 +91,7 @@ export function SuitePage({
         'mx-auto flex w-full min-w-0 flex-col',
         WIDTHS[width],
         // Tight inset keeps page titles aligned without excessive whitespace.
-        inset && 'px-4 pb-6 pt-4 sm:px-6 sm:pb-7 sm:pt-5 lg:px-8',
+        inset && 'px-4 pb-5 pt-2 sm:px-6 sm:pb-6 sm:pt-3 lg:px-8',
         className,
       )}
     >
@@ -146,7 +146,7 @@ export function SuitePageHeader({
     <header
       data-test={dataTest}
       className={cn(
-        'flex items-start justify-between gap-4 pb-4 sm:pb-5',
+        'flex items-start justify-between gap-4 pb-2 sm:pb-3',
         className,
       )}
     >
