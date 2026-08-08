@@ -76,8 +76,8 @@ export function Modal({
           id={id}
           data-test={panelDataTest}
           className={cn("ph-modal-panel", sizeMap[size], className)}
-          aria-label={ariaLabel}
-          aria-labelledby={ariaLabelledBy}
+          {...(ariaLabel ? { "aria-label": ariaLabel } : {})}
+          {...(ariaLabelledBy ? { "aria-labelledby": ariaLabelledBy } : {})}
           style={zIndex ? { zIndex } : undefined}
           {...(description ? {} : { "aria-describedby": undefined })}
           onOpenAutoFocus={() => {
