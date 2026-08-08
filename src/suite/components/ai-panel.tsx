@@ -1,6 +1,8 @@
 'use client';
 
 import {
+  lazy,
+  Suspense,
   useCallback,
   useEffect,
   useRef,
@@ -11,6 +13,10 @@ import {
   type ReactNode,
 } from 'react';
 import { Check, Copy, Sparks, Xmark as X } from 'iconoir-react';
+
+const SuiteAiBlockNoteMessage = lazy(
+  () => import('./ai-message-blocknote'),
+);
 
 export const SUITE_OPEN_ASK_AI_EVENT = 'shellstack:open-ask-ai';
 
@@ -530,7 +536,19 @@ export function SuiteAiPanel({
                     }
                     data-test={isUser ? 'ask-ai-user' : 'ask-ai-assistant'}
                   >
-                    <p className="whitespace-pre-wrap">{message.content}</p>
+                    {isUser ? (
+                      <p className="whitespace-pre-wrap">{message.content}</p>
+                    ) : (
+                      <Suspense
+                        fallback={
+                          <p className="whitespace-pre-wrap">
+                            {message.content}
+                          </p>
+                        }
+                      >
+                        <SuiteAiBlockNoteMessage markdown={message.content} />
+                      </Suspense>
+                    )}
                     {!isUser ? (
                       <button
                         type="button"

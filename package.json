@@ -1,6 +1,6 @@
 {
   "name": "@xenide-io/the-old-ui-theme",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "description": "Props-driven React components and theme tokens inspired by classic interface design — optimized for Next.js apps and internal tools.",
   "author": "Xenide",
   "license": "MIT",
@@ -131,6 +131,8 @@
     "access": "public"
   },
   "dependencies": {
+    "@blocknote/core": "0.52.1",
+    "@blocknote/react": "0.52.1",
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-dropdown-menu": "^2.1.24",
     "clsx": "^2.1.1",

@@ -475,6 +475,28 @@ button:hover > .ph-card {
   -webkit-overflow-scrolling: touch;
 }
 
+/* ── Ask AI answer content ───────────────────────────────────────────── */
+.suite-ai-blocknote .bn-editor {
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--ph-text-primary);
+  font-family: inherit;
+  font-size: 0.875rem;
+}
+.suite-ai-blocknote .bn-block-content {
+  padding-block: 2px;
+}
+.suite-ai-blocknote [data-content-type="heading"] {
+  padding-top: 8px;
+}
+.suite-ai-blocknote [data-content-type="codeBlock"] {
+  overflow-x: auto;
+  border: 1px solid var(--ph-border);
+  border-radius: 6px;
+  background: var(--ph-surface);
+}
+
 /* ── Auth / OAuth / launch handoff ──────────────────────────────────────
    One calm opacity fade — no stacked entrance reveals on bridge pages. */
 .suite-auth-handoff {
