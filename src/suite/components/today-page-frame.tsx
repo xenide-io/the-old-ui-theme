@@ -1,26 +1,34 @@
-'use client';
+"use client";
 
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
-/** Full-bleed theme wash + soft clouds; uses ph-* tokens from each app's theme. */
+/**
+ * Today page content wrapper with soft atmosphere.
+ * Does not own scrolling — `#main-content` is the scrollport so sticky headers work.
+ * Glow/clouds are absolute and do not create a nested scrollport.
+ */
 export function TodayPageFrame({ children }: { children: ReactNode }) {
   return (
     <div
       data-test="today-page"
-      className="today-page-frame relative flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden"
+      className="today-page-frame relative flex min-h-0 w-full flex-1 flex-col overflow-x-hidden"
     >
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-[34rem] overflow-hidden"
+        className="pointer-events-none absolute inset-0 overflow-hidden"
         aria-hidden
       >
         <div className="today-page-frame__glow absolute inset-0" />
-        <div className="today-page-frame__sun absolute -right-16 -top-16 h-72 w-72 rounded-full bg-gradient-to-br from-amber-300/30 via-rose-300/20 to-rose-400/10 blur-3xl opacity-60 motion-safe:animate-[pulse_8s_ease-in-out_infinite] motion-reduce:opacity-40" />
-        <div className="today-page-frame__top-fade absolute inset-x-0 top-0 h-64" />
-        <div className="today-page-frame__cloud today-page-frame__cloud--1 absolute -left-24 top-28 h-80 w-[26rem] rounded-[45%]" />
-        <div className="today-page-frame__cloud today-page-frame__cloud--2 absolute -right-20 top-40 h-72 w-80 rounded-[40%]" />
-        <div className="today-page-frame__cloud today-page-frame__cloud--3 absolute left-[28%] top-[58%] h-64 w-[22rem] rounded-[50%]" />
+        <div className="today-page-frame__top-fade absolute inset-x-0 top-0 h-[28rem]" />
+        <div className="today-page-frame__cloud today-page-frame__cloud--1 absolute -left-28 top-16 h-96 w-[30rem] rounded-[45%]" />
+        <div className="today-page-frame__cloud today-page-frame__cloud--2 absolute -right-24 top-24 h-80 w-[22rem] rounded-[40%]" />
+        <div className="today-page-frame__cloud today-page-frame__cloud--3 absolute left-[22%] top-48 h-72 w-[24rem] rounded-[50%]" />
+        <div className="today-page-frame__cloud today-page-frame__cloud--4 absolute right-[18%] top-[42%] h-64 w-[20rem] rounded-[48%]" />
+        <div className="today-page-frame__cloud today-page-frame__cloud--5 absolute left-[8%] top-[68%] h-56 w-[18rem] rounded-[42%]" />
       </div>
-      <div className="relative flex-1 px-4 pb-5 pt-2 sm:px-6 sm:pb-6 sm:pt-3 lg:px-8 [&_.list-row]:min-h-[52px] [&_.list-row]:sm:min-h-[44px]">
+      <div
+        data-width="full"
+        className="suite-page-stage suite-page-inset relative z-[1] flex w-full min-w-0 flex-1 flex-col [&_.list-row]:min-h-[52px] [&_.list-row]:sm:min-h-[44px]"
+      >
         {children}
       </div>
     </div>

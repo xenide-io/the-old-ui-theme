@@ -16,10 +16,16 @@ export interface ModalProps {
   footer?: ReactNode;
   size?: ModalSize;
   className?: string;
+  customLayout?: boolean;
   showCloseButton?: boolean;
   closeOnOutsideClick?: boolean;
   closeOnEscape?: boolean;
+  dataTest?: string;
+  panelDataTest?: string;
+  zIndex?: number;
+  id?: string;
   "aria-label"?: string;
+  "aria-labelledby"?: string;
 }
 
 const sizeMap: Record<ModalSize, string> = {
@@ -39,10 +45,16 @@ export function Modal({
   footer,
   size = "md",
   className,
+  customLayout = false,
   showCloseButton = true,
   closeOnOutsideClick = true,
   closeOnEscape = true,
+  dataTest,
+  panelDataTest,
+  zIndex,
+  id,
   "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
 }: ModalProps) {
   const canDismiss = Boolean(onClose);
   const restoreFocusRef = useRef<HTMLElement | null>(null);
@@ -55,15 +67,24 @@ export function Modal({
       }}
     >
       <Dialog.Portal>
-        <Dialog.Overlay className="ph-modal-overlay" />
+        <Dialog.Overlay
+          data-test={dataTest}
+          className="ph-modal-overlay"
+          style={zIndex ? { zIndex } : undefined}
+        />
         <Dialog.Content
+          id={id}
+          data-test={panelDataTest}
           className={cn("ph-modal-panel", sizeMap[size], className)}
           aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
+          style={zIndex ? { zIndex } : undefined}
           {...(description ? {} : { "aria-describedby": undefined })}
           onOpenAutoFocus={() => {
-            restoreFocusRef.current = document.activeElement instanceof HTMLElement
-              ? document.activeElement
-              : null;
+            restoreFocusRef.current =
+              document.activeElement instanceof HTMLElement
+                ? document.activeElement
+                : null;
           }}
           onCloseAutoFocus={(event) => {
             event.preventDefault();
@@ -76,28 +97,51 @@ export function Modal({
             if (!canDismiss || !closeOnOutsideClick) event.preventDefault();
           }}
         >
-          {title ? null : <Dialog.Title className="sr-only">{ariaLabel ?? "Dialog"}</Dialog.Title>}
-          {(title || description || (showCloseButton && canDismiss)) ? (
-            <header className="ph-modal-header">
-              <div className="min-w-0">
-                {title ? <Dialog.Title className="text-lg font-bold text-ph-ink">{title}</Dialog.Title> : null}
-                {description ? (
-                  <Dialog.Description className="mt-1 text-sm text-ph-subtle">
-                    {description}
-                  </Dialog.Description>
-                ) : null}
-              </div>
-              {showCloseButton && canDismiss ? (
-                <Dialog.Close asChild>
-                  <button type="button" className="ph-modal-close" aria-label="Close dialog">
-                    <IconClose className="h-5 w-5" aria-hidden />
-                  </button>
-                </Dialog.Close>
+          {customLayout ? (
+            <>
+              <Dialog.Title className="sr-only">
+                {ariaLabel ?? "Dialog"}
+              </Dialog.Title>
+              {children}
+            </>
+          ) : (
+            <>
+              {title ? null : (
+                <Dialog.Title className="sr-only">
+                  {ariaLabel ?? "Dialog"}
+                </Dialog.Title>
+              )}
+              {title || description || (showCloseButton && canDismiss) ? (
+                <header className="ph-modal-header">
+                  <div className="min-w-0">
+                    {title ? (
+                      <Dialog.Title className="text-lg font-bold text-ph-ink">
+                        {title}
+                      </Dialog.Title>
+                    ) : null}
+                    {description ? (
+                      <Dialog.Description className="mt-1 text-sm text-ph-subtle">
+                        {description}
+                      </Dialog.Description>
+                    ) : null}
+                  </div>
+                  {showCloseButton && canDismiss ? (
+                    <Dialog.Close asChild>
+                      <button
+                        type="button"
+                        className="ph-modal-close"
+                        aria-label="Close dialog"
+                      >
+                        <IconClose className="h-5 w-5" aria-hidden />
+                      </button>
+                    </Dialog.Close>
+                  ) : null}
+                </header>
               ) : null}
-            </header>
-          ) : null}
-          <div className="ph-modal-body">{children}</div>
-          {footer ? <div className="ph-modal-footer">{footer}</div> : null}
+              <div className="ph-modal-body">{children}</div>
+              {footer ? <div className="ph-modal-footer">{footer}</div> : null}
+            </>
+          )}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

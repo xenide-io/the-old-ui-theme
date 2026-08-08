@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Xmark as X } from 'iconoir-react';
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Xmark as X } from "iconoir-react";
 
-import { cn } from '../lib/cn';
+import { cn } from "../lib/cn";
 
 /**
  * Suite mobile navigation drawer. Backdrop fade + panel slide, Escape to
@@ -14,11 +14,12 @@ export function SuiteMobileDrawer({
   open,
   onClose,
   children,
-  side = 'left',
+  side = "left",
   showCloseButton = false,
-  closeLabel = 'Close navigation',
-  backdropLabel = 'Close navigation',
-  dialogLabel = 'Navigation',
+  title,
+  closeLabel = "Close navigation",
+  backdropLabel = "Close navigation",
+  dialogLabel = "Navigation",
   durationMs = 200,
   dataTest,
   panelDataTest,
@@ -28,9 +29,11 @@ export function SuiteMobileDrawer({
   onClose: () => void;
   children: ReactNode;
   /** Edge the panel slides in from. */
-  side?: 'left' | 'right';
+  side?: "left" | "right";
   /** Standard close row (h-14, trailing X button) above the content. */
   showCloseButton?: boolean;
+  /** Optional label in the standard close row. */
+  title?: ReactNode;
   closeLabel?: string;
   backdropLabel?: string;
   /** Accessible name for the dialog panel. */
@@ -76,12 +79,12 @@ export function SuiteMobileDrawer({
     if (!open) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onCloseRef.current();
+      if (event.key === "Escape") onCloseRef.current();
     };
-    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener("keydown", onKeyDown);
 
     const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
 
     const previouslyFocused =
       document.activeElement instanceof HTMLElement
@@ -90,7 +93,7 @@ export function SuiteMobileDrawer({
     const frame = requestAnimationFrame(() => panelRef.current?.focus());
 
     return () => {
-      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousOverflow;
       cancelAnimationFrame(frame);
       if (previouslyFocused?.isConnected) previouslyFocused.focus();
@@ -105,8 +108,8 @@ export function SuiteMobileDrawer({
         type="button"
         tabIndex={-1}
         className={cn(
-          'absolute inset-0 bg-black/25 backdrop-blur-sm motion-safe:transition-opacity motion-safe:ease-spring-subtle',
-          shown ? 'opacity-100' : 'opacity-0',
+          "absolute inset-0 bg-black/25 backdrop-blur-sm motion-safe:transition-opacity motion-safe:ease-spring-subtle",
+          shown ? "opacity-100" : "opacity-0",
         )}
         style={{ transitionDuration: `${durationMs}ms` }}
         onClick={onClose}
@@ -120,19 +123,29 @@ export function SuiteMobileDrawer({
         tabIndex={-1}
         data-test={panelDataTest}
         className={cn(
-          'suite-scroll-lock relative flex h-full w-[86%] max-w-64 flex-col overflow-hidden bg-ph-surface shadow-xl outline-none motion-safe:transition-transform motion-safe:ease-spring-fast',
-          side === 'right' && 'ml-auto',
+          "suite-scroll-lock relative flex h-full w-[86%] max-w-72 flex-col overflow-hidden bg-ph-surface shadow-xl outline-none motion-safe:transition-transform motion-safe:ease-spring-fast",
+          side === "right" && "ml-auto",
           shown
-            ? 'translate-x-0'
-            : side === 'right'
-              ? 'translate-x-full'
-              : '-translate-x-full',
+            ? "translate-x-0"
+            : side === "right"
+              ? "translate-x-full"
+              : "-translate-x-full",
           panelClassName,
         )}
         style={{ transitionDuration: `${durationMs}ms` }}
       >
         {showCloseButton ? (
-          <div className="flex h-14 shrink-0 items-center justify-end border-b border-ph-border px-3">
+          <div
+            className={cn(
+              "flex h-14 shrink-0 items-center border-b border-ph-border px-3",
+              title ? "justify-between" : "justify-end",
+            )}
+          >
+            {title ? (
+              <span className="truncate text-sm font-semibold text-ph-ink">
+                {title}
+              </span>
+            ) : null}
             <button
               type="button"
               onClick={onClose}

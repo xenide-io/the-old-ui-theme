@@ -1,19 +1,22 @@
 'use client';
 
-import type { ComponentType, ElementType, ReactNode, SVGProps } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ElementType,
+  type ReactNode,
+} from 'react';
 import { cn } from '../lib/cn';
 import { TodayTimeIcon } from './today-ui';
 
-type LucideIcon = ComponentType<SVGProps<SVGSVGElement>>;
-
-const WIDTHS = {
-  full: 'max-w-none',
-  wide: 'max-w-7xl',
-  content: 'max-w-6xl',
-  narrow: 'max-w-4xl',
-} as const;
-
-export type SuitePageWidth = keyof typeof WIDTHS;
+/** Width tokens — applied as data-width; CSS in suite-skin.css owns max-width. */
+export type SuitePageWidth =
+  | 'full'
+  | 'wide'
+  | 'content'
+  | 'narrow'
+  | 'reading';
 
 export interface SuiteBreadcrumbsProps {
   items: { label: ReactNode; href?: string }[];
@@ -62,7 +65,7 @@ export function SuiteBreadcrumbs({ items, className }: SuiteBreadcrumbsProps) {
 
 export function SuitePage({
   children,
-  width = 'wide',
+  width = 'full',
   inset = true,
   className,
   as: Component = 'div',
@@ -85,13 +88,12 @@ export function SuitePage({
     <Component
       id={id}
       data-test={dataTest}
+      data-width={width}
       role={role}
       aria-live={ariaLive}
       className={cn(
-        'mx-auto flex w-full min-w-0 flex-col',
-        WIDTHS[width],
-        // Tight inset keeps page titles aligned without excessive whitespace.
-        inset && 'px-4 pb-5 pt-2 sm:px-6 sm:pb-6 sm:pt-3 lg:px-8',
+        'suite-page-stage flex w-full min-w-0 flex-col',
+        inset && 'suite-page-inset',
         className,
       )}
     >
@@ -117,6 +119,8 @@ export function SuitePageHeader({
   badge,
   /** Breadcrumb line rendered above the title. */
   breadcrumb,
+  /** Stick to the top of the scrollport (desktop page titles). */
+  sticky = false,
 }: {
   title: ReactNode;
   description?: ReactNode;
@@ -130,11 +134,40 @@ export function SuitePageHeader({
   todayIconClassName?: string;
   badge?: ReactNode;
   breadcrumb?: ReactNode;
+  sticky?: boolean;
 }) {
+  const headerRef = useRef<HTMLElement>(null);
+  const [stuck, setStuck] = useState(false);
+
+  useEffect(() => {
+    if (!sticky) return;
+    const el = headerRef.current;
+    if (!el) return;
+
+    // Sentinel just above the header — when it leaves the scrollport, we're stuck.
+    const sentinel = document.createElement('div');
+    sentinel.setAttribute('aria-hidden', 'true');
+    sentinel.style.cssText =
+      'position:relative;height:1px;width:100%;margin:0;padding:0;pointer-events:none';
+    el.parentElement?.insertBefore(sentinel, el);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setStuck(!entry.isIntersecting);
+      },
+      { threshold: [1], root: null },
+    );
+    observer.observe(sentinel);
+    return () => {
+      observer.disconnect();
+      sentinel.remove();
+    };
+  }, [sticky]);
+
   const resolvedIcon = todayIcon ? (
     <TodayTimeIcon
       className={cn(
-        'h-6 w-6 sm:h-7 sm:w-7 text-amber-500',
+        'h-7 w-7 text-amber-500 sm:h-8 sm:w-8',
         todayIconClassName,
       )}
     />
@@ -144,36 +177,42 @@ export function SuitePageHeader({
 
   return (
     <header
+      ref={headerRef}
       data-test={dataTest}
+      data-stuck={sticky ? (stuck ? 'true' : 'false') : undefined}
       className={cn(
         'flex items-start justify-between gap-4 pb-2 sm:pb-3',
+        // No extra pt here — page inset sets the shared title baseline.
+        // Stuck state adds pad via .suite-page-header-sticky[data-stuck].
+        sticky && 'suite-page-header-sticky',
         className,
       )}
     >
-      <div className="flex min-w-0 items-start gap-3">
-        {resolvedIcon ? (
-          <div
-            className="hidden shrink-0 pt-1 sm:block"
-            aria-hidden="true"
-          >
-            {resolvedIcon}
+      <div className="min-w-0 flex-1">
+        {eyebrow ? (
+          <div className="mb-0.5 flex min-w-0 items-center gap-1.5 text-xs text-ph-subtle">
+            {eyebrow}
           </div>
         ) : null}
-        <div className="flex min-w-0 flex-col gap-1">
-          {eyebrow ? (
-            <div className="mb-0.5 flex min-w-0 items-center gap-1.5 text-xs text-ph-subtle">
-              {eyebrow}
-            </div>
-          ) : null}
-          {breadcrumb ? (
-            <div className="mb-0.5 flex min-w-0 items-center gap-1.5 text-xs text-ph-subtle">
-              {breadcrumb}
+        {breadcrumb ? (
+          <div className="mb-0.5 flex min-w-0 items-center gap-1.5 text-xs text-ph-subtle">
+            {breadcrumb}
+          </div>
+        ) : null}
+        {/* Icon aligns with the title line only — not the description. */}
+        <div className="flex min-w-0 items-center gap-3">
+          {resolvedIcon ? (
+            <div
+              className="hidden shrink-0 sm:flex sm:items-center [&_svg]:h-7 [&_svg]:w-7 sm:[&_svg]:h-8 sm:[&_svg]:w-8"
+              aria-hidden="true"
+            >
+              {resolvedIcon}
             </div>
           ) : null}
           <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
             <h1
               className={cn(
-                'font-display text-[1.625rem] font-bold leading-tight tracking-tight text-ph-ink sm:text-[2.25rem]',
+                'font-display text-[1.625rem] font-bold leading-none tracking-tight text-ph-ink sm:text-[2.25rem]',
                 titleClassName,
               )}
             >
@@ -185,15 +224,20 @@ export function SuitePageHeader({
               </span>
             ) : null}
           </div>
-          {description ? (
-            <div className="mt-1 max-w-2xl text-pretty text-sm leading-5 text-ph-subtle">
-              {description}
-            </div>
-          ) : null}
         </div>
+        {description ? (
+          <div
+            className={cn(
+              'mt-1.5 max-w-2xl text-pretty text-sm leading-5 text-ph-subtle',
+              resolvedIcon && 'sm:pl-11',
+            )}
+          >
+            {description}
+          </div>
+        ) : null}
       </div>
       {actions ? (
-        <div className="flex shrink-0 items-center gap-2 pt-1">
+        <div className="flex shrink-0 items-center gap-2 self-center">
           {actions}
         </div>
       ) : null}

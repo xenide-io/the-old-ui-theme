@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Bell } from 'iconoir-react';
 
 import type { SuiteDropdownMenuComponent } from '../lib/injected';
+import { resolveSuiteNotificationHref } from '../lib/apps';
 
 const POLL_MS = 60_000;
 
@@ -134,9 +135,14 @@ export function SuiteNotificationBell({
           // ignore
         }
       }
-      if (!n.href) return;
-      if (/^https?:\/\//i.test(n.href)) window.location.assign(n.href);
-      else router.push(n.href);
+      const target = resolveSuiteNotificationHref(n.href, n.source_app);
+      if (!target) return;
+      // Cross-app notifications must leave this product origin.
+      if (/^https?:\/\//i.test(target)) {
+        window.location.assign(target);
+        return;
+      }
+      router.push(target);
     },
     [router, markRead],
   );

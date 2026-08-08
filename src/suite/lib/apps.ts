@@ -5,7 +5,11 @@
  * suffixes (`switch-app-${slug}`, `suite-nav-${slug}`).
  */
 
-export type SuiteAppSlug = 'shellstack' | 'tides' | 'turtletime' | 'kraken';
+export type SuiteAppSlug =
+  | 'shellstack'
+  | 'tides'
+  | 'turtletime'
+  | 'kraken';
 
 export interface SuiteAppDefinition {
   slug: SuiteAppSlug;
@@ -45,7 +49,7 @@ export const SUITE_APPS: readonly SuiteAppDefinition[] = [
     name: 'TurtleTime',
     description: 'Time tracking',
     icon: '/turtletime-icon.svg',
-    landing: '/tracker',
+    landing: '/today',
     baseUrlEnv: 'NEXT_PUBLIC_TURTLETIME_URL',
     baseUrlFallback: 'http://localhost:3000',
   },
@@ -72,4 +76,30 @@ export function suiteAppBaseUrl(slug: SuiteAppSlug): string {
   const fromEnv =
     typeof process !== 'undefined' ? process.env[def.baseUrlEnv] : undefined;
   return (fromEnv || def.baseUrlFallback).replace(/\/$/, '');
+}
+
+const SOURCE_APP_SLUG: Record<string, SuiteAppSlug> = {
+  turtletime: 'turtletime',
+  tides: 'tides',
+  kraken: 'kraken',
+  portal: 'shellstack',
+  shellstack: 'shellstack',
+};
+
+/**
+ * Suite notification links are often stored as `/dashboard/...` relative to the
+ * *source* app. Resolving them with the current product origin opens the wrong
+ * app — prefix with that app's base URL instead.
+ */
+export function resolveSuiteNotificationHref(
+  href: string | null | undefined,
+  sourceApp: string | null | undefined,
+): string {
+  const value = (href || '').trim();
+  if (!value) return '';
+  if (/^(https?:|mailto:|\/\/)/i.test(value)) return value;
+  const path = value.startsWith('/') ? value : `/${value}`;
+  const slug = SOURCE_APP_SLUG[(sourceApp || '').toLowerCase()];
+  if (!slug) return path;
+  return `${suiteAppBaseUrl(slug)}${path}`;
 }

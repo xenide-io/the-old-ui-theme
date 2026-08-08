@@ -15,12 +15,273 @@ html {
   -webkit-tap-highlight-color: transparent;
   /* App-like vertical scrolling: no rubber-band chaining into the page. */
   overscroll-behavior-y: none;
+  /* Spacing scale (4/8/12/16/24/32/48) — Slack / Linear-adjacent. */
+  --suite-space-1: 4px;
+  --suite-space-2: 8px;
+  --suite-space-3: 12px;
+  --suite-space-4: 16px;
+  --suite-space-5: 24px;
+  --suite-space-6: 32px;
+  --suite-space-7: 48px;
+  --suite-page-pad-x: var(--suite-space-4);
+  --suite-page-pad-x-sm: var(--suite-space-5);
+  --suite-page-pad-x-lg: var(--suite-space-6);
+  --suite-page-pad-y-top: var(--suite-space-2);
+  --suite-page-pad-y-top-sm: var(--suite-space-3);
+  --suite-page-pad-y-bottom: 20px;
+  --suite-page-pad-y-bottom-sm: var(--suite-space-5);
+  /* Today needs a calmer opening rhythm than dense workspace screens. */
+  --suite-today-pad-y-top: var(--suite-space-4);
+  --suite-today-pad-y-top-sm: var(--suite-space-5);
+  --suite-section-gap: var(--suite-space-5);
+  --suite-header-gap: var(--suite-space-4);
+  --suite-content-max: 96rem; /* used only by content/narrow caps, not default pages */
+  --suite-reading-max: 48rem; /* ~max-w-3xl / 65ch */
+}
+
+@media (min-width: 1536px) {
+  html {
+    --suite-page-pad-x-lg: var(--suite-space-7);
+  }
 }
 
 body {
   /* OpenRunde optical tweaks — crisper on high-dpi mobile/tablet. */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Shared page inset — SuitePage + TodayPageFrame (one source of truth). */
+.suite-page-inset {
+  padding-left: var(--suite-page-pad-x);
+  padding-right: var(--suite-page-pad-x);
+  padding-top: var(--suite-page-pad-y-top);
+  padding-bottom: var(--suite-page-pad-y-bottom);
+}
+@media (min-width: 640px) {
+  .suite-page-inset {
+    padding-left: var(--suite-page-pad-x-sm);
+    padding-right: var(--suite-page-pad-x-sm);
+    padding-top: var(--suite-page-pad-y-top-sm);
+    padding-bottom: var(--suite-page-pad-y-bottom-sm);
+  }
+}
+@media (min-width: 1024px) {
+  .suite-page-inset {
+    padding-left: var(--suite-page-pad-x-lg);
+    padding-right: var(--suite-page-pad-x-lg);
+  }
+}
+
+/* Mobile settings tabs bleed to the shared page edge without hard-coded mx/px. */
+.suite-settings-mobile-nav {
+  margin-inline: calc(-1 * var(--suite-page-pad-x));
+  padding-inline: var(--suite-page-pad-x);
+}
+@media (min-width: 640px) {
+  .suite-settings-mobile-nav {
+    margin-inline: calc(-1 * var(--suite-page-pad-x-sm));
+    padding-inline: var(--suite-page-pad-x-sm);
+  }
+}
+
+/* Today: extra top inset so the title isn't jammed under the shell. */
+.today-page-frame .suite-page-inset {
+  padding-top: var(--suite-today-pad-y-top);
+}
+@media (min-width: 640px) {
+  .today-page-frame .suite-page-inset {
+    padding-top: var(--suite-today-pad-y-top-sm);
+  }
+}
+
+/* Today atmosphere — shared geometry, colours supplied by each app theme. */
+.today-page-frame {
+  background-color: var(--ph-canvas);
+}
+
+.today-page-frame__glow {
+  background:
+    radial-gradient(
+      ellipse 130% 80% at 50% -20%,
+      color-mix(in srgb, var(--ph-brand) 28%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 80% 55% at 100% 0%,
+      color-mix(in srgb, var(--ph-accent) 18%, transparent),
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse 70% 50% at 0% 8%,
+      color-mix(in srgb, var(--ph-violet, var(--ph-brand)) 20%, transparent),
+      transparent 46%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 70% 35%,
+      color-mix(in srgb, var(--ph-brand) 10%, transparent),
+      transparent 55%
+    );
+}
+
+.today-page-frame__top-fade {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--ph-brand) 18%, var(--ph-canvas)),
+    color-mix(in srgb, var(--ph-canvas) 45%, transparent),
+    transparent
+  );
+}
+
+.today-page-frame__cloud {
+  background: color-mix(in srgb, var(--ph-surface) 48%, transparent);
+  filter: blur(2px);
+}
+
+.today-page-frame__cloud--2 {
+  background: color-mix(in srgb, var(--ph-brand) 10%, var(--ph-surface));
+}
+
+.today-page-frame__cloud--4 {
+  background: color-mix(in srgb, var(--ph-accent) 8%, var(--ph-surface));
+  opacity: 0.85;
+}
+
+.today-page-frame__cloud--5 {
+  background: color-mix(in srgb, var(--ph-surface) 36%, transparent);
+  opacity: 0.75;
+}
+
+html.dark .today-page-frame__cloud {
+  background: color-mix(in srgb, var(--ph-surface) 22%, transparent);
+}
+
+html.dark .today-page-frame__cloud--2 {
+  background: color-mix(in srgb, var(--ph-brand) 8%, var(--ph-surface));
+}
+
+/* Today primary action — compact geometry, colour supplied by the app theme. */
+.today-primary-action {
+  color: var(--ph-ink);
+  background: color-mix(in oklab, var(--ph-brand) 12%, var(--ph-surface));
+  border: 1px solid color-mix(in oklab, var(--ph-brand) 28%, var(--ph-border));
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--ph-brand) 8%, transparent);
+}
+.today-primary-action:hover {
+  background: color-mix(in oklab, var(--ph-brand) 18%, var(--ph-surface));
+  border-color: color-mix(in oklab, var(--ph-brand) 40%, var(--ph-border));
+}
+.today-primary-action__icon {
+  background: color-mix(in oklab, var(--ph-brand) 22%, var(--ph-surface));
+  color: var(--ph-brand);
+}
+.today-primary-action--turtletime {
+  background: color-mix(in oklab, #2d6a4f 14%, var(--ph-surface));
+  border-color: color-mix(in oklab, #2d6a4f 32%, var(--ph-border));
+}
+.today-primary-action--turtletime .today-primary-action__icon {
+  background: color-mix(in oklab, #2d6a4f 24%, var(--ph-surface));
+  color: #1b4332;
+}
+.today-primary-action--tides {
+  background: color-mix(in oklab, var(--ph-brand) 14%, var(--ph-surface));
+}
+.today-primary-action--kraken {
+  background: color-mix(
+    in oklab,
+    var(--ph-violet, var(--ph-brand)) 14%,
+    var(--ph-surface)
+  );
+  border-color: color-mix(
+    in oklab,
+    var(--ph-violet, var(--ph-brand)) 32%,
+    var(--ph-border)
+  );
+}
+.today-primary-action--kraken .today-primary-action__icon {
+  background: color-mix(
+    in oklab,
+    var(--ph-violet, var(--ph-brand)) 22%,
+    var(--ph-surface)
+  );
+  color: var(--ph-violet, var(--ph-brand));
+}
+.today-primary-action--shellstack {
+  background: color-mix(in oklab, var(--ph-ink) 6%, var(--ph-surface));
+}
+.today-primary-action--active .today-primary-action__icon {
+  background: var(--ph-brand);
+  color: var(--ph-canvas);
+}
+
+/* Desktop sticky page title chrome (SuitePageHeader sticky). */
+.suite-page-header-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin-left: calc(-1 * var(--suite-page-pad-x));
+  margin-right: calc(-1 * var(--suite-page-pad-x));
+  padding-left: var(--suite-page-pad-x);
+  padding-right: var(--suite-page-pad-x);
+  background: color-mix(in oklab, var(--ph-canvas) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  border-bottom: 1px solid transparent;
+  transition: border-color 160ms ease;
+}
+@media (min-width: 640px) {
+  .suite-page-header-sticky {
+    margin-left: calc(-1 * var(--suite-page-pad-x-sm));
+    margin-right: calc(-1 * var(--suite-page-pad-x-sm));
+    padding-left: var(--suite-page-pad-x-sm);
+    padding-right: var(--suite-page-pad-x-sm);
+  }
+}
+@media (min-width: 1024px) {
+  .suite-page-header-sticky {
+    margin-left: calc(-1 * var(--suite-page-pad-x-lg));
+    margin-right: calc(-1 * var(--suite-page-pad-x-lg));
+    padding-left: var(--suite-page-pad-x-lg);
+    padding-right: var(--suite-page-pad-x-lg);
+  }
+}
+.suite-page-header-sticky[data-stuck="true"] {
+  border-bottom-color: var(--ph-border-subtle);
+  /* Only when pinned under the scroll edge — keeps resting titles aligned. */
+  padding-top: var(--suite-space-2);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .suite-page-header-sticky {
+    background: var(--ph-canvas);
+  }
+}
+
+/* Page stage — ONE layout standard for every suite app.
+   - Default width="full": use the full main column (no max-width centring)
+   - Always use suite-page-inset for title baseline (top + left)
+   - Never nest SuitePage inside SuitePage
+   - width="content" | "narrow" | "reading" only when a page truly needs a
+     reading measure (e.g. Ask). "wide" is an alias of full. */
+.suite-page-stage {
+  width: 100%;
+  max-width: var(--suite-page-max, none);
+  margin-inline: auto;
+}
+.suite-page-stage[data-width="full"],
+.suite-page-stage[data-width="wide"] {
+  --suite-page-max: none;
+}
+.suite-page-stage[data-width="content"] {
+  --suite-page-max: 72rem; /* ~max-w-6xl */
+}
+.suite-page-stage[data-width="narrow"] {
+  --suite-page-max: 56rem; /* ~max-w-4xl */
+}
+.suite-page-stage[data-width="reading"] {
+  --suite-page-max: var(--suite-reading-max);
+}
+.suite-reading-measure {
+  max-width: var(--suite-reading-max);
 }
 
 /* ── Cards ──────────────────────────────────────────────────────────────
@@ -125,7 +386,7 @@ button:hover > .ph-card {
   will-change: transform;
 }
 .suite-bottom-nav__indicator::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0 5px;
   border-radius: 0.9rem;
@@ -138,41 +399,22 @@ button:hover > .ph-card {
   color: var(--ph-accent);
 }
 
-/* ── Today hero: one-shot typography entrance ───────────────────────────
-   Rises and settles when the greeting text arrives (keyed by message).
-   Runs once per message change — never loops, so no battery cost. */
+/* ── Today hero: short one-shot fade ────────────────────────────────────
+   Keep the entrance calm — Slack-like briefing, not a marketing hero. */
 .today-hero {
-  animation: today-hero-enter 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: today-hero-enter 220ms ease-out both;
 }
 @keyframes today-hero-enter {
   from {
     opacity: 0;
-    transform: translateY(10px);
-    letter-spacing: 0.01em;
   }
   to {
     opacity: 1;
-    transform: translateY(0);
-    letter-spacing: normal;
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .today-hero {
     animation: none;
-  }
-}
-
-/* ── Today frame: mobile perf ───────────────────────────────────────────
-   blur-3xl + infinite pulse is a GPU/battery hog on phones. Keep the
-   atmosphere on tablet/desktop; flatten it on small screens. */
-@media (max-width: 767px) {
-  .today-page-frame__sun {
-    filter: none;
-    opacity: 0.28;
-    animation: none;
-  }
-  .today-page-frame__cloud {
-    display: none;
   }
 }
 
@@ -197,7 +439,7 @@ button:hover > .ph-card {
   }
   /* Grabber — first in-flow child, so it sits above flush header rows. */
   .ph-modal-panel::before {
-    content: '';
+    content: "";
     display: block;
     flex: none;
     width: 36px;
@@ -231,6 +473,24 @@ button:hover > .ph-card {
 .suite-scroll-lock {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+}
+
+/* ── Auth / OAuth / launch handoff ──────────────────────────────────────
+   One calm opacity fade — no stacked entrance reveals on bridge pages. */
+.suite-auth-handoff {
+  opacity: 0;
+  animation: suite-auth-handoff-fade 250ms ease-out forwards;
+}
+@keyframes suite-auth-handoff-fade {
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .suite-auth-handoff {
+    opacity: 1;
+    animation: none;
+  }
 }
 
 /* ── Reduced motion: every skin animation honours it ──────────────────── */
