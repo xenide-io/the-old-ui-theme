@@ -6,6 +6,8 @@ import {
   useRef,
   useState,
   type ComponentType,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react';
 import { Check, Copy, Sparks, Xmark as X } from 'iconoir-react';
@@ -35,6 +37,34 @@ export interface SuiteAiChatMessage {
   role: 'user' | 'assistant';
   content: string;
   created_at?: string;
+}
+
+type LauncherSide = 'left' | 'right';
+type LauncherPosition = { x: number; y: number };
+
+const LAUNCHER_EDGE_GAP = 12;
+const LAUNCHER_STORAGE_KEY = 'suite-ask-ai-launcher-position';
+
+export function resolveSuiteAiLauncherPosition(
+  side: LauncherSide,
+  desiredY: number,
+  viewportWidth: number,
+  viewportHeight: number,
+  launcherWidth: number,
+  launcherHeight: number,
+): LauncherPosition {
+  const maxX = Math.max(
+    LAUNCHER_EDGE_GAP,
+    viewportWidth - launcherWidth - LAUNCHER_EDGE_GAP,
+  );
+  const maxY = Math.max(
+    LAUNCHER_EDGE_GAP,
+    viewportHeight - launcherHeight - LAUNCHER_EDGE_GAP,
+  );
+  return {
+    x: side === 'left' ? LAUNCHER_EDGE_GAP : maxX,
+    y: Math.min(Math.max(desiredY, LAUNCHER_EDGE_GAP), maxY),
+  };
 }
 
 /**
@@ -77,8 +107,66 @@ export function SuiteAiPanel({
   const [hydrating, setHydrating] = useState(false);
   const [error, setError] = useState('');
   const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [launcherSide, setLauncherSide] = useState<LauncherSide>('right');
+  const [launcherPosition, setLauncherPosition] =
+    useState<LauncherPosition | null>(null);
+  const [draggingLauncher, setDraggingLauncher] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
+  const launcherSideRef = useRef<LauncherSide>('right');
+  const launcherPositionRef = useRef<LauncherPosition | null>(null);
+  const launcherDragRef = useRef<{
+    pointerId: number;
+    offsetX: number;
+    offsetY: number;
+    startX: number;
+    startY: number;
+  } | null>(null);
+  const suppressLauncherClickRef = useRef(false);
   const pendingPromptRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const launcher = launcherRef.current;
+    if (!launcher) return;
+
+    let side: LauncherSide = 'right';
+    let desiredY = window.innerHeight - launcher.offsetHeight - 20;
+    try {
+      const stored = JSON.parse(
+        localStorage.getItem(LAUNCHER_STORAGE_KEY) || 'null',
+      ) as {
+        side?: LauncherSide;
+        y?: number;
+      } | null;
+      if (stored?.side === 'left' || stored?.side === 'right')
+        side = stored.side;
+      if (typeof stored?.y === 'number') desiredY = stored.y;
+    } catch {
+      // Ignore invalid saved launcher positions.
+    }
+
+    launcherSideRef.current = side;
+    setLauncherSide(side);
+
+    const placeLauncher = () => {
+      const element = launcherRef.current;
+      if (!element) return;
+      const next = resolveSuiteAiLauncherPosition(
+        launcherSideRef.current,
+        launcherPositionRef.current?.y ?? desiredY,
+        window.innerWidth,
+        window.innerHeight,
+        element.offsetWidth,
+        element.offsetHeight,
+      );
+      launcherPositionRef.current = next;
+      setLauncherPosition(next);
+    };
+
+    placeLauncher();
+    window.addEventListener('resize', placeLauncher);
+    return () => window.removeEventListener('resize', placeLauncher);
+  }, []);
 
   const scrollToBottom = useCallback(() => {
     const el = scrollerRef.current;
@@ -185,21 +273,158 @@ export function SuiteAiPanel({
     }
   }
 
+  function saveLauncherPosition(
+    side: LauncherSide,
+    position: LauncherPosition,
+  ) {
+    try {
+      localStorage.setItem(
+        LAUNCHER_STORAGE_KEY,
+        JSON.stringify({ side, y: position.y }),
+      );
+    } catch {
+      // Storage may be unavailable; dragging still works for this session.
+    }
+  }
+
+  function dockLauncher(side: LauncherSide, desiredY: number) {
+    const launcher = launcherRef.current;
+    if (!launcher) return;
+    const next = resolveSuiteAiLauncherPosition(
+      side,
+      desiredY,
+      window.innerWidth,
+      window.innerHeight,
+      launcher.offsetWidth,
+      launcher.offsetHeight,
+    );
+    launcherSideRef.current = side;
+    launcherPositionRef.current = next;
+    setLauncherSide(side);
+    setLauncherPosition(next);
+    saveLauncherPosition(side, next);
+  }
+
+  function startLauncherDrag(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    launcherDragRef.current = {
+      pointerId: event.pointerId,
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top,
+      startX: event.clientX,
+      startY: event.clientY,
+    };
+    suppressLauncherClickRef.current = false;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDraggingLauncher(true);
+  }
+
+  function moveLauncher(event: ReactPointerEvent<HTMLButtonElement>) {
+    const drag = launcherDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const launcher = event.currentTarget;
+    const maxX = Math.max(
+      LAUNCHER_EDGE_GAP,
+      window.innerWidth - launcher.offsetWidth - LAUNCHER_EDGE_GAP,
+    );
+    const maxY = Math.max(
+      LAUNCHER_EDGE_GAP,
+      window.innerHeight - launcher.offsetHeight - LAUNCHER_EDGE_GAP,
+    );
+    const next = {
+      x: Math.min(
+        Math.max(event.clientX - drag.offsetX, LAUNCHER_EDGE_GAP),
+        maxX,
+      ),
+      y: Math.min(
+        Math.max(event.clientY - drag.offsetY, LAUNCHER_EDGE_GAP),
+        maxY,
+      ),
+    };
+    if (
+      Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 4
+    ) {
+      suppressLauncherClickRef.current = true;
+    }
+    launcherPositionRef.current = next;
+    setLauncherPosition(next);
+  }
+
+  function finishLauncherDrag(event: ReactPointerEvent<HTMLButtonElement>) {
+    const drag = launcherDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    launcherDragRef.current = null;
+    setDraggingLauncher(false);
+    const rect = event.currentTarget.getBoundingClientRect();
+    const currentX = launcherPositionRef.current?.x ?? rect.left;
+    const side: LauncherSide =
+      currentX + rect.width / 2 < window.innerWidth / 2 ? 'left' : 'right';
+    dockLauncher(side, launcherPositionRef.current?.y ?? rect.top);
+  }
+
+  function moveLauncherWithKeyboard(
+    event: ReactKeyboardEvent<HTMLButtonElement>,
+  ) {
+    if (
+      !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)
+    )
+      return;
+    event.preventDefault();
+    const currentY =
+      launcherPositionRef.current?.y ??
+      event.currentTarget.getBoundingClientRect().top;
+    if (event.key === 'ArrowLeft') dockLauncher('left', currentY);
+    else if (event.key === 'ArrowRight') dockLauncher('right', currentY);
+    else
+      dockLauncher(
+        launcherSideRef.current,
+        currentY + (event.key === 'ArrowUp' ? -24 : 24),
+      );
+  }
+
   const Icon = BrandIcon ?? Sparks;
 
   return (
     <>
       {!hideLauncher ? (
-        <button
-          type="button"
-          data-test="ai-panel-launcher"
-          onClick={() => setOpen(true)}
-          className="fixed bottom-5 right-5 z-30 flex items-center gap-2 rounded-full border border-ph-border bg-ph-surface px-4 py-2.5 text-sm font-medium text-ph-ink shadow-ph hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
-          aria-label="Open Ask AI"
-        >
-          <Icon className="h-4 w-4 text-ph-brand" />
-          Ask AI
-        </button>
+        <>
+          <button
+            ref={launcherRef}
+            type="button"
+            data-test="ai-panel-launcher"
+            onClick={() => {
+              if (suppressLauncherClickRef.current) {
+                suppressLauncherClickRef.current = false;
+                return;
+              }
+              setOpen(true);
+            }}
+            onPointerDown={startLauncherDrag}
+            onPointerMove={moveLauncher}
+            onPointerUp={finishLauncherDrag}
+            onPointerCancel={finishLauncherDrag}
+            onKeyDown={moveLauncherWithKeyboard}
+            className={`fixed z-30 flex touch-none select-none items-center gap-2 rounded-full border border-ph-border bg-ph-surface px-4 py-2.5 text-sm font-medium text-ph-ink shadow-ph hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand ${draggingLauncher ? 'cursor-grabbing' : 'cursor-grab'}`}
+            style={
+              launcherPosition
+                ? { left: launcherPosition.x, top: launcherPosition.y }
+                : { bottom: 20, right: 20 }
+            }
+            aria-label="Open Ask AI"
+            aria-describedby="suite-ask-ai-launcher-help"
+          >
+            <Icon className="h-4 w-4 text-ph-brand" />
+            Ask AI
+          </button>
+          <span id="suite-ask-ai-launcher-help" className="sr-only">
+            Drag to reposition, or use arrow keys. The launcher docks to the
+            nearest screen edge.
+          </span>
+        </>
       ) : null}
 
       {open ? (
@@ -211,7 +436,7 @@ export function SuiteAiPanel({
             aria-label="Close Ask AI"
           />
           <aside
-            className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col border-l border-ph-border bg-ph-surface shadow-2xl"
+            className={`absolute inset-y-0 flex w-full max-w-md flex-col bg-ph-surface shadow-2xl ${launcherSide === 'left' ? 'left-0 border-r border-ph-border' : 'right-0 border-l border-ph-border'}`}
             data-test="suite-ask-ai-panel"
           >
             <div className="flex items-center justify-between border-b border-ph-border px-4 py-3">
