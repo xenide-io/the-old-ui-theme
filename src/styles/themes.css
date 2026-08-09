@@ -1764,6 +1764,154 @@
   --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%23929292' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 
+/* Nakama Light — cyan-accented bright suite palette for the AI teammate app. */
+[data-theme="nakama-light"] {
+  color-scheme: light;
+
+  --ph-canvas: #f6f8f9;
+  --ph-surface: #ffffff;
+  --ph-muted: #eef2f4;
+  --ph-toolbar: #e6ebee;
+  --ph-surface-inset: #eef2f4;
+  --ph-surface-raised: #ffffff;
+  --ph-surface-overlay: #ffffff;
+  --ph-border: #dfe5e8;
+  --ph-border-subtle: #eaeff1;
+  --ph-border-strong: #a5b0b7;
+
+  --ph-text-primary: #17242c;
+  --ph-text-secondary: #42525c;
+  --ph-text-tertiary: #5f6f7a;
+
+  --ph-accent: #0891b2;
+  --ph-accent-hover: #0e7490;
+  --ph-blue: #437aff;
+  --ph-violet: #8b5cf6;
+  --ph-purple: #7c3aed;
+
+  --ph-success: #15803d;
+  --ph-warning: #b26a00;
+  --ph-danger: #c7463a;
+  --ph-info: #1769aa;
+  --ph-on-accent: #ffffff;
+  --ph-on-violet: #ffffff;
+  --ph-on-success: #ffffff;
+  --ph-on-warning: #211606;
+  --ph-on-danger: #ffffff;
+  --ph-on-info: #ffffff;
+  --ph-focus-ring: #0891b2;
+  --ph-selected-bg: #e6f6fa;
+  --ph-selected-text: #0b5569;
+  --ph-selected-border: #67c6dd;
+
+  --ph-text-3000: #ffffff;
+  --ph-primary-button-face: #0891b2;
+  --ph-primary-button-border: #0b728c;
+  --ph-primary-button-border-hover: #0e7490;
+  --ph-primary-frame-bg: #0b5569;
+  --ph-secondary-button-bg: #ffffff;
+  --ph-secondary-frame-bg: #dce4e8;
+  --ph-secondary-button-border: #bfcbd2;
+  --ph-secondary-button-border-hover: #8797a1;
+
+  --ph-border-3000: #dce4e8;
+  --ph-chrome-inset-face-top: inset 0 1px 0 hsl(0deg 0% 100% / 0.9);
+  --ph-chrome-inset-face-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.06);
+  --ph-accent-highlight-secondary: rgb(8 145 178 / 10%);
+
+  --ph-data-1: #0891b2;
+  --ph-data-2: #f59e0b;
+  --ph-data-3: #437aff;
+  --ph-data-4: #059669;
+  --ph-data-5: #b26a00;
+  --ph-data-6: #c7463a;
+  --ph-data-7: #7c3aed;
+
+  --ph-product-session-replay: #b26a00;
+  --ph-product-product-analytics: #1769aa;
+  --ph-product-data-pipeline: #059669;
+  --ph-product-feature-flags: #f59e0b;
+  --ph-product-experiments: #437aff;
+  --ph-product-data-warehouse: #7b5e3b;
+  --ph-product-surveys: #c7463a;
+
+  --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%235f6f7a' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* Nakama Dark — deep navy night palette with a bright cyan accent. */
+[data-theme="nakama-dark"] {
+  color-scheme: dark;
+
+  --ph-canvas: #0f1420;
+  --ph-surface: #161d2b;
+  --ph-muted: #1c2434;
+  --ph-toolbar: #232c3e;
+  --ph-surface-inset: #121826;
+  --ph-surface-raised: #1a2231;
+  --ph-surface-overlay: #202a3c;
+  --ph-border: #2b3648;
+  --ph-border-subtle: #232d3f;
+  --ph-border-strong: #4a5871;
+
+  --ph-text-primary: #e8eef4;
+  --ph-text-secondary: #b9c4d1;
+  --ph-text-tertiary: #8594a8;
+
+  --ph-accent: #22d3ee;
+  --ph-accent-hover: #67e8f9;
+  --ph-blue: #7da3ff;
+  --ph-violet: #c4a7e7;
+  --ph-purple: #b794f6;
+
+  --ph-success: #34d399;
+  --ph-warning: #fbbf24;
+  --ph-danger: #f87171;
+  --ph-info: #60a5fa;
+  --ph-on-accent: #062a33;
+  --ph-on-violet: #1b1430;
+  --ph-on-success: #052e1e;
+  --ph-on-warning: #2b1e06;
+  --ph-on-danger: #3b1010;
+  --ph-on-info: #0a2a45;
+  --ph-focus-ring: #22d3ee;
+  --ph-selected-bg: #123a47;
+  --ph-selected-text: #a5f3fc;
+  --ph-selected-border: #2f6e80;
+
+  --ph-text-3000: #0f1420;
+  --ph-primary-button-face: #22d3ee;
+  --ph-primary-button-border: #3aa8bd;
+  --ph-primary-button-border-hover: #67e8f9;
+  --ph-primary-frame-bg: #0b6b80;
+  --ph-secondary-button-bg: #202a3c;
+  --ph-secondary-frame-bg: #2e3a50;
+  --ph-secondary-button-border: #3d4b64;
+  --ph-secondary-button-border-hover: #5a6b8a;
+
+  --ph-border-3000: #232d3f;
+  --ph-chrome-inset-face-top: inset 0 1px 0 hsl(0deg 0% 100% / 0.08);
+  --ph-chrome-inset-face-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.4);
+  --ph-accent-highlight-secondary: rgb(34 211 238 / 12%);
+
+  --ph-data-1: #22d3ee;
+  --ph-data-2: #fbbf24;
+  --ph-data-3: #7da3ff;
+  --ph-data-4: #34d399;
+  --ph-data-5: #f59e0b;
+  --ph-data-6: #f87171;
+  --ph-data-7: #c4a7e7;
+
+  --ph-product-session-replay: #f59e0b;
+  --ph-product-product-analytics: #60a5fa;
+  --ph-product-data-pipeline: #34d399;
+  --ph-product-feature-flags: #fbbf24;
+  --ph-product-experiments: #7da3ff;
+  --ph-product-data-warehouse: #d4a373;
+  --ph-product-surveys: #f87171;
+
+  --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%238594a8' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
 /* Semantic button contrast is scoped to buttons so other token consumers keep theme-native ink. */
 :is(
   [data-theme="hedgehog-dark"],
@@ -1780,7 +1928,8 @@
   [data-theme="rosepine-dark"],
   [data-theme="notion-dark"],
   [data-theme="deepsea-dark"],
-  [data-theme="kraken-dark"]
+  [data-theme="kraken-dark"],
+  [data-theme="nakama-dark"]
 ) {
   .ph-btn-signal {
     --ph-btn-face: color-mix(in oklab, var(--ph-accent) 62%, black);
