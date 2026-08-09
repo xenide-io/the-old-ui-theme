@@ -12,7 +12,8 @@ export type SuiteAccentSlug =
   | 'tides'
   | 'kraken'
   | 'shellstack'
-  | 'crew';
+  | 'crew'
+  | 'nakama';
 
 export interface SuiteAppAccent {
   /** Display name (default aria label for app marks). */
@@ -63,6 +64,13 @@ export const APP_ACCENTS: Record<SuiteAccentSlug, SuiteAppAccent> = {
     onTile: '#ffffff',
     onTileAccent: '#a5f3fc',
   },
+  nakama: {
+    label: 'Nakama',
+    accent: '#0891b2',
+    tile: '#155e75',
+    onTile: '#ffffff',
+    onTileAccent: '#a5f3fc',
+  },
 };
 
 /** Which glyph represents each app. */
@@ -72,4 +80,5 @@ export const APP_GLYPHS: Record<SuiteAccentSlug, SuiteIconName> = {
   kraken: 'squid-doc',
   shellstack: 'stack-hex',
   crew: 'crew-bot',
+  nakama: 'crew-bot',
 };

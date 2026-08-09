@@ -14,9 +14,7 @@ import {
 } from 'react';
 import { Check, Copy, Sparks, Xmark as X } from 'iconoir-react';
 
-const SuiteAiBlockNoteMessage = lazy(
-  () => import('./ai-message-blocknote'),
-);
+const SuiteAiBlockNoteMessage = lazy(() => import('./ai-message-blocknote'));
 
 export const SUITE_OPEN_ASK_AI_EVENT = 'shellstack:open-ask-ai';
 
@@ -45,14 +43,16 @@ export interface SuiteAiChatMessage {
   created_at?: string;
 }
 
-type LauncherSide = 'left' | 'right';
+export type SuiteAiLauncherEdge = 'top' | 'right' | 'bottom' | 'left';
+type LauncherEdge = SuiteAiLauncherEdge;
 type LauncherPosition = { x: number; y: number };
 
 const LAUNCHER_EDGE_GAP = 12;
 const LAUNCHER_STORAGE_KEY = 'suite-ask-ai-launcher-position';
 
 export function resolveSuiteAiLauncherPosition(
-  side: LauncherSide,
+  edge: LauncherEdge,
+  desiredX: number,
   desiredY: number,
   viewportWidth: number,
   viewportHeight: number,
@@ -67,10 +67,51 @@ export function resolveSuiteAiLauncherPosition(
     LAUNCHER_EDGE_GAP,
     viewportHeight - launcherHeight - LAUNCHER_EDGE_GAP,
   );
-  return {
-    x: side === 'left' ? LAUNCHER_EDGE_GAP : maxX,
-    y: Math.min(Math.max(desiredY, LAUNCHER_EDGE_GAP), maxY),
-  };
+  const clampX = (x: number) => Math.min(Math.max(x, LAUNCHER_EDGE_GAP), maxX);
+  const clampY = (y: number) => Math.min(Math.max(y, LAUNCHER_EDGE_GAP), maxY);
+  switch (edge) {
+    case 'left':
+      return { x: LAUNCHER_EDGE_GAP, y: clampY(desiredY) };
+    case 'right':
+      return { x: maxX, y: clampY(desiredY) };
+    case 'top':
+      return { x: clampX(desiredX), y: LAUNCHER_EDGE_GAP };
+    case 'bottom':
+      return { x: clampX(desiredX), y: maxY };
+  }
+}
+
+/** Which edge the launcher is closest to, used to dock after a drag. */
+export function resolveSuiteAiNearestEdge(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  viewportWidth: number,
+  viewportHeight: number,
+): LauncherEdge {
+  const centerX = x + width / 2;
+  const centerY = y + height / 2;
+  const candidates: Array<{ edge: LauncherEdge; distance: number }> = [
+    { edge: 'left', distance: centerX },
+    { edge: 'right', distance: viewportWidth - centerX },
+    { edge: 'top', distance: centerY },
+    { edge: 'bottom', distance: viewportHeight - centerY },
+  ];
+  return candidates.reduce((nearest, candidate) =>
+    candidate.distance < nearest.distance ? candidate : nearest,
+  ).edge;
+}
+
+/** Which horizontal side the slide-over should open from for a docked edge. */
+export function resolveSuiteAiPanelSide(
+  edge: LauncherEdge,
+  x: number,
+  viewportWidth: number,
+): 'left' | 'right' {
+  if (edge === 'left') return 'left';
+  if (edge === 'right') return 'right';
+  return x < viewportWidth / 2 ? 'left' : 'right';
 }
 
 /**
@@ -113,13 +154,14 @@ export function SuiteAiPanel({
   const [hydrating, setHydrating] = useState(false);
   const [error, setError] = useState('');
   const [copiedId, setCopiedId] = useState<number | null>(null);
-  const [launcherSide, setLauncherSide] = useState<LauncherSide>('right');
+  const [launcherSide, setLauncherSide] = useState<LauncherEdge>('right');
+  const [panelSide, setPanelSide] = useState<'left' | 'right'>('right');
   const [launcherPosition, setLauncherPosition] =
     useState<LauncherPosition | null>(null);
   const [draggingLauncher, setDraggingLauncher] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
-  const launcherSideRef = useRef<LauncherSide>('right');
+  const launcherSideRef = useRef<LauncherEdge>('right');
   const launcherPositionRef = useRef<LauncherPosition | null>(null);
   const launcherDragRef = useRef<{
     pointerId: number;
@@ -135,17 +177,25 @@ export function SuiteAiPanel({
     const launcher = launcherRef.current;
     if (!launcher) return;
 
-    let side: LauncherSide = 'right';
+    let side: LauncherEdge = 'right';
+    let desiredX = LAUNCHER_EDGE_GAP;
     let desiredY = window.innerHeight - launcher.offsetHeight - 20;
     try {
       const stored = JSON.parse(
         localStorage.getItem(LAUNCHER_STORAGE_KEY) || 'null',
       ) as {
-        side?: LauncherSide;
+        side?: LauncherEdge;
+        x?: number;
         y?: number;
       } | null;
-      if (stored?.side === 'left' || stored?.side === 'right')
+      if (
+        stored?.side === 'top' ||
+        stored?.side === 'right' ||
+        stored?.side === 'bottom' ||
+        stored?.side === 'left'
+      )
         side = stored.side;
+      if (typeof stored?.x === 'number') desiredX = stored.x;
       if (typeof stored?.y === 'number') desiredY = stored.y;
     } catch {
       // Ignore invalid saved launcher positions.
@@ -159,6 +209,7 @@ export function SuiteAiPanel({
       if (!element) return;
       const next = resolveSuiteAiLauncherPosition(
         launcherSideRef.current,
+        launcherPositionRef.current?.x ?? desiredX,
         launcherPositionRef.current?.y ?? desiredY,
         window.innerWidth,
         window.innerHeight,
@@ -167,6 +218,13 @@ export function SuiteAiPanel({
       );
       launcherPositionRef.current = next;
       setLauncherPosition(next);
+      setPanelSide(
+        resolveSuiteAiPanelSide(
+          launcherSideRef.current,
+          next.x,
+          window.innerWidth,
+        ),
+      );
     };
 
     placeLauncher();
@@ -280,35 +338,41 @@ export function SuiteAiPanel({
   }
 
   function saveLauncherPosition(
-    side: LauncherSide,
+    edge: LauncherEdge,
     position: LauncherPosition,
   ) {
     try {
       localStorage.setItem(
         LAUNCHER_STORAGE_KEY,
-        JSON.stringify({ side, y: position.y }),
+        JSON.stringify({ side: edge, x: position.x, y: position.y }),
       );
     } catch {
       // Storage may be unavailable; dragging still works for this session.
     }
   }
 
-  function dockLauncher(side: LauncherSide, desiredY: number) {
+  function dockLauncher(
+    edge: LauncherEdge,
+    desiredX: number,
+    desiredY: number,
+  ) {
     const launcher = launcherRef.current;
     if (!launcher) return;
     const next = resolveSuiteAiLauncherPosition(
-      side,
+      edge,
+      desiredX,
       desiredY,
       window.innerWidth,
       window.innerHeight,
       launcher.offsetWidth,
       launcher.offsetHeight,
     );
-    launcherSideRef.current = side;
+    launcherSideRef.current = edge;
     launcherPositionRef.current = next;
-    setLauncherSide(side);
+    setLauncherSide(edge);
     setLauncherPosition(next);
-    saveLauncherPosition(side, next);
+    setPanelSide(resolveSuiteAiPanelSide(edge, next.x, window.innerWidth));
+    saveLauncherPosition(edge, next);
   }
 
   function startLauncherDrag(event: ReactPointerEvent<HTMLButtonElement>) {
@@ -367,29 +431,34 @@ export function SuiteAiPanel({
     setDraggingLauncher(false);
     const rect = event.currentTarget.getBoundingClientRect();
     const currentX = launcherPositionRef.current?.x ?? rect.left;
-    const side: LauncherSide =
-      currentX + rect.width / 2 < window.innerWidth / 2 ? 'left' : 'right';
-    dockLauncher(side, launcherPositionRef.current?.y ?? rect.top);
+    const currentY = launcherPositionRef.current?.y ?? rect.top;
+    const edge = resolveSuiteAiNearestEdge(
+      currentX,
+      currentY,
+      rect.width,
+      rect.height,
+      window.innerWidth,
+      window.innerHeight,
+    );
+    dockLauncher(edge, currentX, currentY);
   }
 
   function moveLauncherWithKeyboard(
     event: ReactKeyboardEvent<HTMLButtonElement>,
   ) {
-    if (
-      !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)
-    )
-      return;
+    const edgeByKey: Record<string, LauncherEdge> = {
+      ArrowLeft: 'left',
+      ArrowRight: 'right',
+      ArrowUp: 'top',
+      ArrowDown: 'bottom',
+    };
+    const edge = edgeByKey[event.key];
+    if (!edge) return;
     event.preventDefault();
-    const currentY =
-      launcherPositionRef.current?.y ??
-      event.currentTarget.getBoundingClientRect().top;
-    if (event.key === 'ArrowLeft') dockLauncher('left', currentY);
-    else if (event.key === 'ArrowRight') dockLauncher('right', currentY);
-    else
-      dockLauncher(
-        launcherSideRef.current,
-        currentY + (event.key === 'ArrowUp' ? -24 : 24),
-      );
+    const rect = event.currentTarget.getBoundingClientRect();
+    const currentX = launcherPositionRef.current?.x ?? rect.left;
+    const currentY = launcherPositionRef.current?.y ?? rect.top;
+    dockLauncher(edge, currentX, currentY);
   }
 
   const Icon = BrandIcon ?? Sparks;
@@ -442,7 +511,7 @@ export function SuiteAiPanel({
             aria-label="Close Ask AI"
           />
           <aside
-            className={`absolute inset-y-0 flex w-full max-w-md flex-col bg-ph-surface shadow-2xl ${launcherSide === 'left' ? 'left-0 border-r border-ph-border' : 'right-0 border-l border-ph-border'}`}
+            className={`absolute inset-y-0 flex w-full max-w-md flex-col bg-ph-surface shadow-2xl ${panelSide === 'left' ? 'left-0 border-r border-ph-border' : 'right-0 border-l border-ph-border'}`}
             data-test="suite-ask-ai-panel"
           >
             <div className="flex items-center justify-between border-b border-ph-border px-4 py-3">
