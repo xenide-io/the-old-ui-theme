@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { type ReactNode, type PointerEvent } from 'react';
+import { type ReactNode, type PointerEvent } from "react";
 
-import { cn } from '../lib/cn';
+import { cn } from "../lib/cn";
 
 export interface SuiteAppLayoutProps {
   sidebar: ReactNode;
@@ -20,6 +20,8 @@ export interface SuiteAppLayoutProps {
   lockMainScroll?: boolean;
   /** Drag this to resize the sidebar. */
   onStartResize?: (e: PointerEvent<HTMLDivElement>) => void;
+  /** Keyboard equivalent for the resize handle. */
+  onResizeBy?: (delta: number) => void;
   /** Double-click to reset sidebar width. */
   onResetWidth?: () => void;
   className?: string;
@@ -39,18 +41,22 @@ export function SuiteAppLayout({
   collapsed = false,
   lockMainScroll = false,
   onStartResize,
+  onResizeBy,
   onResetWidth,
   className,
 }: SuiteAppLayoutProps) {
   return (
     <div
       data-test="app-shell"
-      className={cn('flex min-h-dvh lg:h-screen lg:overflow-hidden', className)}
+      className={cn(
+        "suite-app-layout flex min-h-dvh lg:h-screen lg:overflow-hidden",
+        className,
+      )}
     >
       <aside
-        className="relative hidden shrink-0 flex-col overflow-hidden border-r border-ph-border transition-[width] duration-200 ease-out lg:flex"
+        className="relative hidden shrink-0 flex-col overflow-visible border-r border-ph-border ease-out lg:flex"
         style={{ width: `${sidebarWidth}px` }}
-        data-collapsed={collapsed ? 'true' : 'false'}
+        data-collapsed={collapsed ? "true" : "false"}
       >
         {sidebar}
         {onStartResize ? (
@@ -58,9 +64,23 @@ export function SuiteAppLayout({
             role="separator"
             aria-orientation="vertical"
             aria-label="Resize sidebar"
+            data-test="sidebar-resize-handle"
+            tabIndex={onResizeBy ? 0 : undefined}
             onPointerDown={onStartResize}
             onDoubleClick={onResetWidth}
-            className="absolute inset-y-0 right-0 z-10 w-1 cursor-col-resize transition-colors hover:bg-[color-mix(in_oklab,var(--ph-accent)_30%,transparent)]"
+            onKeyDown={(event) => {
+              if (event.key === "Home") {
+                event.preventDefault();
+                onResetWidth?.();
+              } else if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                onResizeBy?.(-16);
+              } else if (event.key === "ArrowRight") {
+                event.preventDefault();
+                onResizeBy?.(16);
+              }
+            }}
+            className="absolute inset-y-0 -right-1 z-10 w-2 cursor-col-resize touch-none transition-colors hover:bg-[color-mix(in_oklab,var(--ph-accent)_30%,transparent)]"
           />
         ) : null}
       </aside>
@@ -72,10 +92,11 @@ export function SuiteAppLayout({
         <main
           id="main-content"
           tabIndex={-1}
-          data-lock-scroll={lockMainScroll ? 'true' : undefined}
+          data-lock-scroll={lockMainScroll ? "true" : undefined}
           className={cn(
-            'flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overscroll-contain bg-ph-canvas focus:outline-none',
-            lockMainScroll ? 'overflow-hidden' : 'overflow-y-auto',
+            "flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overscroll-contain bg-ph-canvas focus:outline-none",
+            "suite-app-layout__main",
+            lockMainScroll ? "overflow-hidden" : "overflow-y-auto",
           )}
         >
           {children}

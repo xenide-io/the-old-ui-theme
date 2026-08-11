@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 
 /**
- * Today page content wrapper with soft atmosphere.
+ * Today page content wrapper with a soft themed visual treatment.
  * Does not own scrolling — `#main-content` is the scrollport so sticky headers work.
  * Glow/clouds are absolute and do not create a nested scrollport.
  */

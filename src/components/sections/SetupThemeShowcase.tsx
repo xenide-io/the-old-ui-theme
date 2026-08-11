@@ -6,18 +6,12 @@ import { THEMES } from "@/themes";
 
 const themePairs = [
   { name: "HedgeHog", light: "hedgehog-light", dark: "hedgehog-dark" },
-  { name: "Sheets", light: "sheets", dark: "sheets-dark" },
   { name: "Note", light: "note", dark: "note-dark" },
-  { name: "Presentation", light: "presentation", dark: "presentation-dark" },
-  { name: "Socials", light: "socials", dark: "socials-dark" },
-  { name: "Chats", light: "chats-light", dark: "chats-dark" },
-  { name: "Catppuccin", light: "catppuccin-light", dark: "catppuccin-dark" },
-  { name: "Xenide", light: "xenide-light", dark: "xenide-dark" },
-  { name: "GitHub", light: "github-light", dark: "github-dark" },
-  { name: "Rose Pine", light: "rosepine-light", dark: "rosepine-dark" },
   { name: "TurtleTime", light: "turtletime", dark: "turtletime-dark" },
-  { name: "Bikini Bottom", light: "bikini-bottom", dark: "bikini-bottom-dark" },
-  { name: "Notion", light: "notion", dark: "notion-dark" },
+  { name: "Rose Pine", light: "rosepine-light", dark: "rosepine-dark" },
+  { name: "Kraken", light: "kraken-light", dark: "kraken-dark" },
+  { name: "Tokyo Night", light: "deepsea-light", dark: "deepsea-dark" },
+  { name: "Malibu", light: "malibu-light", dark: "malibu-dark" },
 ] as const;
 
 const guideTokens = [
@@ -79,7 +73,7 @@ const switchCode = `import { ThemeSwitcher, persistTheme } from "the-old-ui";
 <ThemeSwitcher />
 
 // Or switch manually
-persistTheme("sheets-dark");`;
+persistTheme("malibu-dark");`;
 
 const customThemeCode = `/* app/globals.css */
 @import "the-old-ui/styles.css";
@@ -153,22 +147,30 @@ export default function SetupThemeShowcase() {
 
   useEffect(() => {
     const root = document.documentElement;
-    const update = () => setActiveTheme(root.getAttribute("data-theme") || "hedgehog-light");
+    const update = () =>
+      setActiveTheme(root.getAttribute("data-theme") || "hedgehog-light");
     update();
 
     const observer = new MutationObserver(update);
-    observer.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    observer.observe(root, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
     return () => observer.disconnect();
   }, []);
 
   const activeThemeCode = useMemo(() => {
     const theme = THEMES.find((item) => item.id === activeTheme);
-    return `// Current selected theme in this demo\n${JSON.stringify({
-      id: activeTheme,
-      name: theme?.name ?? activeTheme,
-      colorScheme: theme?.colorScheme ?? "light",
-      group: theme?.group ?? "Custom",
-    }, null, 2)}`;
+    return `// Current selected theme in this demo\n${JSON.stringify(
+      {
+        id: activeTheme,
+        name: theme?.name ?? activeTheme,
+        colorScheme: theme?.colorScheme ?? "light",
+        group: theme?.group ?? "Custom",
+      },
+      null,
+      2,
+    )}`;
   }, [activeTheme]);
 
   const themeListCode = useMemo(() => {
@@ -180,7 +182,9 @@ export default function SetupThemeShowcase() {
       <Panel className="space-y-4">
         <H3>Setup</H3>
         <P tone="subtle">
-          This demo is also the docs. A consuming app imports the package CSS once, adds the Tailwind preset, then switches palettes through <code className="ph-kbd">html[data-theme]</code>.
+          This demo is also the docs. A consuming app imports the package CSS
+          once, adds the Tailwind preset, then switches palettes through{" "}
+          <code className="ph-kbd">html[data-theme]</code>.
         </P>
         <div className="grid gap-4 lg:grid-cols-2">
           <CodeBlock code={installCode} filename="install.sh" language="bash" />
@@ -193,7 +197,10 @@ export default function SetupThemeShowcase() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <H3>Theme Switching</H3>
-            <P tone="subtle">Each default palette is a light/dark pair. Pick one below and copy the active theme ID.</P>
+            <P tone="subtle">
+              Each default palette is a light/dark pair. Pick one below and copy
+              the active theme ID.
+            </P>
           </div>
           <ThemeSwitcher />
         </div>
@@ -205,7 +212,10 @@ export default function SetupThemeShowcase() {
 
       <Panel className="space-y-4">
         <H3>Default Theme Pairs</H3>
-        <P tone="subtle">Use these IDs with <code className="ph-kbd">data-theme</code> or <code className="ph-kbd">persistTheme()</code>.</P>
+        <P tone="subtle">
+          Use these IDs with <code className="ph-kbd">data-theme</code> or{" "}
+          <code className="ph-kbd">persistTheme()</code>.
+        </P>
         <CodeBlock code={themeListCode} filename="theme-pairs.ts" />
       </Panel>
 
@@ -213,7 +223,9 @@ export default function SetupThemeShowcase() {
         <div>
           <H3>Theme Color Guide</H3>
           <P tone="subtle">
-            Every built-in theme is rendered below with its own <code className="ph-kbd">data-theme</code> attribute. These swatches are the guide for what each token becomes in that theme.
+            Every built-in theme is rendered below with its own{" "}
+            <code className="ph-kbd">data-theme</code> attribute. These swatches
+            are the guide for what each token becomes in that theme.
           </P>
         </div>
         <div className="grid gap-4 lg:grid-cols-2">
@@ -239,8 +251,12 @@ export default function SetupThemeShowcase() {
                     className={`rounded-lg border border-ph-border p-2 ${item.text}`}
                     style={{ background: `var(${item.token})` }}
                   >
-                    <div className="text-[10px] font-bold uppercase tracking-wide">{item.label}</div>
-                    <div className="mt-1 truncate font-mono text-[9px] opacity-80">{item.token}</div>
+                    <div className="text-[10px] font-bold uppercase tracking-wide">
+                      {item.label}
+                    </div>
+                    <div className="mt-1 truncate font-mono text-[9px] opacity-80">
+                      {item.token}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -251,9 +267,17 @@ export default function SetupThemeShowcase() {
 
       <Panel className="space-y-4">
         <H3>Custom Light & Dark Theme</H3>
-        <P tone="subtle">Custom themes are DaisyUI-style: define one light token block and one dark token block. Components read semantic tokens, not hardcoded colours.</P>
+        <P tone="subtle">
+          Custom themes are DaisyUI-style: define one light token block and one
+          dark token block. Components read semantic tokens, not hardcoded
+          colours.
+        </P>
         <div className="grid gap-4 lg:grid-cols-2">
-          <CodeBlock code={customThemeCode} filename="custom-theme.css" language="css" />
+          <CodeBlock
+            code={customThemeCode}
+            filename="custom-theme.css"
+            language="css"
+          />
           <CodeBlock code={registryCode} filename="registry.ts" />
         </div>
       </Panel>

@@ -51,6 +51,76 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Shared app canvas. Dense workspaces do not paint a decorative background. */
+.suite-app-layout {
+  background: var(--ph-canvas);
+}
+
+.suite-app-layout > aside {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .suite-app-layout > aside {
+    display: flex;
+  }
+}
+
+.suite-app-layout > aside {
+  position: relative;
+  z-index: 2;
+}
+
+.suite-app-layout > div {
+  position: relative;
+  z-index: 1;
+}
+
+.suite-app-layout__main {
+  background: color-mix(in oklab, var(--ph-canvas) 94%, transparent);
+}
+
+/* The demo intentionally renders a large component catalogue. Let the
+   browser skip layout and paint for sections outside the viewport while
+   preserving their anchors for sidebar navigation. */
+.suite-app-layout__main > div > div > * {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 560px;
+}
+
+@media print {
+  .suite-app-layout__main > div > div > * {
+    content-visibility: visible;
+  }
+}
+
+.suite-app-layout aside [data-test="nav-link"] {
+  position: relative;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.suite-app-layout aside [data-test="nav-link"][aria-current="page"] {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--ph-accent) 14%, var(--ph-muted)),
+    color-mix(in oklab, var(--ph-muted) 60%, transparent)
+  );
+  box-shadow: inset 2px 0 0 var(--ph-accent);
+}
+
+.suite-app-layout aside [data-test="nav-link"][aria-current="page"] svg {
+  color: var(--ph-accent);
+}
+
+@supports not (background: color-mix(in oklab, white, transparent)) {
+  .suite-app-layout__main {
+    background: var(--ph-canvas);
+  }
+}
+
 /* Shared page inset — SuitePage + TodayPageFrame (one source of truth). */
 .suite-page-inset {
   padding-left: var(--suite-page-pad-x);
@@ -95,7 +165,7 @@ body {
   }
 }
 
-/* Today atmosphere — shared geometry, colours supplied by each app theme. */
+/* Today visual treatment — shared geometry, colours supplied by each app theme. */
 .today-page-frame {
   background-color: var(--ph-canvas);
 }

@@ -183,7 +183,7 @@ import { Calendar } from "the-old-ui";
 
 const [date, setDate] = useState<Date | undefined>(new Date());
 
-<Calendar value={date} onChange={setDate} />
+<Calendar value={date} onChange={setDate} />;
 ```
 
 ## Icons
