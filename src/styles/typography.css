@@ -1,19 +1,15 @@
 /**
- * Type system — two voices, one scale.
+ * Type system — one voice, one scale.
  *
- * 1. Open Runde (`font-sans`) — every product surface: UI, body copy, controls.
- *    Also `font-display` in app configs, i.e. tight-tracked in-app page titles.
- * 2. Instrument Serif (`font-serif`) — the single display voice: marketing
- *    heroes, section titles, and document titles. One weight only.
- * 3. Monospace stack — code, CSV, token chips. Functional, never decorative.
+ * 1. Open Runde (`font-sans`) — every surface: marketing, product UI, body.
+ *    Hierarchy comes from size, weight, and tracking, not from a second face.
+ * 2. Monospace stack — code, CSV, token chips, shortcuts. Functional only.
  *
  * Marketing type uses `clamp()` so a hero has ONE definition instead of three
  * breakpoint variants per app. Product UI keeps Tailwind's step scale.
  */
 
 :root {
-  /* Display / editorial — pairs with Open Runde by contrast, not similarity */
-  --ph-font-serif-stack: "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
   /* Code / CSV / token chips — monospace with clear ASCII */
   --ph-font-monospace-stack:
     ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
@@ -36,33 +32,32 @@
 
 /* ── Marketing / landing type ─────────────────────────────────────────────
    Use these on public pages so all five apps share one hero rhythm.
-   In-app chrome keeps `font-sans`; do not use hero classes inside the shell. */
+   In-app chrome keeps the Tailwind step scale; do not use hero classes
+   inside the shell. */
 
 .ph-hero-title {
-  font-family: var(--ph-font-serif-stack);
-  font-weight: 400;
   font-size: var(--ph-type-hero);
-  /* Serif heroes wrap to 2–3 lines; 1.02 collides ascenders with descenders. */
-  line-height: 1.06;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  /* Open Runde is rounded and wide; display sizes need noticeably tighter
+     tracking than the 1:1 default to stop looking loose. */
+  letter-spacing: -0.032em;
+  line-height: 1.05;
   text-wrap: balance;
 }
 
 .ph-section-title {
-  font-family: var(--ph-font-serif-stack);
-  font-weight: 400;
   font-size: var(--ph-type-section);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.15;
   text-wrap: balance;
 }
 
-/* Feature/card headings stay sans — they sit next to body copy and need weight. */
 .ph-feature-title {
   font-size: var(--ph-type-feature);
   font-weight: 600;
-  line-height: 1.25;
   letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 
 .ph-lead {
@@ -82,10 +77,4 @@
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-}
-
-/* Emphasis inside a serif hero: italic, not a third font. */
-.ph-hero-title em,
-.ph-section-title em {
-  font-style: italic;
 }

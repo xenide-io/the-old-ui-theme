@@ -23,31 +23,31 @@ import {
 export default function TypographyShowcase() {
   const code = `import { Display, Lead, H2, P } from "@xenide-io/the-old-ui-theme/ui";
 
-// Marketing hero — serif display, fluid size, one per page
+// Marketing hero — fluid size, one per page, no breakpoint chain
 <Display>Track time without the ceremony</Display>
 <Lead>Open a project, hit start, get on with the work.</Lead>
 
-// Product surfaces stay sans
+// Product surfaces use the step scale
 <H2>This week</H2>
-<P>Every heading below H1 is Open Runde.</P>`;
+<P>One face everywhere; hierarchy comes from size and weight.</P>`;
 
   return (
     <ShowcaseWrapper
       id="typography"
       title="Typography"
-      description="Two voices: Instrument Serif for display, Open Runde for everything you read or operate. Monospace is functional only — code, IDs, and shortcuts."
+      description="One voice: Open Runde everywhere, with hierarchy from size, weight, and tracking. Monospace is functional only — code, IDs, and shortcuts."
       code={code}
       filename="TypographyExample.tsx"
       docs={
         <ComponentDocs
           title="Roles"
           rows={[
-            { name: "Display", type: "serif, fluid", description: "Marketing hero. One per page. Uses .ph-hero-title." },
-            { name: "SectionTitle", type: "serif, fluid", description: "Landing section heading. Uses .ph-section-title." },
-            { name: "H1–H5", type: "sans", description: "Product headings: page title down to card title." },
-            { name: "Lead", type: "sans, fluid", description: "Intro paragraph, capped at ~42ch for readability." },
-            { name: "P / Small", type: "sans", description: "Body and secondary copy." },
-            { name: "Caption / Overline", type: "sans, caps", description: "Meta and eyebrows — replaces ad-hoc text-[10px]/[11px]." },
+            { name: "Display", type: "fluid", description: "Marketing hero. One per page. Uses .ph-hero-title." },
+            { name: "SectionTitle", type: "fluid", description: "Landing section heading. Uses .ph-section-title." },
+            { name: "H1–H5", type: "step scale", description: "Product headings: page title down to card title." },
+            { name: "Lead", type: "fluid", description: "Intro paragraph, capped at ~42ch for readability." },
+            { name: "P / Small", type: "step scale", description: "Body and secondary copy." },
+            { name: "Caption / Overline", type: "caps", description: "Meta and eyebrows — replaces ad-hoc text-[10px]/[11px]." },
             { name: "Mono", type: "monospace", description: "Code, IDs, and data. Never decorative." },
             { name: "tone / weight", type: "prop", description: "Semantic colour and weight without touching size." },
           ]}
@@ -55,19 +55,17 @@ export default function TypographyShowcase() {
       }
     >
       <div className="space-y-6">
-        <Panel title="Display voice — Instrument Serif" className="space-y-4">
-          <Overline>Why serif</Overline>
-          <Display>
-            Time tracking that stays <em>calm</em>
-          </Display>
+        <Panel title="Marketing scale — fluid" className="space-y-4">
+          <Overline>Landing pages</Overline>
+          <Display>Time tracking that stays calm</Display>
           <Lead>
-            The hero contrasts with the interface on purpose: different shapes, not
-            just a bigger weight of the same face.
+            Hero, section, and lead sizes are one `clamp()` each, so a landing page
+            needs no breakpoint chain and every app opens at the same rhythm.
           </Lead>
           <SectionTitle>Built for the whole suite</SectionTitle>
         </Panel>
 
-        <Panel title="Product voice — Open Runde" className="space-y-3">
+        <Panel title="Product scale — steps" className="space-y-3">
           <H1>Page title (H1)</H1>
           <H2>Section title (H2)</H2>
           <H3>Subsection (H3)</H3>

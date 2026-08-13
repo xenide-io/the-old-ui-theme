@@ -58,8 +58,8 @@ function textClass(
 }
 
 /**
- * Display — the marketing hero voice: Instrument Serif, fluid size, one per page.
- * Product page titles use H1/`SuitePageHeader` (sans) instead.
+ * Display — the marketing hero: fluid size, tight tracking, one per page.
+ * Product page titles use H1/`SuitePageHeader` instead.
  */
 export function Display({
   children,
@@ -71,7 +71,7 @@ export function Display({
   return <h1 className={textClass("ph-hero-title", tone, weight, truncate, className)}>{children}</h1>;
 }
 
-/** Section title — serif, fluid; pairs with Display on public pages. */
+/** Section title — fluid; pairs with Display on public pages. */
 export function SectionTitle({ children, tone = "default", weight, truncate, className }: TextBaseProps) {
   return <h2 className={textClass("ph-section-title", tone, weight, truncate, className)}>{children}</h2>;
 }

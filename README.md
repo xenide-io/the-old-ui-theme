@@ -117,22 +117,22 @@ the component family it demonstrates:
 | ------------------- | -------------------------------------------------------------------------------- | ----------------- |
 | **CSS tokens**      | `src/styles/themes.css` — `[data-theme]` variables (`--ph-*`)                    | None              |
 | **Typography**      | `src/styles/typography.css` — font stacks and the fluid marketing scale           | None              |
-| **Tailwind preset** | `tailwind-preset.ts` — `ph.*` colours, `font-sans`/`font-serif`, radii, shadows   | `tailwindcss`     |
+| **Tailwind preset** | `tailwind-preset.ts` — `ph.*` colours, font stacks, radii, shadows                | `tailwindcss`     |
 | **App shell**       | `src/app/globals.css` — `@font-face`, primitives, layouts                         | Tokens + Tailwind |
 
 ## Typography
 
-Two voices, deliberately different shapes rather than two weights of one face:
+One face, two scales. Hierarchy comes from size, weight, and tracking — not
+from a second typeface competing with Open Runde.
 
-| Role                    | Face                | Where                                                          |
-| ----------------------- | ------------------- | -------------------------------------------------------------- |
-| Product UI and body     | Open Runde (`font-sans`)  | Every in-app surface, `H1`–`H5`, `P`, controls           |
-| Display                 | Instrument Serif (`font-serif`) | `Display`, `SectionTitle`, `.ph-hero-title`, doc titles |
-| Functional              | System monospace    | `Mono`, code, IDs, keyboard shortcuts                          |
+| Role                | Face                     | Where                                              |
+| ------------------- | ------------------------ | -------------------------------------------------- |
+| Everything you read | Open Runde (`font-sans`) | Marketing and product, `Display` down to `Caption` |
+| Functional          | System monospace         | `Mono`, code, IDs, keyboard shortcuts              |
 
 Marketing sizes are fluid (`clamp()`), so a hero is one class instead of three
 breakpoint variants: `.ph-hero-title`, `.ph-section-title`, `.ph-feature-title`,
-`.ph-lead`, `.ph-eyebrow`. Self-host `InstrumentSerif-{Regular,Italic}.woff2` and
+`.ph-lead`, `.ph-eyebrow`. Product UI keeps the Tailwind step scale. Self-host
 the Open Runde weights under `public/fonts/`.
 
 ## Themes

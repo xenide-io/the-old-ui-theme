@@ -36,24 +36,6 @@
   font-display: swap;
 }
 
-/* Instrument Serif — the one display voice, for marketing and document titles.
-   Single weight on purpose: contrast comes from the serif shapes and scale,
-   not from more weights competing with Open Runde. */
-@font-face {
-  font-family: "Instrument Serif";
-  src: url("/fonts/InstrumentSerif-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Instrument Serif";
-  src: url("/fonts/InstrumentSerif-Italic.woff2") format("woff2");
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
 /* Structural tokens — shared across colour themes */
 :where(:root) {
   --ph-shadow-elevation-3000: 0 3px 0 var(--ph-border-3000);

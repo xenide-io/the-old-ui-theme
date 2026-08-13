@@ -2,8 +2,8 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { Display, Lead, H1, SectionTitle } from "@/components/ui/Typography";
 
-describe("typography voices", () => {
-  it("gives marketing display the serif hero class and keeps product H1 sans", () => {
+describe("typography scale", () => {
+  it("puts marketing headings on the fluid classes", () => {
     render(
       <>
         <Display>Track time without ceremony</Display>

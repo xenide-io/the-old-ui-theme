@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.2] - 2026-08-13
+
+### Changed
+
+- Single-typeface system: Open Runde carries marketing and product type. Hero and section titles get their weight from size, weight (700) and tracking rather than a second face.
+
+### Removed
+
+- Instrument Serif, the `font-serif` preset family, and `--ph-font-serif-stack`. Apps no longer need to self-host a display font.
+
 ## [0.6.1] - 2026-08-13
 
 ### Changed
