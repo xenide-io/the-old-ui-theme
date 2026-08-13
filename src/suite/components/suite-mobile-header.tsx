@@ -1,11 +1,14 @@
-'use client';
+"use client";
 
-import type { ComponentType, ReactNode } from 'react';
-import { Menu } from 'iconoir-react';
+import type { ComponentType, ReactNode } from "react";
+import { Menu } from "iconoir-react";
 
-import { cn } from '../lib/cn';
+import { cn } from "../lib/cn";
 
-type SuiteMenuIcon = ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>;
+type SuiteMenuIcon = ComponentType<{
+  className?: string;
+  "aria-hidden"?: boolean | "true" | "false";
+}>;
 
 /**
  * Suite mobile app bar — the standardized top of every app on phone/tablet.
@@ -18,7 +21,8 @@ export function SuiteMobileHeader({
   menuIcon: MenuIcon = Menu,
   title,
   actions,
-  menuLabel = 'Open navigation',
+  menuLabel = "Open navigation",
+  menuId,
   menuDataTest,
   dataTest,
   className,
@@ -32,6 +36,7 @@ export function SuiteMobileHeader({
   /** Right-hand slot — search, bell, avatar (keep this order). */
   actions?: ReactNode;
   menuLabel?: string;
+  menuId?: string;
   menuDataTest?: string;
   dataTest?: string;
   className?: string;
@@ -40,13 +45,14 @@ export function SuiteMobileHeader({
     <header
       data-test={dataTest}
       className={cn(
-        'suite-app-bar no-print sticky top-0 z-30 flex min-h-[56px] shrink-0 items-center gap-1 border-b border-ph-border px-2 lg:hidden',
+        "suite-app-bar no-print sticky top-0 z-30 flex min-h-[56px] shrink-0 items-center gap-1 border-b border-ph-border px-2 lg:hidden",
         className,
       )}
     >
       {onMenuClick ? (
         <button
           type="button"
+          id={menuId}
           data-test={menuDataTest}
           className="suite-press inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-ph-ink transition-colors hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
           onClick={onMenuClick}
@@ -57,8 +63,8 @@ export function SuiteMobileHeader({
       ) : null}
       <div
         className={cn(
-          'flex min-w-0 flex-1 items-center',
-          !onMenuClick && 'pl-2',
+          "flex min-w-0 flex-1 items-center",
+          !onMenuClick && "pl-2",
         )}
       >
         {title}

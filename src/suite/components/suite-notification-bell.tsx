@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Bell } from 'iconoir-react';
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Bell } from "iconoir-react";
 
-import type { SuiteDropdownMenuComponent } from '../lib/injected';
-import { resolveSuiteNotificationHref } from '../lib/apps';
+import type { SuiteDropdownMenuComponent } from "../lib/injected";
+import { resolveSuiteNotificationHref } from "../lib/apps";
 
 const POLL_MS = 60_000;
 
@@ -30,9 +30,9 @@ export interface SuiteNotificationsResponse {
 
 function timeAgo(iso: string): string {
   const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return '';
+  if (Number.isNaN(then)) return "";
   const secs = Math.max(0, Math.round((Date.now() - then) / 1000));
-  if (secs < 60) return 'just now';
+  if (secs < 60) return "just now";
   const mins = Math.round(secs / 60);
   if (mins < 60) return `${mins}m ago`;
   const hrs = Math.round(mins / 60);
@@ -45,7 +45,10 @@ export function SuiteNotificationBell({
   markRead,
   markAllRead,
   dropdownMenu: DropdownMenu,
-  cacheKey = 'suite-notifications-cache',
+  cacheKey = "suite-notifications-cache",
+  dataTest = "suite-notifications",
+  triggerId,
+  triggerDataTest,
 }: {
   fetchNotifications: () => Promise<SuiteNotificationsResponse>;
   markRead: (id: string) => Promise<unknown>;
@@ -53,6 +56,9 @@ export function SuiteNotificationBell({
   dropdownMenu: SuiteDropdownMenuComponent;
   /** sessionStorage key for stale-while-revalidate; `null` disables caching. */
   cacheKey?: string | null;
+  dataTest?: string;
+  triggerId?: string;
+  triggerDataTest?: string;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -165,16 +171,18 @@ export function SuiteNotificationBell({
   return (
     <DropdownMenu
       aria-label="Notifications"
+      triggerId={triggerId ?? `${dataTest}-trigger`}
+      triggerDataTest={triggerDataTest ?? `${dataTest}-trigger`}
       align="end"
       panelClassName="w-80 overflow-hidden p-0"
       open={open}
       onOpenChange={onOpenChange}
       trigger={
-        <span className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-ph-mutedtext transition hover:bg-ph-muted hover:text-ph-ink">
+        <span className="relative inline-flex h-11 w-11 items-center justify-center rounded-full text-ph-mutedtext transition hover:bg-ph-muted hover:text-ph-ink">
           <Bell className="h-5 w-5" strokeWidth={1.75} aria-hidden />
           {unread > 0 ? (
             <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-ph-brand px-1 text-[10px] font-semibold leading-none text-white ring-2 ring-ph-surface">
-              {unread > 9 ? '9+' : unread}
+              {unread > 9 ? "9+" : unread}
             </span>
           ) : null}
         </span>
@@ -185,6 +193,8 @@ export function SuiteNotificationBell({
         {unread > 0 ? (
           <button
             type="button"
+            id={`${dataTest}-mark-all`}
+            data-test={`${dataTest}-mark-all`}
             onClick={markAll}
             className="text-xs font-medium text-ph-brand hover:underline"
           >
@@ -202,6 +212,8 @@ export function SuiteNotificationBell({
             <button
               key={n.id}
               type="button"
+              id={`${dataTest}-item-${n.id}`}
+              data-test={`${dataTest}-item-${n.id}`}
               onClick={() => void openItem(n)}
               className="flex w-full flex-col gap-0.5 px-3 py-2 text-left transition hover:bg-ph-muted"
             >

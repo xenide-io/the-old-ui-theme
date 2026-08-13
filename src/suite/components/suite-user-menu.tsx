@@ -19,6 +19,8 @@ export interface SuiteUserMenuProps {
   /** Show the old desktop sidebar sign-out action beside the avatar. */
   showSignOutAction?: boolean;
   dataTest?: string;
+  triggerId?: string;
+  triggerDataTest?: string;
   className?: string;
 }
 
@@ -50,6 +52,8 @@ export function SuiteUserMenu({
   fallbackInitials,
   showSignOutAction = false,
   dataTest = "suite-user-menu",
+  triggerId,
+  triggerDataTest,
   className,
 }: SuiteUserMenuProps) {
   const router = useRouter();
@@ -77,6 +81,8 @@ export function SuiteUserMenu({
   const accountMenu = (
     <DropdownMenu
       trigger={avatar}
+      triggerId={triggerId ?? `${dataTest}-trigger`}
+      triggerDataTest={triggerDataTest ?? `${dataTest}-trigger`}
       aria-label="Account menu"
       align="end"
       side="bottom"

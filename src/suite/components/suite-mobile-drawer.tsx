@@ -23,6 +23,10 @@ export function SuiteMobileDrawer({
   durationMs = 200,
   dataTest,
   panelDataTest,
+  backdropId,
+  backdropDataTest,
+  closeButtonId,
+  closeButtonDataTest,
   panelClassName,
 }: {
   open: boolean;
@@ -42,6 +46,10 @@ export function SuiteMobileDrawer({
   durationMs?: number;
   dataTest?: string;
   panelDataTest?: string;
+  backdropId?: string;
+  backdropDataTest?: string;
+  closeButtonId?: string;
+  closeButtonDataTest?: string;
   /** Panel surface overrides (e.g. `bg-ph-canvas`). */
   panelClassName?: string;
 }) {
@@ -106,6 +114,8 @@ export function SuiteMobileDrawer({
     <div data-test={dataTest} className="no-print fixed inset-0 z-50 lg:hidden">
       <button
         type="button"
+        id={backdropId}
+        data-test={backdropDataTest}
         tabIndex={-1}
         className={cn(
           "absolute inset-0 bg-black/25 backdrop-blur-sm motion-safe:transition-opacity motion-safe:ease-spring-subtle",
@@ -148,6 +158,8 @@ export function SuiteMobileDrawer({
             ) : null}
             <button
               type="button"
+              id={closeButtonId}
+              data-test={closeButtonDataTest}
               onClick={onClose}
               className="-mr-1.5 inline-flex h-11 w-11 items-center justify-center rounded-lg text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
               aria-label={closeLabel}

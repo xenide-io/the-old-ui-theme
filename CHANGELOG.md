@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.4] - 2026-08-13
+
+### Added
+
+- Shared `scripts/install-theme-dev.sh` for Docker/local theme sync into app `node_modules`.
+- Command palette dialog semantics, focus restore, Tab trap, and backdrop dismiss.
+- Segmented control mobile touch height and `aria-pressed`.
+- Chip remove control as a real separate button (no nested interactive roles).
+- Suite dock safe-area padding for home-indicator devices.
+
+### Changed
+
+- Published UI/main exports trimmed to the ShellStack product surface.
+- Quill/chart modules are no longer part of the published package API (demo source remains in-repo).
+- Dropped optional `d3-scale` peer dependency.
+
+### Fixed
+
+- Suite layout / mobile chrome touch targets and scroll ownership polish.
+
 ## [0.4.8] - 2026-08-09
 
 ### Added

@@ -78,41 +78,7 @@ body {
 
 .suite-app-layout__main {
   background: color-mix(in oklab, var(--ph-canvas) 94%, transparent);
-}
-
-/* The demo intentionally renders a large component catalogue. Let the
-   browser skip layout and paint for sections outside the viewport while
-   preserving their anchors for sidebar navigation. */
-.suite-app-layout__main > div > div > * {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 560px;
-}
-
-@media print {
-  .suite-app-layout__main > div > div > * {
-    content-visibility: visible;
-  }
-}
-
-.suite-app-layout aside [data-test="nav-link"] {
-  position: relative;
-  transition:
-    color 160ms ease,
-    background-color 160ms ease,
-    box-shadow 160ms ease;
-}
-
-.suite-app-layout aside [data-test="nav-link"][aria-current="page"] {
-  background: linear-gradient(
-    90deg,
-    color-mix(in oklab, var(--ph-accent) 14%, var(--ph-muted)),
-    color-mix(in oklab, var(--ph-muted) 60%, transparent)
-  );
-  box-shadow: inset 2px 0 0 var(--ph-accent);
-}
-
-.suite-app-layout aside [data-test="nav-link"][aria-current="page"] svg {
-  color: var(--ph-accent);
+  scrollbar-gutter: stable;
 }
 
 @supports not (background: color-mix(in oklab, white, transparent)) {
@@ -531,6 +497,7 @@ button:hover > .ph-card {
   background: color-mix(in oklab, var(--ph-canvas) 86%, transparent);
   -webkit-backdrop-filter: blur(12px) saturate(1.4);
   backdrop-filter: blur(12px) saturate(1.4);
+  padding-bottom: env(safe-area-inset-bottom);
   box-shadow: 0 -1px 0 var(--ph-border-subtle);
 }
 @supports not (backdrop-filter: blur(1px)) {
@@ -543,6 +510,21 @@ button:hover > .ph-card {
 .suite-scroll-lock {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+}
+
+/* Compact desktop controls keep their density; coarse pointers get a reliable
+   44px hit area without app-specific overrides. */
+@media (pointer: coarse) {
+  .ph-btn.ph-btn-raised:not(.ph-btn-lg) {
+    --ph-btn-control-size: 2.75rem;
+  }
+  .ph-btn:not(.ph-btn-raised) {
+    min-height: 2.75rem;
+  }
+  .ph-btn-circle,
+  .ph-btn-square {
+    min-width: 2.75rem;
+  }
 }
 
 /* ── Ask AI answer content ───────────────────────────────────────────── */

@@ -181,7 +181,7 @@ export function SuitePageHeader({
       data-test={dataTest}
       data-stuck={sticky ? (stuck ? 'true' : 'false') : undefined}
       className={cn(
-        'flex items-start justify-between gap-4 pb-2 sm:pb-3',
+        'flex min-w-0 flex-col items-start gap-3 pb-2 sm:flex-row sm:justify-between sm:gap-4 sm:pb-3',
         // No extra pt here — page inset sets the shared title baseline.
         // Stuck state adds pad via .suite-page-header-sticky[data-stuck].
         sticky && 'suite-page-header-sticky',
@@ -212,7 +212,7 @@ export function SuitePageHeader({
           <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
             <h1
               className={cn(
-                'font-display text-[1.625rem] font-bold leading-none tracking-tight text-ph-ink sm:text-[2.25rem]',
+                'min-w-0 break-words font-display text-[1.625rem] font-bold leading-none tracking-tight text-ph-ink text-balance sm:text-[2.25rem]',
                 titleClassName,
               )}
             >
@@ -237,7 +237,7 @@ export function SuitePageHeader({
         ) : null}
       </div>
       {actions ? (
-        <div className="flex shrink-0 items-center gap-2 self-center">
+        <div className="flex max-w-full items-center gap-2 self-stretch overflow-x-auto pb-1 sm:shrink-0 sm:self-center sm:overflow-visible sm:pb-0">
           {actions}
         </div>
       ) : null}

@@ -20,7 +20,10 @@ export interface SettingsNavProps extends ComponentPropsWithoutRef<"div"> {
   groups: readonly SettingsNavGroup[];
 }
 
-export interface SettingsLayoutProps extends Omit<ComponentPropsWithoutRef<"section">, "title"> {
+export interface SettingsLayoutProps extends Omit<
+  ComponentPropsWithoutRef<"section">,
+  "title"
+> {
   title: ReactNode;
   description?: ReactNode;
   actions?: ReactNode;
@@ -40,12 +43,21 @@ export function SettingsNav({ groups, className, ...props }: SettingsNavProps) {
               <a
                 key={item.id}
                 href={item.href}
-                className={cn("ph-settings-nav__item", item.active && "ph-settings-nav__item--active")}
+                id={`settings-nav-${item.id}`}
+                data-test={`settings-nav-${item.id}`}
+                className={cn(
+                  "ph-settings-nav__item",
+                  item.active && "ph-settings-nav__item--active",
+                )}
                 aria-current={item.active ? "page" : undefined}
               >
-                {item.icon ? <span className="ph-settings-nav__icon">{item.icon}</span> : null}
+                {item.icon ? (
+                  <span className="ph-settings-nav__icon">{item.icon}</span>
+                ) : null}
                 <span>{item.label}</span>
-                {item.badge ? <span className="ph-settings-nav__badge">{item.badge}</span> : null}
+                {item.badge ? (
+                  <span className="ph-settings-nav__badge">{item.badge}</span>
+                ) : null}
               </a>
             ))}
           </div>
@@ -72,7 +84,9 @@ export function SettingsLayout({
           <h2>{title}</h2>
           {description ? <p>{description}</p> : null}
         </div>
-        {actions ? <div className="ph-settings-layout__actions">{actions}</div> : null}
+        {actions ? (
+          <div className="ph-settings-layout__actions">{actions}</div>
+        ) : null}
       </header>
 
       <details className="ph-settings-layout__mobile-nav">

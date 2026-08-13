@@ -13,6 +13,8 @@ export interface SuiteSidebarNavItem {
   href: string;
   label: string;
   icon: SuiteNavIcon;
+  id?: string;
+  dataTest?: string;
   active?: boolean;
   onClick?: () => void;
   badge?: ReactNode;
@@ -115,16 +117,17 @@ export function SuiteSidebar({
                 <Link
                   key={item.label}
                   href={item.href}
-                  data-test="nav-link"
+                  id={item.id}
+                  data-test={item.dataTest ?? "nav-link"}
                   aria-current={active ? "page" : undefined}
                   onClick={item.onClick}
                   className={cn(
-                    "group relative flex items-center gap-2.5 rounded-[var(--ph-radius-app)] text-sm font-medium transition-colors",
+                    "group relative flex min-h-11 touch-manipulation items-center gap-2.5 rounded-[var(--ph-radius-app)] text-sm font-medium transition-colors",
                     active
                       ? "bg-ph-muted"
                       : "text-ph-subtle hover:bg-ph-muted hover:text-ph-ink",
                     collapsed
-                      ? "mx-auto size-10 shrink-0 justify-center gap-0 px-0 py-0"
+                      ? "mx-auto size-11 shrink-0 justify-center gap-0 px-0 py-0"
                       : "w-full px-2.5 py-2",
                   )}
                 >

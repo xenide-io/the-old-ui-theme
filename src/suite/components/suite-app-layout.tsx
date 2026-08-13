@@ -49,7 +49,7 @@ export function SuiteAppLayout({
     <div
       data-test="app-shell"
       className={cn(
-        "suite-app-layout flex min-h-dvh lg:h-screen lg:overflow-hidden",
+        "suite-app-layout flex h-dvh overflow-hidden",
         className,
       )}
     >

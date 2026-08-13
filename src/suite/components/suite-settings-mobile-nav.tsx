@@ -7,6 +7,7 @@ export interface SuiteSettingsNavItem {
   label: string;
   href: string;
   icon: ElementType | ReactNode;
+  id?: string;
   testId?: string;
 }
 
@@ -59,6 +60,7 @@ export function SuiteSettingsMobileNav({
             <button
               key={item.href}
               type="button"
+              id={item.id}
               data-test={item.testId}
               onClick={() => onSelect(item.href)}
               aria-current={active ? "page" : undefined}

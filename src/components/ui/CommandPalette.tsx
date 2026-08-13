@@ -18,6 +18,10 @@ interface CommandPaletteProps {
   onClose: () => void;
   placeholder?: string;
   className?: string;
+  id?: string;
+  dataTest?: string;
+  inputId?: string;
+  inputDataTest?: string;
 }
 
 export function CommandPalette({
@@ -26,21 +30,32 @@ export function CommandPalette({
   onClose,
   placeholder = "Type a command or search...",
   className,
+  id,
+  dataTest,
+  inputId,
+  inputDataTest,
 }: CommandPaletteProps) {
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   const filtered = items.filter((item) =>
-    item.label.toLowerCase().includes(query.toLowerCase())
+    item.label.toLowerCase().includes(query.toLowerCase()),
   );
 
   useEffect(() => {
-    if (isOpen) {
-      setQuery("");
-      setSelectedIndex(0);
-      inputRef.current?.focus();
-    }
+    if (!isOpen) return;
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    setQuery("");
+    setSelectedIndex(0);
+    inputRef.current?.focus();
+
+    return () => previousFocusRef.current?.focus();
   }, [isOpen]);
 
   useEffect(() => {
@@ -49,10 +64,12 @@ export function CommandPalette({
 
       switch (e.key) {
         case "ArrowDown":
+          if (!filtered.length) break;
           e.preventDefault();
           setSelectedIndex((i) => (i + 1) % filtered.length);
           break;
         case "ArrowUp":
+          if (!filtered.length) break;
           e.preventDefault();
           setSelectedIndex((i) => (i - 1 + filtered.length) % filtered.length);
           break;
@@ -64,6 +81,22 @@ export function CommandPalette({
         case "Escape":
           onClose();
           break;
+        case "Tab": {
+          const focusable = panelRef.current?.querySelectorAll<HTMLElement>(
+            'input, button, [href], [tabindex]:not([tabindex="-1"])',
+          );
+          if (!focusable?.length) break;
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+          break;
+        }
       }
     };
 
@@ -74,18 +107,32 @@ export function CommandPalette({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 pt-[20vh] backdrop-blur-sm">
+    <div
+      id={id}
+      data-test={dataTest}
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 pt-[20vh] backdrop-blur-sm"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
       <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command palette"
         className={cn(
           "w-full max-w-xl overflow-hidden rounded-xl border border-ph-border bg-ph-surface shadow-ph-md",
-          className
+          className,
         )}
       >
         <div className="flex items-center gap-3 border-b border-ph-border px-4 py-3">
           <IconSearch className="h-5 w-5 text-ph-mutedtext" />
           <input
             ref={inputRef}
+            id={inputId}
+            data-test={inputDataTest}
             type="text"
+            aria-label="Search commands"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -108,6 +155,8 @@ export function CommandPalette({
               <button
                 key={item.id}
                 type="button"
+                id={`command-${item.id}`}
+                data-test={`command-${item.id}`}
                 onClick={() => {
                   item.onSelect();
                   onClose();
@@ -117,7 +166,7 @@ export function CommandPalette({
                   "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors",
                   index === selectedIndex
                     ? "bg-ph-muted text-ph-ink"
-                    : "text-ph-subtle"
+                    : "text-ph-subtle",
                 )}
               >
                 {item.icon && <span className="h-5 w-5">{item.icon}</span>}
