@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1] - 2026-08-13
+
+### Changed
+
+- Hero and section ceilings tuned for heroes that sit in a half-width column (hero caps at 4.5rem, section at 2.75rem).
+- Hero line-height relaxed to 1.06 so multi-line serif headlines do not collide.
+
+### Fixed
+
+- Demo sidebar no longer links to the removed `/demo/charts` route and now exposes Foundations.
+
 ## [0.6.0] - 2026-08-13
 
 ### Added

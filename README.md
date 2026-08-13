@@ -106,22 +106,34 @@ the component family it demonstrates:
 | Route               | Focus                            |
 | ------------------- | -------------------------------- |
 | `/demo`             | Route picker                     |
-| `/demo/foundations` | Tokens, themes, icons, and setup |
+| `/demo/foundations` | Type scale, tokens, icons, setup |
 | `/demo/components`  | Primitive components             |
 | `/demo/patterns`    | Composed UI flows                |
-| `/demo/charts`      | Charts and data surfaces         |
 | `/demo/suite`       | Shared product chrome            |
 
 ## Layers (take what you need)
 
-| Tier                  | What you get                                                                                                                                               | Dependencies                                              |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| **CSS tokens**        | `src/styles/themes.css` — `[data-theme]` variables (`--ph-*`)                                                                                              | None                                                      |
-| **Tailwind preset**   | `tailwind-preset.ts` — `ph.*` colours, Lemon radii, shadows                                                                                                | `tailwindcss`                                             |
-| **App shell**         | `src/app/globals.css` — typography, primitives, layouts                                                                                                    | Tokens + Tailwind                                         |
-| **Charts (optional)** | Token-driven Chart.js demos (`register-chartjs` only registers controllers you use); hog-charts-**lite** canvas trend reads the same `--ph-data-*` palette | `chart.js`, `react-chartjs-2`; trend line also `d3-scale` |
+| Tier                | What you get                                                                     | Dependencies      |
+| ------------------- | -------------------------------------------------------------------------------- | ----------------- |
+| **CSS tokens**      | `src/styles/themes.css` — `[data-theme]` variables (`--ph-*`)                    | None              |
+| **Typography**      | `src/styles/typography.css` — font stacks and the fluid marketing scale           | None              |
+| **Tailwind preset** | `tailwind-preset.ts` — `ph.*` colours, `font-sans`/`font-serif`, radii, shadows   | `tailwindcss`     |
+| **App shell**       | `src/app/globals.css` — `@font-face`, primitives, layouts                         | Tokens + Tailwind |
 
-Chart.js supports doughnut, polar area, pie, radar, bubble, etc. — this repo registers **Bar · Doughnut · Polar area** only to keep bundles small; add controllers in `src/lib/chart/register-chartjs.ts` when you need more types.
+## Typography
+
+Two voices, deliberately different shapes rather than two weights of one face:
+
+| Role                    | Face                | Where                                                          |
+| ----------------------- | ------------------- | -------------------------------------------------------------- |
+| Product UI and body     | Open Runde (`font-sans`)  | Every in-app surface, `H1`–`H5`, `P`, controls           |
+| Display                 | Instrument Serif (`font-serif`) | `Display`, `SectionTitle`, `.ph-hero-title`, doc titles |
+| Functional              | System monospace    | `Mono`, code, IDs, keyboard shortcuts                          |
+
+Marketing sizes are fluid (`clamp()`), so a hero is one class instead of three
+breakpoint variants: `.ph-hero-title`, `.ph-section-title`, `.ph-feature-title`,
+`.ph-lead`, `.ph-eyebrow`. Self-host `InstrumentSerif-{Regular,Italic}.woff2` and
+the Open Runde weights under `public/fonts/`.
 
 ## Themes
 

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 
 import { Button, ThemeSwitcher } from "@/components/ui";
-import { IconAreaChart } from "@/components/icons";
+import { IconFlare } from "@/components/icons";
 import {
   SuiteAppLayout,
   SuiteBottomNav,
@@ -26,9 +26,9 @@ import {
 
 const primaryRoutes: SuiteSidebarNavItem[] = [
   { label: "Overview", href: "/demo", icon: Home },
+  { label: "Foundations", href: "/demo/foundations", icon: IconFlare },
   { label: "Components", href: "/demo/components", icon: Flash },
   { label: "Patterns", href: "/demo/patterns", icon: Settings },
-  { label: "Charts", href: "/demo/charts", icon: IconAreaChart },
   { label: "Suite", href: "/demo/suite", icon: TriangleFlag },
 ];
 
@@ -42,7 +42,6 @@ const secondaryGroups = [
       },
       { label: "Components", href: "/demo/components" },
       { label: "Patterns", href: "/demo/patterns" },
-      { label: "Charts & data", href: "/demo/charts" },
       { label: "Suite chrome", href: "/demo/suite" },
     ],
   },
