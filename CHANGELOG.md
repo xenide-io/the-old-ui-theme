@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.3] - 2026-08-13
+
+### Changed
+
+- Today's sticky page title now follows Slack: it holds its position on the page background instead of becoming its own bar. The stuck surface tint, bottom border and backdrop blur are gone, and content dissolves into the same background through a scrim pinned to the title's bottom edge.
+
+### Added
+
+- `--suite-scroll-scrim` and `--suite-scroll-fade` tokens so an app or theme can retune the scroll edge without overriding the rule.
+
 ## [0.6.2] - 2026-08-13
 
 ### Changed

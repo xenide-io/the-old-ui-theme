@@ -34,6 +34,10 @@ html {
   /* Today needs a calmer opening rhythm than dense workspace screens. */
   --suite-today-pad-y-top: var(--suite-space-4);
   --suite-today-pad-y-top-sm: var(--suite-space-5);
+  /* Slack-style scroll edge: the page background the title sits on, and how
+     far content dissolves into it before it reaches the title. */
+  --suite-scroll-scrim: var(--ph-canvas);
+  --suite-scroll-fade: var(--suite-space-6);
   --suite-section-gap: var(--suite-space-5);
   --suite-header-gap: var(--suite-space-4);
   --suite-content-max: 96rem; /* used only by content/narrow caps, not default pages */
@@ -251,7 +255,10 @@ html.dark .today-page-frame__cloud--2 {
   color: var(--ph-canvas);
 }
 
-/* Desktop sticky page title chrome (SuitePageHeader sticky). */
+/* Sticky page title (SuitePageHeader sticky) — Slack behaviour: the title
+   holds its position on the page background and never becomes its own bar.
+   No surface tint, border or blur; content scrolls underneath and dissolves
+   into the same background through the scrim below. */
 .suite-page-header-sticky {
   position: sticky;
   top: 0;
@@ -260,11 +267,22 @@ html.dark .today-page-frame__cloud--2 {
   margin-right: calc(-1 * var(--suite-page-pad-x));
   padding-left: var(--suite-page-pad-x);
   padding-right: var(--suite-page-pad-x);
-  background: color-mix(in oklab, var(--ph-canvas) 88%, transparent);
-  -webkit-backdrop-filter: blur(12px) saturate(1.4);
-  backdrop-filter: blur(12px) saturate(1.4);
-  border-bottom: 1px solid transparent;
-  transition: border-color 160ms ease;
+  background: var(--suite-scroll-scrim);
+}
+
+/* The fade content scrolls into, pinned to the title's bottom edge. */
+.suite-page-header-sticky::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  height: var(--suite-scroll-fade);
+  background: linear-gradient(
+    to bottom,
+    var(--suite-scroll-scrim),
+    transparent
+  );
+  pointer-events: none;
 }
 @media (min-width: 640px) {
   .suite-page-header-sticky {
@@ -283,14 +301,8 @@ html.dark .today-page-frame__cloud--2 {
   }
 }
 .suite-page-header-sticky[data-stuck="true"] {
-  border-bottom-color: var(--ph-border-subtle);
   /* Only when pinned under the scroll edge — keeps resting titles aligned. */
   padding-top: var(--suite-space-2);
-}
-@supports not (backdrop-filter: blur(1px)) {
-  .suite-page-header-sticky {
-    background: var(--ph-canvas);
-  }
 }
 
 /* Sticky title chrome is for Today only — workspace pages scroll normally. */
@@ -303,9 +315,10 @@ html.dark .today-page-frame__cloud--2 {
   padding-left: 0;
   padding-right: 0;
   background: none;
-  border-bottom: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+}
+.suite-app-layout__main:not(:has([data-test="today-page"]))
+  .suite-page-header-sticky::after {
+  content: none;
 }
 .suite-app-layout__main:not(:has([data-test="today-page"]))
   .suite-page-header-sticky[data-stuck="true"] {
