@@ -37,6 +37,7 @@ export {
   AvatarGroup,
   Progress,
   Display,
+  SectionTitle,
   H1,
   H2,
   H3,

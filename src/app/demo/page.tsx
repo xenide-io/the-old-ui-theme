@@ -5,10 +5,10 @@ import { DemoPage } from "./demo-page";
 const demos = [
   {
     href: "/demo/foundations",
-    eyebrow: "Tokens, icons, setup",
+    eyebrow: "Tokens, type, icons, setup",
     title: "Foundations & themes",
     description:
-      "Colour contracts, typography, icon inventory, and theme switching.",
+      "The type scale, colour contracts, icon inventory, and theme switching.",
   },
   {
     href: "/demo/components",
@@ -23,13 +23,6 @@ const demos = [
     title: "Patterns",
     description:
       "Auth, settings, overlays, filters, loading states, and reusable layouts.",
-  },
-  {
-    href: "/demo/charts",
-    eyebrow: "Data surfaces",
-    title: "Charts & data",
-    description:
-      "Quill charts, dashboards, tables, timelines, and metric compositions.",
   },
   {
     href: "/demo/suite",

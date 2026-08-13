@@ -1,22 +1,22 @@
 "use client";
 
 import { CollapsibleSection } from "@/components/ui";
-import CodeMockupShowcase from "@/components/sections/CodeMockupShowcase";
 import ColorPalette from "@/components/sections/ColorPalette";
 import IconShowcase from "@/components/sections/IconShowcase";
 import KbdShowcase from "@/components/sections/KbdShowcase";
 import SetupThemeShowcase from "@/components/sections/SetupThemeShowcase";
-import UtilityShowcase from "@/components/sections/UtilityShowcase";
+import TypographyShowcase from "@/components/sections/TypographyShowcase";
 
 import { DemoPage } from "../demo-page";
 
 export default function FoundationsDemoPage() {
   return (
     <DemoPage
-      eyebrow="Tokens, icons, setup"
+      eyebrow="Tokens, type, icons, setup"
       title="Foundations & themes"
-      description="The stable visual contract underneath every component: semantic tokens, iconography, setup patterns, and keyboard affordances."
+      description="The stable visual contract underneath every component: the type scale, semantic tokens, iconography, setup patterns, and keyboard affordances."
     >
+      <TypographyShowcase />
       <CollapsibleSection title="Colour Tokens" id="colors">
         <ColorPalette />
       </CollapsibleSection>
@@ -24,9 +24,7 @@ export default function FoundationsDemoPage() {
         <IconShowcase />
       </CollapsibleSection>
       <SetupThemeShowcase />
-      <CodeMockupShowcase />
       <KbdShowcase />
-      <UtilityShowcase />
     </DemoPage>
   );
 }

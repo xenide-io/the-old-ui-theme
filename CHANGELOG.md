@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-08-13
+
+### Added
+
+- Instrument Serif as the single display voice (self-hosted, one weight) alongside Open Runde.
+- `font-serif` family in the Tailwind preset plus `--ph-font-serif-stack`.
+- Fluid marketing type classes: `.ph-hero-title`, `.ph-section-title`, `.ph-feature-title`, `.ph-lead`, `.ph-eyebrow`.
+- `SectionTitle` component and a typography contract test.
+- Demo showcases for typography and the status/metric primitives.
+
+### Changed
+
+- `Display` now renders the serif hero voice; `Lead` is measure-capped. Product headings (`H1`–`H5`) stay Open Runde.
+- Demo site trimmed to the components the ShellStack apps actually ship.
+
+### Removed
+
+- 41 unused UI components (Toast, Tabs, Drawer, Stepper, Timeline, Terminal, HoverCard, Indicator, Navigation, Rating, DataTable, DatePicker, Popover, Menubar, ThemeManager, legacy `AppLayout`/`Sidebar`, and the rest of the never-imported set).
+- Quill charts and `hog-charts-lite`, plus the `/demo/charts` route.
+
 ## [0.5.5] - 2026-08-13
 
 ### Changed

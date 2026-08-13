@@ -21,6 +21,7 @@ const posthogThemePreset: Partial<Config> = {
           "Arial",
           "sans-serif",
         ],
+        serif: ["var(--ph-font-serif-stack)"],
         mono: ["var(--ph-font-monospace-stack)"],
         shortcut: ["var(--ph-font-shortcut-stack)"],
       },
