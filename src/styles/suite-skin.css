@@ -11,7 +11,8 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 html {
-  /* Native-app touch: no grey flash on tap, no double-tap delay. */
+  /* Native-app touch: no grey flash on tap, no double-tap zoom delay. */
+  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   /* App-like vertical scrolling: no rubber-band chaining into the page. */
   overscroll-behavior-y: none;
@@ -290,6 +291,25 @@ html.dark .today-page-frame__cloud--2 {
   .suite-page-header-sticky {
     background: var(--ph-canvas);
   }
+}
+
+/* Sticky title chrome is for Today only — workspace pages scroll normally. */
+.suite-app-layout__main:not(:has([data-test="today-page"])) .suite-page-header-sticky {
+  position: static;
+  top: auto;
+  z-index: auto;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+  background: none;
+  border-bottom: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.suite-app-layout__main:not(:has([data-test="today-page"]))
+  .suite-page-header-sticky[data-stuck="true"] {
+  padding-top: 0;
 }
 
 /* Page stage — ONE layout standard for every suite app.
