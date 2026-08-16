@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.5] - 2026-08-16
+
+### Changed
+
+- Refined the suite shell, navigation, user menu, and responsive layout styling.
+- Reworked the Ask AI panel and composer with expanded responsive states and visual test coverage.
+
+### Fixed
+
+- Package metadata now matches the `v0.6.5` release tag so npm publishing passes release validation.
+
 ## [0.6.3] - 2026-08-13
 
 ### Changed
