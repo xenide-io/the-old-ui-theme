@@ -27,9 +27,10 @@ export function SegmentedControl({ options, value, onChange, className }: Segmen
         <button
           key={option.value}
           type="button"
+          aria-pressed={value === option.value}
           onClick={() => onChange(option.value)}
           className={cn(
-            "relative flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition-all",
+            "relative flex min-h-11 items-center gap-1.5 rounded-md px-3.5 py-1.5 text-sm font-medium transition-all sm:min-h-9",
             value === option.value
               ? "bg-ph-surface text-ph-ink shadow-ph"
               : "text-ph-subtle hover:text-ph-ink"

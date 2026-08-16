@@ -1,8 +1,4 @@
-import type {
-  ButtonHTMLAttributes,
-  ComponentType,
-  ReactNode,
-} from 'react';
+import type { ButtonHTMLAttributes, ComponentType, ReactNode } from "react";
 
 /**
  * Structural types for theme primitives each app injects from
@@ -12,10 +8,12 @@ import type {
 
 export interface SuiteDropdownMenuProps {
   trigger: ReactNode;
+  triggerId?: string;
+  triggerDataTest?: string;
   children: ReactNode;
-  'aria-label': string;
-  align?: 'start' | 'center' | 'end';
-  side?: 'top' | 'right' | 'bottom' | 'left';
+  "aria-label": string;
+  align?: "start" | "center" | "end";
+  side?: "top" | "right" | "bottom" | "left";
   sideOffset?: number;
   className?: string;
   panelClassName?: string;
@@ -23,8 +21,7 @@ export interface SuiteDropdownMenuProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-export type SuiteDropdownMenuComponent =
-  ComponentType<SuiteDropdownMenuProps>;
+export type SuiteDropdownMenuComponent = ComponentType<SuiteDropdownMenuProps>;
 
 export type SuiteDropdownItemComponent = ComponentType<
   ButtonHTMLAttributes<HTMLButtonElement>
@@ -44,11 +41,15 @@ export type SuiteCommandPaletteComponent = ComponentType<{
   onClose: () => void;
   placeholder?: string;
   className?: string;
+  id?: string;
+  dataTest?: string;
+  inputId?: string;
+  inputDataTest?: string;
 }>;
 
 /** App-branded spinner (each app has its own AppSpinner design). */
 export type SuiteSpinnerComponent = ComponentType<{
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
   className?: string;
   label?: string;
 }>;

@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * Full UI surface — also published as `@xenide-io/the-old-ui-theme/ui`.
+ * Scoped to primitives the ShellStack apps use, plus the demo-only docs
+ * helpers (ShowcaseWrapper, ComponentDocs, CollapsibleSection, CodeBlock).
+ */
+
 export {
   Button as Button,
   type ButtonProps as ButtonProps,
@@ -27,12 +33,6 @@ export {
   type CardProps as CardProps,
   type CardVariant as CardVariant,
 } from "@/components/ui/Card";
-export {
-  Drawer as Drawer,
-  type DrawerProps as DrawerProps,
-  type DrawerSide as DrawerSide,
-  type DrawerSize as DrawerSize,
-} from "@/components/ui/Drawer";
 export {
   Kbd as Kbd,
   type KbdPlatform as KbdPlatform,
@@ -111,20 +111,9 @@ export {
   type ModalSize as ModalSize,
 } from "@/components/ui/Modal";
 export {
-  Breadcrumbs as Breadcrumbs,
-  Pagination as Pagination,
-  type BreadcrumbItem as BreadcrumbItem,
-  type BreadcrumbsProps as BreadcrumbsProps,
-  type PaginationProps as PaginationProps,
-} from "@/components/ui/Navigation";
-export {
   Panel as Panel,
   type PanelProps as PanelProps,
 } from "@/components/ui/Panel";
-export {
-  Rating as Rating,
-  type RatingProps as RatingProps,
-} from "@/components/ui/Rating";
 export {
   SearchGroup as SearchGroup,
   SearchInput as SearchInput,
@@ -141,24 +130,7 @@ export {
   type StatProps as StatProps,
   type StatTone as StatTone,
 } from "@/components/ui/Stat";
-export {
-  Toast as Toast,
-  ToastStack as ToastStack,
-  type ToastProps as ToastProps,
-  type ToastStackProps as ToastStackProps,
-  type ToastStatus as ToastStatus,
-} from "@/components/ui/Toast";
-export {
-  Tabs as Tabs,
-  type TabItem as TabItem,
-  type TabsProps as TabsProps,
-  type TabsVariant as TabsVariant,
-} from "@/components/ui/Tabs";
 export { ThemeDomSync } from "@/components/ui/ThemeDomSync";
-export {
-  ThemeManager,
-  type ThemeManagerProps,
-} from "@/components/ui/ThemeManager";
 export {
   ThemeSwitcher,
   type ThemeSwitcherProps,
@@ -172,11 +144,9 @@ export {
   type IconName as IconName,
 } from "@/components/icons";
 export { Accordion } from "@/components/ui/Accordion";
-export { Stepper } from "@/components/ui/Stepper";
 export { SegmentedControl } from "@/components/ui/SegmentedControl";
 export { CommandPalette } from "@/components/ui/CommandPalette";
 export { Calendar } from "@/components/ui/Calendar";
-export { HoverCard } from "@/components/ui/HoverCard";
 export {
   Tooltip,
   TooltipProvider,
@@ -214,6 +184,7 @@ export { ShowcaseWrapper } from "@/components/ui/ShowcaseWrapper";
 export { CollapsibleSection } from "@/components/ui/CollapsibleSection";
 export {
   Display,
+  SectionTitle,
   H1,
   H2,
   H3,
@@ -240,72 +211,6 @@ export {
   type ProgressProps as ProgressProps,
 } from "@/components/ui/Progress";
 export {
-  ChatBubble as ChatBubble,
-  type ChatBubbleProps as ChatBubbleProps,
-  type ChatBubbleVariant as ChatBubbleVariant,
-} from "@/components/ui/ChatBubble";
-export {
-  Terminal as Terminal,
-  type TerminalProps as TerminalProps,
-} from "@/components/ui/Terminal";
-export {
-  Indicator as Indicator,
-  type IndicatorProps as IndicatorProps,
-  type IndicatorPosition as IndicatorPosition,
-} from "@/components/ui/Indicator";
-export {
-  Timeline as Timeline,
-  type TimelineProps as TimelineProps,
-  type TimelineEvent as TimelineEvent,
-} from "@/components/ui/Timeline";
-export {
-  Banner as Banner,
-  type BannerProps as BannerProps,
-  type BannerType as BannerType,
-} from "@/components/ui/Banner";
-export {
-  Dialog as Dialog,
-  type DialogProps as DialogProps,
-} from "@/components/ui/Dialog";
-export {
-  Divider as Divider,
-  type DividerProps as DividerProps,
-} from "@/components/ui/Divider";
-export {
-  Tag as Tag,
-  type TagProps as TagProps,
-  type TagType as TagType,
-} from "@/components/ui/Tag";
-export {
-  ProgressCircle as ProgressCircle,
-  type ProgressCircleProps as ProgressCircleProps,
-} from "@/components/ui/ProgressCircle";
-export {
-  Row as Row,
-  type RowProps as RowProps,
-} from "@/components/ui/Row";
-export {
-  Widget as Widget,
-  type WidgetProps as WidgetProps,
-} from "@/components/ui/Widget";
-export {
-  Lettermark as Lettermark,
-  type LettermarkProps as LettermarkProps,
-} from "@/components/ui/Lettermark";
-export {
-  Splotch as Splotch,
-  type SplotchProps as SplotchProps,
-  type SplotchColor as SplotchColor,
-} from "@/components/ui/Splotch";
-export {
-  Popover as Popover,
-  type PopoverProps as PopoverProps,
-} from "@/components/ui/Popover";
-export {
-  LoadingBar as LoadingBar,
-  type LoadingBarProps as LoadingBarProps,
-} from "@/components/ui/LoadingBar";
-export {
   Link as Link,
   type LinkProps as LinkProps,
 } from "@/components/ui/Link";
@@ -314,92 +219,10 @@ export {
   type SpinnerProps as SpinnerProps,
 } from "@/components/ui/Spinner";
 export {
-  Snack as Snack,
-  type SnackProps as SnackProps,
-} from "@/components/ui/Snack";
-export {
-  Combobox as Combobox,
-  type ComboboxProps as ComboboxProps,
-  type ComboboxOption as ComboboxOption,
-} from "@/components/ui/Combobox";
-export {
-  Autocomplete as Autocomplete,
-  type AutocompleteProps as AutocompleteProps,
-  type AutocompleteOption as AutocompleteOption,
-} from "@/components/ui/Autocomplete";
-export {
-  ContextMenu as ContextMenu,
-  type ContextMenuProps as ContextMenuProps,
-  type ContextMenuItem as ContextMenuItem,
-} from "@/components/ui/ContextMenu";
-export {
-  Resizable as Resizable,
-  type ResizableProps as ResizableProps,
-} from "@/components/ui/Resizable";
-export {
-  ScrollArea as ScrollArea,
-  type ScrollAreaProps as ScrollAreaProps,
-} from "@/components/ui/ScrollArea";
-export {
-  NumberField as NumberField,
-  type NumberFieldProps as NumberFieldProps,
-} from "@/components/ui/NumberField";
-export {
-  InputGroup as InputGroup,
-  type InputGroupProps as InputGroupProps,
-} from "@/components/ui/InputGroup";
-export {
-  ButtonGroup as ButtonGroup,
-  type ButtonGroupProps as ButtonGroupProps,
-} from "@/components/ui/ButtonGroup";
-export {
-  ToggleButton as ToggleButton,
-  ToggleGroup as ToggleGroup,
-  type ToggleButtonProps as ToggleButtonProps,
-  type ToggleGroupProps as ToggleGroupProps,
-} from "@/components/ui/Toggle";
-export {
-  Menubar as Menubar,
-  type MenubarProps as MenubarProps,
-  type MenubarItem as MenubarItem,
-} from "@/components/ui/Menubar";
-export {
-  AlertDialog as AlertDialog,
-  type AlertDialogProps as AlertDialogProps,
-} from "@/components/ui/AlertDialog";
-export {
   Dot as Dot,
   type DotProps as DotProps,
 } from "@/components/ui/Dot";
 export {
-  Collapsible as Collapsible,
-  type CollapsibleProps as CollapsibleProps,
-} from "@/components/ui/Collapsible";
-export {
-  Metric as Metric,
-  type MetricProps as MetricProps,
-} from "@/components/ui/Metric";
-export {
   Chip as Chip,
   type ChipProps as ChipProps,
 } from "@/components/ui/Chip";
-export {
-  DataTable as DataTable,
-  type DataTableProps as DataTableProps,
-  type DataTableColumn as DataTableColumn,
-} from "@/components/ui/DataTable";
-export {
-  DatePicker as DatePicker,
-  type DatePickerProps as DatePickerProps,
-} from "@/components/ui/DatePicker";
-export {
-  AppLayout as AppLayout,
-  type AppLayoutProps as AppLayoutProps,
-} from "@/components/ui/AppLayout";
-
-export {
-  Sidebar as Sidebar,
-  type SidebarProps as SidebarProps,
-  type SidebarGroup as SidebarGroup,
-  type SidebarItemDef as SidebarItemDef,
-} from "@/components/ui/Sidebar";

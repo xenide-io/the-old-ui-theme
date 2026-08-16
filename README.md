@@ -22,7 +22,11 @@ Import the library CSS once at your app root. This gives you the theme variables
 // app/layout.tsx or pages/_app.tsx
 import "@xenide-io/the-old-ui-theme/styles.css";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html data-theme="hedgehog-light">
       <body>{children}</body>
@@ -81,29 +85,55 @@ import { Alert, Badge, Button, Card, Input, H1, H2, P } from "@xenide-io/the-old
 
 ### Exported React Components
 
-| Area | Components |
-| ---- | ---------- |
-| Actions | `Button`, `DropdownButton`, `DropdownMenu`, `DropdownItem` |
-| Feedback | `Alert`, `Badge`, `Toast`, `ToastStack`, `EmptyState`, `Progress` demos |
-| Inputs | `FormField`, `Input`, `Select`, `Textarea`, `Checkbox`, `Radio`, `Toggle`, `Range`, `Rating`, `FileUpload`, `SearchInput`, `SearchGroup` |
-| Layout | `Card`, `Modal`, `Drawer`, `Panel`, `Accordion`, `HoverCard` |
-| Navigation | `Tabs`, `Breadcrumbs`, `Pagination`, `SegmentedControl`, `Stepper`, `CommandPalette`, `FilterChips` |
-| Data | `Table`, `Stat`, chart components, dashboard shell components |
-| Typography | `H1`, `H2`, `H3`, `H4`, `H5`, `P`, `Small`, `Caption`, `Lead`, `Mono`, `Overline`, `Display` |
-| Foundation | icons, theme switcher, code block, color tokens |
+| Area       | Components                                                                                                                               |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Actions    | `Button`, `DropdownButton`, `DropdownMenu`, `DropdownItem`                                                                               |
+| Feedback   | `Alert`, `Badge`, `Toast`, `ToastStack`, `EmptyState`, `Progress` demos                                                                  |
+| Inputs     | `FormField`, `Input`, `Select`, `Textarea`, `Checkbox`, `Radio`, `Toggle`, `Range`, `Rating`, `FileUpload`, `SearchInput`, `SearchGroup` |
+| Layout     | `Card`, `Modal`, `Drawer`, `Panel`, `Accordion`, `HoverCard`                                                                             |
+| Navigation | `Tabs`, `Breadcrumbs`, `Pagination`, `SegmentedControl`, `Stepper`, `CommandPalette`, `FilterChips`                                      |
+| Data       | `Table`, `Stat`, chart components, dashboard shell components                                                                            |
+| Typography | `H1`, `H2`, `H3`, `H4`, `H5`, `P`, `Small`, `Caption`, `Lead`, `Mono`, `Overline`, `Display`                                             |
+| Foundation | icons, theme switcher, code block, color tokens                                                                                          |
 
 Some showcase sections are foundation or pattern demos rather than standalone components, such as color tokens, icon inventory, terminal capture, diff slider, and chart/dashboard compositions.
 
+### Focused demos
+
+The rendered catalogue is split into focused routes so each page mounts only
+the component family it demonstrates:
+
+| Route               | Focus                            |
+| ------------------- | -------------------------------- |
+| `/demo`             | Route picker                     |
+| `/demo/foundations` | Type scale, tokens, icons, setup |
+| `/demo/components`  | Primitive components             |
+| `/demo/patterns`    | Composed UI flows                |
+| `/demo/suite`       | Shared product chrome            |
+
 ## Layers (take what you need)
 
-| Tier | What you get | Dependencies |
-| ---- | ------------ | ------------ |
-| **CSS tokens** | `src/styles/themes.css` — `[data-theme]` variables (`--ph-*`) | None |
-| **Tailwind preset** | `tailwind-preset.ts` — `ph.*` colours, Lemon radii, shadows | `tailwindcss` |
-| **App shell** | `src/app/globals.css` — typography, primitives, layouts | Tokens + Tailwind |
-| **Charts (optional)** | Token-driven Chart.js demos (`register-chartjs` only registers controllers you use); hog-charts-**lite** canvas trend reads the same `--ph-data-*` palette | `chart.js`, `react-chartjs-2`; trend line also `d3-scale` |
+| Tier                | What you get                                                                     | Dependencies      |
+| ------------------- | -------------------------------------------------------------------------------- | ----------------- |
+| **CSS tokens**      | `src/styles/themes.css` — `[data-theme]` variables (`--ph-*`)                    | None              |
+| **Typography**      | `src/styles/typography.css` — font stacks and the fluid marketing scale           | None              |
+| **Tailwind preset** | `tailwind-preset.ts` — `ph.*` colours, font stacks, radii, shadows                | `tailwindcss`     |
+| **App shell**       | `src/app/globals.css` — `@font-face`, primitives, layouts                         | Tokens + Tailwind |
 
-Chart.js supports doughnut, polar area, pie, radar, bubble, etc. — this repo registers **Bar · Doughnut · Polar area** only to keep bundles small; add controllers in `src/lib/chart/register-chartjs.ts` when you need more types.
+## Typography
+
+One face, two scales. Hierarchy comes from size, weight, and tracking — not
+from a second typeface competing with Open Runde.
+
+| Role                | Face                     | Where                                              |
+| ------------------- | ------------------------ | -------------------------------------------------- |
+| Everything you read | Open Runde (`font-sans`) | Marketing and product, `Display` down to `Caption` |
+| Functional          | System monospace         | `Mono`, code, IDs, keyboard shortcuts              |
+
+Marketing sizes are fluid (`clamp()`), so a hero is one class instead of three
+breakpoint variants: `.ph-hero-title`, `.ph-section-title`, `.ph-feature-title`,
+`.ph-lead`, `.ph-eyebrow`. Product UI keeps the Tailwind step scale. Self-host
+the Open Runde weights under `public/fonts/`.
 
 ## Themes
 
@@ -113,20 +143,15 @@ All theme colors live in `src/styles/themes.css`. The master registry of IDs, di
 
 ### Built-in themes
 
-| Group | Light | Dark |
-| ----- | ----- | ---- |
-| **HedgeHog** | `hedgehog-light` | `hedgehog-dark` |
-| **Productivity** | `sheets` | `sheets-dark` |
-| **Productivity** | `note` | `note-dark` |
-| **Productivity** | `presentation` | `presentation-dark` |
-| **Social** | `socials` | `socials-dark` |
-| **Chats** | `chats-light` | `chats-dark` |
-| **Catppuccin** | `catppuccin-light` | `catppuccin-dark` |
-| **Xenide** | `xenide-light` | `xenide-dark` |
-| **GitHub** | `github-light` | `github-dark` |
-| **Rosé Pine** | `rosepine-light` | `rosepine-dark` |
-| **Fun** | `turtletime` | `turtletime-dark` |
-| **Fun** | `bikini-bottom` | `bikini-bottom-dark` |
+| Group           | Light            | Dark              |
+| --------------- | ---------------- | ----------------- |
+| **HedgeHog**    | `hedgehog-light` | `hedgehog-dark`   |
+| **Note**        | `note`           | `note-dark`       |
+| **TurtleTime**  | `turtletime`     | `turtletime-dark` |
+| **Rosé Pine**   | `rosepine-light` | `rosepine-dark`   |
+| **Kraken**      | `kraken-light`   | `kraken-dark`     |
+| **Tokyo Night** | `deepsea-light`  | `deepsea-dark`    |
+| **Malibu**      | `malibu-light`   | `malibu-dark`     |
 
 ### Programmatic usage
 
@@ -134,10 +159,10 @@ All theme colors live in `src/styles/themes.css`. The master registry of IDs, di
 import { persistTheme, readStoredTheme } from "@xenide-io/the-old-ui-theme";
 
 // Switch theme — persists to localStorage and updates html[data-theme]
-persistTheme("sheets");
+persistTheme("malibu-dark");
 
 // Read current theme
-const themeId = readStoredTheme(); // "hedgehog-light" | "sheets" | ...
+const themeId = readStoredTheme(); // one of the built-in ThemeId values
 ```
 
 ### Theme switcher setup
@@ -165,7 +190,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 If you do not want the built-in switcher, you can set the attribute directly.
 
 ```tsx
-document.documentElement.setAttribute("data-theme", "chats-dark");
+document.documentElement.setAttribute("data-theme", "malibu-dark");
 ```
 
 For persisted switching, use the helper.
@@ -173,7 +198,7 @@ For persisted switching, use the helper.
 ```tsx
 import { persistTheme } from "@xenide-io/the-old-ui-theme";
 
-persistTheme("presentation");
+persistTheme("kraken-dark");
 ```
 
 ### Custom themes

@@ -10,6 +10,8 @@ These docs are the source for humans and AI agents using `the-old-ui` as a React
 4. [Component And Variant Reference](./component-reference.md)
 5. [Theme Token Reference](./theme-token-reference.md)
 6. [AI Quick Reference](./ai-quick-reference.md)
+7. [Suite UI Audit](./suite-audit.md)
+8. [Demo Routes](./demos.md)
 
 ## Import Rule
 

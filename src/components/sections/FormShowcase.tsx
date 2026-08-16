@@ -6,7 +6,6 @@ import {
   Panel,
   Radio,
   Range,
-  Rating,
   SearchGroup,
   Select,
   Textarea,
@@ -15,7 +14,7 @@ import {
 } from "@/components/ui";
 
 export default function FormShowcase() {
-  const code = `import { Checkbox, FileUpload, Input, Panel, Radio, Range, Rating, SearchGroup, Select, Textarea, Toggle } from "@xenide-io/the-old-ui-theme";
+  const code = `import { Checkbox, FileUpload, Input, Panel, Radio, Range, SearchGroup, Select, Textarea, Toggle } from "@xenide-io/the-old-ui-theme";
 
 <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
   <Panel title="Text inputs" className="space-y-6">
@@ -46,10 +45,8 @@ export default function FormShowcase() {
     <Toggle label="Error tracking (disabled)" disabled />
   </Panel>
 
-  <Panel title="Range, rating, uploads" className="space-y-6 lg:col-span-2">
+  <Panel title="Range, uploads, search" className="space-y-6 lg:col-span-2">
     <Range label="Sample rate" min={0} max={100} defaultValue={42} minLabel="Off" valueLabel="42%" maxLabel="Full" wrapperClassName="max-w-xl" />
-
-    <Rating label="Satisfaction" value={4} />
 
     <FileUpload label="Source map archive" prompt="Drop tarball or browse" wrapperClassName="max-w-xl" />
 
@@ -75,7 +72,6 @@ export default function FormShowcase() {
             { name: "Radio", type: "radio", description: "Radio item with label and native input props." },
             { name: "Toggle", type: "switch", description: "Switch-style checkbox with row layout." },
             { name: "Range", type: "range", description: "Range slider with optional min/value/max labels." },
-            { name: "Rating", type: "rating", description: "Star rating display/control with value, max, and onChange props." },
             { name: "FileUpload", type: "file", description: "Dropzone-style file input wrapper." },
             { name: "size", type: "sm | md | lg", defaultValue: "md", description: "Shared density prop for Input, Select, and Textarea." },
             { name: "variant", type: "default | ghost", defaultValue: "default", description: "Input visual variant. Ghost is useful in toolbar/search contexts." },
@@ -112,10 +108,8 @@ export default function FormShowcase() {
           <Toggle label="Error tracking (disabled)" disabled />
         </Panel>
 
-        <Panel title="Range, rating, uploads" className="space-y-6 lg:col-span-2">
+        <Panel title="Range, uploads, search" className="space-y-6 lg:col-span-2">
           <Range label="Sample rate" min={0} max={100} defaultValue={42} minLabel="Off" valueLabel="42%" maxLabel="Full" wrapperClassName="max-w-xl" />
-
-          <Rating label="Satisfaction" value={4} />
 
           <FileUpload label="Source map archive" prompt="Drop tarball or browse" wrapperClassName="max-w-xl" />
 

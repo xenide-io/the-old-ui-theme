@@ -1,5 +1,6 @@
 @import "../styles/themes.css";
 @import "../styles/typography.css";
+@import "../styles/suite-skin.css";
 
 @tailwind base;
 @tailwind components;

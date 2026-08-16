@@ -5,6 +5,8 @@ import { describe, expect, it, vi } from "vitest";
 import { DropdownButton, DropdownItem } from "@/components/ui/DropdownMenu";
 import { FilterMenu } from "@/components/ui/FilterBar";
 import { FilterChips } from "@/components/ui/FilterChips";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { Chip } from "@/components/ui/Chip";
 
 describe("adaptive dropdown", () => {
   it("supports keyboard navigation, selection, closing, and focus restoration", async () => {
@@ -73,5 +75,55 @@ describe("filter chips", () => {
     await user.click(screen.getByRole("button", { name: "Remove Status: Active filter" }));
     expect(onRemove).toHaveBeenCalledWith("status");
     expect(onToggle).not.toHaveBeenCalled();
+  });
+});
+
+describe("chip", () => {
+  it("keeps selection and removal as separate keyboard controls", async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    const onRemove = vi.fn();
+
+    render(
+      <Chip onClick={onClick} onRemove={onRemove}>
+        React
+      </Chip>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Remove React" }));
+    expect(onRemove).toHaveBeenCalledTimes(1);
+    expect(onClick).not.toHaveBeenCalled();
+  });
+});
+
+describe("segmented control", () => {
+  it("exposes and updates the selected option as a pressed button", async () => {
+    const user = userEvent.setup();
+
+    function Fixture() {
+      const [value, setValue] = useState("board");
+      return (
+        <SegmentedControl
+          value={value}
+          onChange={setValue}
+          options={[
+            { value: "board", label: "Board" },
+            { value: "list", label: "List" },
+          ]}
+        />
+      );
+    }
+
+    render(<Fixture />);
+    expect(screen.getByRole("button", { name: "Board" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    await user.click(screen.getByRole("button", { name: "List" }));
+    expect(screen.getByRole("button", { name: "List" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
   });
 });

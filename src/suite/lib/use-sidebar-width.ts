@@ -27,8 +27,12 @@ function snapWidth(width: number): number {
  * Shared suite sidebar resizing: drag below the threshold to collapse,
  * drag the rail edge out to expand, and double-click to reset.
  */
-export function useSidebarWidth(storageKey: string) {
-  const [width, setWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
+export function useSidebarWidth(
+  storageKey: string,
+  defaultWidth = SIDEBAR_DEFAULT_WIDTH,
+) {
+  const fallbackWidth = snapWidth(clampWidth(defaultWidth));
+  const [width, setWidth] = useState(fallbackWidth);
   const [narrowViewport, setNarrowViewport] = useState(false);
   const collapsed = narrowViewport || width <= SIDEBAR_COLLAPSE_THRESHOLD;
 
@@ -71,19 +75,19 @@ export function useSidebarWidth(storageKey: string) {
         const next = value
           ? SIDEBAR_RAIL_WIDTH
           : current <= SIDEBAR_COLLAPSE_THRESHOLD
-            ? SIDEBAR_DEFAULT_WIDTH
+            ? fallbackWidth
             : snapWidth(current);
         persist(next);
         return next;
       });
     },
-    [persist],
+    [fallbackWidth, persist],
   );
 
   const resetWidth = useCallback(() => {
-    setWidth(SIDEBAR_DEFAULT_WIDTH);
-    persist(SIDEBAR_DEFAULT_WIDTH);
-  }, [persist]);
+    setWidth(fallbackWidth);
+    persist(fallbackWidth);
+  }, [fallbackWidth, persist]);
 
   const startResize = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -110,5 +114,16 @@ export function useSidebarWidth(storageKey: string) {
     [persist, width],
   );
 
-  return { width, collapsed, setCollapsed, resetWidth, startResize };
+  const resizeBy = useCallback(
+    (delta: number) => {
+      setWidth((current) => {
+        const next = clampWidth(current + delta);
+        persist(next);
+        return next;
+      });
+    },
+    [persist],
+  );
+
+  return { width, collapsed, setCollapsed, resetWidth, startResize, resizeBy };
 }

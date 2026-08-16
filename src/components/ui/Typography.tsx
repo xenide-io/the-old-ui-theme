@@ -57,7 +57,10 @@ function textClass(
   return cn(base, toneMap[tone], weight && weightMap[weight], truncate && "truncate", className);
 }
 
-/** Display text — largest heading, use once per page */
+/**
+ * Display — the marketing hero: fluid size, tight tracking, one per page.
+ * Product page titles use H1/`SuitePageHeader` instead.
+ */
 export function Display({
   children,
   tone = "default",
@@ -65,7 +68,12 @@ export function Display({
   truncate,
   className,
 }: TextBaseProps) {
-  return <h1 className={textClass("text-4xl font-extrabold tracking-tight md:text-5xl", tone, weight, truncate, className)}>{children}</h1>;
+  return <h1 className={textClass("ph-hero-title", tone, weight, truncate, className)}>{children}</h1>;
+}
+
+/** Section title — fluid; pairs with Display on public pages. */
+export function SectionTitle({ children, tone = "default", weight, truncate, className }: TextBaseProps) {
+  return <h2 className={textClass("ph-section-title", tone, weight, truncate, className)}>{children}</h2>;
 }
 
 /** H1 — page title */
@@ -113,9 +121,9 @@ export function Overline({ children, tone = "muted", weight, truncate, className
   return <span className={textClass("text-[10px] font-bold uppercase tracking-[0.15em]", tone, weight, truncate, className)}>{children}</span>;
 }
 
-/** Lead — intro paragraph, larger and muted */
+/** Lead — intro paragraph under a Display/SectionTitle; measure-capped for readability */
 export function Lead({ children, tone = "subtle", weight, truncate, className }: TextBaseProps) {
-  return <p className={textClass("text-lg leading-relaxed", tone, weight, truncate, className)}>{children}</p>;
+  return <p className={textClass("ph-lead", tone, weight, truncate, className)}>{children}</p>;
 }
 
 /** Mono — code, data, technical text */

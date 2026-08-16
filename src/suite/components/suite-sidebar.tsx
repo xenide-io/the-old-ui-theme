@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { type ReactNode } from 'react';
+import Link from "next/link";
+import { type ReactNode } from "react";
 
-import { cn } from '../lib/cn';
-import { Tooltip } from '../../components/ui/Tooltip';
-import type { SuiteNavIcon } from './suite-bottom-nav';
+import { cn } from "../lib/cn";
+import { Tooltip } from "../../components/ui/Tooltip";
+import type { SuiteNavIcon } from "./suite-bottom-nav";
 
 type CollapsedNode = ReactNode | ((collapsed: boolean) => ReactNode);
 
@@ -13,6 +13,8 @@ export interface SuiteSidebarNavItem {
   href: string;
   label: string;
   icon: SuiteNavIcon;
+  id?: string;
+  dataTest?: string;
   active?: boolean;
   onClick?: () => void;
   badge?: ReactNode;
@@ -38,8 +40,11 @@ export interface SuiteSidebarProps {
   surface?: boolean;
 }
 
-function renderNode(node: CollapsedNode | undefined, collapsed: boolean): ReactNode {
-  if (typeof node === 'function') return node(collapsed);
+function renderNode(
+  node: CollapsedNode | undefined,
+  collapsed: boolean,
+): ReactNode {
+  if (typeof node === "function") return node(collapsed);
   return node;
 }
 
@@ -66,42 +71,41 @@ export function SuiteSidebar({
   return (
     <div
       className={cn(
-        'flex h-full w-full min-w-0 flex-col text-ph-ink',
-        surface ? 'bg-ph-surface' : 'bg-ph-canvas',
+        "flex h-full w-full min-w-0 flex-col text-ph-ink",
+        surface ? "bg-ph-surface" : "bg-ph-canvas",
         className,
       )}
     >
       {/* Header */}
       <div
         className={cn(
-          'flex shrink-0 border-b border-ph-border',
-          surface ? 'bg-ph-surface' : 'bg-ph-canvas',
+          "flex shrink-0 border-b border-ph-border",
+          surface ? "bg-ph-surface" : "bg-ph-canvas",
           collapsed
-            ? 'flex-col items-center gap-1 px-1 py-2'
-            : 'h-14 items-center justify-between gap-2 px-3',
+            ? "flex-col items-center gap-1 px-1 py-2"
+            : "h-14 items-center justify-between gap-2 px-3",
         )}
       >
-        <div className={cn('min-w-0', collapsed ? 'shrink-0' : 'flex-1')}>
+        <div className={cn("min-w-0", collapsed ? "shrink-0" : "flex-1")}>
           {renderNode(appSwitcher, collapsed)}
         </div>
         {collapsed ? null : (
-          <div className="shrink-0">{renderNode(notificationBell, collapsed)}</div>
+          <div className="shrink-0">
+            {renderNode(notificationBell, collapsed)}
+          </div>
         )}
       </div>
 
       {/* Nav body */}
       <div
         className={cn(
-          'flex min-h-0 flex-1 flex-col overflow-y-auto',
-          surface ? 'bg-ph-surface' : 'bg-ph-canvas',
-          collapsed ? 'px-1.5 py-2' : 'p-2',
+          "flex min-h-0 flex-1 flex-col overflow-y-auto",
+          surface ? "bg-ph-surface" : "bg-ph-canvas",
+          collapsed ? "px-1.5 py-2" : "p-2",
         )}
       >
-        <nav
-          aria-label="Pages"
-          className="shrink-0 space-y-0.5"
-        >
-          <div className={cn('mb-3', collapsed && 'flex justify-center')}>
+        <nav aria-label="Pages" className="shrink-0 space-y-0.5">
+          <div className={cn("mb-3", collapsed && "flex justify-center")}>
             {renderNode(contextSwitcher, collapsed)}
           </div>
 
@@ -113,22 +117,23 @@ export function SuiteSidebar({
                 <Link
                   key={item.label}
                   href={item.href}
-                  data-test="nav-link"
-                  aria-current={active ? 'page' : undefined}
+                  id={item.id}
+                  data-test={item.dataTest ?? "nav-link"}
+                  aria-current={active ? "page" : undefined}
                   onClick={item.onClick}
                   className={cn(
-                    'group relative flex items-center gap-2.5 rounded-[var(--ph-radius-app)] text-sm font-medium transition-colors',
+                    "group relative flex min-h-11 touch-manipulation items-center gap-2.5 rounded-[var(--ph-radius-app)] text-sm font-medium transition-colors",
                     active
-                      ? 'bg-ph-muted'
-                      : 'text-ph-subtle hover:bg-ph-muted hover:text-ph-ink',
+                      ? "bg-ph-muted"
+                      : "text-ph-subtle hover:bg-ph-muted hover:text-ph-ink",
                     collapsed
-                      ? 'mx-auto size-10 shrink-0 justify-center gap-0 px-0 py-0'
-                      : 'w-full px-2.5 py-2',
+                      ? "mx-auto size-11 shrink-0 justify-center gap-0 px-0 py-0"
+                      : "w-full px-2.5 py-2",
                   )}
                 >
                   <span
                     className={cn(
-                      'relative flex h-4 w-4 shrink-0 items-center justify-center',
+                      "relative flex h-4 w-4 shrink-0 items-center justify-center",
                       item.iconClassName,
                     )}
                     aria-hidden
@@ -140,15 +145,19 @@ export function SuiteSidebar({
                   </span>
                   <span
                     className={cn(
-                      'relative truncate',
-                      active ? 'text-ph-ink' : 'text-ph-subtle group-hover:text-ph-ink',
-                      collapsed && 'sr-only',
+                      "relative truncate",
+                      active
+                        ? "text-ph-ink"
+                        : "text-ph-subtle group-hover:text-ph-ink",
+                      collapsed && "sr-only",
                     )}
                   >
                     {item.label}
                   </span>
                   {!collapsed && item.badge ? (
-                    <span className="relative ml-auto shrink-0">{item.badge}</span>
+                    <span className="relative ml-auto shrink-0">
+                      {item.badge}
+                    </span>
                   ) : null}
                 </Link>
               );
@@ -176,20 +185,24 @@ export function SuiteSidebar({
       {/* Footer */}
       <div
         className={cn(
-          'shrink-0 border-t border-ph-border',
-          surface ? 'bg-ph-surface' : 'bg-ph-canvas',
-          collapsed ? 'p-1.5' : 'p-3',
+          "shrink-0 border-t border-ph-border",
+          surface ? "bg-ph-surface" : "bg-ph-canvas",
+          collapsed ? "p-1.5" : "p-3",
         )}
       >
         <div
           className={cn(
-            'flex items-center gap-2',
-            collapsed && 'justify-center',
+            "flex items-center gap-2",
+            collapsed
+              ? "flex-col items-center justify-center [&_[data-test$='-visible-sign-out']]:hidden [&>div]:w-auto"
+              : "w-full min-w-0",
           )}
         >
           {renderNode(userMenu, collapsed)}
-          {!collapsed && footerExtras ? (
-            <div className="ml-auto shrink-0">{renderNode(footerExtras, collapsed)}</div>
+          {footerExtras ? (
+            <div className={cn("shrink-0", collapsed ? "mt-2" : "ml-auto")}>
+              {renderNode(footerExtras, collapsed)}
+            </div>
           ) : null}
         </div>
       </div>

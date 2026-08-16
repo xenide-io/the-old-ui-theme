@@ -19,17 +19,12 @@ hedgehog-dark
 ```ts
 export const themePairs = [
   { name: "HedgeHog", light: "hedgehog-light", dark: "hedgehog-dark" },
-  { name: "Sheets", light: "sheets", dark: "sheets-dark" },
   { name: "Note", light: "note", dark: "note-dark" },
-  { name: "Presentation", light: "presentation", dark: "presentation-dark" },
-  { name: "Socials", light: "socials", dark: "socials-dark" },
-  { name: "Chats", light: "chats-light", dark: "chats-dark" },
-  { name: "Catppuccin", light: "catppuccin-light", dark: "catppuccin-dark" },
-  { name: "Xenide", light: "xenide-light", dark: "xenide-dark" },
-  { name: "GitHub", light: "github-light", dark: "github-dark" },
-  { name: "Rose Pine", light: "rosepine-light", dark: "rosepine-dark" },
   { name: "TurtleTime", light: "turtletime", dark: "turtletime-dark" },
-  { name: "Bikini Bottom", light: "bikini-bottom", dark: "bikini-bottom-dark" },
+  { name: "Rose Pine", light: "rosepine-light", dark: "rosepine-dark" },
+  { name: "Kraken", light: "kraken-light", dark: "kraken-dark" },
+  { name: "Tokyo Night", light: "deepsea-light", dark: "deepsea-dark" },
+  { name: "Malibu", light: "malibu-light", dark: "malibu-dark" },
 ] as const;
 ```
 
@@ -40,7 +35,7 @@ Use the built-in switcher:
 ```tsx
 import { ThemeSwitcher } from "the-old-ui";
 
-<ThemeSwitcher />
+<ThemeSwitcher />;
 ```
 
 Switch manually and persist to `localStorage`:
@@ -48,13 +43,13 @@ Switch manually and persist to `localStorage`:
 ```tsx
 import { persistTheme } from "the-old-ui";
 
-persistTheme("sheets-dark");
+persistTheme("malibu-dark");
 ```
 
 Set directly without persistence:
 
 ```tsx
-document.documentElement.setAttribute("data-theme", "chats-dark");
+document.documentElement.setAttribute("data-theme", "malibu-dark");
 ```
 
 ## Master Color List

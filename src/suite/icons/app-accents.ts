@@ -1,4 +1,4 @@
-import type { SuiteIconName } from './glyphs';
+import type { SuiteIconName } from "./glyphs";
 
 /**
  * Per-app brand colours for the suite icon system — the single place hexes
@@ -8,12 +8,7 @@ import type { SuiteIconName } from './glyphs';
  */
 
 export type SuiteAccentSlug =
-  | 'turtletime'
-  | 'tides'
-  | 'kraken'
-  | 'shellstack'
-  | 'crew'
-  | 'nakama';
+  "turtletime" | "tides" | "kraken" | "shellstack" | "crew" | "nakama";
 
 export interface SuiteAppAccent {
   /** Display name (default aria label for app marks). */
@@ -30,55 +25,55 @@ export interface SuiteAppAccent {
 
 export const APP_ACCENTS: Record<SuiteAccentSlug, SuiteAppAccent> = {
   turtletime: {
-    label: 'TurtleTime',
-    accent: '#3f8f57',
-    tile: '#173521',
-    onTile: '#f7ead0',
-    onTileAccent: '#f3c24e',
+    label: "TurtleTime",
+    accent: "#3f8f57",
+    tile: "#173521",
+    onTile: "#f7ead0",
+    onTileAccent: "#f3c24e",
   },
   tides: {
-    label: 'Tides',
-    accent: '#a63bb5',
-    tile: '#8f2d96',
-    onTile: '#ffffff',
-    onTileAccent: '#bfe3ff',
+    label: "Tides",
+    accent: "#a63bb5",
+    tile: "#8f2d96",
+    onTile: "#ffffff",
+    onTileAccent: "#bfe3ff",
   },
   kraken: {
-    label: 'Kraken',
-    accent: '#737373',
-    tile: '#191919',
-    onTile: '#ffffff',
-    onTileAccent: '#d4d4d4',
+    label: "Kraken",
+    accent: "#737373",
+    tile: "#191919",
+    onTile: "#ffffff",
+    onTileAccent: "#d4d4d4",
   },
   shellstack: {
-    label: 'ShellStack',
-    accent: '#5e5893',
-    tile: '#5e5893',
-    onTile: '#ffffff',
-    onTileAccent: '#c4a7e7',
+    label: "ShellStack",
+    accent: "#5e5893",
+    tile: "#5e5893",
+    onTile: "#ffffff",
+    onTileAccent: "#c4a7e7",
   },
   crew: {
-    label: 'Crew',
-    accent: '#0891b2',
-    tile: '#155e75',
-    onTile: '#ffffff',
-    onTileAccent: '#a5f3fc',
+    label: "Crew",
+    accent: "#0891b2",
+    tile: "#155e75",
+    onTile: "#ffffff",
+    onTileAccent: "#a5f3fc",
   },
   nakama: {
-    label: 'Nakama',
-    accent: '#0891b2',
-    tile: '#155e75',
-    onTile: '#ffffff',
-    onTileAccent: '#a5f3fc',
+    label: "Nakama",
+    accent: "#b8eb44",
+    tile: "#17101f",
+    onTile: "#fff2e2",
+    onTileAccent: "#f54b87",
   },
 };
 
 /** Which glyph represents each app. */
 export const APP_GLYPHS: Record<SuiteAccentSlug, SuiteIconName> = {
-  turtletime: 'timer-shell',
-  tides: 'kanban-wave',
-  kraken: 'squid-doc',
-  shellstack: 'stack-hex',
-  crew: 'crew-bot',
-  nakama: 'crew-bot',
+  turtletime: "timer-shell",
+  tides: "kanban-wave",
+  kraken: "squid-doc",
+  shellstack: "stack-hex",
+  crew: "crew-bot",
+  nakama: "nakama-fist",
 };

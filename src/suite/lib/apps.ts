@@ -16,7 +16,7 @@ export interface SuiteAppDefinition {
   slug: SuiteAppSlug;
   name: string;
   description: string;
-  /** Public asset path — every app hosts all four icons. */
+  /** Public asset path — every app hosts its suite icon. */
   icon: string;
   /** Landing route used after cross-app SSO redirect. */
   landing: string;

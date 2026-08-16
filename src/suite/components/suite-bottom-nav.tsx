@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import type { ComponentType } from 'react';
+import Link from "next/link";
+import type { ComponentType } from "react";
 
-import { cn } from '../lib/cn';
+import { cn } from "../lib/cn";
 
 /** Any icon component that accepts sizing/stroke props (Lucide, theme icons). */
 export type SuiteNavIcon = ComponentType<{
   className?: string;
   strokeWidth?: number | string;
-  'aria-hidden'?: boolean | 'true' | 'false';
+  "aria-hidden"?: boolean | "true" | "false";
 }>;
 
 /**
@@ -23,14 +23,15 @@ export interface SuiteBottomNavItem {
   href: string;
   label: string;
   icon: SuiteNavIcon;
+  id?: string;
   active?: boolean;
   dataTest?: string;
 }
 
 export function SuiteBottomNav({
   items,
-  ariaLabel = 'Primary navigation',
-  dataTest = 'suite-bottom-nav',
+  ariaLabel = "Primary navigation",
+  dataTest = "suite-bottom-nav",
   className,
 }: {
   items: readonly SuiteBottomNavItem[];
@@ -38,7 +39,7 @@ export function SuiteBottomNav({
   dataTest?: string;
   className?: string;
 }) {
-  if (process.env.NODE_ENV !== 'production' && items.length > 5) {
+  if (process.env.NODE_ENV !== "production" && items.length > 5) {
     // eslint-disable-next-line no-console
     console.warn(
       `SuiteBottomNav: ${items.length} items — bottom nav should have at most 5 (Hick's Law).`,
@@ -54,20 +55,20 @@ export function SuiteBottomNav({
       <div
         aria-hidden
         className="shrink-0 lg:hidden"
-        style={{ height: 'calc(60px + env(safe-area-inset-bottom))' }}
+        style={{ height: "calc(60px + env(safe-area-inset-bottom))" }}
       />
       <nav
         aria-label={ariaLabel}
         data-test={dataTest}
         className={cn(
-          'suite-bottom-nav no-print z-40 grid auto-cols-fr grid-flow-col lg:hidden',
+          "suite-bottom-nav no-print z-40 grid auto-cols-fr grid-flow-col lg:hidden",
           className,
         )}
         style={
           {
             gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))`,
-            '--suite-nav-items': items.length,
-            '--suite-nav-active': activeIndex >= 0 ? activeIndex : 0,
+            "--suite-nav-items": items.length,
+            "--suite-nav-active": activeIndex >= 0 ? activeIndex : 0,
           } as React.CSSProperties
         }
       >
@@ -82,17 +83,21 @@ export function SuiteBottomNav({
             <Link
               key={item.href}
               href={item.href}
-              data-test={item.dataTest ?? `suite-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-              aria-current={active ? 'page' : undefined}
+              id={item.id}
+              data-test={
+                item.dataTest ??
+                `suite-nav-${item.label.toLowerCase().replace(/\s+/g, "-")}`
+              }
+              aria-current={active ? "page" : undefined}
               className={cn(
-                'suite-bottom-nav__item relative flex min-h-[60px] min-w-0 flex-col items-center justify-center gap-1 px-1 pb-1.5 pt-2 text-[10px] font-medium leading-none text-ph-mutedtext transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ph-brand motion-reduce:transition-none',
-                active && 'font-semibold text-ph-brand',
+                "suite-bottom-nav__item relative flex min-h-[60px] min-w-0 flex-col items-center justify-center gap-1 px-1 pb-1.5 pt-2 text-[10px] font-medium leading-none text-ph-mutedtext transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ph-brand motion-reduce:transition-none",
+                active && "font-semibold text-ph-brand",
               )}
             >
               <span
                 className={cn(
-                  'suite-bottom-nav__icon relative z-10 inline-flex items-center justify-center',
-                  active && 'suite-bottom-nav__icon--active',
+                  "suite-bottom-nav__icon relative z-10 inline-flex items-center justify-center",
+                  active && "suite-bottom-nav__icon--active",
                 )}
               >
                 <Icon

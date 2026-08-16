@@ -89,7 +89,11 @@ The default theme is `hedgehog-light`.
 import "the-old-ui/styles.css";
 import { THEME_INIT_SCRIPT, ThemeManager } from "the-old-ui";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" data-theme="hedgehog-light" suppressHydrationWarning>
       <head>
@@ -124,26 +128,21 @@ export function Example() {
 ```tsx
 import { ThemeSwitcher, persistTheme } from "the-old-ui";
 
-<ThemeSwitcher />
+<ThemeSwitcher />;
 
-persistTheme("sheets-dark");
+persistTheme("malibu-dark");
 ```
 
 Built-in theme pairs:
 
 ```ts
-hedgehog-light / hedgehog-dark
-sheets / sheets-dark
-note / note-dark
-presentation / presentation-dark
-socials / socials-dark
-chats-light / chats-dark
-catppuccin-light / catppuccin-dark
-xenide-light / xenide-dark
-github-light / github-dark
-rosepine-light / rosepine-dark
-turtletime / turtletime-dark
-bikini-bottom / bikini-bottom-dark
+hedgehog - light / hedgehog - dark;
+note / note - dark;
+turtletime / turtletime - dark;
+rosepine - light / rosepine - dark;
+kraken - light / kraken - dark;
+deepsea - light / deepsea - dark;
+malibu - light / malibu - dark;
 ```
 
 The demo also includes a visual theme color guide. The source of truth for every theme color is:

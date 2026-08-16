@@ -1,14 +1,21 @@
-'use client';
+"use client";
 
-import type { SuiteGlyphElement } from './glyphs';
+import type { SuiteGlyphElement } from "./glyphs";
 
 function GlyphElement({ element }: { element: SuiteGlyphElement }) {
-  const fill = element.filled ? 'currentColor' : 'none';
-  const stroke = element.filled ? 'none' : undefined;
+  const fill = element.filled ? "currentColor" : "none";
+  const stroke = element.filled ? "none" : undefined;
   switch (element.kind) {
-    case 'path':
-      return <path d={element.d} fill={fill} stroke={stroke} />;
-    case 'circle':
+    case "path":
+      return (
+        <path
+          d={element.d}
+          fill={fill}
+          stroke={stroke}
+          transform={element.transform}
+        />
+      );
+    case "circle":
       return (
         <circle
           cx={element.cx}
@@ -18,7 +25,7 @@ function GlyphElement({ element }: { element: SuiteGlyphElement }) {
           stroke={stroke}
         />
       );
-    case 'rect':
+    case "rect":
       return (
         <rect
           x={element.x}
@@ -55,7 +62,7 @@ export function GlyphParts({
       {accented.length > 0 ? (
         <g
           className={accentClassName}
-          style={{ color: 'var(--suite-icon-accent, currentColor)' }}
+          style={{ color: "var(--suite-icon-accent, currentColor)" }}
         >
           {accented.map((el, i) => (
             <GlyphElement key={i} element={el} />

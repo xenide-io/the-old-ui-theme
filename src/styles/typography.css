@@ -1,8 +1,12 @@
 /**
- * Font stacks — `next/font` only injects `--font-inter`; glyphs & canvas should match body.
+ * Type system — one voice, one scale.
  *
- * `@tailwindcss/typography`: not wired here on purpose — this repo uses PostHog-style
- * component-level sizes (`.ph-btn`, `.ph-table`, `.ph-h2-rule`) instead of prose blocks.
+ * 1. Open Runde (`font-sans`) — every surface: marketing, product UI, body.
+ *    Hierarchy comes from size, weight, and tracking, not from a second face.
+ * 2. Monospace stack — code, CSV, token chips, shortcuts. Functional only.
+ *
+ * Marketing type uses `clamp()` so a hero has ONE definition instead of three
+ * breakpoint variants per app. Product UI keeps Tailwind's step scale.
  */
 
 :root {
@@ -16,4 +20,61 @@
    */
   --ph-font-shortcut-stack: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
+
+  /* Fluid marketing scale — min at 360px, max at ~1280px.
+     Ceilings assume a hero can sit in a half-width grid column, not just
+     full-bleed centred copy. */
+  --ph-type-hero: clamp(2.5rem, 1.4rem + 4.4vw, 4.5rem);
+  --ph-type-section: clamp(1.875rem, 1.3rem + 2.2vw, 2.75rem);
+  --ph-type-feature: clamp(1.375rem, 1.15rem + 0.9vw, 1.75rem);
+  --ph-type-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+}
+
+/* ── Marketing / landing type ─────────────────────────────────────────────
+   Use these on public pages so all five apps share one hero rhythm.
+   In-app chrome keeps the Tailwind step scale; do not use hero classes
+   inside the shell. */
+
+.ph-hero-title {
+  font-size: var(--ph-type-hero);
+  font-weight: 700;
+  /* Open Runde is rounded and wide; display sizes need noticeably tighter
+     tracking than the 1:1 default to stop looking loose. */
+  letter-spacing: -0.032em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.ph-section-title {
+  font-size: var(--ph-type-section);
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.ph-feature-title {
+  font-size: var(--ph-type-feature);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.ph-lead {
+  font-size: var(--ph-type-lead);
+  line-height: 1.6;
+  max-width: 42ch;
+  text-wrap: pretty;
+}
+
+.ph-lead-wide {
+  max-width: 60ch;
+}
+
+/* Eyebrow above a hero — the only place small caps tracking is worth it. */
+.ph-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }

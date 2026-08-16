@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { persistTheme, readStoredTheme, THEME_GROUPS, THEMES, type ThemeId } from "@/themes";
+import {
+  DEFAULT_THEME_ID,
+  persistTheme,
+  readStoredTheme,
+  THEME_GROUPS,
+  THEMES,
+  type ThemeId,
+} from "@/themes";
 import { cn } from "@/lib/cn";
 
 export interface ThemeSwitcherProps {
@@ -10,7 +17,7 @@ export interface ThemeSwitcherProps {
 
 /** Colour-only theme picker — persists to localStorage and sets html[data-theme]. */
 export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
-  const [themeId, setThemeId] = useState<ThemeId>("hedgehog-light");
+  const [themeId, setThemeId] = useState<ThemeId>(DEFAULT_THEME_ID);
 
   useEffect(() => {
     const id = readStoredTheme() as ThemeId;
@@ -20,7 +27,9 @@ export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
 
   return (
     <label className={cn("flex min-w-0 items-center gap-2", className)}>
-      <span className="shrink-0 text-xs font-medium text-ph-mutedtext sm:text-sm">Theme</span>
+      <span className="shrink-0 text-xs font-medium text-ph-mutedtext sm:text-sm">
+        Theme
+      </span>
       <select
         className="ph-select max-w-[11rem] !min-h-[2rem] py-1 pl-2.5 pr-8 text-xs sm:max-w-[14rem] sm:text-sm"
         value={themeId}

@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 import type {
   SuiteCommandItem,
   SuiteCommandPaletteComponent,
-} from '../lib/injected';
+} from "../lib/injected";
 
 function isEditableTarget(): boolean {
-  if (typeof document === 'undefined') return false;
+  if (typeof document === "undefined") return false;
   const el = document.activeElement;
   return (
     el instanceof HTMLElement &&
@@ -27,26 +27,34 @@ function isEditableTarget(): boolean {
 export function CommandPaletteHost({
   items,
   isAuthenticated = true,
-  placeholder = 'Type a command or search…',
+  placeholder = "Type a command or search…",
+  id,
+  dataTest,
+  inputId,
+  inputDataTest,
   commandPalette: CommandPalette,
 }: {
   items: SuiteCommandItem[];
   isAuthenticated?: boolean;
   placeholder?: string;
+  id?: string;
+  dataTest?: string;
+  inputId?: string;
+  inputDataTest?: string;
   commandPalette: SuiteCommandPaletteComponent;
 }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (!((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k')) return;
+      if (!((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k")) return;
       // Leave editors (BlockNote uses Cmd/Ctrl+K for links) alone unless the palette is open.
       if (!open && isEditableTarget()) return;
       e.preventDefault();
       setOpen((o) => !o);
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
   if (!isAuthenticated) return null;
@@ -57,6 +65,10 @@ export function CommandPaletteHost({
       isOpen={open}
       onClose={() => setOpen(false)}
       placeholder={placeholder}
+      id={id}
+      dataTest={dataTest}
+      inputId={inputId}
+      inputDataTest={inputDataTest}
     />
   );
 }

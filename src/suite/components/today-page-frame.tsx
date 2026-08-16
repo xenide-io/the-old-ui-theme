@@ -3,18 +3,17 @@
 import type { ReactNode } from "react";
 
 /**
- * Today page content wrapper with soft atmosphere.
- * Does not own scrolling — `#main-content` is the scrollport so sticky headers work.
- * Glow/clouds are absolute and do not create a nested scrollport.
+ * Today page content wrapper. The frame owns scrolling; its decorative layer
+ * is sticky so the original glow and clouds stay fixed while content moves.
  */
 export function TodayPageFrame({ children }: { children: ReactNode }) {
   return (
     <div
       data-test="today-page"
-      className="today-page-frame relative flex min-h-0 w-full flex-1 flex-col overflow-x-hidden"
+      className="today-page-frame relative flex min-h-0 w-full flex-1 flex-col overflow-x-clip"
     >
       <div
-        className="pointer-events-none absolute inset-0 overflow-hidden"
+        className="today-page-frame__backdrop pointer-events-none overflow-hidden"
         aria-hidden
       >
         <div className="today-page-frame__glow absolute inset-0" />

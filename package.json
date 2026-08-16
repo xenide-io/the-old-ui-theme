@@ -1,6 +1,6 @@
 {
   "name": "@xenide-io/the-old-ui-theme",
-  "version": "0.5.2",
+  "version": "0.6.3",
   "description": "Props-driven React components and theme tokens inspired by classic interface design \u2014 optimized for Next.js apps and internal tools.",
   "author": "Xenide",
   "license": "MIT",
@@ -57,9 +57,9 @@
   },
   "files": [
     "dist",
+    "scripts",
     "src/app/globals.css",
     "src/components/ui",
-    "src/components/charts",
     "src/components/icons",
     "src/suite",
     "src/styles/themes.css",
@@ -87,14 +87,10 @@
     "react-dom": "^18.0.0 || ^19.0.0",
     "next": ">=16.2.7",
     "tailwindcss": "^3.4.0",
-    "d3-scale": "^4.0.2",
     "iconoir-react": ">=7.11.1",
     "motion": ">=12"
   },
   "peerDependenciesMeta": {
-    "d3-scale": {
-      "optional": true
-    },
     "iconoir-react": {
       "optional": true
     },

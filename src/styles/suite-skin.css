@@ -11,7 +11,8 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 html {
-  /* Native-app touch: no grey flash on tap, no double-tap delay. */
+  /* Native-app touch: no grey flash on tap, no double-tap zoom delay. */
+  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   /* App-like vertical scrolling: no rubber-band chaining into the page. */
   overscroll-behavior-y: none;
@@ -26,13 +27,14 @@ html {
   --suite-page-pad-x: var(--suite-space-4);
   --suite-page-pad-x-sm: var(--suite-space-5);
   --suite-page-pad-x-lg: var(--suite-space-6);
-  --suite-page-pad-y-top: var(--suite-space-2);
-  --suite-page-pad-y-top-sm: var(--suite-space-3);
+  --suite-page-pad-y-top: var(--suite-space-4);
+  --suite-page-pad-y-top-sm: var(--suite-space-5);
   --suite-page-pad-y-bottom: 20px;
   --suite-page-pad-y-bottom-sm: var(--suite-space-5);
   /* Today needs a calmer opening rhythm than dense workspace screens. */
   --suite-today-pad-y-top: var(--suite-space-4);
   --suite-today-pad-y-top-sm: var(--suite-space-5);
+  --suite-scroll-fade: var(--suite-space-5);
   --suite-section-gap: var(--suite-space-5);
   --suite-header-gap: var(--suite-space-4);
   --suite-content-max: 96rem; /* used only by content/narrow caps, not default pages */
@@ -49,6 +51,42 @@ body {
   /* OpenRunde optical tweaks — crisper on high-dpi mobile/tablet. */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Shared app canvas. Dense workspaces do not paint a decorative background. */
+.suite-app-layout {
+  background: var(--ph-canvas);
+}
+
+.suite-app-layout > aside {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .suite-app-layout > aside {
+    display: flex;
+  }
+}
+
+.suite-app-layout > aside {
+  position: relative;
+  z-index: 2;
+}
+
+.suite-app-layout > div {
+  position: relative;
+  z-index: 1;
+}
+
+.suite-app-layout__main {
+  background: color-mix(in oklab, var(--ph-canvas) 94%, transparent);
+  scrollbar-gutter: stable;
+}
+
+@supports not (background: color-mix(in oklab, white, transparent)) {
+  .suite-app-layout__main {
+    background: var(--ph-canvas);
+  }
 }
 
 /* Shared page inset — SuitePage + TodayPageFrame (one source of truth). */
@@ -95,9 +133,25 @@ body {
   }
 }
 
-/* Today atmosphere — shared geometry, colours supplied by each app theme. */
+/* Today visual treatment — shared geometry, colours supplied by each app
+   theme. The backdrop is sticky so the original glow/cloud composition stays
+   fixed while only the page content scrolls. */
 .today-page-frame {
   background-color: var(--ph-canvas);
+  /* clip does not create a scroll container, so the title can stick to
+     #main-content. overflow-x: hidden would trap sticky inside the frame. */
+  overflow-x: clip;
+}
+
+.today-page-frame__backdrop {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  /* Pinned to the scrollport top; height in vh (not %) so the cancelling
+     negative margin below matches it — % margins resolve against width. */
+  height: 100vh;
+  flex: none;
+  margin-bottom: -100vh;
 }
 
 .today-page-frame__glow {
@@ -214,27 +268,56 @@ html.dark .today-page-frame__cloud--2 {
   color: var(--ph-canvas);
 }
 
-/* Desktop sticky page title chrome (SuitePageHeader sticky). */
+/* ── Page title parks at the top of the scrollport ──────────────────────
+   Every product page, not just Today. Which element actually scrolls varies:
+   `#main-content` on normal pages, `.today-page-frame` on Today, and an inner
+   pane on screens that lock main scroll (settings, kanban, editors) — where
+   the title simply never moves. Sticky resolves against whichever of those is
+   the nearest scroll container, so one rule covers all three.
+
+   The sticky offset equals the title's resting page inset, so the title never
+   shifts upward before it sticks. ::before bleeds up over that inset and out
+   to the page edges, so content dissolves behind the title instead of sliding
+   through the gap above it. */
 .suite-page-header-sticky {
   position: sticky;
-  top: 0;
+  top: var(--suite-page-pad-y-top);
   z-index: 20;
+  isolation: isolate;
   margin-left: calc(-1 * var(--suite-page-pad-x));
   margin-right: calc(-1 * var(--suite-page-pad-x));
   padding-left: var(--suite-page-pad-x);
   padding-right: var(--suite-page-pad-x);
-  background: color-mix(in oklab, var(--ph-canvas) 88%, transparent);
-  -webkit-backdrop-filter: blur(12px) saturate(1.4);
-  backdrop-filter: blur(12px) saturate(1.4);
-  border-bottom: 1px solid transparent;
-  transition: border-color 160ms ease;
+  background: transparent;
 }
+
+.suite-page-header-sticky::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: calc(-1 * var(--suite-page-pad-y-top));
+  height: calc(100% + var(--suite-page-pad-y-top));
+  z-index: -1;
+  background: var(--ph-canvas);
+  pointer-events: none;
+}
+
+/* Hairline appears only once content has actually travelled under the title. */
+.suite-page-header-sticky[data-stuck="true"]::before {
+  box-shadow: 0 1px 0 var(--ph-border-subtle);
+}
+
 @media (min-width: 640px) {
   .suite-page-header-sticky {
+    top: var(--suite-page-pad-y-top-sm);
     margin-left: calc(-1 * var(--suite-page-pad-x-sm));
     margin-right: calc(-1 * var(--suite-page-pad-x-sm));
     padding-left: var(--suite-page-pad-x-sm);
     padding-right: var(--suite-page-pad-x-sm);
+  }
+  .suite-page-header-sticky::before {
+    top: calc(-1 * var(--suite-page-pad-y-top-sm));
+    height: calc(100% + var(--suite-page-pad-y-top-sm));
   }
 }
 @media (min-width: 1024px) {
@@ -245,15 +328,92 @@ html.dark .today-page-frame__cloud--2 {
     padding-right: var(--suite-page-pad-x-lg);
   }
 }
-.suite-page-header-sticky[data-stuck="true"] {
-  border-bottom-color: var(--ph-border-subtle);
-  /* Only when pinned under the scroll edge — keeps resting titles aligned. */
-  padding-top: var(--suite-space-2);
+
+/* Lock-scroll pages (tracker, reports, boards, settings, Ask): the page
+   stage is the sticky containing block, so the header's static position is
+   already after the page inset. The default `top` would double-count that
+   inset, jump the title down, and paint over the first content. */
+#main-content[data-lock-scroll] .suite-page-header-sticky,
+.suite-page-stage.overflow-hidden > .suite-page-header-sticky {
+  top: 0;
 }
-@supports not (backdrop-filter: blur(1px)) {
-  .suite-page-header-sticky {
-    background: var(--ph-canvas);
+
+/* Today only: the title sits on the fixed sky, so it stays transparent and
+   content dissolves into the backdrop instead of meeting an opaque edge. */
+.today-page-frame .suite-page-header-sticky {
+  top: var(--suite-today-pad-y-top);
+}
+.today-page-frame .suite-page-header-sticky::before {
+  top: calc(-1 * var(--suite-today-pad-y-top));
+  height: calc(100% + var(--suite-today-pad-y-top) + var(--suite-scroll-fade));
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--ph-canvas) 18%, transparent)
+      calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  box-shadow: none;
+}
+.today-page-frame .suite-page-header-sticky[data-stuck="true"]::before {
+  box-shadow: none;
+}
+@media (min-width: 640px) {
+  .today-page-frame .suite-page-header-sticky {
+    top: var(--suite-today-pad-y-top-sm);
   }
+  .today-page-frame .suite-page-header-sticky::before {
+    top: calc(-1 * var(--suite-today-pad-y-top-sm));
+    height: calc(
+      100% + var(--suite-today-pad-y-top-sm) + var(--suite-scroll-fade)
+    );
+  }
+}
+
+/* Public landing nav — same sit-on-the-page fade as Today. No bar, no border;
+   the page background shows through and only scrolling content dissolves. */
+.landing-page-nav {
+  isolation: isolate;
+  background: transparent;
+  border-bottom: none;
+}
+.landing-page-nav::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: calc(100% + var(--suite-scroll-fade));
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--ph-canvas) 18%, transparent)
+      calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  pointer-events: none;
 }
 
 /* Page stage — ONE layout standard for every suite app.
@@ -461,6 +621,7 @@ button:hover > .ph-card {
   background: color-mix(in oklab, var(--ph-canvas) 86%, transparent);
   -webkit-backdrop-filter: blur(12px) saturate(1.4);
   backdrop-filter: blur(12px) saturate(1.4);
+  padding-bottom: env(safe-area-inset-bottom);
   box-shadow: 0 -1px 0 var(--ph-border-subtle);
 }
 @supports not (backdrop-filter: blur(1px)) {
@@ -473,6 +634,21 @@ button:hover > .ph-card {
 .suite-scroll-lock {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+}
+
+/* Compact desktop controls keep their density; coarse pointers get a reliable
+   44px hit area without app-specific overrides. */
+@media (pointer: coarse) {
+  .ph-btn.ph-btn-raised:not(.ph-btn-lg) {
+    --ph-btn-control-size: 2.75rem;
+  }
+  .ph-btn:not(.ph-btn-raised) {
+    min-height: 2.75rem;
+  }
+  .ph-btn-circle,
+  .ph-btn-square {
+    min-width: 2.75rem;
+  }
 }
 
 /* ── Ask AI answer content ───────────────────────────────────────────── */

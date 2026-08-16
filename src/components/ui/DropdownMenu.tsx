@@ -35,11 +35,14 @@ interface DropdownOpenProps {
 }
 
 export interface DropdownMenuProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "children">,
+  extends
+    Omit<HTMLAttributes<HTMLDivElement>, "children">,
     DropdownPlacementProps,
     DropdownOpenProps {
   /** Custom non-interactive trigger node, such as an avatar or icon chip. */
   trigger: ReactNode;
+  triggerId?: string;
+  triggerDataTest?: string;
   /** Accessible name when the trigger has no visible text. */
   "aria-label": string;
   children: ReactNode;
@@ -47,7 +50,8 @@ export interface DropdownMenuProps
 }
 
 export interface DropdownButtonProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "children">,
+  extends
+    Omit<HTMLAttributes<HTMLDivElement>, "children">,
     DropdownPlacementProps,
     DropdownOpenProps {
   /** Visible button label. */
@@ -67,8 +71,12 @@ export interface DropdownButtonProps
 }
 
 export type DropdownItemProps = ButtonHTMLAttributes<HTMLButtonElement>;
-export type DropdownRadioGroupProps = ComponentPropsWithoutRef<typeof DropdownPrimitive.RadioGroup>;
-export type DropdownRadioItemProps = ComponentPropsWithoutRef<typeof DropdownPrimitive.RadioItem>;
+export type DropdownRadioGroupProps = ComponentPropsWithoutRef<
+  typeof DropdownPrimitive.RadioGroup
+>;
+export type DropdownRadioItemProps = ComponentPropsWithoutRef<
+  typeof DropdownPrimitive.RadioItem
+>;
 
 const sizeClass: Record<ButtonSize, string> = {
   xs: "ph-btn-xs",
@@ -106,7 +114,11 @@ function DropdownContent({
         sticky="partial"
       >
         {children}
-        <DropdownPrimitive.Arrow className="ph-dropdown-arrow" width={12} height={6} />
+        <DropdownPrimitive.Arrow
+          className="ph-dropdown-arrow"
+          width={12}
+          height={6}
+        />
       </DropdownPrimitive.Content>
     </DropdownPrimitive.Portal>
   );
@@ -115,6 +127,8 @@ function DropdownContent({
 /** Collision-aware menu that flips sides and shifts its alignment to remain visible. */
 export function DropdownMenu({
   trigger,
+  triggerId,
+  triggerDataTest,
   children,
   align,
   side,
@@ -141,7 +155,13 @@ export function DropdownMenu({
         modal={modal}
       >
         <DropdownPrimitive.Trigger asChild disabled={disabled}>
-          <button type="button" className="ph-dropdown-trigger" aria-label={ariaLabel}>
+          <button
+            type="button"
+            id={triggerId}
+            data-test={triggerDataTest}
+            className="ph-dropdown-trigger"
+            aria-label={ariaLabel}
+          >
             {trigger}
           </button>
         </DropdownPrimitive.Trigger>
@@ -187,7 +207,9 @@ export function DropdownButton({
   disabled,
   ...props
 }: DropdownButtonProps) {
-  const trailing = sideIcon ?? <IconChevronDown className="h-4 w-4" aria-hidden />;
+  const trailing = sideIcon ?? (
+    <IconChevronDown className="h-4 w-4" aria-hidden />
+  );
 
   return (
     <div className={cn("ph-dropdown", className)} {...props}>
@@ -210,7 +232,12 @@ export function DropdownButton({
             )}
             aria-label={ariaLabel}
           >
-            <ButtonChrome label={label} icon={icon} sideIcon={trailing} split={split} />
+            <ButtonChrome
+              label={label}
+              icon={icon}
+              sideIcon={trailing}
+              split={split}
+            />
           </button>
         </DropdownPrimitive.Trigger>
         <DropdownContent
@@ -229,7 +256,12 @@ export function DropdownButton({
   );
 }
 
-export function DropdownItem({ className, children, disabled, ...props }: DropdownItemProps) {
+export function DropdownItem({
+  className,
+  children,
+  disabled,
+  ...props
+}: DropdownItemProps) {
   return (
     <DropdownPrimitive.Item asChild disabled={disabled}>
       <button
@@ -248,9 +280,16 @@ export function DropdownRadioGroup(props: DropdownRadioGroupProps) {
   return <DropdownPrimitive.RadioGroup {...props} />;
 }
 
-export function DropdownRadioItem({ className, children, ...props }: DropdownRadioItemProps) {
+export function DropdownRadioItem({
+  className,
+  children,
+  ...props
+}: DropdownRadioItemProps) {
   return (
-    <DropdownPrimitive.RadioItem className={cn("ph-dropdown-item ph-dropdown-radio-item", className)} {...props}>
+    <DropdownPrimitive.RadioItem
+      className={cn("ph-dropdown-item ph-dropdown-radio-item", className)}
+      {...props}
+    >
       <span className="ph-dropdown-item-indicator" aria-hidden>
         <DropdownPrimitive.ItemIndicator>
           <IconCheck className="h-3.5 w-3.5" />
