@@ -27,17 +27,14 @@ html {
   --suite-page-pad-x: var(--suite-space-4);
   --suite-page-pad-x-sm: var(--suite-space-5);
   --suite-page-pad-x-lg: var(--suite-space-6);
-  --suite-page-pad-y-top: var(--suite-space-2);
-  --suite-page-pad-y-top-sm: var(--suite-space-3);
+  --suite-page-pad-y-top: var(--suite-space-4);
+  --suite-page-pad-y-top-sm: var(--suite-space-5);
   --suite-page-pad-y-bottom: 20px;
   --suite-page-pad-y-bottom-sm: var(--suite-space-5);
   /* Today needs a calmer opening rhythm than dense workspace screens. */
   --suite-today-pad-y-top: var(--suite-space-4);
   --suite-today-pad-y-top-sm: var(--suite-space-5);
-  /* Slack-style scroll edge: the page background the title sits on, and how
-     far content dissolves into it before it reaches the title. */
-  --suite-scroll-scrim: var(--ph-canvas);
-  --suite-scroll-fade: var(--suite-space-6);
+  --suite-scroll-fade: var(--suite-space-5);
   --suite-section-gap: var(--suite-space-5);
   --suite-header-gap: var(--suite-space-4);
   --suite-content-max: 96rem; /* used only by content/narrow caps, not default pages */
@@ -136,9 +133,25 @@ body {
   }
 }
 
-/* Today visual treatment — shared geometry, colours supplied by each app theme. */
+/* Today visual treatment — shared geometry, colours supplied by each app
+   theme. The backdrop is sticky so the original glow/cloud composition stays
+   fixed while only the page content scrolls. */
 .today-page-frame {
   background-color: var(--ph-canvas);
+  /* clip does not create a scroll container, so the title can stick to
+     #main-content. overflow-x: hidden would trap sticky inside the frame. */
+  overflow-x: clip;
+}
+
+.today-page-frame__backdrop {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  /* Pinned to the scrollport top; height in vh (not %) so the cancelling
+     negative margin below matches it — % margins resolve against width. */
+  height: 100vh;
+  flex: none;
+  margin-bottom: -100vh;
 }
 
 .today-page-frame__glow {
@@ -255,41 +268,56 @@ html.dark .today-page-frame__cloud--2 {
   color: var(--ph-canvas);
 }
 
-/* Sticky page title (SuitePageHeader sticky) — Slack behaviour: the title
-   holds its position on the page background and never becomes its own bar.
-   No surface tint, border or blur; content scrolls underneath and dissolves
-   into the same background through the scrim below. */
+/* ── Page title parks at the top of the scrollport ──────────────────────
+   Every product page, not just Today. Which element actually scrolls varies:
+   `#main-content` on normal pages, `.today-page-frame` on Today, and an inner
+   pane on screens that lock main scroll (settings, kanban, editors) — where
+   the title simply never moves. Sticky resolves against whichever of those is
+   the nearest scroll container, so one rule covers all three.
+
+   The sticky offset equals the title's resting page inset, so the title never
+   shifts upward before it sticks. ::before bleeds up over that inset and out
+   to the page edges, so content dissolves behind the title instead of sliding
+   through the gap above it. */
 .suite-page-header-sticky {
   position: sticky;
-  top: 0;
+  top: var(--suite-page-pad-y-top);
   z-index: 20;
+  isolation: isolate;
   margin-left: calc(-1 * var(--suite-page-pad-x));
   margin-right: calc(-1 * var(--suite-page-pad-x));
   padding-left: var(--suite-page-pad-x);
   padding-right: var(--suite-page-pad-x);
-  background: var(--suite-scroll-scrim);
+  background: transparent;
 }
 
-/* The fade content scrolls into, pinned to the title's bottom edge. */
-.suite-page-header-sticky::after {
+.suite-page-header-sticky::before {
   content: "";
   position: absolute;
   inset-inline: 0;
-  top: 100%;
-  height: var(--suite-scroll-fade);
-  background: linear-gradient(
-    to bottom,
-    var(--suite-scroll-scrim),
-    transparent
-  );
+  top: calc(-1 * var(--suite-page-pad-y-top));
+  height: calc(100% + var(--suite-page-pad-y-top));
+  z-index: -1;
+  background: var(--ph-canvas);
   pointer-events: none;
 }
+
+/* Hairline appears only once content has actually travelled under the title. */
+.suite-page-header-sticky[data-stuck="true"]::before {
+  box-shadow: 0 1px 0 var(--ph-border-subtle);
+}
+
 @media (min-width: 640px) {
   .suite-page-header-sticky {
+    top: var(--suite-page-pad-y-top-sm);
     margin-left: calc(-1 * var(--suite-page-pad-x-sm));
     margin-right: calc(-1 * var(--suite-page-pad-x-sm));
     padding-left: var(--suite-page-pad-x-sm);
     padding-right: var(--suite-page-pad-x-sm);
+  }
+  .suite-page-header-sticky::before {
+    top: calc(-1 * var(--suite-page-pad-y-top-sm));
+    height: calc(100% + var(--suite-page-pad-y-top-sm));
   }
 }
 @media (min-width: 1024px) {
@@ -300,29 +328,92 @@ html.dark .today-page-frame__cloud--2 {
     padding-right: var(--suite-page-pad-x-lg);
   }
 }
-.suite-page-header-sticky[data-stuck="true"] {
-  /* Only when pinned under the scroll edge — keeps resting titles aligned. */
-  padding-top: var(--suite-space-2);
+
+/* Lock-scroll pages (tracker, reports, boards, settings, Ask): the page
+   stage is the sticky containing block, so the header's static position is
+   already after the page inset. The default `top` would double-count that
+   inset, jump the title down, and paint over the first content. */
+#main-content[data-lock-scroll] .suite-page-header-sticky,
+.suite-page-stage.overflow-hidden > .suite-page-header-sticky {
+  top: 0;
 }
 
-/* Sticky title chrome is for Today only — workspace pages scroll normally. */
-.suite-app-layout__main:not(:has([data-test="today-page"])) .suite-page-header-sticky {
-  position: static;
-  top: auto;
-  z-index: auto;
-  margin-left: 0;
-  margin-right: 0;
-  padding-left: 0;
-  padding-right: 0;
-  background: none;
+/* Today only: the title sits on the fixed sky, so it stays transparent and
+   content dissolves into the backdrop instead of meeting an opaque edge. */
+.today-page-frame .suite-page-header-sticky {
+  top: var(--suite-today-pad-y-top);
 }
-.suite-app-layout__main:not(:has([data-test="today-page"]))
-  .suite-page-header-sticky::after {
-  content: none;
+.today-page-frame .suite-page-header-sticky::before {
+  top: calc(-1 * var(--suite-today-pad-y-top));
+  height: calc(100% + var(--suite-today-pad-y-top) + var(--suite-scroll-fade));
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--ph-canvas) 18%, transparent)
+      calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  box-shadow: none;
 }
-.suite-app-layout__main:not(:has([data-test="today-page"]))
-  .suite-page-header-sticky[data-stuck="true"] {
-  padding-top: 0;
+.today-page-frame .suite-page-header-sticky[data-stuck="true"]::before {
+  box-shadow: none;
+}
+@media (min-width: 640px) {
+  .today-page-frame .suite-page-header-sticky {
+    top: var(--suite-today-pad-y-top-sm);
+  }
+  .today-page-frame .suite-page-header-sticky::before {
+    top: calc(-1 * var(--suite-today-pad-y-top-sm));
+    height: calc(
+      100% + var(--suite-today-pad-y-top-sm) + var(--suite-scroll-fade)
+    );
+  }
+}
+
+/* Public landing nav — same sit-on-the-page fade as Today. No bar, no border;
+   the page background shows through and only scrolling content dissolves. */
+.landing-page-nav {
+  isolation: isolate;
+  background: transparent;
+  border-bottom: none;
+}
+.landing-page-nav::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: calc(100% + var(--suite-scroll-fade));
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--ph-canvas) 18%, transparent)
+      calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  pointer-events: none;
 }
 
 /* Page stage — ONE layout standard for every suite app.

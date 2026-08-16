@@ -39,6 +39,27 @@ function computeInitials(
 }
 
 /**
+ * Deterministic coloured fallback: derives a stable accent from the user's
+ * email or name so avatars without a photo get a per-user colour instead of a
+ * flat grey. Uses theme `--ph-*` tokens so it adapts to light and dark themes.
+ */
+const AVATAR_TOKENS = [
+  "bg-ph-brand",
+  "bg-ph-violet",
+  "bg-ph-info",
+  "bg-ph-success",
+  "bg-ph-danger",
+];
+
+function avatarColorClass(seed: string): string {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i += 1) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_TOKENS[Math.abs(hash) % AVATAR_TOKENS.length];
+}
+
+/**
  * Suite account context menu — one tap on the avatar opens a small menu with
  * profile settings and sign out. Desktop sidebars can also expose the legacy
  * adjacent sign-out action without adding it to mobile chrome.
@@ -58,20 +79,27 @@ export function SuiteUserMenu({
 }: SuiteUserMenuProps) {
   const router = useRouter();
   const initials = fallbackInitials ?? computeInitials(name, email);
+  const fallbackColor = avatarColorClass(email || name || "?");
 
+  // Match Tides Avatar `sm` (40px). Colour comes from theme `--ph-*` tokens.
   const avatar = (
-    <span className="inline-flex h-11 w-11 items-center justify-center rounded-full ring-2 ring-ph-border ring-offset-1 ring-offset-ph-canvas transition-colors hover:bg-ph-muted">
+    <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-ph-border">
       {image ? (
         <Image
           src={image}
           alt=""
           width={40}
           height={40}
-          className="h-10 w-10 rounded-full object-cover"
+          className="h-full w-full object-cover"
           unoptimized
         />
       ) : (
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ph-muted text-sm font-semibold text-ph-brand">
+        <span
+          className={cn(
+            "flex h-full w-full items-center justify-center text-sm font-semibold text-white",
+            fallbackColor,
+          )}
+        >
           {initials}
         </span>
       )}
@@ -89,7 +117,10 @@ export function SuiteUserMenu({
       sideOffset={6}
       collisionPadding={16}
       modal={false}
-      className={showSignOutAction ? undefined : className}
+      className={cn(
+        "[&_.ph-dropdown-trigger]:rounded-full",
+        showSignOutAction ? undefined : className,
+      )}
       data-test={dataTest}
     >
       <div className="px-2 py-1.5">
@@ -120,14 +151,19 @@ export function SuiteUserMenu({
   }
 
   return (
-    <div className={cn("flex min-w-0 items-center gap-2", className)}>
-      {accountMenu}
+    <div
+      className={cn(
+        "flex w-full min-w-0 flex-1 items-center justify-between gap-2",
+        className,
+      )}
+    >
+      <div className="shrink-0">{accountMenu}</div>
       <button
         type="button"
         data-test={`${dataTest}-visible-sign-out`}
         title="Sign out"
         aria-label="Sign out"
-        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ph-focus-ring"
+        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ph-focus-ring"
         onClick={onSignOut}
       >
         <LogOut className="h-4 w-4" aria-hidden />

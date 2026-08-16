@@ -40,5 +40,10 @@ describe("suite scroll ownership", () => {
     ).toHaveClass("break-words", "text-balance");
     expect(screen.getByRole("button", { name: "Export report" }).parentElement)
       .toHaveClass("max-w-full", "overflow-x-auto");
+    expect(
+      screen.getByRole("heading", {
+        name: "A very long responsive page title",
+      }).closest("header"),
+    ).toHaveClass("shrink-0");
   });
 });

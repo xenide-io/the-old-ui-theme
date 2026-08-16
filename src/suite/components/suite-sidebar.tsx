@@ -193,7 +193,9 @@ export function SuiteSidebar({
         <div
           className={cn(
             "flex items-center gap-2",
-            collapsed ? "flex-col justify-center" : "min-w-0",
+            collapsed
+              ? "flex-col items-center justify-center [&_[data-test$='-visible-sign-out']]:hidden [&>div]:w-auto"
+              : "w-full min-w-0",
           )}
         >
           {renderNode(userMenu, collapsed)}

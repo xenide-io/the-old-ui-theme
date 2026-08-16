@@ -92,7 +92,7 @@ export function SuitePage({
       role={role}
       aria-live={ariaLive}
       className={cn(
-        'suite-page-stage flex w-full min-w-0 flex-col',
+        'suite-page-stage relative flex w-full min-w-0 flex-col',
         inset && 'suite-page-inset',
         className,
       )}
@@ -119,8 +119,11 @@ export function SuitePageHeader({
   badge,
   /** Breadcrumb line rendered above the title. */
   breadcrumb,
-  /** Stick to the top of the scrollport (desktop page titles). */
-  sticky = false,
+  /**
+   * Keep the title parked at the top of the scrollport while the page scrolls.
+   * On by default — opt out only for pages that are not the page's own title.
+   */
+  sticky = true,
 }: {
   title: ReactNode;
   description?: ReactNode;
@@ -141,15 +144,23 @@ export function SuitePageHeader({
 
   useEffect(() => {
     if (!sticky) return;
+    if (typeof IntersectionObserver === "undefined") return;
     const el = headerRef.current;
     if (!el) return;
 
-    // Sentinel just above the header — when it leaves the scrollport, we're stuck.
+    const parent = el.parentElement;
+    if (!parent) return;
+
+    // Keep the sentinel out of flow so flex `gap` on the page doesn't add
+    // a blank strip above the title.
     const sentinel = document.createElement('div');
     sentinel.setAttribute('aria-hidden', 'true');
     sentinel.style.cssText =
-      'position:relative;height:1px;width:100%;margin:0;padding:0;pointer-events:none';
-    el.parentElement?.insertBefore(sentinel, el);
+      'position:absolute;top:0;left:0;height:1px;width:1px;margin:0;padding:0;pointer-events:none';
+    if (getComputedStyle(parent).position === 'static') {
+      parent.style.position = 'relative';
+    }
+    parent.insertBefore(sentinel, el);
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -167,7 +178,7 @@ export function SuitePageHeader({
   const resolvedIcon = todayIcon ? (
     <TodayTimeIcon
       className={cn(
-        'h-7 w-7 text-amber-500 sm:h-8 sm:w-8',
+        'h-6 w-6 text-amber-500',
         todayIconClassName,
       )}
     />
@@ -181,9 +192,8 @@ export function SuitePageHeader({
       data-test={dataTest}
       data-stuck={sticky ? (stuck ? 'true' : 'false') : undefined}
       className={cn(
-        'flex min-w-0 flex-col items-start gap-3 pb-2 sm:flex-row sm:justify-between sm:gap-4 sm:pb-3',
+        'flex min-w-0 shrink-0 flex-col items-start gap-3 pb-2 sm:flex-row sm:justify-between sm:gap-4 sm:pb-3',
         // No extra pt here — page inset sets the shared title baseline.
-        // Stuck state adds pad via .suite-page-header-sticky[data-stuck].
         sticky && 'suite-page-header-sticky',
         className,
       )}
@@ -203,7 +213,7 @@ export function SuitePageHeader({
         <div className="flex min-w-0 items-center gap-3">
           {resolvedIcon ? (
             <div
-              className="hidden shrink-0 sm:flex sm:items-center [&_svg]:h-7 [&_svg]:w-7 sm:[&_svg]:h-8 sm:[&_svg]:w-8"
+              className="hidden shrink-0 sm:flex sm:items-center [&_svg]:h-6 [&_svg]:w-6"
               aria-hidden="true"
             >
               {resolvedIcon}
@@ -212,7 +222,7 @@ export function SuitePageHeader({
           <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
             <h1
               className={cn(
-                'min-w-0 break-words font-display text-[1.625rem] font-bold leading-none tracking-tight text-ph-ink text-balance sm:text-[2.25rem]',
+                'min-w-0 break-words font-display text-[1.375rem] font-semibold leading-tight tracking-tight text-ph-ink text-balance sm:text-2xl',
                 titleClassName,
               )}
             >
@@ -229,7 +239,7 @@ export function SuitePageHeader({
           <div
             className={cn(
               'mt-1.5 max-w-2xl text-pretty text-sm leading-5 text-ph-subtle',
-              resolvedIcon && 'sm:pl-11',
+              resolvedIcon && 'sm:pl-9',
             )}
           >
             {description}
