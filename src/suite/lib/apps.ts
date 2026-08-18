@@ -59,7 +59,7 @@ export const SUITE_APPS: readonly SuiteAppDefinition[] = [
     name: 'Kraken',
     description: 'Documents and knowledge',
     icon: '/kraken-icon.svg',
-    landing: '/today',
+    landing: '/ask',
     baseUrlEnv: 'NEXT_PUBLIC_KRAKEN_URL',
     baseUrlFallback: 'http://localhost:3003',
   },
