@@ -1388,7 +1388,9 @@ body {
   .ph-modal-panel {
     @apply fixed left-1/2 top-1/2 z-[101] flex w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col p-6 text-ph-ink;
     max-height: min(42rem, calc(100dvh - 2rem));
-    overflow: hidden;
+    /* Visible so input focus rings and 3D button chrome are not clipped by
+       overflow:hidden + border-radius, especially at the bottom-right action. */
+    overflow: visible;
     overscroll-behavior: contain;
     background: var(--ph-surface-overlay);
     border-radius: var(--ph-radius-overlay);
@@ -1404,11 +1406,16 @@ body {
   .ph-modal-body {
     @apply mt-4 min-h-0 overflow-y-auto;
     overscroll-behavior: contain;
+    /* Focus ring is a 3px outer glow; pad so overflow-y:auto does not clip it. */
+    padding: 0.375rem;
+    margin-inline: -0.375rem;
   }
 
   .ph-modal-footer {
     @apply mt-6 flex shrink-0 flex-wrap justify-end gap-2 border-t pt-5;
     border-color: var(--ph-border-subtle);
+    overflow: visible;
+    padding-bottom: calc(var(--ph-chrome-depth) + 0.125rem);
   }
 
   @keyframes ph-modal-overlay-in {
