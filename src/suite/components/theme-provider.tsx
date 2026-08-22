@@ -124,6 +124,10 @@ export function SuiteThemeProvider({
   const { theme, resolvedTheme } = state;
 
   useEffect(() => {
+    applyTheme(theme, config);
+  }, [theme, config]);
+
+  useEffect(() => {
     if (theme !== 'system') return;
     const media = window.matchMedia('(prefers-color-scheme: dark)');
     const update = () => {
