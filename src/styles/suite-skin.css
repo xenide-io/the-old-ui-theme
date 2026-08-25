@@ -450,7 +450,7 @@ html.dark .today-page-frame__cloud--2 {
    so they adapt to light AND dark themes instead of going muddy. */
 .ph-card {
   border-radius: var(--suite-radius-card, 12px);
-  border-color: var(--ph-border-subtle);
+  border-color: var(--ph-border-control);
   background: var(--ph-surface-raised);
   box-shadow:
     0 1px 2px color-mix(in oklab, var(--ph-text-primary) 6%, transparent),
