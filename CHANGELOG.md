@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.11] - 2026-08-25
+
+### Added
+
+- Shelly conversation links that switch apps reopen her via `?shelly=1`.
+
+### Changed
+
+- A normal app switch no longer reopens Shelly from a leftover session flag.
+
+### Fixed
+
+- Mobile drawer uses one full-height scroller so the project tree is not trapped in a leftover strip.
+
 ## [0.6.10] - 2026-08-25
 
 ### Added
