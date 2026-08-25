@@ -178,13 +178,15 @@ export function SuiteNotificationBell({
       open={open}
       onOpenChange={onOpenChange}
       trigger={
-        <span className="relative inline-flex h-11 w-11 items-center justify-center rounded-full text-ph-mutedtext transition hover:bg-ph-muted hover:text-ph-ink">
-          <Bell className="h-5 w-5" strokeWidth={1.75} aria-hidden />
-          {unread > 0 ? (
-            <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-ph-brand px-1 text-[10px] font-semibold leading-none text-white ring-2 ring-ph-surface">
-              {unread > 9 ? "9+" : unread}
-            </span>
-          ) : null}
+        <span className="inline-flex h-11 w-11 items-center justify-center rounded-full text-ph-mutedtext transition hover:bg-ph-muted hover:text-ph-ink">
+          <span className="relative inline-flex">
+            <Bell className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+            {unread > 0 ? (
+              <span className="absolute right-0 top-0 flex h-3.5 min-w-3.5 translate-x-0.5 -translate-y-0.5 items-center justify-center rounded-full bg-ph-brand px-1 text-[9px] font-semibold leading-none text-white ring-1 ring-ph-surface">
+                {unread > 9 ? "9+" : unread}
+              </span>
+            ) : null}
+          </span>
         </span>
       }
     >
