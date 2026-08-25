@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.8] - 2026-08-25
+
+### Added
+
+- Shared suite workspace switcher dropdown, with a full-width bordered trigger.
+- Suite links in Ask/Shelly answers can switch apps instead of opening a dead end.
+
+### Changed
+
+- Ask AI now lives in the sidebar as **Shelly AI**, replacing the floating launcher.
+- Sidebar chat uses the persisted nav width (default 320px); the column can stretch to 640px.
+- Shelly's composer has extra bottom padding, including the iOS safe area.
+
+### Fixed
+
+- The sidebar resize handle stays above Shelly / BlockNote so the column can still be dragged while chat is open.
+
 ## [0.6.7] - 2026-08-23
 
 ### Changed
