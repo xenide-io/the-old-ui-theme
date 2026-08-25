@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.13] - 2026-08-26
+
+### Added
+
+- One sidebar width cookie shared across Tides, TurtleTime, Kraken, ShellStack and Nakama.
+- Phones and tablets no longer pinch-zoom the page; desktop zoom is unchanged.
+
+### Fixed
+
+- Sidebar width no longer sticks at the default after a hydration mismatch.
+- Desktop secondary nav grows again so the avatar and Shelly stay on screen.
+
 ## [0.6.12] - 2026-08-25
 
 ### Fixed
