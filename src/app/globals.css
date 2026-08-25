@@ -594,7 +594,7 @@ body {
     @apply flex flex-col overflow-hidden border;
     background: var(--ph-surface-raised);
     border-radius: var(--ph-radius-surface);
-    border-color: var(--ph-border-control);
+    border-color: var(--ph-border-subtle);
     transition:
       border-color var(--ph-motion-fast) ease,
       box-shadow var(--ph-motion-fast) ease,
