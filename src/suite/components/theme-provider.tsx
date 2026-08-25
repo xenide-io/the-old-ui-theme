@@ -10,6 +10,8 @@ import {
   type ReactNode,
 } from 'react';
 
+import { useLockMobilePageZoom } from '../lib/use-lock-mobile-page-zoom';
+
 export type SuiteTheme = 'system' | 'light' | 'dark';
 export type SuiteResolvedTheme = 'light' | 'dark';
 
@@ -104,6 +106,7 @@ export function SuiteThemeProvider({
   config: SuiteThemeConfig;
   children: ReactNode;
 }) {
+  useLockMobilePageZoom();
   const [state, setState] = useState<{
     theme: SuiteTheme;
     resolvedTheme: SuiteResolvedTheme;

@@ -103,6 +103,11 @@ export {
   SIDEBAR_MAX_WIDTH,
   SIDEBAR_MIN_EXPANDED_WIDTH,
   SIDEBAR_RAIL_WIDTH,
+  SUITE_SIDEBAR_WIDTH_COOKIE,
+  SUITE_SIDEBAR_WIDTH_KEY,
+  persistSidebarWidth,
+  readSidebarWidth,
+  resetSuiteSidebarWidth,
   sidebarColumnWidth,
   useSidebarWidth,
 } from "./lib/use-sidebar-width";

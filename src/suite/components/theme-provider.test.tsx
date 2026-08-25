@@ -17,12 +17,27 @@ beforeEach(() => {
     getItem: () => "dark",
     setItem: vi.fn(),
   });
+  vi.stubGlobal(
+    "matchMedia",
+    (query: string) =>
+      ({
+        matches: query.includes("prefers-color-scheme: dark"),
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+        onchange: null,
+      }) satisfies MediaQueryList,
+  );
 });
 
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
   document.documentElement.removeAttribute("data-theme");
+  document.documentElement.removeAttribute("data-suite-lock-page-zoom");
   document.documentElement.classList.remove("dark");
   document.getElementById("theme-color-meta")?.remove();
 });

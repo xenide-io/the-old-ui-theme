@@ -303,7 +303,10 @@ export function SuiteSidebar({
             </nav>
 
             {secondaryNav ? (
-              <div className="shrink-0" data-test="suite-sidebar-secondary-nav">
+              <div
+                className="min-h-0 flex-1"
+                data-test="suite-sidebar-secondary-nav"
+              >
                 {secondaryNav}
               </div>
             ) : null}

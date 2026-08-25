@@ -41,6 +41,14 @@ html {
   --suite-reading-max: 48rem; /* ~max-w-3xl / 65ch */
 }
 
+/* Phones/tablets only: pan/scroll, no pinch-zoom of the page. Desktop zoom stays. */
+@media (hover: none) and (pointer: coarse) {
+  html,
+  body {
+    touch-action: pan-x pan-y;
+  }
+}
+
 @media (min-width: 1536px) {
   html {
     --suite-page-pad-x-lg: var(--suite-space-7);
