@@ -133,7 +133,7 @@ export function SuiteMobileDrawer({
         tabIndex={-1}
         data-test={panelDataTest}
         className={cn(
-          "suite-scroll-lock relative flex h-full w-[86%] max-w-72 flex-col overflow-hidden bg-ph-surface shadow-xl outline-none motion-safe:transition-transform motion-safe:ease-spring-fast",
+          "relative flex h-dvh max-h-dvh w-[86%] max-w-72 flex-col overflow-hidden bg-ph-surface shadow-xl outline-none motion-safe:transition-transform motion-safe:ease-spring-fast",
           side === "right" && "ml-auto",
           shown
             ? "translate-x-0"
@@ -168,7 +168,14 @@ export function SuiteMobileDrawer({
             </button>
           </div>
         ) : null}
-        {children}
+        {/* One column scroller, same as desktop SuiteSidebar body. Nested
+            flex-1 overflow-y-auto regions trap the tree in a leftover strip. */}
+        <div
+          data-test="suite-mobile-drawer-body"
+          className="suite-scroll-lock flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+        >
+          {children}
+        </div>
       </aside>
     </div>
   );

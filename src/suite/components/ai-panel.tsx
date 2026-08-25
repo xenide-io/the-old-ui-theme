@@ -32,6 +32,7 @@ const SuiteAiBlockNoteMessage = lazy(() => import("./ai-message-blocknote"));
 
 export const SUITE_OPEN_ASK_AI_EVENT = "shellstack:open-ask-ai";
 export const SUITE_ASK_AI_OPEN_KEY = "shellstack:shelly-open";
+export const SUITE_ASK_AI_OPEN_QUERY = "shelly";
 export const SUITE_MUTATED_EVENT = "shellstack:suite-mutated";
 export const TURTLETIME_TIMER_MUTATED_EVENT = "tt-timer-mutated";
 
@@ -56,6 +57,28 @@ export function readSuiteAskAiOpen(): boolean {
   } catch {
     return false;
   }
+}
+
+/** Stamp a destination path so the other app opens Shelly after SSO. */
+export function pathWithSuiteAskAiOpen(path: string): string {
+  const url = new URL((path || "/").trim() || "/", "http://local.invalid");
+  url.searchParams.set(SUITE_ASK_AI_OPEN_QUERY, "1");
+  return `${url.pathname}${url.search}${url.hash}`;
+}
+
+/** Open Shelly only after a `?shelly=1` handoff — not a leftover session flag. */
+export function consumeSuiteAskAiOpenFromLocation(): boolean {
+  if (typeof window === "undefined") return false;
+  const url = new URL(window.location.href);
+  if (url.searchParams.get(SUITE_ASK_AI_OPEN_QUERY) !== "1") return false;
+  persistSuiteAskAiOpen(true);
+  url.searchParams.delete(SUITE_ASK_AI_OPEN_QUERY);
+  window.history.replaceState(
+    window.history.state,
+    "",
+    `${url.pathname}${url.search}${url.hash}`,
+  );
+  return true;
 }
 
 export type SuiteAiActionStatus =
@@ -377,11 +400,12 @@ export function SuiteAiPanel({
     persistSuiteAskAiOpen(true);
     if (match.sameApp) {
       if (onSameAppNavigate) onSameAppNavigate(match.path);
-      else window.location.assign(match.path);
+      else window.location.assign(pathWithSuiteAskAiOpen(match.path));
       return;
     }
-    if (onSwitchApp) onSwitchApp(match.slug, match.path);
-    else window.location.assign(anchor.href);
+    const openPath = pathWithSuiteAskAiOpen(match.path);
+    if (onSwitchApp) onSwitchApp(match.slug, openPath);
+    else window.location.assign(new URL(openPath, href).toString());
   }
 
   if (!open) return null;
