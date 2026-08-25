@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.10] - 2026-08-25
+
+### Added
+
+- Shelly stays open after in-app conversation links, and remembers that state across a reload.
+- Confirm/Cancel cards for proposed Shelly actions.
+
+### Changed
+
+- Same-app Shelly links can use a client-side navigate callback instead of a full page load.
+
 ## [0.6.9] - 2026-08-25
 
 ### Changed
