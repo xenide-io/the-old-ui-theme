@@ -170,7 +170,9 @@ export function SuiteNotificationBell({
 
   return (
     <DropdownMenu
-      aria-label="Notifications"
+      aria-label={
+        unread > 0 ? `Notifications, ${unread} unread` : "Notifications"
+      }
       triggerId={triggerId ?? `${dataTest}-trigger`}
       triggerDataTest={triggerDataTest ?? `${dataTest}-trigger`}
       align="end"
@@ -178,15 +180,13 @@ export function SuiteNotificationBell({
       open={open}
       onOpenChange={onOpenChange}
       trigger={
-        <span className="inline-flex h-11 w-11 items-center justify-center rounded-full text-ph-mutedtext transition hover:bg-ph-muted hover:text-ph-ink">
-          <span className="relative inline-flex">
-            <Bell className="h-5 w-5" strokeWidth={1.75} aria-hidden />
-            {unread > 0 ? (
-              <span className="absolute right-0 top-0 flex h-3.5 min-w-3.5 translate-x-0.5 -translate-y-0.5 items-center justify-center rounded-full bg-ph-brand px-1 text-[9px] font-semibold leading-none text-white ring-1 ring-ph-surface">
-                {unread > 9 ? "9+" : unread}
-              </span>
-            ) : null}
-          </span>
+        <span className="relative inline-flex h-11 w-11 items-center justify-center overflow-visible rounded-full text-ph-mutedtext transition hover:bg-ph-muted hover:text-ph-ink">
+          <Bell className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+          {unread > 0 ? (
+            <span className="pointer-events-none absolute right-0 top-0 z-[1] flex h-4 min-w-4 translate-x-1/2 items-center justify-center rounded-full bg-ph-brand px-1 text-[9px] font-semibold leading-none text-white ring-2 ring-ph-surface">
+              {unread > 9 ? "9+" : unread}
+            </span>
+          ) : null}
         </span>
       }
     >
