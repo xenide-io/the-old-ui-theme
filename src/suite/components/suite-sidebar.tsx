@@ -1,12 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, type ReactNode } from "react";
+import { useCallback, useEffect, type ReactNode } from "react";
 import { NavArrowLeft, Sparks } from "iconoir-react";
 
 import { Tooltip } from "../../components/ui/Tooltip";
 import { cn } from "../lib/cn";
-import { SUITE_OPEN_ASK_AI_EVENT } from "./ai-panel";
+import {
+  persistSuiteAskAiOpen,
+  SUITE_OPEN_ASK_AI_EVENT,
+} from "./ai-panel";
 import type { SuiteNavIcon } from "./suite-bottom-nav";
 
 type CollapsedNode = ReactNode | ((collapsed: boolean) => ReactNode);
@@ -84,32 +87,40 @@ export function SuiteSidebar({
   const showAskAi = Boolean(onAskAiOpenChange && askAi);
   const chatOpen = showAskAi && askAiOpen && !collapsed;
 
+  const setAskAi = useCallback(
+    (next: boolean) => {
+      persistSuiteAskAiOpen(next);
+      onAskAiOpenChange?.(next);
+    },
+    [onAskAiOpenChange],
+  );
+
   useEffect(() => {
     if (!onAskAiOpenChange) return;
     function onOpen() {
       onRequestExpand?.();
-      onAskAiOpenChange?.(true);
+      setAskAi(true);
     }
     window.addEventListener(SUITE_OPEN_ASK_AI_EVENT, onOpen);
     return () => window.removeEventListener(SUITE_OPEN_ASK_AI_EVENT, onOpen);
-  }, [onAskAiOpenChange, onRequestExpand]);
+  }, [onAskAiOpenChange, onRequestExpand, setAskAi]);
 
   useEffect(() => {
     if (!chatOpen) return;
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") onAskAiOpenChange?.(false);
+      if (event.key === "Escape") setAskAi(false);
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [chatOpen, onAskAiOpenChange]);
+  }, [chatOpen, setAskAi]);
 
   function toggleAskAi() {
     if (askAiOpen) {
-      onAskAiOpenChange?.(false);
+      setAskAi(false);
       return;
     }
     if (collapsed) onRequestExpand?.();
-    onAskAiOpenChange?.(true);
+    setAskAi(true);
   }
 
   const askAiButton = (
@@ -151,7 +162,7 @@ export function SuiteSidebar({
               type="button"
               data-test="suite-ask-ai-back"
               aria-label="Back to navigation"
-              onClick={() => onAskAiOpenChange?.(false)}
+              onClick={() => setAskAi(false)}
               className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-ph-subtle transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
             >
               <NavArrowLeft className="h-4 w-4" aria-hidden />
@@ -213,7 +224,7 @@ export function SuiteSidebar({
               <button
                 type="button"
                 data-test="suite-ask-ai-back"
-                onClick={() => onAskAiOpenChange?.(false)}
+                onClick={() => setAskAi(false)}
                 className="inline-flex h-9 items-center gap-1 rounded-lg px-2 text-sm font-medium text-ph-subtle transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
               >
                 <NavArrowLeft className="h-4 w-4" aria-hidden />

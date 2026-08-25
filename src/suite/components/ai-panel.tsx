@@ -31,10 +31,48 @@ import {
 const SuiteAiBlockNoteMessage = lazy(() => import("./ai-message-blocknote"));
 
 export const SUITE_OPEN_ASK_AI_EVENT = "shellstack:open-ask-ai";
+export const SUITE_ASK_AI_OPEN_KEY = "shellstack:shelly-open";
+export const SUITE_MUTATED_EVENT = "shellstack:suite-mutated";
+export const TURTLETIME_TIMER_MUTATED_EVENT = "tt-timer-mutated";
 
 export type SuiteAskAiOpenDetail = {
   prompt?: string;
 };
+
+export function persistSuiteAskAiOpen(open: boolean): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (open) sessionStorage.setItem(SUITE_ASK_AI_OPEN_KEY, "1");
+    else sessionStorage.removeItem(SUITE_ASK_AI_OPEN_KEY);
+  } catch {
+    // private mode / blocked storage
+  }
+}
+
+export function readSuiteAskAiOpen(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return sessionStorage.getItem(SUITE_ASK_AI_OPEN_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export type SuiteAiActionStatus =
+  | "proposed"
+  | "applied"
+  | "cancelled"
+  | "failed";
+
+export interface SuiteAiAction {
+  id: string;
+  kind: string;
+  status: SuiteAiActionStatus;
+  summary: string;
+  href?: string;
+  error?: string;
+  payload?: Record<string, unknown>;
+}
 
 let pendingAskAiPrompt: string | null = null;
 
@@ -65,6 +103,25 @@ export interface SuiteAiChatMessage {
   role: "user" | "assistant";
   content: string;
   created_at?: string;
+  actions?: SuiteAiAction[];
+}
+
+function notifySuiteMutated(actions?: SuiteAiAction[]): void {
+  if (typeof window === "undefined" || !actions?.length) return;
+  const kinds = actions.map((action) => action.kind);
+  if (
+    kinds.some(
+      (kind) =>
+        kind.includes("timer") ||
+        kind.includes("time") ||
+        kind.includes("hours"),
+    )
+  ) {
+    window.dispatchEvent(new Event(TURTLETIME_TIMER_MUTATED_EVENT));
+  }
+  window.dispatchEvent(
+    new CustomEvent(SUITE_MUTATED_EVENT, { detail: { kinds } }),
+  );
 }
 
 /**
@@ -84,6 +141,8 @@ export function SuiteAiPanel({
   onOpenChange,
   suiteAppBases,
   onSwitchApp,
+  onSameAppNavigate,
+  resolveAction,
 }: {
   presets?: SuiteAiPreset[];
   emptyState?: ReactNode;
@@ -105,12 +164,20 @@ export function SuiteAiPanel({
   suiteAppBases?: Partial<Record<SuiteAppSlug, string>>;
   /** Cross-app SSO. Same-app links just navigate to `path`. */
   onSwitchApp?: (app: SuiteAppSlug, path: string) => void;
+  /** Client-side same-app route change — keeps Shelly mounted. */
+  onSameAppNavigate?: (path: string) => void;
+  resolveAction?: (
+    id: string,
+    decision: "confirm" | "cancel",
+  ) => Promise<{ messages: SuiteAiChatMessage[] }>;
 }) {
   const inputId = useId();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const [resolvingId, setResolvingId] = useState("");
   const open = openProp ?? uncontrolledOpen;
   const setOpen = useCallback(
     (next: boolean) => {
+      persistSuiteAskAiOpen(next);
       if (openProp === undefined) setUncontrolledOpen(next);
       onOpenChange?.(next);
     },
@@ -215,7 +282,11 @@ export function SuiteAiPanel({
         signal: controller.signal,
       });
       if (controller.signal.aborted) return;
-      setMessages(result.messages ?? []);
+      const nextMessages = result.messages ?? [];
+      setMessages(nextMessages);
+      notifySuiteMutated(
+        nextMessages.flatMap((message) => message.actions ?? []),
+      );
     } catch (err) {
       if (controller.signal.aborted) return;
       setMessages((prev) =>
@@ -264,6 +335,29 @@ export function SuiteAiPanel({
     }
   }
 
+  async function handleResolve(
+    actionId: string,
+    decision: "confirm" | "cancel",
+  ) {
+    if (!resolveAction || resolvingId) return;
+    setResolvingId(actionId);
+    setError("");
+    try {
+      const result = await resolveAction(actionId, decision);
+      const nextMessages = result.messages ?? [];
+      setMessages(nextMessages);
+      notifySuiteMutated(
+        nextMessages.flatMap((message) => message.actions ?? []),
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Could not apply that action.",
+      );
+    } finally {
+      setResolvingId("");
+    }
+  }
+
   function onConversationClick(event: ReactMouseEvent<HTMLDivElement>) {
     if (event.defaultPrevented) return;
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
@@ -280,8 +374,10 @@ export function SuiteAiPanel({
     );
     if (!match) return;
     event.preventDefault();
+    persistSuiteAskAiOpen(true);
     if (match.sameApp) {
-      window.location.assign(match.path);
+      if (onSameAppNavigate) onSameAppNavigate(match.path);
+      else window.location.assign(match.path);
       return;
     }
     if (onSwitchApp) onSwitchApp(match.slug, match.path);
@@ -391,16 +487,74 @@ export function SuiteAiPanel({
                 >
                   <Icon className="h-3.5 w-3.5" />
                 </span>
-                <div className="min-w-0 max-w-[85%] rounded-2xl rounded-bl-md bg-ph-muted px-3 py-2 text-sm leading-relaxed text-ph-ink">
-                  <Suspense
-                    fallback={
-                      <p className="whitespace-pre-wrap break-words">
-                        {message.content}
-                      </p>
-                    }
-                  >
-                    <SuiteAiBlockNoteMessage markdown={message.content} />
-                  </Suspense>
+                <div className="min-w-0 max-w-[85%] space-y-2">
+                  <div className="rounded-2xl rounded-bl-md bg-ph-muted px-3 py-2 text-sm leading-relaxed text-ph-ink">
+                    <Suspense
+                      fallback={
+                        <p className="whitespace-pre-wrap break-words">
+                          {message.content}
+                        </p>
+                      }
+                    >
+                      <SuiteAiBlockNoteMessage markdown={message.content} />
+                    </Suspense>
+                  </div>
+                  {(message.actions ?? []).map((action) => (
+                    <div
+                      key={action.id}
+                      data-test="ask-ai-action"
+                      data-status={action.status}
+                      className="rounded-xl border border-ph-border bg-ph-surface px-3 py-2 text-sm text-ph-ink"
+                    >
+                      <p className="font-medium">{action.summary}</p>
+                      {action.status === "proposed" ? (
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            data-test="ask-ai-action-confirm"
+                            disabled={Boolean(resolvingId) || !resolveAction}
+                            onClick={() => void handleResolve(action.id, "confirm")}
+                            className="inline-flex min-h-8 items-center rounded-lg bg-ph-brand px-2.5 text-xs font-medium text-[color:var(--ph-on-accent)] transition-opacity hover:bg-ph-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
+                          >
+                            {resolvingId === action.id ? "Working…" : "Confirm"}
+                          </button>
+                          <button
+                            type="button"
+                            data-test="ask-ai-action-cancel"
+                            disabled={Boolean(resolvingId) || !resolveAction}
+                            onClick={() => void handleResolve(action.id, "cancel")}
+                            className="inline-flex min-h-8 items-center rounded-lg border border-ph-border bg-ph-surface px-2.5 text-xs font-medium text-ph-ink transition-colors hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : null}
+                      {action.status === "applied" ? (
+                        <p className="mt-1 text-xs text-ph-subtle">
+                          Done
+                          {action.href ? (
+                            <>
+                              {" · "}
+                              <a
+                                href={action.href}
+                                className="text-ph-brand underline-offset-2 hover:underline"
+                              >
+                                Open
+                              </a>
+                            </>
+                          ) : null}
+                        </p>
+                      ) : null}
+                      {action.status === "cancelled" ? (
+                        <p className="mt-1 text-xs text-ph-subtle">Cancelled</p>
+                      ) : null}
+                      {action.status === "failed" ? (
+                        <p className="mt-1 text-xs text-ph-danger">
+                          {action.error || "Could not apply that."}
+                        </p>
+                      ) : null}
+                    </div>
+                  ))}
                 </div>
               </div>
             );
