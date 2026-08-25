@@ -58,7 +58,8 @@ export function SuiteAppLayout({
         style={{ width: `${sidebarWidth}px` }}
         data-collapsed={collapsed ? "true" : "false"}
       >
-        {sidebar}
+        {/* ponytail: isolate so Ask AI / BlockNote z-index cannot cover the handle */}
+        <div className="relative z-0 h-full min-h-0 isolate">{sidebar}</div>
         {onStartResize ? (
           <div
             role="separator"
@@ -80,7 +81,7 @@ export function SuiteAppLayout({
                 onResizeBy?.(16);
               }
             }}
-            className="absolute inset-y-0 -right-1 z-10 w-2 cursor-col-resize touch-none transition-colors hover:bg-[color-mix(in_oklab,var(--ph-accent)_30%,transparent)]"
+            className="absolute inset-y-0 right-0 z-20 w-2 cursor-col-resize touch-none transition-colors hover:bg-[color-mix(in_oklab,var(--ph-accent)_30%,transparent)]"
           />
         ) : null}
       </aside>

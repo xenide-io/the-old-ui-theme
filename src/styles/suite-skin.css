@@ -659,6 +659,7 @@ button:hover > .ph-card {
   color: var(--ph-text-primary);
   font-family: inherit;
   font-size: 0.875rem;
+  overflow-wrap: anywhere;
 }
 .suite-ai-blocknote .bn-block-content {
   padding-block: 2px;
@@ -671,6 +672,11 @@ button:hover > .ph-card {
   border: 1px solid var(--ph-border);
   border-radius: 6px;
   background: var(--ph-surface);
+}
+.suite-ai-blocknote a {
+  color: var(--ph-brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* ── Auth / OAuth / launch handoff ──────────────────────────────────────

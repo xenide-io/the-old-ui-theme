@@ -1,8 +1,42 @@
-import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { cleanup, render, screen, within } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 
+import { sidebarColumnWidth } from "../lib/use-sidebar-width";
 import { SuiteAppLayout } from "./suite-app-layout";
 import { SuitePageHeader } from "./suite-layout";
+
+afterEach(cleanup);
+
+describe("sidebarColumnWidth", () => {
+  it("uses the persisted nav width, including while Ask AI is open", () => {
+    expect(sidebarColumnWidth(320, false, false)).toBe(320);
+    expect(sidebarColumnWidth(320, false, true)).toBe(320);
+    expect(sidebarColumnWidth(56, true, true)).toBe(56);
+  });
+});
+
+describe("sidebar resize handle", () => {
+  it("stays above Ask AI contents so the column can still be dragged", () => {
+    render(
+      <SuiteAppLayout
+        sidebarWidth={320}
+        onStartResize={() => {}}
+        sidebar={
+          <div data-suite-chat-open="" className="relative z-[999] h-full">
+            Chat
+          </div>
+        }
+      >
+        Page
+      </SuiteAppLayout>,
+    );
+
+    const handle = document.querySelector('[data-test="sidebar-resize-handle"]');
+    expect(handle).not.toBeNull();
+    expect(handle?.previousElementSibling).toHaveClass("isolate");
+    expect(handle).toHaveClass("z-20");
+  });
+});
 
 describe("suite scroll ownership", () => {
   it("keeps mobile chrome outside the main scrollport and locks only on request", () => {

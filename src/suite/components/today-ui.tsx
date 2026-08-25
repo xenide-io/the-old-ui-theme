@@ -473,7 +473,7 @@ export function TodayLayout({
  * Prefer onClick → openSuiteAskAi(); href is a fallback only.
  */
 export function TodayAskAiCard({
-  title = 'Ask AI',
+  title = 'Shelly AI',
   description = 'Ask about your workspace, draft something, or look a fact up online.',
   cta = 'Ask',
   className,

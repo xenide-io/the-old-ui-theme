@@ -10,8 +10,18 @@ import {
 export const SIDEBAR_RAIL_WIDTH = 56;
 export const SIDEBAR_COLLAPSE_THRESHOLD = 80;
 export const SIDEBAR_MIN_EXPANDED_WIDTH = 180;
-export const SIDEBAR_MAX_WIDTH = 320;
+export const SIDEBAR_MAX_WIDTH = 640;
 export const SIDEBAR_DEFAULT_WIDTH = 320;
+
+/** Desktop column width: icon rail when collapsed, otherwise the persisted width. */
+export function sidebarColumnWidth(
+  width: number,
+  collapsed: boolean,
+  _chatOpen = false,
+): number {
+  if (collapsed) return SIDEBAR_RAIL_WIDTH;
+  return width;
+}
 
 function clampWidth(width: number): number {
   return Math.min(SIDEBAR_MAX_WIDTH, Math.max(SIDEBAR_RAIL_WIDTH, width));

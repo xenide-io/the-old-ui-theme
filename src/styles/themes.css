@@ -133,6 +133,7 @@
   --ph-accent-highlight-secondary: hsl(19deg 100% 52% / 14%);
 }
 
+/* OneNote — brand purple #7719aa on lavender paper. */
 [data-theme="note"] {
   color-scheme: light;
   --ph-canvas: #f8f6fc;
@@ -175,55 +176,56 @@
 
 [data-theme="note-dark"] {
   color-scheme: dark;
-  --ph-canvas: #1a1224;
-  --ph-surface: #221830;
-  --ph-muted: #2a1f3d;
-  --ph-toolbar: #322648;
-  --ph-surface-inset: #21162f;
-  --ph-surface-raised: #2a1f3d;
-  --ph-surface-overlay: #34284a;
-  --ph-border: #4a3860;
-  --ph-border-strong: #9b7bb8;
-  --ph-text-primary: #f0e8f8;
-  --ph-text-secondary: #c4b5d8;
-  --ph-text-tertiary: #9b7bb8;
-  --ph-accent: #b146c2;
-  --ph-accent-hover: #c96bd4;
+  /* Office Fluent dark neutrals — OneNote purple stays on accents only. */
+  --ph-canvas: #1b1a19;
+  --ph-surface: #252423;
+  --ph-muted: #2d2c2b;
+  --ph-toolbar: #323130;
+  --ph-surface-inset: #201f1e;
+  --ph-surface-raised: #2d2c2b;
+  --ph-surface-overlay: #3b3a39;
+  --ph-border: #484644;
+  --ph-border-strong: #8a8886;
+  --ph-text-primary: #f3f2f1;
+  --ph-text-secondary: #c8c6c4;
+  --ph-text-tertiary: #a19f9d;
+  --ph-accent: #c9a0e4;
+  --ph-accent-hover: #d8b8ed;
   --ph-blue: #4f9ff5;
   --ph-violet: #b146c2;
-  --ph-purple: #93278f;
+  --ph-purple: #c77dd4;
   --ph-success: #33a867;
   --ph-warning: #e67e22;
   --ph-danger: #f87171;
   --ph-info: #4f9ff5;
-  --ph-on-accent: #ffffff;
+  --ph-on-accent: #1b1a19;
   --ph-on-violet: #ffffff;
   --ph-on-success: #ffffff;
   --ph-on-warning: #211606;
   --ph-on-danger: #ffffff;
   --ph-on-info: #ffffff;
-  --ph-focus-ring: #c96bd4;
-  --ph-selected-bg: #3a254c;
-  --ph-selected-text: #f0c9f5;
-  --ph-selected-border: #8d4c9c;
-  --ph-text-3000: #f0e8f8;
-  --ph-primary-button-face: #221830;
-  --ph-primary-button-border: #7719aa;
-  --ph-primary-button-border-hover: #b146c2;
+  --ph-focus-ring: #d8b8ed;
+  --ph-selected-bg: #3a2f42;
+  --ph-selected-text: #ead8f5;
+  --ph-selected-border: #9b4ec4;
+  --ph-text-3000: #f3f2f1;
+  --ph-primary-button-face: #252423;
+  --ph-primary-button-border: #8764b8;
+  --ph-primary-button-border-hover: #c9a0e4;
   --ph-primary-frame-bg: #b146c2;
-  --ph-secondary-button-bg: #2a1f3d;
-  --ph-secondary-frame-bg: #4a3860;
-  --ph-secondary-button-border: #4a3860;
-  --ph-secondary-button-border-hover: #93278f;
-  --ph-border-3000: #322648;
-  --ph-accent-highlight-secondary: hsl(291deg 48% 54% / 14%);
-  --ph-data-1: #b146c2;
-  --ph-data-2: #93278f;
+  --ph-secondary-button-bg: #323130;
+  --ph-secondary-frame-bg: #3b3a39;
+  --ph-secondary-button-border: #484644;
+  --ph-secondary-button-border-hover: #8764b8;
+  --ph-border-3000: #323130;
+  --ph-accent-highlight-secondary: hsl(280deg 36% 62% / 12%);
+  --ph-data-1: #c9a0e4;
+  --ph-data-2: #c77dd4;
   --ph-data-3: #4f9ff5;
   --ph-data-4: #f87171;
   --ph-data-5: #e67e22;
   --ph-data-6: #33a867;
-  --ph-data-7: #7719aa;
+  --ph-data-7: #b146c2;
 }
 
 [data-theme="turtletime"] {

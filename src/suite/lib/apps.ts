@@ -114,3 +114,40 @@ export function resolveSuiteNotificationHref(
   if (!slug) return path;
   return `${suiteAppBaseUrl(slug)}${path}`;
 }
+
+export interface SuiteHrefTarget {
+  slug: SuiteAppSlug;
+  path: string;
+  sameApp: boolean;
+}
+
+/** Match a URL to a suite app origin so Ask AI links can switch apps. */
+export function classifySuiteHref(
+  href: string,
+  bases: Partial<Record<SuiteAppSlug, string>>,
+  currentOrigin = '',
+): SuiteHrefTarget | null {
+  let url: URL;
+  try {
+    url = new URL(href, currentOrigin || 'http://local.invalid');
+  } catch {
+    return null;
+  }
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
+  for (const slug of Object.keys(bases) as SuiteAppSlug[]) {
+    const base = bases[slug];
+    if (!base) continue;
+    try {
+      if (new URL(base).origin !== url.origin) continue;
+    } catch {
+      continue;
+    }
+    const path = `${url.pathname}${url.search}${url.hash}` || '/';
+    return {
+      slug,
+      path,
+      sameApp: Boolean(currentOrigin && url.origin === currentOrigin),
+    };
+  }
+  return null;
+}

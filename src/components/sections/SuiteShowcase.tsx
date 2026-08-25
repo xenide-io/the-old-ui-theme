@@ -63,6 +63,7 @@ import {
   SuiteSidebar,
   type SuiteSidebarNavItem,
 } from "@/suite/components/suite-sidebar";
+import { SuiteWorkspaceSwitcher } from "@/suite/components/workspace-switcher";
 import { SuiteAppLayout } from "@/suite/components/suite-app-layout";
 import {
   SuiteIcon,
@@ -114,6 +115,11 @@ const SIDEBAR_NAV_ITEMS: SuiteSidebarNavItem[] = [
   { href: "#suite-track", label: "Tracker", icon: Calendar },
   { href: "#suite-reports", label: "Reports", icon: Search },
   { href: "#suite-settings", label: "Settings", icon: Settings },
+];
+
+const DEMO_WORKSPACES = [
+  { id: "shellstack", name: "ShellStack", description: "Personal" },
+  { id: "xenide", name: "Xenide", description: "Organisation" },
 ];
 
 const NOTIFICATIONS: SuiteNotification[] = [
@@ -188,6 +194,8 @@ export default function SuiteShowcase() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [settingsHref, setSettingsHref] = useState("#profile");
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [workspaceId, setWorkspaceId] = useState("shellstack");
+  const [askAiOpen, setAskAiOpen] = useState(false);
 
   return (
     <ShowcaseWrapper
@@ -322,14 +330,27 @@ export default function SuiteShowcase() {
                       />
                     }
                     contextSwitcher={
-                      <div className="flex items-center gap-2 rounded-lg border border-ph-border bg-ph-surface px-2 py-1.5 text-sm text-ph-ink">
-                        <span className="h-5 w-5 rounded bg-ph-brand text-[10px] font-bold text-[var(--ph-on-accent)] flex items-center justify-center">
-                          S
-                        </span>
-                        ShellStack
-                      </div>
+                      <SuiteWorkspaceSwitcher
+                        workspaces={DEMO_WORKSPACES}
+                        currentId={workspaceId}
+                        onSelect={(workspace) => setWorkspaceId(workspace.id)}
+                        name={
+                          DEMO_WORKSPACES.find(
+                            (workspace) => workspace.id === workspaceId,
+                          )?.name ?? "Workspace"
+                        }
+                        dropdownMenu={DropdownMenu}
+                        dropdownItem={InjectedDropdownItem}
+                      />
                     }
                     navItems={SIDEBAR_NAV_ITEMS}
+                    askAiOpen={askAiOpen}
+                    onAskAiOpenChange={setAskAiOpen}
+                    askAi={
+                      <div className="flex h-full items-center justify-center px-3 text-center text-sm text-ph-subtle">
+                        Shelly AI chat lives here.
+                      </div>
+                    }
                     notificationBell={
                       <Button
                         variant="ghost"
@@ -344,7 +365,6 @@ export default function SuiteShowcase() {
                         email="jane@xenide.io"
                         settingsHref="#settings"
                         onSignOut={() => {}}
-                        showSignOutAction
                       />
                     }
                   />
@@ -428,14 +448,27 @@ export default function SuiteShowcase() {
                       />
                     }
                     contextSwitcher={
-                      <div className="flex items-center gap-2 rounded-lg border border-ph-border bg-ph-surface px-2 py-1.5 text-sm text-ph-ink">
-                        <span className="h-5 w-5 rounded bg-ph-brand text-[10px] font-bold text-[var(--ph-on-accent)] flex items-center justify-center">
-                          W
-                        </span>
-                        Workspace
-                      </div>
+                      <SuiteWorkspaceSwitcher
+                        workspaces={DEMO_WORKSPACES}
+                        currentId={workspaceId}
+                        onSelect={(workspace) => setWorkspaceId(workspace.id)}
+                        name={
+                          DEMO_WORKSPACES.find(
+                            (workspace) => workspace.id === workspaceId,
+                          )?.name ?? "Workspace"
+                        }
+                        dropdownMenu={DropdownMenu}
+                        dropdownItem={InjectedDropdownItem}
+                      />
                     }
                     navItems={SIDEBAR_NAV_ITEMS}
+                    askAiOpen={askAiOpen}
+                    onAskAiOpenChange={setAskAiOpen}
+                    askAi={
+                      <div className="flex h-full items-center justify-center px-3 text-center text-sm text-ph-subtle">
+                        Shelly AI chat lives here.
+                      </div>
+                    }
                     secondaryNav={
                       <div className="space-y-1">
                         <p className="px-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-ph-mutedtext">
@@ -471,7 +504,6 @@ export default function SuiteShowcase() {
                         email="jane@xenide.io"
                         settingsHref="#settings"
                         onSignOut={() => {}}
-                        showSignOutAction
                       />
                     }
                   />

@@ -20,14 +20,14 @@ export const THEMES: ThemeDefinition[] = [
   {
     id: "note",
     name: "Note Light",
-    description: "Notebook purple on lavender-white chrome.",
+    description: "OneNote purple on lavender-white chrome.",
     colorScheme: "light",
     group: "Note",
   },
   {
     id: "note-dark",
     name: "Note Dark",
-    description: "Dark notebook purple — night reading mode.",
+    description: "Office-dark chrome with OneNote purple accents.",
     colorScheme: "dark",
     group: "Note",
   },

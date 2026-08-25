@@ -35,8 +35,10 @@ export {
   SUITE_APP_MAP,
   suiteAppBaseUrl,
   resolveSuiteNotificationHref,
+  classifySuiteHref,
   type SuiteAppDefinition,
   type SuiteAppSlug,
+  type SuiteHrefTarget,
 } from "./lib/apps";
 export { TodayCalibrating } from "./components/today-calibrating";
 export {
@@ -50,11 +52,17 @@ export {
 export {
   SuiteAiPanel,
   openSuiteAskAi,
+  consumePendingAskAiPrompt,
   SUITE_OPEN_ASK_AI_EVENT,
   type SuiteAiPreset,
   type SuiteAiChatMessage,
   type SuiteAskAiOpenDetail,
 } from "./components/ai-panel";
+export {
+  SuiteWorkspaceSwitcher,
+  type SuiteWorkspaceEntry,
+  type SuiteWorkspaceGroup,
+} from "./components/workspace-switcher";
 export {
   APP_ACCENTS,
   APP_GLYPHS,
@@ -85,6 +93,7 @@ export {
   SIDEBAR_MAX_WIDTH,
   SIDEBAR_MIN_EXPANDED_WIDTH,
   SIDEBAR_RAIL_WIDTH,
+  sidebarColumnWidth,
   useSidebarWidth,
 } from "./lib/use-sidebar-width";
 export { cn } from "./lib/cn";

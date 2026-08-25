@@ -6,7 +6,6 @@ import { Sparks } from "iconoir-react";
 import {
   SuiteAiPanel,
   SuiteThemeProvider,
-  openSuiteAskAi,
   type SuiteAiChatMessage,
 } from "@/suite";
 
@@ -79,10 +78,6 @@ export default function AskAiFixture() {
     setReady(true);
   }, []);
 
-  useEffect(() => {
-    if (ready) openSuiteAskAi();
-  }, [ready]);
-
   const config = useMemo(
     () => ({
       storageKey: "ask-ai-fixture-theme",
@@ -101,8 +96,9 @@ export default function AskAiFixture() {
     <SuiteThemeProvider config={config}>
       <main className="min-h-screen bg-ph-canvas p-6 text-ph-ink">
         <p className="text-sm text-ph-subtle">Ask AI fixture — {fixture}</p>
+        <div className="mt-4 h-[720px] w-80 overflow-hidden rounded-xl border border-ph-border">
         <SuiteAiPanel
-          hideLauncher
+          open
           spinner={Spinner}
           brandIcon={Sparks}
           presets={[
@@ -136,6 +132,7 @@ export default function AskAiFixture() {
           }}
           clearChat={async () => {}}
         />
+        </div>
       </main>
     </SuiteThemeProvider>
   );
