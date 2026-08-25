@@ -73,7 +73,7 @@ export interface SuiteAiChatMessage {
  */
 export function SuiteAiPanel({
   presets = [],
-  emptyState = "Ask anything about your workspace, or look something up online.",
+  emptyState = "Ask when you are ready — overdue work, a running timer, or anything else.",
   title = "Shelly AI",
   fetchChat,
   sendMessage,

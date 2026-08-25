@@ -103,8 +103,8 @@ export default function AskAiFixture() {
           brandIcon={Sparks}
           presets={[
             {
-              label: "What should I focus on?",
-              prompt: "What should I focus on today?",
+              label: "What's overdue today?",
+              prompt: "What tasks of mine are overdue or due today?",
             },
             {
               label: "Summarise my day",
