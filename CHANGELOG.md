@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-08-29
+
+### Added
+
+- New-tab controls in the shared application switcher.
+
+### Changed
+
+- The application switcher no longer lists the application that is already open.
+
+### Fixed
+
+- The unread notification badge now stays anchored to the bell glyph.
+
 ## [0.6.14] - 2026-08-26
 
 ### Fixed

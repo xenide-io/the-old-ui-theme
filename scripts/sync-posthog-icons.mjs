@@ -18,7 +18,7 @@ const CACHE = resolve("scripts/.posthog-icons.tsx");
 function extractPhBlock(source, name) {
   const start = source.indexOf(`export function ${name}(`);
   if (start < 0) return null;
-  const next = source.indexOf("\nexport function Icon", start + 10);
+  const next = source.indexOf("\nexport function ", start + 10);
   return source.slice(start, next > 0 ? next : start + 4000);
 }
 
@@ -34,9 +34,8 @@ function extractOurBlock(source, name) {
 function normPaths(block) {
   if (!block) return "";
   const fills = [...block.matchAll(/fill\(\s*\n?\s*"([^"]+)"/g)].map((m) => m[1]);
-  const ds = [...block.matchAll(/<path d="([^"]+)"/g)].map((m) => m[1]);
-  const attrs = [...block.matchAll(/\sd="([^"]+)"/g)].map((m) => m[1]);
-  return [...fills, ...ds, ...attrs].join("|").replace(/\s/g, "");
+  const paths = [...block.matchAll(/\sd="([^"]+)"/g)].map((m) => m[1]);
+  return [...fills, ...paths].join("|").replace(/\s/g, "");
 }
 
 async function main() {

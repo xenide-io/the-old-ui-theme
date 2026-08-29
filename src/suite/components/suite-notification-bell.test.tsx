@@ -12,7 +12,7 @@ afterEach(() => {
 });
 
 describe("SuiteNotificationBell", () => {
-  it("anchors the unread badge to the button corner, not the bell glyph", async () => {
+  it("anchors the unread badge close to the bell glyph", async () => {
     render(
       <SuiteNotificationBell
         fetchNotifications={async () => ({
@@ -38,9 +38,10 @@ describe("SuiteNotificationBell", () => {
     });
 
     expect(badge.textContent).toBe("9+");
-    expect(badge.className).toContain("translate-x-1/2");
-    expect(badge.className).not.toContain("-translate-y");
-    expect(badge.parentElement?.className).toContain("h-11");
-    expect(badge.parentElement?.className).toContain("w-11");
+    expect(badge.className).toContain("-right-2");
+    expect(badge.className).toContain("-top-2");
+    expect(badge.parentElement?.className).toContain("relative");
+    expect(badge.parentElement?.className).toContain("h-5");
+    expect(badge.parentElement?.className).toContain("w-5");
   });
 });

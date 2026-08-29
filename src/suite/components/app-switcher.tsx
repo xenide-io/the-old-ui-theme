@@ -2,7 +2,10 @@
 
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
-import { Check, NavArrowDown as ChevronDown } from "iconoir-react";
+import {
+  NavArrowDown as ChevronDown,
+  OpenNewWindow,
+} from "iconoir-react";
 
 import { cn } from "../lib/cn";
 import type {
@@ -24,7 +27,6 @@ export function appSwitcherMarkClass() {
   return "h-8 w-8 shrink-0 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.08)] ring-1 ring-black/[0.06]";
 }
 
-/** No sticky Radix highlight while waiting for cross-app redirect. */
 export function appSwitcherMenuItemClass() {
   return "rounded-lg px-2 py-2 data-[highlighted]:bg-transparent hover:bg-ph-muted/80";
 }
@@ -101,6 +103,11 @@ export interface SuiteAppEntry {
   icon: string;
 }
 
+export interface SuiteAppSelectOptions {
+  /** Open the handoff in a separate browser tab when requested by a caller. */
+  newTab?: boolean;
+}
+
 /**
  * Suite app switcher dropdown. Apps inject their brand mark/title, the
  * visible app list, the cross-app navigation handler, and the theme
@@ -120,7 +127,7 @@ export function AppSwitcher({
 }: {
   apps: SuiteAppEntry[];
   currentApp: string;
-  onSelect: (app: SuiteAppEntry) => void;
+  onSelect: (app: SuiteAppEntry, options?: SuiteAppSelectOptions) => void;
   mark: ReactNode;
   title: ReactNode;
   collapsed?: boolean;
@@ -160,43 +167,54 @@ export function AppSwitcher({
         <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ph-mutedtext">
           Switch application
         </p>
-        {apps.map((app) => (
-          <DropdownItem
-            key={app.slug}
-            id={`switch-app-${app.slug}`}
-            data-test={`switch-app-${app.slug}`}
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => {
-              setOpen(false);
-              onSelect(app);
-            }}
-            className={appSwitcherMenuItemClass()}
-          >
-            <span className="flex min-w-0 items-center gap-3">
-              <Image
-                src={app.icon}
-                alt=""
-                width={28}
-                height={28}
-                className="h-7 w-7 shrink-0 rounded-md object-contain"
-              />
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-medium text-ph-ink">
-                  {app.name}
+        {apps
+          .filter((app) => app.slug !== currentApp)
+          .map((app) => (
+            <div key={app.slug} className="relative">
+              <DropdownItem
+                id={`switch-app-${app.slug}`}
+                data-test={`switch-app-${app.slug}`}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  setOpen(false);
+                  onSelect(app);
+                }}
+                className={cn(appSwitcherMenuItemClass(), "pr-11")}
+              >
+                <span className="flex min-w-0 items-center gap-3">
+                  <Image
+                    src={app.icon}
+                    alt=""
+                    width={28}
+                    height={28}
+                    className="h-7 w-7 shrink-0 rounded-md object-contain"
+                  />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium text-ph-ink">
+                      {app.name}
+                    </span>
+                    <span className="block truncate text-xs text-ph-mutedtext">
+                      {app.description}
+                    </span>
+                  </span>
                 </span>
-                <span className="block truncate text-xs text-ph-mutedtext">
-                  {app.description}
-                </span>
-              </span>
-              {app.slug === currentApp ? (
-                <Check
-                  className="h-4 w-4 shrink-0 text-ph-brand"
-                  aria-hidden="true"
-                />
-              ) : null}
-            </span>
-          </DropdownItem>
-        ))}
+              </DropdownItem>
+              <button
+                type="button"
+                id={`switch-app-${app.slug}-new-tab`}
+                data-test={`switch-app-${app.slug}-new-tab`}
+                aria-label={`Open ${app.name} in a new tab`}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  setOpen(false);
+                  onSelect(app, { newTab: true });
+                }}
+                className="absolute right-1.5 top-1/2 z-[1] flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-ph-brand/35"
+              >
+                <OpenNewWindow className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </div>
+          ))}
       </div>
     </DropdownMenu>
   );

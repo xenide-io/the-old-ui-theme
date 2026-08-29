@@ -8,6 +8,7 @@ export {
   appSwitcherMenuItemClass,
   appSwitcherTriggerClass,
   type SuiteAppEntry,
+  type SuiteAppSelectOptions,
 } from "./components/app-switcher";
 export {
   SuiteNotificationBell,
