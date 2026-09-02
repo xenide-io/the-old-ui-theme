@@ -147,3 +147,8 @@ export {
   SuiteAppLayout,
   type SuiteAppLayoutProps,
 } from "./components/suite-app-layout";
+export {
+  SuiteIntegrationPicker,
+  type SuiteIntegrationPickerItem,
+  type SuiteIntegrationPickerProps,
+} from "./components/suite-integration-picker";
