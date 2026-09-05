@@ -32,10 +32,6 @@ export function sourceToSuiteApp(source: string): SuiteAppSlug {
   if (normalised === 'tides' || normalised === 'turtletime' || normalised === 'kraken' || normalised === 'shelly') {
     return normalised;
   }
-  // Pre-rename rows stored source_app "nakama" (migrated to "shelly" in core).
-  if (normalised === 'nakama') {
-    return 'shelly';
-  }
   return 'shellstack';
 }
 

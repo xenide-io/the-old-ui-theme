@@ -24,7 +24,6 @@ const LEGACY_SIDEBAR_WIDTH_KEYS = [
   "tt-sidebar-width",
   "kraken-sidebar-width",
   "shellstack-sidebar-width",
-  "nakama-sidebar-width",
 ] as const;
 
 function isSuiteSidebarKey(storageKey: string): boolean {
