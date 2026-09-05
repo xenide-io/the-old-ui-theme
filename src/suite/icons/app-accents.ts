@@ -47,10 +47,10 @@ export const APP_ACCENTS: Record<SuiteAccentSlug, SuiteAppAccent> = {
   },
   shellstack: {
     label: "ShellStack",
-    accent: "#5e5893",
-    tile: "#5e5893",
-    onTile: "#ffffff",
-    onTileAccent: "#c4a7e7",
+    accent: "#0078D4",
+    tile: "#FFFFFF",
+    onTile: "#111114",
+    onTileAccent: "#0078D4",
   },
   crew: {
     label: "Crew",
@@ -61,10 +61,10 @@ export const APP_ACCENTS: Record<SuiteAccentSlug, SuiteAppAccent> = {
   },
   shelly: {
     label: "Shelly",
-    accent: "#a371f7",
-    tile: "#241A21",
-    onTile: "#F2EDE4",
-    onTileAccent: "#a371f7",
+    accent: "#0078D4",
+    tile: "#1B1B1F",
+    onTile: "#ECECF1",
+    onTileAccent: "#00BCF2",
   },
 };
 

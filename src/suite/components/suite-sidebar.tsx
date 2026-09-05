@@ -211,10 +211,10 @@ export function SuiteSidebar({
           "flex min-h-0 flex-1 flex-col",
           surface ? "bg-ph-surface" : "bg-ph-canvas",
           chatOpen ? "min-h-0" : "overflow-y-auto",
-          collapsed ? "px-1.5 py-2" : "p-2",
+          collapsed ? "px-1.5 py-2" : "p-3",
         )}
       >
-        <div className={cn("mb-3 w-full shrink-0", collapsed && "flex justify-center")}>
+        <div className={cn("mb-4 w-full shrink-0", collapsed && "flex justify-center")}>
           {renderNode(contextSwitcher, collapsed)}
         </div>
 
@@ -238,8 +238,8 @@ export function SuiteSidebar({
           </div>
         ) : (
           <>
-            <nav aria-label="Pages" className="shrink-0 space-y-0.5">
-              <div className="space-y-0.5">
+            <nav aria-label="Pages" className="shrink-0 space-y-1">
+              <div className="space-y-1">
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   const active = Boolean(item.active);

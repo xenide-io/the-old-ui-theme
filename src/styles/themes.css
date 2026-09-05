@@ -83,54 +83,55 @@
 [data-theme="hedgehog-dark"] {
   color-scheme: dark;
 
-  --ph-canvas: hsl(220 12% 9%);
-  --ph-surface: hsl(220 10% 13%);
-  --ph-muted: hsl(220 9% 16%);
-  --ph-toolbar: hsl(220 8% 19%);
-  --ph-surface-inset: hsl(220 12% 10%);
-  --ph-surface-raised: hsl(220 9% 16%);
-  --ph-surface-overlay: hsl(220 8% 18%);
-  --ph-border: hsl(220 7% 24%);
-  --ph-border-subtle: hsl(220 8% 19%);
-  --ph-border-strong: hsl(220 6% 38%);
+  /* Microsoft Copilot-style dark UI: neutral graphite surfaces, blue accent. */
+  --ph-canvas: hsl(240 7% 6%);
+  --ph-surface: hsl(240 6% 10%);
+  --ph-muted: hsl(240 5% 13%);
+  --ph-toolbar: hsl(240 5% 15%);
+  --ph-surface-inset: hsl(240 7% 7%);
+  --ph-surface-raised: hsl(240 5% 13%);
+  --ph-surface-overlay: hsl(240 5% 14%);
+  --ph-border: hsl(240 5% 21%);
+  --ph-border-subtle: hsl(240 5% 15%);
+  --ph-border-strong: hsl(240 4% 36%);
 
-  --ph-text-primary: hsl(0 0% 96%);
-  --ph-text-secondary: hsl(0 0% 78%);
-  --ph-text-tertiary: hsl(0 0% 58%);
+  --ph-text-primary: hsl(240 8% 94%);
+  --ph-text-secondary: hsl(240 5% 78%);
+  --ph-text-tertiary: hsl(240 4% 58%);
 
-  --ph-accent: hsl(19deg 100% 52%);
-  --ph-accent-hover: hsl(19deg 100% 58%);
-  --ph-blue: hsl(228deg 100% 68%);
-  --ph-violet: hsl(277deg 65% 62%);
-  --ph-purple: #a89af0;
+  --ph-accent: #0078d4;
+  --ph-accent-hover: #106ebe;
+  --ph-blue: #00bcf2;
+  --ph-violet: #b146c2;
+  --ph-purple: #b146c2;
 
-  --ph-success: hsl(149deg 55% 48%);
-  --ph-warning: hsl(43deg 85% 52%);
-  --ph-danger: hsl(9deg 65% 55%);
-  --ph-info: hsl(217deg 85% 58%);
-  --ph-on-accent: hsl(220 14% 8%);
-  --ph-on-violet: hsl(220 14% 8%);
-  --ph-on-success: hsl(220 14% 8%);
-  --ph-on-warning: hsl(220 14% 8%);
-  --ph-on-danger: hsl(220 14% 8%);
-  --ph-on-info: hsl(220 14% 8%);
-  --ph-focus-ring: hsl(217deg 95% 72%);
-  --ph-selected-bg: hsl(19deg 70% 18%);
-  --ph-selected-text: hsl(19deg 100% 72%);
-  --ph-selected-border: hsl(19deg 90% 55%);
+  --ph-success: #6bb700;
+  --ph-warning: #ffb900;
+  --ph-danger: #d13438;
+  --ph-info: #00bcf2;
+  --ph-on-accent: #ffffff;
+  --ph-on-violet: #ffffff;
+  --ph-on-success: #111114;
+  --ph-on-warning: #111114;
+  --ph-on-danger: #ffffff;
+  --ph-on-info: #111114;
+  --ph-focus-ring: #4ca3f5;
+  --ph-selected-bg: #0078d426;
+  --ph-selected-text: #4ca3f5;
+  --ph-selected-border: #0078d4;
 
-  --ph-text-3000: hsl(0 0% 96%);
-  --ph-primary-button-face: hsl(220 10% 15%);
-  --ph-primary-button-border: #c4861f;
-  --ph-primary-button-border-hover: #eb9d2a;
-  --ph-primary-frame-bg: #eb9d2a;
-  --ph-secondary-button-bg: hsl(220 8% 20%);
-  --ph-secondary-frame-bg: hsl(220 7% 26%);
-  --ph-secondary-button-border: hsl(220 6% 32%);
-  --ph-secondary-button-border-hover: hsl(220 5% 42%);
+  --ph-text-3000: hsl(240 8% 94%);
+  --ph-primary-button-face: #0078d4;
+  --ph-primary-button-border: #0078d4;
+  --ph-primary-button-border-hover: #106ebe;
+  --ph-primary-frame-bg: #0078d4;
+  --ph-secondary-button-bg: hsl(240 5% 15%);
+  --ph-secondary-frame-bg: hsl(240 5% 18%);
+  --ph-secondary-button-border: hsl(240 4% 30%);
+  --ph-secondary-button-border-hover: hsl(240 4% 40%);
 
-  --ph-border-3000: hsl(220 7% 20%);
-  --ph-accent-highlight-secondary: hsl(19deg 100% 52% / 14%);
+  --ph-border-3000: hsl(240 5% 18%);
+  --ph-accent-highlight-secondary: #0078d424;
 }
 
 /* OneNote — brand purple #7719aa on lavender paper. */
