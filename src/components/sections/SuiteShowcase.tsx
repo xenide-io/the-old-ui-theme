@@ -77,7 +77,7 @@ const REAL_APPS = [
   "shellstack",
   "tides",
   "turtletime",
-  "nakama",
+  "shelly",
 ] as const;
 type RealAppSlug = (typeof REAL_APPS)[number];
 
@@ -86,7 +86,7 @@ const APP_ICON_SRC: Record<RealAppSlug, string> = {
   tides: "/tides-icon.svg",
   kraken: "/kraken-icon.svg",
   shellstack: "/shellstack-icon.svg",
-  nakama: "/nakama-icon.svg",
+  shelly: "/shelly-icon.svg",
 };
 
 const ICON_SIZE = 44;

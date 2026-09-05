@@ -9,13 +9,14 @@ type LucideIcon = import('react').ComponentType<
   import('react').SVGProps<SVGSVGElement>
 >;
 
-export type SuiteAppSlug = 'shellstack' | 'tides' | 'turtletime' | 'kraken';
+export type SuiteAppSlug = 'shellstack' | 'tides' | 'turtletime' | 'kraken' | 'shelly';
 
 const APP_META: Record<SuiteAppSlug, { name: string }> = {
   shellstack: { name: 'ShellStack' },
   tides: { name: 'Tides' },
   turtletime: { name: 'TurtleTime' },
   kraken: { name: 'Kraken' },
+  shelly: { name: 'Shelly' },
 };
 
 const SUITE_APPS: SuiteAppSlug[] = [
@@ -23,12 +24,17 @@ const SUITE_APPS: SuiteAppSlug[] = [
   'tides',
   'turtletime',
   'kraken',
+  'shelly',
 ];
 
 export function sourceToSuiteApp(source: string): SuiteAppSlug {
   const normalised = source.trim().toLowerCase();
-  if (normalised === 'tides' || normalised === 'turtletime' || normalised === 'kraken') {
+  if (normalised === 'tides' || normalised === 'turtletime' || normalised === 'kraken' || normalised === 'shelly') {
     return normalised;
+  }
+  // Pre-rename rows stored source_app "nakama" (migrated to "shelly" in core).
+  if (normalised === 'nakama') {
+    return 'shelly';
   }
   return 'shellstack';
 }
@@ -42,6 +48,7 @@ const SOURCE_APP_LOGOS: Record<SuiteAppSlug, string> = {
   tides: '/tides-icon.svg',
   turtletime: '/turtletime-icon.svg',
   kraken: '/kraken-icon.svg',
+  shelly: '/shelly-icon.svg',
 };
 
 /** Actual product favicon/logo for suite notification rows. */

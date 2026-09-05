@@ -15,7 +15,7 @@ export const SIDEBAR_MIN_EXPANDED_WIDTH = 180;
 export const SIDEBAR_MAX_WIDTH = 640;
 export const SIDEBAR_DEFAULT_WIDTH = 320;
 
-/** Shared across Tides / TurtleTime / Kraken / ShellStack / Nakama. */
+/** Shared across Tides / TurtleTime / Kraken / ShellStack / Shelly. */
 export const SUITE_SIDEBAR_WIDTH_KEY = "shellstack:sidebar-width";
 export const SUITE_SIDEBAR_WIDTH_COOKIE = "shellstack_sidebar_width";
 
@@ -127,7 +127,7 @@ export function useSidebarWidth(
   const fallbackWidth = snapWidth(clampWidth(defaultWidth));
   // ponytail: always start at the default so SSR and the first client render
   // match. Reading the cookie in useState() hydrates 320 vs 412 and React
-  // keeps the server width — TurtleTime / ShellStack / Nakama stay stuck.
+  // keeps the server width — TurtleTime / ShellStack / Shelly stay stuck.
   const [width, setWidth] = useState(fallbackWidth);
   const [narrowViewport, setNarrowViewport] = useState(false);
   const collapsed = narrowViewport || width <= SIDEBAR_COLLAPSE_THRESHOLD;

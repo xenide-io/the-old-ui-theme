@@ -56,7 +56,7 @@ export type SuiteIconName =
   | "squid-doc"
   | "stack-hex"
   | "crew-bot"
-  | "nakama-fist"
+  | "shelly-fist"
   | "workspace"
   | "organisation"
   | "integration-plug"
@@ -122,8 +122,8 @@ export const SUITE_GLYPHS: Record<SuiteIconName, SuiteGlyph> = {
       { kind: "path", d: "M9.6 14.6q2.4 1.7 4.8 0", accent: true },
     ],
   },
-  "nakama-fist": {
-    description: "Nakama — raised fist with neon crew signal lines",
+  "shelly-fist": {
+    description: "Shelly — raised fist with neon crew signal lines",
     elements: [
       {
         kind: "path",

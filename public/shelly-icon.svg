@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Shelly — low-poly wooden snail mark. Flat polygons only. -->
+  <!-- Antennae -->
+  <path d="M12 36 8 24" stroke="#B9855A" stroke-width="2" stroke-linecap="round"/>
+  <path d="M16 35 18 22" stroke="#B9855A" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="8" cy="23" r="2.6" fill="#8E4A5B"/>
+  <circle cx="18" cy="21" r="2.6" fill="#8E4A5B"/>
+  <!-- Body: faceted tan planes -->
+  <polygon points="4,58 56,58 54,52 46,50 14,50 8,52" fill="#D9A06B"/>
+  <polygon points="14,50 46,50 44,46 18,46" fill="#C08B5C"/>
+  <polygon points="46,50 54,52 56,58 48,56" fill="#B9855A"/>
+  <polygon points="8,52 14,50 20,46 20,38 14,33 8,37 5,44 5,50" fill="#E8BC8A"/>
+  <polygon points="5,44 8,37 11,39 9,49" fill="#D9A06B"/>
+  <!-- Face -->
+  <circle cx="11" cy="42" r="1.4" fill="#33232B"/>
+  <circle cx="15.5" cy="41" r="1.4" fill="#33232B"/>
+  <path d="M10 47 Q12.5 49.5 15 47" stroke="#33232B" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  <!-- Shell: polygonal plum/rose + forest green facets -->
+  <polygon points="41,36 41,19 53,24" fill="#8E4A5B"/>
+  <polygon points="41,36 53,24 58,36" fill="#3F5D45"/>
+  <polygon points="41,36 58,36 53,48" fill="#7C4152"/>
+  <polygon points="41,36 53,48 41,53" fill="#2C3E31"/>
+  <polygon points="41,36 41,53 29,48" fill="#8E4A5B"/>
+  <polygon points="41,36 29,48 24,36" fill="#3F5D45"/>
+  <polygon points="41,36 24,36 29,24" fill="#7C4152"/>
+  <polygon points="41,36 29,24 41,19" fill="#2C3E31"/>
+  <!-- Dark spiral facets -->
+  <polygon points="41,36 41,28 48,31" fill="#2A1D24"/>
+  <polygon points="41,36 48,31 47,40" fill="#3A2530"/>
+  <polygon points="41,36 47,40 39,44" fill="#2A1D24"/>
+  <polygon points="41,36 39,44 34,39" fill="#4A3A41"/>
+  <polygon points="41,36 34,39 35,30" fill="#3A2530"/>
+  <polygon points="41,36 35,30 41,28" fill="#55404A"/>
+</svg>

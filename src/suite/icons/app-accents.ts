@@ -8,7 +8,7 @@ import type { SuiteIconName } from "./glyphs";
  */
 
 export type SuiteAccentSlug =
-  "turtletime" | "tides" | "kraken" | "shellstack" | "crew" | "nakama";
+  "turtletime" | "tides" | "kraken" | "shellstack" | "crew" | "shelly";
 
 export interface SuiteAppAccent {
   /** Display name (default aria label for app marks). */
@@ -59,8 +59,8 @@ export const APP_ACCENTS: Record<SuiteAccentSlug, SuiteAppAccent> = {
     onTile: "#ffffff",
     onTileAccent: "#a5f3fc",
   },
-  nakama: {
-    label: "Nakama",
+  shelly: {
+    label: "Shelly",
     accent: "#b8eb44",
     tile: "#17101f",
     onTile: "#fff2e2",
@@ -75,5 +75,5 @@ export const APP_GLYPHS: Record<SuiteAccentSlug, SuiteIconName> = {
   kraken: "squid-doc",
   shellstack: "stack-hex",
   crew: "crew-bot",
-  nakama: "nakama-fist",
+  shelly: "shelly-fist",
 };

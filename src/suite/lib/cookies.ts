@@ -18,7 +18,7 @@ export function suiteCookieDomainAttr(): string {
     "kraken",
     "turtletime",
     "time",
-    "nakama",
+    "shelly",
     "app",
     "shellstack",
     "portal",

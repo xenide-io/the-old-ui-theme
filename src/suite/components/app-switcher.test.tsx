@@ -28,10 +28,10 @@ const APPS: SuiteAppEntry[] = [
     icon: "/kraken.svg",
   },
   {
-    slug: "nakama",
-    name: "Nakama",
+    slug: "shelly",
+    name: "Shelly",
     description: "AI teammates",
-    icon: "/nakama.svg",
+    icon: "/shelly.svg",
   },
 ];
 

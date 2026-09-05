@@ -10,7 +10,7 @@ export type SuiteAppSlug =
   | 'tides'
   | 'turtletime'
   | 'kraken'
-  | 'nakama';
+  | 'shelly';
 
 export interface SuiteAppDefinition {
   slug: SuiteAppSlug;
@@ -64,12 +64,12 @@ export const SUITE_APPS: readonly SuiteAppDefinition[] = [
     baseUrlFallback: 'http://localhost:3003',
   },
   {
-    slug: 'nakama',
-    name: 'Nakama',
+    slug: 'shelly',
+    name: 'Shelly',
     description: 'AI teammates',
-    icon: '/nakama-icon.svg',
+    icon: '/shelly-icon.svg',
     landing: '/today',
-    baseUrlEnv: 'NEXT_PUBLIC_NAKAMA_URL',
+    baseUrlEnv: 'NEXT_PUBLIC_SHELLY_URL',
     baseUrlFallback: 'http://localhost:3004',
   },
 ] as const;
@@ -92,7 +92,7 @@ const SOURCE_APP_SLUG: Record<string, SuiteAppSlug> = {
   turtletime: 'turtletime',
   tides: 'tides',
   kraken: 'kraken',
-  nakama: 'nakama',
+  shelly: 'shelly',
   portal: 'shellstack',
   shellstack: 'shellstack',
 };

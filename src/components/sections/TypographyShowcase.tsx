@@ -73,7 +73,7 @@ export default function TypographyShowcase() {
           <H5>Small heading (H5)</H5>
           <P>
             Body copy sits at the same size everywhere in the suite, so a sentence
-            reads identically in TurtleTime, Tides, Kraken, ShellStack, and Nakama.
+            reads identically in TurtleTime, Tides, Kraken, ShellStack, and Shelly.
           </P>
           <Small tone="subtle">Secondary copy for helper text and meta rows.</Small>
         </Panel>

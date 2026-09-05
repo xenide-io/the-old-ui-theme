@@ -60,7 +60,7 @@ Every built-in theme defines these semantic values:
 --ph-data-1 through --ph-data-7
 ```
 
-Malibu uses a sun-bleached GTA San Andreas palette in light mode and Nakama's
+Malibu uses a sun-bleached GTA San Andreas palette in light mode and Shelly's
 deep plum command deck in dark mode, with hot pink, lime, cyan, amber, and
 emerald signals.
 
