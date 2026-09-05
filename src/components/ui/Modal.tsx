@@ -16,6 +16,7 @@ export interface ModalProps {
   footer?: ReactNode;
   size?: ModalSize;
   className?: string;
+  bodyClassName?: string;
   customLayout?: boolean;
   showCloseButton?: boolean;
   closeOnOutsideClick?: boolean;
@@ -45,6 +46,7 @@ export function Modal({
   footer,
   size = "md",
   className,
+  bodyClassName,
   customLayout = false,
   showCloseButton = true,
   closeOnOutsideClick = true,
@@ -138,7 +140,7 @@ export function Modal({
                   ) : null}
                 </header>
               ) : null}
-              <div className="ph-modal-body">{children}</div>
+              <div className={cn("ph-modal-body", bodyClassName)}>{children}</div>
               {footer ? <div className="ph-modal-footer">{footer}</div> : null}
             </>
           )}

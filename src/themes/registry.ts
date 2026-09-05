@@ -109,6 +109,22 @@ export const THEMES: ThemeDefinition[] = [
     colorScheme: "dark",
     group: "Malibu",
   },
+  {
+    id: "microsoft-light",
+    name: "Microsoft Light",
+    description:
+      "Office Fluent light neutrals on white with the signature brand blue.",
+    colorScheme: "light",
+    group: "Microsoft",
+  },
+  {
+    id: "microsoft-dark",
+    name: "Microsoft Dark",
+    description:
+      "Office Fluent dark chrome with a bright brand-blue accent.",
+    colorScheme: "dark",
+    group: "Microsoft",
+  },
 ];
 
 export const THEME_GROUPS = Array.from(

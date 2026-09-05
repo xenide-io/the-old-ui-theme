@@ -45,11 +45,16 @@ export { TodayCalibrating } from "./components/today-calibrating";
 export {
   SuiteThemeProvider,
   useSuiteTheme,
+  SUITE_THEME_COOKIE,
   type SuiteResolvedTheme,
   type SuiteTheme,
   type SuiteThemeConfig,
   type SuiteThemeContextValue,
 } from "./components/theme-provider";
+export {
+  suiteThemeBootScript,
+  type SuiteThemeBootOptions,
+} from "./lib/theme-boot";
 export {
   SuiteAiPanel,
   openSuiteAskAi,
@@ -152,3 +157,20 @@ export {
   type SuiteIntegrationPickerItem,
   type SuiteIntegrationPickerProps,
 } from "./components/suite-integration-picker";
+export {
+  SuiteIntegrationRules,
+  type SuiteIntegrationEvent,
+  type SuiteIntegrationRule,
+  type SuiteIntegrationRuleInput,
+  type SuiteIntegrationRuleProject,
+  type SuiteIntegrationRuleActionType,
+  type SuiteIntegrationRulesProps,
+} from "./components/suite-integration-rules";
+export {
+  SuiteClientsProjectsDirectory,
+  type SuiteClientsProjectsDirectoryProps,
+  type SuiteDirectoryClient,
+  type SuiteDirectoryFields,
+  type SuiteDirectoryProject,
+  type SuiteDirectoryProjectFields,
+} from "./components/suite-clients-projects-directory";

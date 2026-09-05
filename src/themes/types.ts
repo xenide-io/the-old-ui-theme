@@ -12,7 +12,9 @@ export type ThemeId =
   | "deepsea-light"
   | "deepsea-dark"
   | "malibu-light"
-  | "malibu-dark";
+  | "malibu-dark"
+  | "microsoft-light"
+  | "microsoft-dark";
 
 export interface ThemeDefinition {
   id: ThemeId;

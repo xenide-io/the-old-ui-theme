@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-09-04
+
+### Added
+
+- New `microsoft-light` / `microsoft-dark` themes — Office Fluent neutrals with the signature brand blue.
+- `suiteThemeBootScript()` builds the pre-paint `<head>` script from shared light/dark theme ids.
+- `SUITE_THEME_COOKIE` export.
+
+### Changed
+
+- `SuiteThemeProvider` now persists the chosen mode to one shared suite cookie and adopts changes made in any other suite app or tab (focus, visibility, polling, same-origin `storage`/`BroadcastChannel`), so the whole suite follows one light/dark/system preference.
+- Theme boot scripts resolve the mode from the shared cookie first, then the legacy per-app storage key, then the OS preference.
+
 ## [0.7.0] - 2026-08-29
 
 ### Added

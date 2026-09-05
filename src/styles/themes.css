@@ -744,6 +744,116 @@
   --ph-data-7: #f54b87;
 }
 
+/* Microsoft — Office Fluent neutrals with the signature brand blue. */
+[data-theme="microsoft-light"] {
+  color-scheme: light;
+  --ph-canvas: #faf9f8;
+  --ph-surface: #ffffff;
+  --ph-muted: #f3f2f1;
+  --ph-toolbar: #edebe9;
+  --ph-surface-inset: #f3f2f1;
+  --ph-surface-raised: #ffffff;
+  --ph-surface-overlay: #ffffff;
+  --ph-border: #e1dfdd;
+  --ph-border-subtle: #edebe9;
+  --ph-border-strong: #a19f9d;
+  --ph-text-primary: #201f1e;
+  --ph-text-secondary: #605e5c;
+  --ph-text-tertiary: #a19f9d;
+  --ph-accent: #0078d4;
+  --ph-accent-hover: #106ebe;
+  --ph-blue: #0078d4;
+  --ph-violet: #8661c5;
+  --ph-purple: #8764b8;
+  --ph-success: #107c10;
+  --ph-warning: #ca5010;
+  --ph-danger: #a4262c;
+  --ph-info: #0078d4;
+  --ph-on-accent: #ffffff;
+  --ph-on-violet: #ffffff;
+  --ph-on-success: #ffffff;
+  --ph-on-warning: #ffffff;
+  --ph-on-danger: #ffffff;
+  --ph-on-info: #ffffff;
+  --ph-focus-ring: #0078d4;
+  --ph-selected-bg: #eff6fc;
+  --ph-selected-text: #005a9e;
+  --ph-selected-border: #6cb8f6;
+  --ph-text-3000: #ffffff;
+  --ph-primary-button-face: #0078d4;
+  --ph-primary-button-border: #0078d4;
+  --ph-primary-button-border-hover: #106ebe;
+  --ph-primary-frame-bg: #106ebe;
+  --ph-secondary-button-bg: #f3f2f1;
+  --ph-secondary-frame-bg: #edebe9;
+  --ph-secondary-button-border: #8a8886;
+  --ph-secondary-button-border-hover: #605e5c;
+  --ph-border-3000: #e1dfdd;
+  --ph-accent-highlight-secondary: rgba(0, 120, 212, 0.08);
+  --ph-data-1: #0078d4;
+  --ph-data-2: #8764b8;
+  --ph-data-3: #038387;
+  --ph-data-4: #ca5010;
+  --ph-data-5: #107c10;
+  --ph-data-6: #e3008c;
+  --ph-data-7: #4f6bed;
+  --ph-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%23605e5c' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+[data-theme="microsoft-dark"] {
+  color-scheme: dark;
+  --ph-canvas: #1b1a19;
+  --ph-surface: #201f1e;
+  --ph-muted: #252423;
+  --ph-toolbar: #323130;
+  --ph-surface-inset: #1b1a19;
+  --ph-surface-raised: #252423;
+  --ph-surface-overlay: #3b3a39;
+  --ph-border: #3b3a39;
+  --ph-border-subtle: #292827;
+  --ph-border-strong: #605e5c;
+  --ph-text-primary: #f3f2f1;
+  --ph-text-secondary: #c8c6c4;
+  --ph-text-tertiary: #a19f9d;
+  --ph-accent: #2899f5;
+  --ph-accent-hover: #479ef5;
+  --ph-blue: #2899f5;
+  --ph-violet: #9a7fe8;
+  --ph-purple: #b4a0ff;
+  --ph-success: #54b054;
+  --ph-warning: #f7b355;
+  --ph-danger: #ff7171;
+  --ph-info: #2899f5;
+  --ph-on-accent: #1b1a19;
+  --ph-on-violet: #1b1a19;
+  --ph-on-success: #1b1a19;
+  --ph-on-warning: #1b1a19;
+  --ph-on-danger: #1b1a19;
+  --ph-on-info: #1b1a19;
+  --ph-focus-ring: #479ef5;
+  --ph-selected-bg: #203855;
+  --ph-selected-text: #6cb8f6;
+  --ph-selected-border: #2899f5;
+  --ph-text-3000: #1b1a19;
+  --ph-primary-button-face: #2899f5;
+  --ph-primary-button-border: #2899f5;
+  --ph-primary-button-border-hover: #479ef5;
+  --ph-primary-frame-bg: #479ef5;
+  --ph-secondary-button-bg: #252423;
+  --ph-secondary-frame-bg: #323130;
+  --ph-secondary-button-border: #605e5c;
+  --ph-secondary-button-border-hover: #c8c6c4;
+  --ph-border-3000: #323130;
+  --ph-accent-highlight-secondary: rgba(40, 153, 245, 0.14);
+  --ph-data-1: #2899f5;
+  --ph-data-2: #9a7fe8;
+  --ph-data-3: #45d1d6;
+  --ph-data-4: #f7b355;
+  --ph-data-5: #54b054;
+  --ph-data-6: #ff8ad4;
+  --ph-data-7: #7b9bff;
+}
+
 /* Semantic button contrast for dark palettes. */
 :is(
   [data-theme="hedgehog-dark"],
@@ -752,7 +862,8 @@
   [data-theme="rosepine-dark"],
   [data-theme="kraken-dark"],
   [data-theme="deepsea-dark"],
-  [data-theme="malibu-dark"]
+  [data-theme="malibu-dark"],
+  [data-theme="microsoft-dark"]
 ) {
   .ph-btn-signal {
     --ph-btn-face: color-mix(in oklab, var(--ph-accent) 62%, black);

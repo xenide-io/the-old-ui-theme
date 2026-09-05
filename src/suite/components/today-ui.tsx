@@ -5,7 +5,6 @@ import type { ReactNode } from 'react';
 import { cn } from '../lib/cn';
 import { SuiteAppIcon } from '../icons/suite-app-icon';
 import { SuiteIcon } from '../icons/suite-icon';
-import type { SuiteIconName } from '../icons/glyphs';
 type LucideIcon = import('react').ComponentType<
   import('react').SVGProps<SVGSVGElement>
 >;
@@ -27,8 +26,9 @@ const SUITE_APPS: SuiteAppSlug[] = [
 ];
 
 export function sourceToSuiteApp(source: string): SuiteAppSlug {
-  if (source === 'tides' || source === 'turtletime' || source === 'kraken') {
-    return source;
+  const normalised = source.trim().toLowerCase();
+  if (normalised === 'tides' || normalised === 'turtletime' || normalised === 'kraken') {
+    return normalised;
   }
   return 'shellstack';
 }
@@ -37,30 +37,29 @@ export function suiteAppLabel(source: string): string {
   return APP_META[sourceToSuiteApp(source)].name;
 }
 
-const SOURCE_APP_GLYPH: Record<SuiteAppSlug, SuiteIconName> = {
-  shellstack: 'stack-hex',
-  tides: 'kanban-wave',
-  turtletime: 'timer-shell',
-  kraken: 'squid-doc',
+const SOURCE_APP_LOGOS: Record<SuiteAppSlug, string> = {
+  shellstack: '/icon-shellstack.svg',
+  tides: '/tides-icon.svg',
+  turtletime: '/turtletime-icon.svg',
+  kraken: '/kraken-icon.svg',
 };
 
-/**
- * Small line icon for list rows — the app's suite glyph with its brand
- * accent on a muted base. Not the branded app tile (see SuiteAppIcon).
- */
+/** Actual product favicon/logo for suite notification rows. */
 export function SourceAppGlyph({
   source,
   className,
 }: {
   source: string;
   className?: string;
-}) {
+  }) {
   const app = sourceToSuiteApp(source);
   return (
-    <SuiteIcon
-      name={SOURCE_APP_GLYPH[app]}
-      accent={app}
-      className={cn('h-4 w-4 shrink-0 text-ph-subtle', className)}
+    // These assets are copied into each product's public directory.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={SOURCE_APP_LOGOS[app]}
+      alt=""
+      className={cn('h-7 w-7 shrink-0 rounded-lg object-contain', className)}
     />
   );
 }

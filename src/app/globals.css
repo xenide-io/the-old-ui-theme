@@ -847,6 +847,7 @@ body {
   .ph-checkbox-icon {
     @apply pointer-events-none absolute inset-0 h-4 w-4 scale-75 opacity-0;
     color: var(--ph-on-accent);
+    stroke-width: 3;
     transition: opacity var(--ph-motion-fast) ease;
   }
 
