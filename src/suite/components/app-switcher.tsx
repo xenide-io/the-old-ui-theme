@@ -24,7 +24,7 @@ export function appSwitcherTriggerClass(open: boolean, collapsed = false) {
 }
 
 export function appSwitcherMarkClass() {
-  return "h-8 w-8 shrink-0 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.1),0_4px_12px_rgba(0,0,0,0.08)] ring-1 ring-black/[0.06]";
+  return "h-8 w-8 shrink-0 rounded-lg";
 }
 
 export function appSwitcherMenuItemClass() {

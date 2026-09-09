@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Shelly">
   <!-- White tile with the traced Shelly snail line-art (black on white). -->
   <rect x="2" y="2" width="60" height="60" rx="15" fill="#FFFFFF"/>
-  <g transform="translate(6 58) scale(0.135 -0.135)" fill="#111114" stroke="none"><path d="M2931 37263 c-1542 -737 -1730 -2870 -339 -3838 427 -297 339 1 1730
+  <g transform="translate(6 58) scale(0.00135 -0.00135)" fill="#111114" stroke="none"><path d="M2931 37263 c-1542 -737 -1730 -2870 -339 -3838 427 -297 339 1 1730
 -5802 102 -425 101 -430 -391 -950 -1003 -1062 -1175 -1507 -1834 -4748 -1525
 -7505 -1398 -10142 668 -13875 2061 -3724 4835 -5715 9185 -6592 2869 -579
 4928 -582 8750 -15 1293 192 3408 506 4700 697 6839 1012 8768 1422 9385 1993
