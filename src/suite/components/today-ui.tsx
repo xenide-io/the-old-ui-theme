@@ -1,38 +1,44 @@
-'use client';
+"use client";
 
-import { Refresh as RefreshCw } from 'iconoir-react';
-import type { ReactNode } from 'react';
-import { cn } from '../lib/cn';
-import { SuiteAppIcon } from '../icons/suite-app-icon';
-import { SuiteIcon } from '../icons/suite-icon';
-type LucideIcon = import('react').ComponentType<
-  import('react').SVGProps<SVGSVGElement>
+import { Refresh as RefreshCw } from "iconoir-react";
+import type { ReactNode } from "react";
+import { cn } from "../lib/cn";
+import { SuiteAppIcon } from "../icons/suite-app-icon";
+import { SuiteIcon } from "../icons/suite-icon";
+type LucideIcon = import("react").ComponentType<
+  import("react").SVGProps<SVGSVGElement>
 >;
 
-export type SuiteAppSlug = 'shellstack' | 'tides' | 'turtletime' | 'kraken' | 'shelly';
+export type SuiteAppSlug =
+  "shellstack" | "tides" | "turtletime" | "kraken" | "shelly";
 
 const APP_META: Record<SuiteAppSlug, { name: string }> = {
-  shellstack: { name: 'ShellStack' },
-  tides: { name: 'Tides' },
-  turtletime: { name: 'TurtleTime' },
-  kraken: { name: 'Kraken' },
-  shelly: { name: 'Shelly' },
+  shellstack: { name: "ShellStack" },
+  tides: { name: "Tides" },
+  turtletime: { name: "TurtleTime" },
+  kraken: { name: "Kraken" },
+  shelly: { name: "Shelly" },
 };
 
 const SUITE_APPS: SuiteAppSlug[] = [
-  'shellstack',
-  'tides',
-  'turtletime',
-  'kraken',
-  'shelly',
+  "shellstack",
+  "tides",
+  "turtletime",
+  "kraken",
+  "shelly",
 ];
 
 export function sourceToSuiteApp(source: string): SuiteAppSlug {
   const normalised = source.trim().toLowerCase();
-  if (normalised === 'tides' || normalised === 'turtletime' || normalised === 'kraken' || normalised === 'shelly') {
+  if (
+    normalised === "tides" ||
+    normalised === "turtletime" ||
+    normalised === "kraken" ||
+    normalised === "shelly"
+  ) {
     return normalised;
   }
-  return 'shellstack';
+  return "shellstack";
 }
 
 export function suiteAppLabel(source: string): string {
@@ -40,11 +46,11 @@ export function suiteAppLabel(source: string): string {
 }
 
 const SOURCE_APP_LOGOS: Record<SuiteAppSlug, string> = {
-  shellstack: '/icon-shellstack.svg',
-  tides: '/tides-icon.svg',
-  turtletime: '/turtletime-icon.svg',
-  kraken: '/kraken-icon.svg',
-  shelly: '/shelly-icon.svg',
+  shellstack: "/icon-shellstack.svg",
+  tides: "/tides-icon.svg",
+  turtletime: "/turtletime-icon.svg",
+  kraken: "/kraken-icon.svg",
+  shelly: "/shelly-icon.svg",
 };
 
 /** Actual product favicon/logo for suite notification rows. */
@@ -54,7 +60,7 @@ export function SourceAppGlyph({
 }: {
   source: string;
   className?: string;
-  }) {
+}) {
   const app = sourceToSuiteApp(source);
   return (
     // These assets are copied into each product's public directory.
@@ -62,15 +68,15 @@ export function SourceAppGlyph({
     <img
       src={SOURCE_APP_LOGOS[app]}
       alt=""
-      className={cn('h-7 w-7 shrink-0 rounded-lg object-contain', className)}
+      className={cn("h-7 w-7 shrink-0 rounded-lg object-contain", className)}
     />
   );
 }
 
 function formatLongDate(date = new Date()): string {
   return new Intl.DateTimeFormat(undefined, {
-    month: 'long',
-    day: 'numeric',
+    month: "long",
+    day: "numeric",
   }).format(date);
 }
 
@@ -84,7 +90,7 @@ export function SuiteAppStrip({
   return (
     <div
       className={cn(
-        'flex flex-wrap items-center justify-center gap-2.5',
+        "flex flex-wrap items-center justify-center gap-2.5",
         className,
       )}
       aria-label="ShellStack suite apps"
@@ -225,7 +231,7 @@ export function TodayTopBar({
           aria-label="Refresh today"
         >
           <RefreshCw
-            className={cn('h-4 w-4', refreshing && 'animate-spin')}
+            className={cn("h-4 w-4", refreshing && "animate-spin")}
             aria-hidden
           />
         </button>
@@ -239,15 +245,15 @@ export function getTodayGreeting(
   stats?: { taskCount?: number; overdueCount?: number; hours?: number },
 ): string {
   const hour = new Date().getHours();
-  let period = 'morning';
-  if (hour >= 12 && hour < 17) period = 'afternoon';
-  else if (hour >= 17 && hour < 21) period = 'evening';
-  else if (hour >= 21 || hour < 5) period = 'night';
+  let period = "morning";
+  if (hour >= 12 && hour < 17) period = "afternoon";
+  else if (hour >= 17 && hour < 21) period = "evening";
+  else if (hour >= 21 || hour < 5) period = "night";
 
   const name =
     user?.first_name ||
-    user?.name?.split(' ')[0] ||
-    user?.email?.split('@')[0] ||
+    user?.name?.split(" ")[0] ||
+    user?.email?.split("@")[0] ||
     null;
 
   let greeting = `Good ${period}`;
@@ -258,22 +264,22 @@ export function getTodayGreeting(
   const hours = stats?.hours ?? 0;
 
   if (overdueCount > 0) {
-    return `${greeting}. ${taskCount} task${taskCount === 1 ? '' : 's'} due today, ${overdueCount} overdue.`;
+    return `${greeting}. ${taskCount} task${taskCount === 1 ? "" : "s"} due today, ${overdueCount} overdue.`;
   }
   if (taskCount > 0) {
-    return `${greeting}. ${taskCount} task${taskCount === 1 ? '' : 's'} due today.`;
+    return `${greeting}. ${taskCount} task${taskCount === 1 ? "" : "s"} due today.`;
   }
   if (hours > 0) {
-    return `${greeting}. ${hours} hour${hours === 1 ? '' : 's'} logged today.`;
+    return `${greeting}. ${hours} hour${hours === 1 ? "" : "s"} logged today.`;
   }
-  if (period === 'evening' || period === 'night') {
+  if (period === "evening" || period === "night") {
     return `${greeting}. Nice work — time to wrap up.`;
   }
   return `${greeting}. Clear queue — take a nice, deep breath.`;
 }
 
 export function TodayHero({
-  message = 'Take a nice, deep breath.',
+  message = "Take a nice, deep breath.",
   brief,
   briefMeta,
 }: {
@@ -285,7 +291,7 @@ export function TodayHero({
   return (
     <div className="mt-4 sm:mt-6">
       <p
-        key={typeof message === 'string' ? message : 'hero'}
+        key={typeof message === "string" ? message : "hero"}
         className="today-hero max-w-2xl font-display text-lg font-semibold tracking-tight text-ph-ink sm:text-xl sm:leading-snug"
       >
         {message}
@@ -303,7 +309,7 @@ export function TodayHero({
 }
 
 export type TodayPrimaryAccent =
-  'tides' | 'turtletime' | 'kraken' | 'shellstack' | 'neutral';
+  "tides" | "turtletime" | "kraken" | "shellstack" | "neutral";
 
 /**
  * Compact primary CTA for Today — one action per app.
@@ -313,13 +319,13 @@ export function TodayPrimaryAction({
   label,
   description,
   icon,
-  accent = 'neutral',
+  accent = "neutral",
   onClick,
   href,
   loading = false,
   active = false,
   className,
-  dataTest = 'today-primary-action',
+  dataTest = "today-primary-action",
 }: {
   label: string;
   description?: string;
@@ -334,10 +340,10 @@ export function TodayPrimaryAction({
   dataTest?: string;
 }) {
   const classes = cn(
-    'today-primary-action group relative flex w-full max-w-md items-center gap-3 overflow-hidden rounded-xl px-3.5 py-2.5 text-left transition sm:px-4 sm:py-3',
+    "today-primary-action group relative flex w-full max-w-md items-center gap-3 overflow-hidden rounded-xl px-3.5 py-2.5 text-left transition sm:px-4 sm:py-3",
     `today-primary-action--${accent}`,
-    active && 'today-primary-action--active',
-    loading && 'pointer-events-none opacity-70',
+    active && "today-primary-action--active",
+    loading && "pointer-events-none opacity-70",
     className,
   );
 
@@ -454,7 +460,7 @@ export function TodayLayout({
 }) {
   return (
     <div
-      className={cn('mt-5 space-y-6 sm:mt-6', className)}
+      className={cn("mt-5 space-y-6 sm:mt-6", className)}
       data-test="today-layout"
     >
       {primary ? <div className="max-w-md">{primary}</div> : null}
@@ -475,9 +481,9 @@ export function TodayLayout({
  * Prefer onClick → openSuiteAskAi(); href is a fallback only.
  */
 export function TodayAskAiCard({
-  title = 'Shelly AI',
-  description = 'Ask about your workspace, draft something, or look a fact up online.',
-  cta = 'Ask',
+  title = "Shelly AI",
+  description = "Ask about your workspace, draft something, or look a fact up online.",
+  cta = "Ask",
   className,
   onClick,
   href,
@@ -490,15 +496,18 @@ export function TodayAskAiCard({
   href?: string;
 }) {
   const classes = cn(
-    'group flex w-full items-start gap-3.5 rounded-2xl border border-ph-border/70 bg-ph-surface px-4 py-3.5 text-left shadow-[0_1px_12px_-8px_rgba(15,23,42,0.1)] transition hover:border-ph-brand/35 hover:bg-[color-mix(in_oklab,var(--ph-accent)_6%,var(--ph-surface))] sm:px-5',
+    "group flex w-full items-start gap-3.5 rounded-2xl border border-ph-border/70 bg-ph-surface px-4 py-3.5 text-left shadow-[0_1px_12px_-8px_rgba(15,23,42,0.1)] transition hover:border-ph-brand/35 hover:bg-[color-mix(in_oklab,var(--ph-accent)_6%,var(--ph-surface))] sm:px-5",
     className,
   );
 
   const body = (
     <>
-      <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-ph-brand/15 text-ph-brand shadow-sm ring-1 ring-black/[0.06]">
-        <SuiteIcon name="stack-hex" accent="shellstack" className="h-5 w-5" />
-      </span>
+      <img
+        src="/shelly-icon.svg"
+        alt=""
+        aria-hidden
+        className="h-5 w-5 shrink-0 object-contain"
+      />
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
           <span className="font-display text-sm font-bold tracking-tight text-ph-ink">
@@ -566,8 +575,8 @@ export function TodaySection({
         <div className="flex min-w-0 items-start gap-3.5">
           <span
             className={cn(
-              'inline-flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-2xl shadow-sm ring-1 ring-black/[0.06]',
-              iconClassName ?? 'bg-ph-muted text-ph-ink',
+              "inline-flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-2xl shadow-sm ring-1 ring-black/[0.06]",
+              iconClassName ?? "bg-ph-muted text-ph-ink",
             )}
           >
             <Icon className="h-5 w-5" aria-hidden />
@@ -600,7 +609,7 @@ export function TodayPanel({
   return (
     <div
       className={cn(
-        'border-ph-border/70 rounded-2xl border bg-ph-surface p-5 shadow-[0_1px_16px_-8px_rgba(15,23,42,0.12)] sm:p-5',
+        "border-ph-border/70 rounded-2xl border bg-ph-surface p-5 shadow-[0_1px_16px_-8px_rgba(15,23,42,0.12)] sm:p-5",
         className,
       )}
     >
