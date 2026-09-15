@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
 import { BlockNoteViewRaw, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
 
 import { useSuiteTheme } from "./theme-provider";
+
+// Parse the message before first paint so the editor never flashes empty.
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 const assistantSchema = BlockNoteSchema.create({
   blockSpecs: {
@@ -29,7 +33,7 @@ export default function SuiteAiBlockNoteMessage({
   const { resolvedTheme } = useSuiteTheme();
   const editor = useCreateBlockNote({ schema: assistantSchema });
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     try {
       const blocks = editor.tryParseMarkdownToBlocks(markdown);
       editor.replaceBlocks(

@@ -530,9 +530,16 @@ export function SuiteAiPanel({
                   <div className="rounded-2xl rounded-bl-md bg-ph-muted px-3 py-2 text-sm leading-relaxed text-ph-ink">
                     <Suspense
                       fallback={
-                        <p className="whitespace-pre-wrap break-words">
-                          {message.content}
-                        </p>
+                        <div
+                          className="space-y-2 py-0.5"
+                          role="status"
+                          aria-label="Rendering response"
+                        >
+                          <span className="sr-only">Rendering response…</span>
+                          <div className="h-3 w-11/12 rounded bg-ph-mutedtext/20 motion-safe:animate-pulse" />
+                          <div className="h-3 w-full rounded bg-ph-mutedtext/20 motion-safe:animate-pulse" />
+                          <div className="h-3 w-3/5 rounded bg-ph-mutedtext/20 motion-safe:animate-pulse" />
+                        </div>
                       }
                     >
                       <SuiteAiBlockNoteMessage markdown={message.content} />
