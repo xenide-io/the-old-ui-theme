@@ -37,7 +37,7 @@ export function FormField({
   const errorId = error ? `${id}-error` : undefined;
   const controlProps: FormFieldControlProps = {
     id,
-    "aria-describedby": descriptionId,
+    "aria-describedby": errorId ?? descriptionId,
     "aria-errormessage": errorId,
     "aria-invalid": error ? true : undefined,
   };

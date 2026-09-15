@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type FormEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from "react";
 import {
@@ -197,6 +198,12 @@ export function SuiteIntegrationPicker({
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
   const categoryMenuRef = useRef<HTMLDivElement>(null);
+  const categoryTriggerRef = useRef<HTMLButtonElement>(null);
+  const categorySearchRef = useRef<HTMLInputElement>(null);
+  const categoryOptionRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const pendingCategoryFocus = useRef<"trigger" | "search" | string | null>(
+    null,
+  );
   const scrollViewportRef = useRef<HTMLDivElement>(null);
   const loadMoreSentinelRef = useRef<HTMLDivElement>(null);
   const loadMoreInFlightRef = useRef(false);
@@ -212,6 +219,11 @@ export function SuiteIntegrationPicker({
   const [authLoading, setAuthLoading] = useState(false);
   const [authSubmitting, setAuthSubmitting] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [itemToDisconnect, setItemToDisconnect] =
+    useState<SuiteIntegrationPickerItem | null>(null);
+  const [disconnecting, setDisconnecting] = useState(false);
+  const [disconnectError, setDisconnectError] = useState<string | null>(null);
   const itemCategories = useMemo(
     () =>
       Array.from(
@@ -243,6 +255,63 @@ export function SuiteIntegrationPicker({
       .toLowerCase()
       .includes(categoryQuery.trim().toLowerCase()),
   );
+  const categoryValues = ["all", ...visibleCategories];
+  const focusableCategory = categoryValues.includes(activeCategory)
+    ? activeCategory
+    : "all";
+
+  function focusCategory(value: "trigger" | "search" | string) {
+    pendingCategoryFocus.current = value;
+  }
+
+  function openCategoryMenu(focus: "search" | string | null = null) {
+    setCategoryQuery("");
+    if (focus) focusCategory(focus);
+    setCategoryMenuOpen(true);
+  }
+
+  function closeCategoryMenu(restoreFocus = false) {
+    if (restoreFocus) focusCategory("trigger");
+    setCategoryMenuOpen(false);
+  }
+
+  function selectCategory(value: string) {
+    setCategory(value);
+    onCategoryChange?.(value);
+    closeCategoryMenu(true);
+  }
+
+  function moveCategoryFocus(
+    event: ReactKeyboardEvent<HTMLButtonElement>,
+    value: string,
+  ) {
+    const index = categoryValues.indexOf(value);
+    let nextIndex: number | null = null;
+    if (event.key === "ArrowDown") nextIndex = (index + 1) % categoryValues.length;
+    else if (event.key === "ArrowUp")
+      nextIndex = (index - 1 + categoryValues.length) % categoryValues.length;
+    else if (event.key === "Home") nextIndex = 0;
+    else if (event.key === "End") nextIndex = categoryValues.length - 1;
+
+    if (nextIndex === null) return;
+    event.preventDefault();
+    categoryOptionRefs.current[categoryValues[nextIndex]]?.focus();
+  }
+
+  function handleCategoryTriggerKeyDown(
+    event: ReactKeyboardEvent<HTMLButtonElement>,
+  ) {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      openCategoryMenu(activeCategory === "all" ? "all" : activeCategory);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      openCategoryMenu(categoryValues.at(-1) ?? "all");
+    } else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openCategoryMenu("search");
+    }
+  }
 
   function resetAuthForm() {
     authRequestRef.current += 1;
@@ -263,10 +332,17 @@ export function SuiteIntegrationPicker({
   ) {
     setMethodItem(null);
     setAuthError(null);
+    setConnectionError(null);
     setAuthValues({});
 
     if (!onFetchAuthFields) {
-      await onConnect(item, { auth_scheme: scheme });
+      try {
+        await onConnect(item, { auth_scheme: scheme });
+      } catch (cause) {
+        setConnectionError(
+          cause instanceof Error ? cause.message : "Could not connect the app.",
+        );
+      }
       return;
     }
 
@@ -292,11 +368,12 @@ export function SuiteIntegrationPicker({
       }
     } catch (cause) {
       if (requestId === authRequestRef.current) {
-        setAuthError(
+        const message =
           cause instanceof Error
             ? cause.message
-            : "Could not load authentication details.",
-        );
+            : "Could not load authentication details.";
+        setAuthError(message);
+        setConnectionError(message);
       }
     } finally {
       if (requestId === authRequestRef.current) setAuthLoading(false);
@@ -304,6 +381,7 @@ export function SuiteIntegrationPicker({
   }
 
   function connectItem(item: SuiteIntegrationPickerItem) {
+    setConnectionError(null);
     const schemes = authSchemesFor(item);
     if (schemes.length > 1) {
       setMethodItem(item);
@@ -313,7 +391,36 @@ export function SuiteIntegrationPicker({
       void prepareConnection(item, schemes[0]);
       return;
     }
-    void onConnect(item);
+    void (async () => {
+      try {
+        await onConnect(item);
+      } catch (cause) {
+        setConnectionError(
+          cause instanceof Error ? cause.message : "Could not connect the app.",
+        );
+      }
+    })();
+  }
+
+  function requestDisconnect(item: SuiteIntegrationPickerItem) {
+    setDisconnectError(null);
+    setItemToDisconnect(item);
+  }
+
+  async function disconnectItem() {
+    if (!onDisconnect || !itemToDisconnect) return;
+    setDisconnecting(true);
+    setDisconnectError(null);
+    try {
+      await onDisconnect(itemToDisconnect);
+      setItemToDisconnect(null);
+    } catch (cause) {
+      setDisconnectError(
+        cause instanceof Error ? cause.message : "Could not disconnect the app.",
+      );
+    } finally {
+      setDisconnecting(false);
+    }
   }
 
   async function submitAuthForm(event: FormEvent<HTMLFormElement>) {
@@ -340,11 +447,11 @@ export function SuiteIntegrationPicker({
     if (!categoryMenuOpen) return;
     const handlePointerDown = (event: PointerEvent) => {
       if (!categoryMenuRef.current?.contains(event.target as Node)) {
-        setCategoryMenuOpen(false);
+        closeCategoryMenu();
       }
     };
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setCategoryMenuOpen(false);
+      if (event.key === "Escape") closeCategoryMenu(true);
     };
     document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
@@ -352,7 +459,19 @@ export function SuiteIntegrationPicker({
       document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
     };
+    // closeCategoryMenu only updates stable React setters and refs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryMenuOpen]);
+
+  useEffect(() => {
+    const target = pendingCategoryFocus.current;
+    if (!target) return;
+    pendingCategoryFocus.current = null;
+
+    if (target === "trigger") categoryTriggerRef.current?.focus();
+    else if (target === "search") categorySearchRef.current?.focus();
+    else categoryOptionRefs.current[target]?.focus();
+  }, [activeCategory, categoryMenuOpen, categoryQuery, visibleCategories]);
 
   useEffect(() => {
     if (!loadingMore) loadMoreInFlightRef.current = false;
@@ -400,6 +519,11 @@ export function SuiteIntegrationPicker({
         bodyClassName="!overflow-hidden"
       >
         <div className="space-y-4">
+          {connectionError ? (
+            <p className="text-sm text-ph-danger" role="alert">
+              {connectionError}
+            </p>
+          ) : null}
           <div className="grid gap-4 md:grid-cols-2">
             <div className="relative">
               <Search
@@ -419,14 +543,21 @@ export function SuiteIntegrationPicker({
             </div>
             <div ref={categoryMenuRef} className="relative">
               <button
+                ref={categoryTriggerRef}
                 id={`${dataTest}-category`}
                 type="button"
                 className="ph-input flex w-full items-center justify-between text-left"
                 aria-haspopup="listbox"
                 aria-expanded={categoryMenuOpen}
-                aria-controls={`${dataTest}-category-options`}
+                aria-controls={
+                  categoryMenuOpen ? `${dataTest}-category-options` : undefined
+                }
                 aria-label="Filter by category"
-                onClick={() => setCategoryMenuOpen((open) => !open)}
+                onClick={() => {
+                  if (categoryMenuOpen) closeCategoryMenu();
+                  else openCategoryMenu();
+                }}
+                onKeyDown={handleCategoryTriggerKeyDown}
               >
                 <span className="flex items-center gap-2">
                   <Filter
@@ -446,32 +577,51 @@ export function SuiteIntegrationPicker({
               </button>
               {categoryMenuOpen ? (
                 <div
-                  id={`${dataTest}-category-options`}
-                  role="listbox"
-                  aria-label="Integration categories"
                   className="absolute z-20 mt-2 max-h-[min(22rem,calc(100dvh-12rem))] w-full max-w-full overflow-hidden rounded-lg border border-ph-border bg-ph-surface p-2 shadow-lg"
                 >
                   <Input
+                    ref={categorySearchRef}
                     value={categoryQuery}
                     onChange={(event) => setCategoryQuery(event.target.value)}
                     placeholder="Search categories..."
                     aria-label="Search categories"
+                    onKeyDown={(event) => {
+                      if (event.key === "ArrowDown") {
+                        event.preventDefault();
+                        categoryOptionRefs.current[categoryValues[0]]?.focus();
+                      } else if (event.key === "Escape") {
+                        event.preventDefault();
+                        closeCategoryMenu(true);
+                      }
+                    }}
                   />
                   <div
+                    id={`${dataTest}-category-options`}
+                    role="listbox"
+                    aria-label="Integration categories"
                     className="mt-2 max-h-52 overflow-y-auto"
                     data-test="integration-category-options"
                   >
-                    {["all", ...visibleCategories].map((value) => (
+                    {categoryValues.map((value) => (
                       <button
                         key={value}
                         type="button"
                         role="option"
                         aria-selected={activeCategory === value}
-                        className={`flex w-full min-w-0 items-center rounded-md px-3 py-2 text-left text-sm break-words ${activeCategory === value ? "bg-ph-brand text-white" : "text-ph-ink hover:bg-ph-muted"}`}
-                        onClick={() => {
-                          setCategory(value);
-                          onCategoryChange?.(value);
-                          setCategoryMenuOpen(false);
+                        tabIndex={value === focusableCategory ? 0 : -1}
+                        ref={(element) => {
+                          categoryOptionRefs.current[value] = element;
+                        }}
+                        className={`flex w-full min-w-0 items-center rounded-md px-3 py-2 text-left text-sm break-words ${activeCategory === value ? "bg-ph-brand text-[var(--ph-on-accent)]" : "text-ph-ink hover:bg-ph-muted"}`}
+                        onClick={() => selectCategory(value)}
+                        onKeyDown={(event) => {
+                          if (event.key === "Escape") {
+                            event.preventDefault();
+                            closeCategoryMenu(true);
+                          } else if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            selectCategory(value);
+                          } else moveCategoryFocus(event, value);
                         }}
                       >
                         {value === "all" ? "All apps" : categoryLabel(value)}
@@ -628,7 +778,7 @@ export function SuiteIntegrationPicker({
                   <Button
                     type="button"
                     variant="danger"
-                    onClick={() => onDisconnect(item)}
+                    onClick={() => requestDisconnect(item)}
                   >
                     <span className="flex items-center gap-1.5">
                       <Xmark className="h-4 w-4" aria-hidden />
@@ -640,6 +790,48 @@ export function SuiteIntegrationPicker({
             </div>
           ) : null}
         </div>
+      </Modal>
+
+      <Modal
+        open={itemToDisconnect !== null}
+        onClose={() => {
+          if (!disconnecting) setItemToDisconnect(null);
+        }}
+        title="Disconnect app"
+        description="This will stop syncing data from this app."
+        size="sm"
+        zIndex={220}
+        dataTest={`${dataTest}-disconnect-confirmation`}
+        footer={
+          <div className="flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="tertiary"
+              onClick={() => setItemToDisconnect(null)}
+              disabled={disconnecting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="danger"
+              onClick={() => void disconnectItem()}
+              disabled={disconnecting}
+              data-test={`${dataTest}-disconnect-confirm`}
+            >
+              {disconnecting ? "Disconnecting..." : "Disconnect app"}
+            </Button>
+          </div>
+        }
+      >
+        {disconnectError ? (
+          <p className="text-sm text-ph-danger" role="alert">
+            {disconnectError}
+          </p>
+        ) : null}
+        <p className="text-sm text-ph-ink">
+          Disconnect {itemToDisconnect?.label}? You can reconnect it later.
+        </p>
       </Modal>
 
       <Modal

@@ -82,7 +82,6 @@ export function SuiteWorkspaceSwitcher({
             open && "border-ph-brand/40",
           )}
           data-test="workspace-switcher-trigger"
-          aria-expanded={open}
         >
           <Building className="h-4 w-4 shrink-0 text-ph-ink" aria-hidden />
           {!collapsed ? (
@@ -119,8 +118,9 @@ export function SuiteWorkspaceSwitcher({
                 <DropdownItem
                   key={workspace.id}
                   id={`workspace-option-${workspace.id}`}
-                  role="option"
-                  aria-selected={workspace.id === currentId}
+                  aria-current={
+                    workspace.id === currentId ? "true" : undefined
+                  }
                   data-test="workspace-option"
                   data-workspace-id={workspace.id}
                   onMouseDown={(event) => event.preventDefault()}

@@ -43,12 +43,12 @@ function computeInitials(
  * email or name so avatars without a photo get a per-user colour instead of a
  * flat grey. Uses theme `--ph-*` tokens so it adapts to light and dark themes.
  */
-const AVATAR_TOKENS = [
-  "bg-ph-brand",
-  "bg-ph-violet",
-  "bg-ph-info",
-  "bg-ph-success",
-  "bg-ph-danger",
+const AVATAR_TOKENS: Array<[string, string]> = [
+  ["bg-ph-brand", "text-[var(--ph-on-accent)]"],
+  ["bg-ph-violet", "text-[var(--ph-on-violet)]"],
+  ["bg-ph-info", "text-[var(--ph-on-info)]"],
+  ["bg-ph-success", "text-[var(--ph-on-success)]"],
+  ["bg-ph-danger", "text-[var(--ph-on-danger)]"],
 ];
 
 function avatarColorClass(seed: string): string {
@@ -56,7 +56,8 @@ function avatarColorClass(seed: string): string {
   for (let i = 0; i < seed.length; i += 1) {
     hash = seed.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return AVATAR_TOKENS[Math.abs(hash) % AVATAR_TOKENS.length];
+  const [bg, ink] = AVATAR_TOKENS[Math.abs(hash) % AVATAR_TOKENS.length];
+  return `${bg} ${ink}`;
 }
 
 /**
@@ -96,7 +97,7 @@ export function SuiteUserMenu({
       ) : (
         <span
           className={cn(
-            "flex h-full w-full items-center justify-center text-sm font-semibold text-white",
+            "flex h-full w-full items-center justify-center text-sm font-semibold",
             fallbackColor,
           )}
         >

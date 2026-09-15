@@ -167,14 +167,14 @@ export function SuiteEmptyState({
             {icon}
           </div>
         ) : null}
-        <h3
+        <h2
           className={cn(
             'font-semibold text-ph-ink',
             size === 'sm' ? 'text-base' : 'text-lg',
           )}
         >
           {title}
-        </h3>
+        </h2>
         {description ? (
           <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ph-subtle">
             {description}

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/cn";
 
-interface EmptyStateProps {
+export interface EmptyStateProps {
   icon?: React.ReactNode;
   title: string;
   description?: string;
@@ -23,7 +23,7 @@ export function EmptyState({ icon, title, description, action, className }: Empt
           {icon}
         </div>
       )}
-      <h3 className="text-base font-semibold text-ph-ink">{title}</h3>
+      <h2 className="text-base font-semibold text-ph-ink">{title}</h2>
       {description && (
         <p className="mt-1 max-w-sm text-sm text-ph-subtle">{description}</p>
       )}

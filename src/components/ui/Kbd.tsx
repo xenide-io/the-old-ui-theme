@@ -65,7 +65,12 @@ export function Kbd({
 }: KbdProps) {
   if (variant === "token") {
     return (
-      <code className={cn("ph-code-token ph-kbd", className)} aria-label={ariaLabel} {...props}>
+      <code
+        className={cn("ph-code-token ph-kbd", className)}
+        role={ariaLabel ? "img" : undefined}
+        aria-label={ariaLabel}
+        {...props}
+      >
         {children}
       </code>
     );
@@ -77,14 +82,24 @@ export function Kbd({
 
   if (variant === "key") {
     return (
-      <kbd className={cn("ph-keycap", className)} aria-label={accessibleLabel} {...props}>
+      <kbd
+        className={cn("ph-keycap", className)}
+        role={accessibleLabel ? "img" : undefined}
+        aria-label={accessibleLabel}
+        {...props}
+      >
         {displayKeys[0]}
       </kbd>
     );
   }
 
   return (
-    <kbd className={cn("ph-shortcut-group ph-keycap", className)} aria-label={accessibleLabel} {...props}>
+    <kbd
+      className={cn("ph-shortcut-group ph-keycap", className)}
+      role={accessibleLabel ? "img" : undefined}
+      aria-label={accessibleLabel}
+      {...props}
+    >
       {displayKeys.map((key, index) => (
         <span key={index} className="contents">
           {index > 0 && separator != null ? <span className="ph-shortcut-separator" aria-hidden="true">{separator}</span> : null}

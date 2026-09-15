@@ -1789,7 +1789,7 @@ body {
     @apply space-y-5;
   }
 
-  .ph-settings-nav__group h3 {
+  .ph-settings-nav__heading {
     @apply mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-ph-mutedtext;
   }
 

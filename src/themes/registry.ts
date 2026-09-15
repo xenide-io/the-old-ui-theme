@@ -5,17 +5,17 @@ export const DEFAULT_THEME_ID: ThemeId = "hedgehog-light";
 export const THEMES: ThemeDefinition[] = [
   {
     id: "hedgehog-light",
-    name: "HedgeHog Light",
+    name: "Hedgehog Light",
     description: "Default Quill warm greys and orange Lemon chrome.",
     colorScheme: "light",
-    group: "HedgeHog",
+    group: "Hedgehog",
   },
   {
     id: "hedgehog-dark",
-    name: "HedgeHog Dark",
+    name: "Hedgehog Dark",
     description: "Dark app shell with HedgeHog orange accents.",
     colorScheme: "dark",
-    group: "HedgeHog",
+    group: "Hedgehog",
   },
   {
     id: "note",

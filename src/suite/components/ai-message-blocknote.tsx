@@ -43,6 +43,13 @@ export default function SuiteAiBlockNoteMessage({
     }
   }, [editor, markdown]);
 
+  // BlockNote renders the body as a ProseMirror contenteditable (.tiptap);
+  // give that node an accessible name so axe's aria-input-field-name passes.
+  useEffect(() => {
+    const el = (editor as unknown as { domElement?: HTMLElement }).domElement;
+    el?.setAttribute("aria-label", "Assistant message");
+  }, [editor]);
+
   return (
     <BlockNoteViewRaw
       editor={editor}

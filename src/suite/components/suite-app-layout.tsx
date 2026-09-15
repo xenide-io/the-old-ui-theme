@@ -3,6 +3,10 @@
 import { type ReactNode, type PointerEvent } from "react";
 
 import { cn } from "../lib/cn";
+import {
+  SIDEBAR_MAX_WIDTH,
+  SIDEBAR_RAIL_WIDTH,
+} from "../lib/use-sidebar-width";
 
 export interface SuiteAppLayoutProps {
   sidebar: ReactNode;
@@ -54,6 +58,7 @@ export function SuiteAppLayout({
       )}
     >
       <aside
+        aria-label="Sidebar"
         className="relative hidden shrink-0 flex-col overflow-visible border-r border-ph-border ease-out lg:flex"
         style={{ width: `${sidebarWidth}px` }}
         data-collapsed={collapsed ? "true" : "false"}
@@ -65,6 +70,10 @@ export function SuiteAppLayout({
             role="separator"
             aria-orientation="vertical"
             aria-label="Resize sidebar"
+            aria-valuenow={sidebarWidth}
+            aria-valuemin={SIDEBAR_RAIL_WIDTH}
+            aria-valuemax={SIDEBAR_MAX_WIDTH}
+            aria-valuetext={`${sidebarWidth} pixels`}
             data-test="sidebar-resize-handle"
             tabIndex={onResizeBy ? 0 : undefined}
             onPointerDown={onStartResize}
@@ -81,7 +90,7 @@ export function SuiteAppLayout({
                 onResizeBy?.(16);
               }
             }}
-            className="absolute inset-y-0 right-0 z-20 w-2 cursor-col-resize touch-none transition-colors hover:bg-[color-mix(in_oklab,var(--ph-accent)_30%,transparent)]"
+            className="absolute inset-y-0 right-0 z-20 w-2 cursor-col-resize touch-none transition-colors before:absolute before:-left-2 before:-right-2 before:inset-y-0 before:content-[''] hover:bg-[color-mix(in_oklab,var(--ph-accent)_30%,transparent)]"
           />
         ) : null}
       </aside>
@@ -92,10 +101,10 @@ export function SuiteAppLayout({
         ) : null}
         <main
           id="main-content"
-          tabIndex={-1}
+          tabIndex={0}
           data-lock-scroll={lockMainScroll ? "true" : undefined}
           className={cn(
-            "flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overscroll-contain bg-ph-canvas focus:outline-none",
+            "flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overscroll-contain bg-ph-canvas focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ph-focus",
             "suite-app-layout__main",
             lockMainScroll ? "overflow-hidden" : "overflow-y-auto",
           )}

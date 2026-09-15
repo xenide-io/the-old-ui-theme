@@ -5,7 +5,11 @@ import { useRouter } from "next/navigation";
 import { Bell } from "iconoir-react";
 
 import type { SuiteDropdownMenuComponent } from "../lib/injected";
-import { resolveSuiteNotificationHref } from "../lib/apps";
+import {
+  resolveSuiteNotificationHref,
+  suiteAppBaseUrl,
+  suiteAppSlugForNotificationSource,
+} from "../lib/apps";
 
 const POLL_MS = 60_000;
 
@@ -143,8 +147,30 @@ export function SuiteNotificationBell({
       }
       const target = resolveSuiteNotificationHref(n.href, n.source_app);
       if (!target) return;
-      // Cross-app notifications must leave this product origin.
       if (/^https?:\/\//i.test(target)) {
+        try {
+          const url = new URL(target);
+          const sourceApp = suiteAppSlugForNotificationSource(n.source_app);
+          const path = `${url.pathname}${url.search}${url.hash}`;
+          if (url.origin === window.location.origin) {
+            router.push(path);
+            return;
+          }
+          if (sourceApp && sourceApp !== "shellstack") {
+            const sourceOrigin = new URL(suiteAppBaseUrl(sourceApp)).origin;
+            if (url.origin === sourceOrigin) {
+              const launchUrl = new URL(
+                `/launch/${sourceApp}`,
+                suiteAppBaseUrl("shellstack"),
+              );
+              launchUrl.searchParams.set("next", path);
+              window.location.assign(launchUrl.toString());
+              return;
+            }
+          }
+        } catch {
+          // Fall through to the original external link.
+        }
         window.location.assign(target);
         return;
       }
@@ -184,7 +210,7 @@ export function SuiteNotificationBell({
           <span className="relative inline-flex h-5 w-5">
             <Bell className="h-5 w-5" strokeWidth={1.75} aria-hidden />
             {unread > 0 ? (
-              <span className="pointer-events-none absolute -right-2 -top-2 z-[1] flex h-4 min-w-4 items-center justify-center rounded-full bg-ph-brand px-1 text-[9px] font-semibold leading-none text-white ring-2 ring-ph-surface">
+              <span className="pointer-events-none absolute -right-2 -top-2 z-[1] flex h-4 min-w-4 items-center justify-center rounded-full bg-ph-brand px-1 text-[9px] font-semibold leading-none text-[var(--ph-on-accent)] ring-2 ring-ph-surface">
                 {unread > 9 ? "9+" : unread}
               </span>
             ) : null}
@@ -215,7 +241,6 @@ export function SuiteNotificationBell({
           items.map((n) => (
             <button
               key={n.id}
-              type="button"
               id={`${dataTest}-item-${n.id}`}
               data-test={`${dataTest}-item-${n.id}`}
               onClick={() => void openItem(n)}

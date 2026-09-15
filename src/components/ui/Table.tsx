@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, Key, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export interface TableColumn<T> {
@@ -17,6 +17,7 @@ export interface TableProps<T> {
   compact?: boolean;
   ribbon?: boolean;
   getRowStyle?: (row: T) => CSSProperties | undefined;
+  getRowKey?: (row: T, index: number) => Key;
   className?: string;
   caption?: string;
 }
@@ -28,11 +29,15 @@ export function Table<T>({
   compact = false,
   ribbon = false,
   getRowStyle,
+  getRowKey,
   className,
   caption,
 }: TableProps<T>) {
   return (
-    <div className={cn("ph-table-wrap", compact && "ph-table-compact", className)}>
+    <div
+      className={cn("ph-table-wrap", compact && "ph-table-compact", className)}
+      tabIndex={0}
+    >
       <table className={cn("ph-table", zebra && "ph-table-zebra", ribbon && "ph-table--ribbon")}>
         {caption && <caption className="sr-only">{caption}</caption>}
         <thead>
@@ -44,7 +49,7 @@ export function Table<T>({
         </thead>
         <tbody>
           {data.map((row, i) => (
-            <tr key={i} style={getRowStyle?.(row)}>
+            <tr key={getRowKey?.(row, i) ?? i} style={getRowStyle?.(row)}>
               {columns.map((col) => (
                 <td key={col.key} className={col.className}>{col.cell(row)}</td>
               ))}

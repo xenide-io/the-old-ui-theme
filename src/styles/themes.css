@@ -16,9 +16,9 @@
 
   --ph-text-primary: hsl(0 0% 5%);
   --ph-text-secondary: hsl(0 0% 25%);
-  --ph-text-tertiary: hsl(0 0% 42%);
+  --ph-text-tertiary: hsl(0 0% 40%);
 
-  --ph-accent: hsl(19deg 100% 48%);
+  --ph-accent: hsl(19deg 100% 39%);
   --ph-accent-hover: hsl(19deg 100% 42%);
   --ph-blue: hsl(228deg 100% 56%);
   --ph-violet: hsl(277deg 70% 48%);
@@ -29,6 +29,10 @@
   --ph-danger: hsl(9deg 70% 48%);
   --ph-info: hsl(217deg 90% 52%);
 
+  /* Legacy 3000-series tokens (--ph-text-3000, --ph-border-3000, …) are
+     superseded by the semantic --ph-text-*, --ph-border-*, and button tokens
+     above. Kept only so older custom themes keep working; do not use them in
+     new themes or components. */
   --ph-text-3000: #111111;
   --ph-primary-button-face: #ffffff;
   --ph-primary-button-border: #b17816;
@@ -68,7 +72,7 @@
   --ph-surface-raised: #ffffff;
   --ph-surface-overlay: #ffffff;
   --ph-border-subtle: hsl(75 14% 90%);
-  --ph-on-accent: #211108;
+  --ph-on-accent: #ffffff;
   --ph-on-violet: #ffffff;
   --ph-on-success: #071b10;
   --ph-on-warning: #1c1504;
@@ -99,7 +103,7 @@
   --ph-text-secondary: hsl(240 5% 78%);
   --ph-text-tertiary: hsl(240 4% 58%);
 
-  --ph-accent: #0078d4;
+  --ph-accent: #0084e8;
   --ph-accent-hover: #106ebe;
   --ph-blue: #00bcf2;
   --ph-violet: #b146c2;
@@ -109,7 +113,7 @@
   --ph-warning: #ffb900;
   --ph-danger: #d13438;
   --ph-info: #00bcf2;
-  --ph-on-accent: #ffffff;
+  --ph-on-accent: #111111;
   --ph-on-violet: #ffffff;
   --ph-on-success: #111114;
   --ph-on-warning: #111114;
@@ -145,7 +149,7 @@
   --ph-border-strong: #9b7bb8;
   --ph-text-primary: #2d1b3d;
   --ph-text-secondary: #5c4a6e;
-  --ph-text-tertiary: #857396;
+  --ph-text-tertiary: #716080;
   --ph-accent: #7719aa;
   --ph-accent-hover: #5f1488;
   --ph-blue: #185abd;
@@ -239,7 +243,7 @@
   --ph-border-strong: hsl(69 8% 65%);
   --ph-text-primary: hsl(0 0% 5%);
   --ph-text-secondary: hsl(0 0% 25%);
-  --ph-text-tertiary: hsl(0 0% 42%);
+  --ph-text-tertiary: hsl(0 0% 40%);
   --ph-accent: #1f6f43;
   --ph-accent-hover: #185c37;
   --ph-blue: #2f7f73;
@@ -283,7 +287,7 @@
   --ph-text-primary: #eef4e9;
   --ph-text-secondary: #c7d5c0;
   --ph-text-tertiary: #91a28a;
-  --ph-accent: #3f8f57;
+  --ph-accent: #419359;
   --ph-accent-hover: #55a96b;
   --ph-blue: #57b3a3;
   --ph-violet: #d4861a;
@@ -292,7 +296,7 @@
   --ph-warning: #e58a12;
   --ph-danger: #e06a49;
   --ph-info: #57b3a3;
-  --ph-on-accent: #eef4e9;
+  --ph-on-accent: #111111;
   --ph-on-violet: #151b17;
   --ph-on-success: #071b10;
   --ph-on-warning: #211606;
@@ -331,9 +335,9 @@
   --ph-border: #dfdad9;
   --ph-border-strong: #9893a5;
   --ph-text-primary: #575279;
-  --ph-text-secondary: #797593;
-  --ph-text-tertiary: #9893a5;
-  --ph-accent: #907aa9;
+  --ph-text-secondary: #6a6683;
+  --ph-text-tertiary: #6c667b;
+  --ph-accent: #7e649b;
   --ph-accent-hover: #7c6594;
   --ph-blue: #56949f;
   --ph-violet: #907aa9;
@@ -385,7 +389,7 @@
   --ph-border-strong: #524f67;
   --ph-text-primary: #e0def4;
   --ph-text-secondary: #908caa;
-  --ph-text-tertiary: #6e6a86;
+  --ph-text-tertiary: #a5a1b8;
   --ph-accent: #c4a7e7;
   --ph-accent-hover: #d4bcf0;
   --ph-blue: #9ccfd8;
@@ -438,7 +442,7 @@
   --ph-border-strong: #a8a8a3;
   --ph-text-primary: #242424;
   --ph-text-secondary: #4f4f4f;
-  --ph-text-tertiary: #6b6b6b;
+  --ph-text-tertiary: #666666;
   --ph-accent: #242424;
   --ph-accent-hover: #000000;
   --ph-blue: #437aff;
@@ -491,7 +495,7 @@
   --ph-border-strong: #686868;
   --ph-text-primary: #f2f2f2;
   --ph-text-secondary: #c4c4c4;
-  --ph-text-tertiary: #929292;
+  --ph-text-tertiary: #adadad;
   --ph-accent: #f2f2f2;
   --ph-accent-hover: #ffffff;
   --ph-blue: #7da3ff;
@@ -541,9 +545,9 @@
   --ph-border: #c4c8da;
   --ph-border-strong: #a8aecb;
   --ph-text-primary: #343b58;
-  --ph-text-secondary: #6172b0;
-  --ph-text-tertiary: #848cb5;
-  --ph-accent: #2e7de9;
+  --ph-text-secondary: #485890;
+  --ph-text-tertiary: #4f5883;
+  --ph-accent: #155fc5;
   --ph-accent-hover: #2368c6;
   --ph-blue: #2e7de9;
   --ph-violet: #9854f1;
@@ -596,7 +600,7 @@
   --ph-border-strong: #565f89;
   --ph-text-primary: #c0caf5;
   --ph-text-secondary: #a9b1d6;
-  --ph-text-tertiary: #565f89;
+  --ph-text-tertiary: #8d95b8;
   --ph-accent: #7aa2f7;
   --ph-accent-hover: #97b4f9;
   --ph-blue: #7aa2f7;
@@ -651,8 +655,8 @@
   --ph-border-strong: #b38b98;
   --ph-text-primary: #30202d;
   --ph-text-secondary: #64495a;
-  --ph-text-tertiary: #927786;
-  --ph-accent: #d14f74;
+  --ph-text-tertiary: #745c6a;
+  --ph-accent: #c4335c;
   --ph-accent-hover: #b93a60;
   --ph-blue: #3b8793;
   --ph-violet: #7d3ca4;
@@ -760,8 +764,8 @@
   --ph-border-strong: #a19f9d;
   --ph-text-primary: #201f1e;
   --ph-text-secondary: #605e5c;
-  --ph-text-tertiary: #a19f9d;
-  --ph-accent: #0078d4;
+  --ph-text-tertiary: #6b6967;
+  --ph-accent: #0072ca;
   --ph-accent-hover: #106ebe;
   --ph-blue: #0078d4;
   --ph-violet: #8661c5;

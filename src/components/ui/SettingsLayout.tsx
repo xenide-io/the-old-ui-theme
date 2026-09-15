@@ -37,7 +37,7 @@ export function SettingsNav({ groups, className, ...props }: SettingsNavProps) {
     <div className={cn("ph-settings-nav", className)} {...props}>
       {groups.map((group, index) => (
         <div className="ph-settings-nav__group" key={index}>
-          <h3>{group.label}</h3>
+          <p className="ph-settings-nav__heading">{group.label}</p>
           <div className="ph-settings-nav__items">
             {group.items.map((item) => (
               <a

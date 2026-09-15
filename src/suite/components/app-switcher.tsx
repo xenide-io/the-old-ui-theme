@@ -2,10 +2,7 @@
 
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
-import {
-  NavArrowDown as ChevronDown,
-  OpenNewWindow,
-} from "iconoir-react";
+import { NavArrowDown as ChevronDown, OpenNewWindow } from "iconoir-react";
 
 import { cn } from "../lib/cn";
 import type {
@@ -28,7 +25,7 @@ export function appSwitcherMarkClass() {
 }
 
 export function appSwitcherMenuItemClass() {
-  return "rounded-lg px-2 py-2 data-[highlighted]:bg-transparent hover:bg-ph-muted/80";
+  return "rounded-lg px-2 py-2 data-[highlighted]:bg-transparent hover:bg-ph-muted/80 focus-visible:shadow-none";
 }
 
 export function AppSwitcherMark({
@@ -152,7 +149,6 @@ export function AppSwitcher({
         <span
           className={appSwitcherTriggerClass(open, collapsed)}
           data-test="app-switcher-trigger"
-          aria-expanded={open}
         >
           <AppSwitcherMark collapsed={collapsed}>
             {mark}
@@ -199,8 +195,7 @@ export function AppSwitcher({
                   </span>
                 </span>
               </DropdownItem>
-              <button
-                type="button"
+              <DropdownItem
                 id={`switch-app-${app.slug}-new-tab`}
                 data-test={`switch-app-${app.slug}-new-tab`}
                 aria-label={`Open ${app.name} in a new tab`}
@@ -209,10 +204,11 @@ export function AppSwitcher({
                   setOpen(false);
                   onSelect(app, { newTab: true });
                 }}
-                className="absolute right-1.5 top-1/2 z-[1] flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-ph-brand/35"
+                className="absolute right-1.5 top-1/2 z-[1] flex h-8 -translate-y-1/2 justify-center rounded-md p-0 text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:shadow-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-ph-brand/35"
+                style={{ width: "2rem" }}
               >
                 <OpenNewWindow className="h-4 w-4" aria-hidden="true" />
-              </button>
+              </DropdownItem>
             </div>
           ))}
       </div>

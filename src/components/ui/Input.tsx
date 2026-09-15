@@ -1,4 +1,5 @@
-import { forwardRef, useId, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { forwardRef, useId, useState, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { Eye, EyeClosed } from "iconoir-react";
 import { FormField } from "@/components/ui/FormField";
 import { IconCheck } from "@/components/icons";
 import { cn } from "@/lib/cn";
@@ -35,6 +36,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
   helperText,
   size = "md",
   variant = "default",
+  type = "text",
   className,
   wrapperClassName,
   disabled,
@@ -45,6 +47,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
   const autoId = useId();
   const id = idProp ?? autoId;
   const hasError = Boolean(error);
+  const isPassword = type === "password";
+  const [revealed, setRevealed] = useState(false);
 
   return (
     <FormField
@@ -58,22 +62,42 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
       className={wrapperClassName}
     >
       {(fieldProps) => (
-        <input
-          {...fieldProps}
-          ref={ref}
-          disabled={disabled}
-          required={required}
-          aria-describedby={joinIds(ariaDescribedBy, fieldProps["aria-describedby"])}
-          className={cn(
-            "ph-input w-full",
-            sizeMap[size],
-            variant === "ghost" && "ph-input-ghost",
-            hasError && "ph-input-error",
-            disabled && "cursor-not-allowed opacity-60",
-            className
-          )}
-          {...props}
-        />
+        <div className="relative">
+          <input
+            {...fieldProps}
+            ref={ref}
+            type={isPassword && revealed ? "text" : type}
+            disabled={disabled}
+            required={required}
+            aria-describedby={joinIds(ariaDescribedBy, fieldProps["aria-describedby"])}
+            className={cn(
+              "ph-input w-full",
+              isPassword && "pr-10",
+              sizeMap[size],
+              variant === "ghost" && "ph-input-ghost",
+              hasError && "ph-input-error",
+              disabled && "cursor-not-allowed opacity-60",
+              className
+            )}
+            {...props}
+          />
+          {isPassword ? (
+            <button
+              type="button"
+              onClick={() => setRevealed((current) => !current)}
+              aria-label={revealed ? "Hide password" : "Show password"}
+              aria-pressed={revealed}
+              disabled={disabled}
+              className="absolute inset-y-0 right-0 flex w-10 items-center justify-center rounded-r-[var(--ph-radius-control)] text-ph-mutedtext transition-colors hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
+            >
+              {revealed ? (
+                <EyeClosed className="h-4 w-4" aria-hidden />
+              ) : (
+                <Eye className="h-4 w-4" aria-hidden />
+              )}
+            </button>
+          ) : null}
+        </div>
       )}
     </FormField>
   );
@@ -222,7 +246,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
           type="checkbox"
           disabled={disabled}
           aria-invalid={hasError || undefined}
-          aria-describedby={joinIds(ariaDescribedBy, descriptionId)}
+          aria-describedby={joinIds(ariaDescribedBy, descriptionId, errorId)}
           aria-errormessage={errorId}
           className={cn(
             "ph-checkbox",
