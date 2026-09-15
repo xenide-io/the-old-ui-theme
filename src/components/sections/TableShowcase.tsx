@@ -44,7 +44,7 @@ const keyValueColumns: TableColumn<(typeof keyValueData)[number]>[] = [
 ];
 
 export default function TableShowcase() {
-  const code = `import { Badge, Table, type TableColumn } from "the-old-ui";
+  const code = `import { Badge, Table, type TableColumn } from "@xenide-io/the-old-ui-theme";
 
 <div className="space-y-8">
   <div>
@@ -52,7 +52,7 @@ export default function TableShowcase() {
     <p className="mb-4 max-w-2xl text-sm text-ph-subtle">
       White canvas, tinted header strip, zebra optional — avoids DaisyUI&apos;s chunky row chrome.
     </p>
-    <Table data={data} columns={columns} caption="Dashboard users" />
+    <Table data={data} columns={columns} getRowKey={(row) => row.id} caption="Dashboard users" />
   </div>
 
   <div>
@@ -64,6 +64,7 @@ export default function TableShowcase() {
     <Table
       data={data}
       columns={columns}
+      getRowKey={(row) => row.id}
       ribbon
       getRowStyle={(row) => ({
         "--row-ribbon": ribbonByPlan[row.plan] ?? "var(--ph-data-5)",
@@ -73,12 +74,12 @@ export default function TableShowcase() {
 
   <div>
     <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-ph-mutedtext">Zebra rows</h3>
-    <Table data={data} columns={columns.slice(0, 4)} zebra />
+    <Table data={data} columns={columns.slice(0, 4)} getRowKey={(row) => row.id} zebra />
   </div>
 
   <div>
     <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-ph-mutedtext">Compact density</h3>
-    <Table data={keyValueData} columns={keyValueColumns} compact className="max-w-xl" />
+    <Table data={keyValueData} columns={keyValueColumns} getRowKey={(row) => row.key} compact className="max-w-xl" />
   </div>
 </div>`;
 

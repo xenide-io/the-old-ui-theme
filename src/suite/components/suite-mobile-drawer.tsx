@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { useEffect, useState, type ReactNode } from "react";
 import { Xmark as X } from "iconoir-react";
 
 import { cn } from "../lib/cn";
 
 /**
  * Suite mobile navigation drawer. Backdrop fade + panel slide, Escape to
- * close, body scroll-lock and focus hand-off while open. Nav content stays
- * app-side via `children`.
+ * close, body scroll-lock and focus containment while open. Nav content stays
+ * app-side via `children`; Radix owns the modal interaction model.
  */
 export function SuiteMobileDrawer({
   open,
@@ -57,13 +58,6 @@ export function SuiteMobileDrawer({
   // `shown` drives the slide/fade end-state.
   const [rendered, setRendered] = useState(open);
   const [shown, setShown] = useState(open);
-  const panelRef = useRef<HTMLElement | null>(null);
-  const onCloseRef = useRef(onClose);
-
-  useEffect(() => {
-    onCloseRef.current = onClose;
-  }, [onClose]);
-
   useEffect(() => {
     if (open) {
       queueMicrotask(() => setRendered(true));
@@ -82,101 +76,74 @@ export function SuiteMobileDrawer({
     return () => window.clearTimeout(timeout);
   }, [open, durationMs]);
 
-  // Escape to close, body scroll-lock, and focus inside while open.
-  useEffect(() => {
-    if (!open) return;
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onCloseRef.current();
-    };
-    window.addEventListener("keydown", onKeyDown);
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const previouslyFocused =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
-    const frame = requestAnimationFrame(() => panelRef.current?.focus());
-
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = previousOverflow;
-      cancelAnimationFrame(frame);
-      if (previouslyFocused?.isConnected) previouslyFocused.focus();
-    };
-  }, [open]);
-
   if (!rendered) return null;
 
   return (
-    <div data-test={dataTest} className="no-print fixed inset-0 z-50 lg:hidden">
-      <button
-        type="button"
-        id={backdropId}
-        data-test={backdropDataTest}
-        tabIndex={-1}
-        className={cn(
-          "absolute inset-0 bg-black/25 backdrop-blur-sm motion-safe:transition-opacity motion-safe:ease-spring-subtle",
-          shown ? "opacity-100" : "opacity-0",
-        )}
-        style={{ transitionDuration: `${durationMs}ms` }}
-        onClick={onClose}
-        aria-label={backdropLabel}
-      />
-      <aside
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label={dialogLabel}
-        tabIndex={-1}
-        data-test={panelDataTest}
-        className={cn(
-          "relative flex h-dvh max-h-dvh w-[86%] max-w-72 flex-col overflow-hidden bg-ph-surface shadow-xl outline-none motion-safe:transition-transform motion-safe:ease-spring-fast",
-          side === "right" && "ml-auto",
-          shown
-            ? "translate-x-0"
-            : side === "right"
-              ? "translate-x-full"
-              : "-translate-x-full",
-          panelClassName,
-        )}
-        style={{ transitionDuration: `${durationMs}ms` }}
-      >
-        {showCloseButton ? (
-          <div
+    <Dialog.Root open={open} onOpenChange={(nextOpen) => !nextOpen && onClose()}>
+      <Dialog.Portal forceMount>
+        <Dialog.Overlay
+          forceMount
+          id={backdropId}
+          data-test={backdropDataTest ?? dataTest}
+          aria-label={backdropLabel}
+          className={cn(
+            "no-print fixed inset-0 z-50 bg-black/25 backdrop-blur-sm motion-safe:transition-opacity motion-safe:ease-spring-subtle lg:hidden",
+            shown ? "opacity-100" : "opacity-0",
+          )}
+          style={{ transitionDuration: `${durationMs}ms` }}
+        />
+        <Dialog.Content forceMount asChild>
+          <aside
+            role="dialog"
+            data-test={panelDataTest}
+            aria-modal="true"
             className={cn(
-              "flex h-14 shrink-0 items-center border-b border-ph-border px-3",
-              title ? "justify-between" : "justify-end",
+              "fixed inset-y-0 left-0 z-50 flex h-dvh max-h-dvh w-[86%] max-w-72 flex-col overflow-hidden bg-ph-surface shadow-xl outline-none motion-safe:transition-transform motion-safe:ease-spring-fast lg:hidden",
+              side === "right" && "left-auto right-0",
+              shown
+                ? "translate-x-0"
+                : side === "right"
+                  ? "translate-x-full"
+                  : "-translate-x-full",
+              panelClassName,
             )}
+            style={{ transitionDuration: `${durationMs}ms` }}
           >
-            {title ? (
-              <span className="truncate text-sm font-semibold text-ph-ink">
-                {title}
-              </span>
+            <Dialog.Title className="sr-only">{dialogLabel}</Dialog.Title>
+            {showCloseButton ? (
+              <div
+                className={cn(
+                  "flex h-14 shrink-0 items-center border-b border-ph-border px-3",
+                  title ? "justify-between" : "justify-end",
+                )}
+              >
+                {title ? (
+                  <span className="truncate text-sm font-semibold text-ph-ink">
+                    {title}
+                  </span>
+                ) : null}
+                <Dialog.Close asChild>
+                  <button
+                    type="button"
+                    id={closeButtonId}
+                    data-test={closeButtonDataTest}
+                    className="-mr-1.5 inline-flex h-11 w-11 items-center justify-center rounded-lg text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
+                    aria-label={closeLabel}
+                  >
+                    <X className="h-4 w-4" aria-hidden />
+                  </button>
+                </Dialog.Close>
+              </div>
             ) : null}
-            <button
-              type="button"
-              id={closeButtonId}
-              data-test={closeButtonDataTest}
-              onClick={onClose}
-              className="-mr-1.5 inline-flex h-11 w-11 items-center justify-center rounded-lg text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
-              aria-label={closeLabel}
+            <div
+              data-test="suite-mobile-drawer-body"
+              className="suite-scroll-lock flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain pb-[max(0.75rem,env(safe-area-inset-bottom))]"
             >
-              <X className="h-4 w-4" aria-hidden />
-            </button>
-          </div>
-        ) : null}
-        {/* One column scroller, same as desktop SuiteSidebar body. Nested
-            flex-1 overflow-y-auto regions trap the tree in a leftover strip. */}
-        <div
-          data-test="suite-mobile-drawer-body"
-          className="suite-scroll-lock flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain pb-[max(0.75rem,env(safe-area-inset-bottom))]"
-        >
-          {children}
-        </div>
-      </aside>
-    </div>
+              {children}
+            </div>
+          </aside>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

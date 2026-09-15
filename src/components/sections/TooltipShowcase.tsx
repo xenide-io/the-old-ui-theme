@@ -1,7 +1,7 @@
 import { Button, ShowcaseWrapper, Tooltip, TooltipProvider } from "@/components/ui";
 
 export default function TooltipShowcase() {
-  const code = `import { Button, Tooltip, TooltipProvider } from "the-old-ui";
+  const code = `import { Button, Tooltip, TooltipProvider } from "@xenide-io/the-old-ui-theme";
 
 <TooltipProvider delayDuration={300}>
   <div className="ph-panel flex flex-wrap items-center gap-10">

@@ -2,13 +2,13 @@
 
 import { cn } from "@/lib/cn";
 
-interface SegmentedControlOption {
+export interface SegmentedControlOption {
   value: string;
   label: string;
   icon?: React.ReactNode;
 }
 
-interface SegmentedControlProps {
+export interface SegmentedControlProps {
   options: SegmentedControlOption[];
   value: string;
   onChange: (value: string) => void;

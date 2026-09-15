@@ -35,13 +35,13 @@ const dataTokens = [1, 2, 3, 4, 5, 6, 7].map((item) => ({
   text: "text-white",
 }));
 
-const installCode = `bun add the-old-ui
+const installCode = `bun add @xenide-io/the-old-ui-theme
 # or
-npm install the-old-ui`;
+npm install @xenide-io/the-old-ui-theme`;
 
 const layoutCode = `// app/layout.tsx
-import "the-old-ui/styles.css";
-import { THEME_INIT_SCRIPT, ThemeManager } from "the-old-ui";
+import "@xenide-io/the-old-ui-theme/styles.css";
+import { THEME_INIT_SCRIPT, ThemeDomSync } from "@xenide-io/the-old-ui-theme";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -50,25 +50,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body>
-        <ThemeManager>{children}</ThemeManager>
+        <ThemeDomSync />
+        {children}
       </body>
     </html>
   );
 }`;
 
 const tailwindCode = `// tailwind.config.ts
-import theOldUiPreset from "the-old-ui/tailwind-preset";
+import theOldUiPreset from "@xenide-io/the-old-ui-theme/tailwind-preset";
 
 export default {
   presets: [theOldUiPreset],
   content: [
     "./src/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
-    "./node_modules/the-old-ui/dist/**/*.{js,mjs}",
+    "./node_modules/@xenide-io/the-old-ui-theme/dist/**/*.{js,mjs}",
   ],
 };`;
 
-const switchCode = `import { ThemeSwitcher, persistTheme } from "the-old-ui";
+const switchCode = `import { ThemeSwitcher, persistTheme } from "@xenide-io/the-old-ui-theme";
 
 <ThemeSwitcher />
 
@@ -76,7 +77,7 @@ const switchCode = `import { ThemeSwitcher, persistTheme } from "the-old-ui";
 persistTheme("malibu-dark");`;
 
 const customThemeCode = `/* app/globals.css */
-@import "the-old-ui/styles.css";
+@import "@xenide-io/the-old-ui-theme/styles.css";
 
 [data-theme="my-theme-light"] {
   color-scheme: light;

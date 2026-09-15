@@ -3,9 +3,11 @@
 import {
   cloneElement,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   type HTMLAttributes,
@@ -29,12 +31,14 @@ export interface TooltipProps {
   side?: TooltipSide;
   align?: TooltipAlign;
   sideOffset?: number;
+  /** Minimum distance between the tooltip and the viewport edge. */
   collisionPadding?: number;
   className?: string;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   delayDuration?: number;
+  /** Prevents the pointer from keeping the tooltip open over its content. */
   disableHoverableContent?: boolean;
 }
 
@@ -53,9 +57,11 @@ export function TooltipProvider({
 
 function tooltipPosition(
   trigger: DOMRect,
+  content: DOMRect,
   side: TooltipSide,
   align: TooltipAlign,
   offset: number,
+  collisionPadding: number,
 ) {
   const horizontal =
     align === "start"
@@ -69,28 +75,20 @@ function tooltipPosition(
       : align === "end"
         ? trigger.bottom
         : trigger.top + trigger.height / 2;
-  if (side === "top")
-    return {
-      left: horizontal,
-      top: trigger.top - offset,
-      transform: "translate(-50%, -100%)",
-    };
-  if (side === "bottom")
-    return {
-      left: horizontal,
-      top: trigger.bottom + offset,
-      transform: "translate(-50%, 0)",
-    };
-  if (side === "left")
-    return {
-      left: trigger.left - offset,
-      top: vertical,
-      transform: "translate(-100%, -50%)",
-    };
+  const position =
+    side === "top"
+      ? { left: horizontal - content.width / 2, top: trigger.top - offset - content.height }
+      : side === "bottom"
+        ? { left: horizontal - content.width / 2, top: trigger.bottom + offset }
+        : side === "left"
+          ? { left: trigger.left - offset - content.width, top: vertical - content.height / 2 }
+          : { left: trigger.right + offset, top: vertical - content.height / 2 };
+  const maxLeft = Math.max(collisionPadding, window.innerWidth - content.width - collisionPadding);
+  const maxTop = Math.max(collisionPadding, window.innerHeight - content.height - collisionPadding);
+
   return {
-    left: trigger.right + offset,
-    top: vertical,
-    transform: "translate(0, -50%)",
+    left: Math.min(Math.max(position.left, collisionPadding), maxLeft),
+    top: Math.min(Math.max(position.top, collisionPadding), maxTop),
   };
 }
 
@@ -100,15 +98,18 @@ export function Tooltip({
   side = "top",
   align = "center",
   sideOffset = 7,
+  collisionPadding = 8,
   className,
   open,
   defaultOpen = false,
   onOpenChange,
   delayDuration,
+  disableHoverableContent = false,
 }: TooltipProps) {
   const providerDelay = useContext(TooltipDelayContext);
   const generatedId = useId().replace(/:/g, "");
   const triggerRef = useRef<HTMLSpanElement>(null);
+  const contentRef = useRef<HTMLSpanElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const [position, setPosition] = useState<ReturnType<
@@ -130,17 +131,19 @@ export function Tooltip({
     timerRef.current = null;
   }
 
-  function updatePosition() {
-    if (!triggerRef.current) return;
+  const updatePosition = useCallback(() => {
+    if (!triggerRef.current || !contentRef.current) return;
     setPosition(
       tooltipPosition(
         triggerRef.current.getBoundingClientRect(),
+        contentRef.current.getBoundingClientRect(),
         side,
         align,
         sideOffset,
+        collisionPadding,
       ),
     );
-  }
+  }, [align, collisionPadding, side, sideOffset]);
 
   function show(immediate: boolean) {
     clearTimer();
@@ -155,6 +158,20 @@ export function Tooltip({
     setOpen(false);
   }
 
+  function hideFromTrigger() {
+    if (disableHoverableContent) {
+      hide();
+      return;
+    }
+
+    clearTimer();
+    timerRef.current = setTimeout(() => setOpen(false), 100);
+  }
+
+  useLayoutEffect(() => {
+    if (isOpen) updatePosition();
+  }, [isOpen, updatePosition]);
+
   useEffect(() => {
     if (!isOpen) return;
     const reposition = () => updatePosition();
@@ -164,7 +181,7 @@ export function Tooltip({
       window.removeEventListener("resize", reposition);
       window.removeEventListener("scroll", reposition, true);
     };
-  });
+  }, [isOpen, updatePosition]);
 
   useEffect(() => () => clearTimer(), []);
 
@@ -179,7 +196,7 @@ export function Tooltip({
         ref={triggerRef}
         className="inline-flex"
         onMouseEnter={() => show(false)}
-        onMouseLeave={hide}
+        onMouseLeave={hideFromTrigger}
         onFocusCapture={() => show(true)}
         onBlurCapture={hide}
         onKeyDown={(event) => {
@@ -188,17 +205,24 @@ export function Tooltip({
       >
         {trigger}
       </span>
-      {isOpen && position && typeof document !== "undefined"
+      {isOpen && typeof document !== "undefined"
         ? createPortal(
             <span
-              style={{ position: "fixed", ...position }}
+              style={{ position: "fixed", ...position, visibility: position ? undefined : "hidden" }}
               className="pointer-events-none z-[200]"
             >
               <span
+                ref={contentRef}
                 id={tooltipId}
                 role="tooltip"
                 data-side={side}
-                className={cn("ph-tooltip-content", className)}
+                className={cn(
+                  "ph-tooltip-content",
+                  !disableHoverableContent && "pointer-events-auto",
+                  className,
+                )}
+                onMouseEnter={disableHoverableContent ? undefined : clearTimer}
+                onMouseLeave={disableHoverableContent ? undefined : hide}
               >
                 {content}
               </span>

@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { forwardRef, type ComponentPropsWithoutRef, type ElementType, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export type TextTone =
@@ -26,6 +26,24 @@ export interface TextBaseProps {
   children?: ReactNode;
   truncate?: boolean;
 }
+
+type TypographyProps<T extends ElementType> = TextBaseProps &
+  Omit<ComponentPropsWithoutRef<T>, keyof TextBaseProps>;
+
+export type DisplayProps = TypographyProps<"h1">;
+export type SectionTitleProps = TypographyProps<"h2">;
+export type H1Props = TypographyProps<"h1">;
+export type H2Props = TypographyProps<"h2">;
+export type H3Props = TypographyProps<"h3">;
+export type H4Props = TypographyProps<"h4">;
+export type H5Props = TypographyProps<"h5">;
+export type PProps = TypographyProps<"p">;
+export type SmallProps = TypographyProps<"span">;
+export type CaptionProps = TypographyProps<"span">;
+export type OverlineProps = TypographyProps<"span">;
+export type LeadProps = TypographyProps<"p">;
+export type MonoProps = TypographyProps<"code">;
+export type LabelProps = TypographyProps<"label">;
 
 const toneMap: Record<TextTone, string> = {
   default: "text-ph-ink",
@@ -61,77 +79,113 @@ function textClass(
  * Display — the marketing hero: fluid size, tight tracking, one per page.
  * Product page titles use H1/`SuitePageHeader` instead.
  */
-export function Display({
-  children,
-  tone = "default",
-  weight,
-  truncate,
-  className,
-}: TextBaseProps) {
-  return <h1 className={textClass("ph-hero-title", tone, weight, truncate, className)}>{children}</h1>;
-}
+export const Display = forwardRef<HTMLHeadingElement, DisplayProps>(function Display(
+  { children, tone = "default", weight, truncate, className, ...props },
+  ref,
+) {
+  return <h1 ref={ref} {...props} className={textClass("ph-hero-title", tone, weight, truncate, className)}>{children}</h1>;
+});
 
 /** Section title — fluid; pairs with Display on public pages. */
-export function SectionTitle({ children, tone = "default", weight, truncate, className }: TextBaseProps) {
-  return <h2 className={textClass("ph-section-title", tone, weight, truncate, className)}>{children}</h2>;
-}
+export const SectionTitle = forwardRef<HTMLHeadingElement, SectionTitleProps>(function SectionTitle(
+  { children, tone = "default", weight, truncate, className, ...props },
+  ref,
+) {
+  return <h2 ref={ref} {...props} className={textClass("ph-section-title", tone, weight, truncate, className)}>{children}</h2>;
+});
 
 /** H1 — page title */
-export function H1({ children, tone = "default", weight, truncate, className }: TextBaseProps) {
-  return <h1 className={textClass("text-3xl font-bold tracking-tight md:text-4xl", tone, weight, truncate, className)}>{children}</h1>;
-}
+export const H1 = forwardRef<HTMLHeadingElement, H1Props>(function H1(
+  { children, tone = "default", weight, truncate, className, ...props },
+  ref,
+) {
+  return <h1 ref={ref} {...props} className={textClass("text-3xl font-bold tracking-tight md:text-4xl", tone, weight, truncate, className)}>{children}</h1>;
+});
 
 /** H2 — section title */
-export function H2({ children, tone = "default", weight, truncate, className }: TextBaseProps) {
-  return <h2 className={textClass("text-2xl font-bold tracking-tight", tone, weight, truncate, className)}>{children}</h2>;
-}
+export const H2 = forwardRef<HTMLHeadingElement, H2Props>(function H2(
+  { children, tone = "default", weight, truncate, className, ...props },
+  ref,
+) {
+  return <h2 ref={ref} {...props} className={textClass("text-2xl font-bold tracking-tight", tone, weight, truncate, className)}>{children}</h2>;
+});
 
 /** H3 — subsection title */
-export function H3({ children, tone = "default", weight, truncate, className }: TextBaseProps) {
-  return <h3 className={textClass("text-xl font-semibold", tone, weight, truncate, className)}>{children}</h3>;
-}
+export const H3 = forwardRef<HTMLHeadingElement, H3Props>(function H3(
+  { children, tone = "default", weight, truncate, className, ...props },
+  ref,
+) {
+  return <h3 ref={ref} {...props} className={textClass("text-xl font-semibold", tone, weight, truncate, className)}>{children}</h3>;
+});
 
 /** H4 — card / panel title */
-export function H4({ children, tone = "default", weight, truncate, className }: TextBaseProps) {
-  return <h4 className={textClass("text-lg font-semibold", tone, weight, truncate, className)}>{children}</h4>;
-}
+export const H4 = forwardRef<HTMLHeadingElement, H4Props>(function H4(
+  { children, tone = "default", weight, truncate, className, ...props },
+  ref,
+) {
+  return <h4 ref={ref} {...props} className={textClass("text-lg font-semibold", tone, weight, truncate, className)}>{children}</h4>;
+});
 
 /** H5 — small heading */
-export function H5({ children, tone = "default", weight, truncate, className }: TextBaseProps) {
-  return <h5 className={textClass("text-base font-semibold", tone, weight, truncate, className)}>{children}</h5>;
-}
+export const H5 = forwardRef<HTMLHeadingElement, H5Props>(function H5(
+  { children, tone = "default", weight, truncate, className, ...props },
+  ref,
+) {
+  return <h5 ref={ref} {...props} className={textClass("text-base font-semibold", tone, weight, truncate, className)}>{children}</h5>;
+});
 
 /** Body — default paragraph text */
-export function P({ children, tone = "default", weight, truncate, className }: TextBaseProps) {
-  return <p className={textClass("text-base leading-relaxed", tone, weight, truncate, className)}>{children}</p>;
-}
+export const P = forwardRef<HTMLParagraphElement, PProps>(function P(
+  { children, tone = "default", weight, truncate, className, ...props },
+  ref,
+) {
+  return <p ref={ref} {...props} className={textClass("text-base leading-relaxed", tone, weight, truncate, className)}>{children}</p>;
+});
 
 /** Small body text */
-export function Small({ children, tone = "default", weight, truncate, className }: TextBaseProps) {
-  return <span className={textClass("text-sm leading-relaxed", tone, weight, truncate, className)}>{children}</span>;
-}
+export const Small = forwardRef<HTMLSpanElement, SmallProps>(function Small(
+  { children, tone = "default", weight, truncate, className, ...props },
+  ref,
+) {
+  return <span ref={ref} {...props} className={textClass("text-sm leading-relaxed", tone, weight, truncate, className)}>{children}</span>;
+});
 
 /** Extra small text — captions, meta */
-export function Caption({ children, tone = "muted", weight, truncate, className }: TextBaseProps) {
-  return <span className={textClass("text-[11px] font-medium uppercase tracking-wider", tone, weight, truncate, className)}>{children}</span>;
-}
+export const Caption = forwardRef<HTMLSpanElement, CaptionProps>(function Caption(
+  { children, tone = "muted", weight, truncate, className, ...props },
+  ref,
+) {
+  return <span ref={ref} {...props} className={textClass("text-[11px] font-medium uppercase tracking-wider", tone, weight, truncate, className)}>{children}</span>;
+});
 
 /** Overline — tiny eyebrow text */
-export function Overline({ children, tone = "muted", weight, truncate, className }: TextBaseProps) {
-  return <span className={textClass("text-[10px] font-bold uppercase tracking-[0.15em]", tone, weight, truncate, className)}>{children}</span>;
-}
+export const Overline = forwardRef<HTMLSpanElement, OverlineProps>(function Overline(
+  { children, tone = "muted", weight, truncate, className, ...props },
+  ref,
+) {
+  return <span ref={ref} {...props} className={textClass("text-[10px] font-bold uppercase tracking-[0.15em]", tone, weight, truncate, className)}>{children}</span>;
+});
 
 /** Lead — intro paragraph under a Display/SectionTitle; measure-capped for readability */
-export function Lead({ children, tone = "subtle", weight, truncate, className }: TextBaseProps) {
-  return <p className={textClass("ph-lead", tone, weight, truncate, className)}>{children}</p>;
-}
+export const Lead = forwardRef<HTMLParagraphElement, LeadProps>(function Lead(
+  { children, tone = "subtle", weight, truncate, className, ...props },
+  ref,
+) {
+  return <p ref={ref} {...props} className={textClass("ph-lead", tone, weight, truncate, className)}>{children}</p>;
+});
 
 /** Mono — code, data, technical text */
-export function Mono({ children, tone = "default", weight, truncate, className }: TextBaseProps) {
-  return <code className={textClass("text-sm font-mono leading-relaxed", tone, weight, truncate, className)}>{children}</code>;
-}
+export const Mono = forwardRef<HTMLElement, MonoProps>(function Mono(
+  { children, tone = "default", weight, truncate, className, ...props },
+  ref,
+) {
+  return <code ref={ref} {...props} className={textClass("text-sm font-mono leading-relaxed", tone, weight, truncate, className)}>{children}</code>;
+});
 
 /** Label — form labels, tags */
-export function Label({ children, tone = "default", weight, truncate, className }: TextBaseProps) {
-  return <label className={textClass("text-sm font-medium", tone, weight, truncate, className)}>{children}</label>;
-}
+export const Label = forwardRef<HTMLLabelElement, LabelProps>(function Label(
+  { children, tone = "default", weight, truncate, className, ...props },
+  ref,
+) {
+  return <label ref={ref} {...props} className={textClass("text-sm font-medium", tone, weight, truncate, className)}>{children}</label>;
+});

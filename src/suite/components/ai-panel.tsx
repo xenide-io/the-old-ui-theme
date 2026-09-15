@@ -166,6 +166,7 @@ export function SuiteAiPanel({
   onSwitchApp,
   onSameAppNavigate,
   resolveAction,
+  isWaitingForReply = false,
 }: {
   presets?: SuiteAiPreset[];
   emptyState?: ReactNode;
@@ -173,6 +174,7 @@ export function SuiteAiPanel({
   fetchChat: () => Promise<{
     messages: SuiteAiChatMessage[];
     configured: boolean;
+    jobs?: Array<{ status?: string; error?: string }>;
   }>;
   sendMessage: (params: {
     prompt: string;
@@ -193,6 +195,8 @@ export function SuiteAiPanel({
     id: string,
     decision: "confirm" | "cancel",
   ) => Promise<{ messages: SuiteAiChatMessage[] }>;
+  /** A durable background job is still preparing the assistant reply. */
+  isWaitingForReply?: boolean;
 }) {
   const inputId = useId();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -216,6 +220,7 @@ export function SuiteAiPanel({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const pendingPromptRef = useRef<string | null>(null);
+  const waiting = loading || isWaitingForReply;
 
   useEffect(() => {
     function onOpen(event: Event) {
@@ -253,6 +258,16 @@ export function SuiteAiPanel({
       setMessages(data.messages ?? []);
       if (!data.configured) {
         setError("ShellStack AI is not configured for this workspace yet.");
+      } else {
+        const latestJob = data.jobs?.[0];
+        if (
+          latestJob?.status === "failed" &&
+          latestJob.error &&
+          latestJob.error !== "Chat cleared." &&
+          data.messages.at(-1)?.role !== "assistant"
+        ) {
+          setError(latestJob.error);
+        }
       }
     } catch (err) {
       setError(
@@ -276,7 +291,7 @@ export function SuiteAiPanel({
 
   useEffect(() => {
     if (open && atBottom) scrollToBottom();
-  }, [messages, loading, open, atBottom, scrollToBottom]);
+  }, [messages, waiting, open, atBottom, scrollToBottom]);
 
   useEffect(() => {
     if (open && !hydrating) textareaRef.current?.focus();
@@ -291,7 +306,7 @@ export function SuiteAiPanel({
 
   async function ask(text: string) {
     const trimmed = text.trim();
-    if (!trimmed || loading) return;
+    if (!trimmed || waiting) return;
     const controller = new AbortController();
     abortRef.current = controller;
     setLoading(true);
@@ -424,7 +439,7 @@ export function SuiteAiPanel({
           <button
             type="button"
             onClick={() => void handleClear()}
-            disabled={loading}
+            disabled={waiting}
             className="ml-auto inline-flex h-9 items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-ph-subtle transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
             data-test="ask-ai-clear"
           >
@@ -469,7 +484,7 @@ export function SuiteAiPanel({
                       key={preset.label}
                       type="button"
                       onClick={() => void ask(preset.prompt)}
-                      disabled={loading || hydrating}
+                      disabled={waiting || hydrating}
                       className="group flex w-full items-center gap-2 rounded-xl border border-ph-border bg-ph-surface px-3 py-2 text-left text-sm text-ph-ink transition-colors hover:border-ph-brand/40 hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
                     >
                       <Sparks className="h-4 w-4 shrink-0 text-ph-brand" />
@@ -584,7 +599,7 @@ export function SuiteAiPanel({
             );
           })}
 
-          {loading ? (
+          {waiting ? (
             <div className="flex items-end gap-2" aria-hidden>
               <span className="mb-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ph-brand/10 text-ph-brand">
                 <Icon className="h-3.5 w-3.5" />
@@ -597,7 +612,7 @@ export function SuiteAiPanel({
             </div>
           ) : null}
 
-          {loading ? (
+          {waiting ? (
             <span className="sr-only" aria-live="polite">
               Assistant is responding…
             </span>
@@ -615,7 +630,7 @@ export function SuiteAiPanel({
                 <button
                   type="button"
                   onClick={retry}
-                  disabled={loading}
+                  disabled={waiting}
                   className="mt-2 inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-ph-border bg-ph-surface px-2.5 text-xs font-medium text-ph-ink transition-colors hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
                 >
                   Try again
@@ -678,6 +693,15 @@ export function SuiteAiPanel({
                 <Square className="h-3.5 w-3.5 fill-current" />
               </button>
             </Tooltip>
+          ) : isWaitingForReply ? (
+            <span
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ph-muted text-ph-subtle"
+              data-test="ask-ai-waiting"
+              role="status"
+              aria-label="Shelly is responding"
+            >
+              <Spinner className="h-4 w-4 animate-spin" />
+            </span>
           ) : (
             <Tooltip content="Send message">
               <button

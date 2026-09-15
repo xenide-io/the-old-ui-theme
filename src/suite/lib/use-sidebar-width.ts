@@ -41,6 +41,7 @@ export function sidebarColumnWidth(
   collapsed: boolean,
   _chatOpen = false,
 ): number {
+  void _chatOpen;
   if (collapsed) return SIDEBAR_RAIL_WIDTH;
   return width;
 }

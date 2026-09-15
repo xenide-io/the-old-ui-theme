@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import {
   ArrowLeft,
   MediaImagePlus as ImagePlus,
@@ -166,6 +172,28 @@ function DirectoryIconPicker({
   onClear: () => void;
   onChange: (value: string) => void;
 }) {
+  const iconRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  function moveSelection(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    let nextIndex: number | null = null;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (index + 1) % DIRECTORY_ICON_OPTIONS.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex =
+        (index - 1 + DIRECTORY_ICON_OPTIONS.length) % DIRECTORY_ICON_OPTIONS.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = DIRECTORY_ICON_OPTIONS.length - 1;
+    }
+
+    if (nextIndex === null) return;
+    event.preventDefault();
+    const [nextIcon] = DIRECTORY_ICON_OPTIONS[nextIndex];
+    onChange(nextIcon);
+    iconRefs.current[nextIcon]?.focus();
+  }
+
   return (
     <div className="space-y-2">
       <span className="mb-1.5 block text-sm font-medium text-ph-ink">Icon</span>
@@ -174,7 +202,7 @@ function DirectoryIconPicker({
         aria-label="Icon"
         className="grid grid-cols-6 gap-1.5 rounded-lg border border-ph-border p-1.5 sm:grid-cols-8"
       >
-        {DIRECTORY_ICON_OPTIONS.map(([name, label]) => {
+        {DIRECTORY_ICON_OPTIONS.map(([name, label], index) => {
           const selected = value === name;
           return (
             <button
@@ -183,8 +211,13 @@ function DirectoryIconPicker({
               role="radio"
               aria-label={label}
               aria-checked={selected}
+              tabIndex={selected ? 0 : -1}
               title={label}
               onClick={() => onChange(name)}
+              onKeyDown={(event) => moveSelection(event, index)}
+              ref={(element) => {
+                iconRefs.current[name] = element;
+              }}
               className={cn(
                 "flex h-9 items-center justify-center rounded-md text-ph-mutedtext hover:bg-ph-muted hover:text-ph-ink",
                 selected &&
@@ -303,6 +336,9 @@ export function SuiteClientsProjectsDirectory({
   const [confirming, setConfirming] = useState<Confirming | null>(null);
   const [saving, setSaving] = useState(false);
   const [mutationError, setMutationError] = useState<string | null>(null);
+  const clientButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const backToClientsRef = useRef<HTMLButtonElement>(null);
+  const mobileFocusTarget = useRef<"detail" | "list" | null>(null);
 
   useEffect(() => {
     if (
@@ -312,6 +348,16 @@ export function SuiteClientsProjectsDirectory({
       return;
     setSelectedClientId(clients[0]?.id ?? null);
   }, [clients, selectedClientId]);
+
+  useEffect(() => {
+    const target = mobileFocusTarget.current;
+    if (!target) return;
+    mobileFocusTarget.current = null;
+
+    if (target === "detail") backToClientsRef.current?.focus();
+    else if (selectedClientId)
+      clientButtonRefs.current[selectedClientId]?.focus();
+  }, [mobileDetail, selectedClientId]);
 
   const filteredClients = useMemo(() => {
     const value = query.trim().toLowerCase();
@@ -324,6 +370,39 @@ export function SuiteClientsProjectsDirectory({
   const selectedProjects = projects
     .filter((project) => project.clientId === selectedClientId)
     .sort((a, b) => a.name.localeCompare(b.name));
+
+  function isMobileDirectoryView() {
+    return window.matchMedia?.("(max-width: 1023px)").matches ?? false;
+  }
+
+  function selectClient(client: SuiteDirectoryClient) {
+    setSelectedClientId(client.id);
+    setMobileDetail(true);
+    if (isMobileDirectoryView()) mobileFocusTarget.current = "detail";
+  }
+
+  function moveClientSelection(
+    event: KeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) {
+    let nextIndex: number | null = null;
+    if (event.key === "ArrowDown") {
+      nextIndex = (index + 1) % filteredClients.length;
+    } else if (event.key === "ArrowUp") {
+      nextIndex =
+        (index - 1 + filteredClients.length) % filteredClients.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = filteredClients.length - 1;
+    }
+
+    if (nextIndex === null) return;
+    event.preventDefault();
+    const client = filteredClients[nextIndex];
+    selectClient(client);
+    if (!isMobileDirectoryView()) clientButtonRefs.current[client.id]?.focus();
+  }
 
   function openNew(kind: "client" | "project") {
     setMutationError(null);
@@ -470,7 +549,7 @@ export function SuiteClientsProjectsDirectory({
   return (
     <div data-test={dataTest} className="space-y-3">
       {error || mutationError ? (
-        <Alert status="danger">{error || mutationError}</Alert>
+        <Alert status="danger" live="assertive">{error || mutationError}</Alert>
       ) : null}
       {loading ? (
         <p className="text-sm text-ph-mutedtext">Loading directory...</p>
@@ -490,6 +569,7 @@ export function SuiteClientsProjectsDirectory({
                 />
                 <Input
                   hideLabel
+                  aria-label="Search clients"
                   placeholder="Search clients..."
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
@@ -513,20 +593,22 @@ export function SuiteClientsProjectsDirectory({
               className="max-h-[28rem] overflow-y-auto p-1.5"
             >
               {filteredClients.length ? (
-                filteredClients.map((client) => {
+                filteredClients.map((client, index) => {
                   const selected = client.id === selectedClientId;
                   const count = projects.filter(
                     (project) => project.clientId === client.id,
                   ).length;
                   return (
-                    <li key={client.id}>
+                    <li key={client.id} role="none">
                       <button
                         type="button"
                         role="option"
                         aria-selected={selected}
-                        onClick={() => {
-                          setSelectedClientId(client.id);
-                          setMobileDetail(true);
+                        tabIndex={selected ? 0 : -1}
+                        onClick={() => selectClient(client)}
+                        onKeyDown={(event) => moveClientSelection(event, index)}
+                        ref={(element) => {
+                          clientButtonRefs.current[client.id] = element;
                         }}
                         className={cn(
                           "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left",
@@ -566,8 +648,12 @@ export function SuiteClientsProjectsDirectory({
                 <>
                   <button
                     type="button"
+                    ref={backToClientsRef}
                     className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-ph-mutedtext hover:bg-ph-muted lg:hidden"
-                    onClick={() => setMobileDetail(false)}
+                    onClick={() => {
+                      mobileFocusTarget.current = "list";
+                      setMobileDetail(false);
+                    }}
                     aria-label="Back to clients"
                   >
                     <ArrowLeft className="h-4 w-4" />

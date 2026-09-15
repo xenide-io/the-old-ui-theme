@@ -1,5 +1,5 @@
-import { cleanup, render } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { SuiteMobileDrawer } from "./suite-mobile-drawer";
 
@@ -29,5 +29,21 @@ describe("SuiteMobileDrawer", () => {
       "suite-scroll-lock",
     );
     expect(body?.previousElementSibling).toHaveClass("h-14", "shrink-0");
+  });
+
+  it("uses a modal dialog that closes on Escape", () => {
+    const onClose = vi.fn();
+    render(
+      <SuiteMobileDrawer open onClose={onClose} showCloseButton>
+        <a href="/documents">Documents</a>
+      </SuiteMobileDrawer>,
+    );
+
+    expect(screen.getByRole("dialog", { name: "Navigation" })).toHaveAttribute(
+      "aria-modal",
+      "true",
+    );
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(onClose).toHaveBeenCalledOnce();
   });
 });

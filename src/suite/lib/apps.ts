@@ -33,7 +33,7 @@ export const SUITE_APPS: readonly SuiteAppDefinition[] = [
     description: 'Organisation and billing',
     icon: '/icon-shellstack.svg',
     landing: '/home',
-    baseUrlEnv: 'NEXT_PUBLIC_SHELLSTACK_URL',
+    baseUrlEnv: 'NEXT_PUBLIC_PORTAL_URL',
     baseUrlFallback: 'http://localhost:3002',
   },
   {
@@ -97,6 +97,12 @@ const SOURCE_APP_SLUG: Record<string, SuiteAppSlug> = {
   shellstack: 'shellstack',
 };
 
+export function suiteAppSlugForNotificationSource(
+  sourceApp: string | null | undefined,
+): SuiteAppSlug | null {
+  return SOURCE_APP_SLUG[(sourceApp || '').toLowerCase()] ?? null;
+}
+
 /**
  * Suite notification links are often stored as `/dashboard/...` relative to the
  * *source* app. Resolving them with the current product origin opens the wrong
@@ -110,7 +116,7 @@ export function resolveSuiteNotificationHref(
   if (!value) return '';
   if (/^(https?:|mailto:|\/\/)/i.test(value)) return value;
   const path = value.startsWith('/') ? value : `/${value}`;
-  const slug = SOURCE_APP_SLUG[(sourceApp || '').toLowerCase()];
+  const slug = suiteAppSlugForNotificationSource(sourceApp);
   if (!slug) return path;
   return `${suiteAppBaseUrl(slug)}${path}`;
 }

@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef } from "react";
+import { useId, type ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/cn";
 
 export interface ProgressProps extends ComponentPropsWithoutRef<"div"> {
@@ -30,15 +30,22 @@ export function Progress({
   showPercentage = false,
   size = "md",
   className,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
   ...props
 }: ProgressProps) {
-  const percentage = Math.min(100, Math.max(0, (value / max) * 100));
+  const labelId = useId();
+  const safeMax = Number.isFinite(max) && max > 0 ? max : 100;
+  const safeValue = Number.isFinite(value)
+    ? Math.min(safeMax, Math.max(0, value))
+    : 0;
+  const percentage = (safeValue / safeMax) * 100;
 
   return (
     <div className={cn("w-full", className)} {...props}>
       {(label || showPercentage) && (
         <div className="mb-1.5 flex justify-between text-sm text-ph-subtle">
-          {label && <span>{label}</span>}
+          {label && <span id={labelId}>{label}</span>}
           {showPercentage && (
             <span className="tabular-nums">{Math.round(percentage)}%</span>
           )}
@@ -49,9 +56,11 @@ export function Progress({
           className={cn("ph-progress-bar", color)}
           style={{ width: `${percentage}%` }}
           role="progressbar"
-          aria-valuenow={value}
+          aria-valuenow={safeValue}
           aria-valuemin={0}
-          aria-valuemax={max}
+          aria-valuemax={safeMax}
+          aria-label={label ? undefined : (ariaLabel ?? "Progress")}
+          aria-labelledby={label ? (ariaLabelledBy ?? labelId) : ariaLabelledBy}
         />
       </div>
     </div>

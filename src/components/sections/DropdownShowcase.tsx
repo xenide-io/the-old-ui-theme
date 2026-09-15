@@ -10,7 +10,7 @@ import { DropdownButton, DropdownItem } from "@xenide-io/the-old-ui-theme";
 <div className="ph-panel space-y-6">
   <p className="text-sm text-ph-subtle">
     Use <code className="ph-kbd">DropdownButton</code> from{" "}
-    <code className="ph-kbd">the-old-ui</code> — labelled Lemon triggers +{" "}
+    <code className="ph-kbd">@xenide-io/the-old-ui-theme</code> — labelled Lemon triggers +{" "}
     <code className="ph-kbd">DropdownItem</code> menu rows.
   </p>
 

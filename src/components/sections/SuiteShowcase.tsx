@@ -3,16 +3,12 @@
 import { useState, type ComponentPropsWithoutRef } from "react";
 import Image from "next/image";
 import {
-  NavArrowDown as ChevronDown,
   Home,
   Calendar,
   Search,
   Bell,
   User,
   Settings,
-  LogOut,
-  Menu,
-  Xmark,
   Plus,
 } from "iconoir-react";
 
@@ -26,8 +22,6 @@ import {
 } from "@/components/ui";
 import {
   AppSwitcher,
-  AppSwitcherMark,
-  AppSwitcherChevron,
   type SuiteAppEntry,
 } from "@/suite/components/app-switcher";
 import { CommandPaletteHost } from "@/suite/components/command-palette-host";
@@ -41,7 +35,6 @@ import { SuiteUserMenu } from "@/suite/components/suite-user-menu";
 import {
   SuiteNotificationBell,
   type SuiteNotification,
-  type SuiteNotificationsResponse,
 } from "@/suite/components/suite-notification-bell";
 import { SuiteMobileDrawer } from "@/suite/components/suite-mobile-drawer";
 import { SuiteSettingsMobileNav } from "@/suite/components/suite-settings-mobile-nav";
@@ -69,7 +62,6 @@ import {
   SuiteIcon,
   SUITE_ICON_NAMES,
   APP_ACCENTS,
-  type SuiteAccentSlug,
 } from "@/suite/icons";
 
 const REAL_APPS = [

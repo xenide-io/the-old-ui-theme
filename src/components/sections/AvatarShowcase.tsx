@@ -1,7 +1,7 @@
 import { Avatar, AvatarGroup, ComponentDocs, ShowcaseWrapper } from "@/components/ui";
 
 export default function AvatarShowcase() {
-  const code = `import { Avatar, AvatarGroup } from "the-old-ui";
+  const code = `import { Avatar, AvatarGroup } from "@xenide-io/the-old-ui-theme";
 
 <div className="grid gap-8 lg:grid-cols-2">
   <div className="ph-panel space-y-4">

@@ -1,4 +1,10 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SuiteIntegrationRules } from "@/suite/components/suite-integration-rules";
@@ -117,5 +123,35 @@ describe("SuiteIntegrationRules", () => {
         action_config: { project_id: "proj-1", minutes: "30" },
       }),
     );
+  });
+
+  it("confirms before deleting a rule", async () => {
+    const user = userEvent.setup();
+    const onDelete = vi.fn().mockResolvedValue(undefined);
+
+    render(
+      <SuiteIntegrationRules
+        canManage
+        projects={[]}
+        rules={[rule]}
+        events={[]}
+        onDelete={onDelete}
+      />,
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "Delete GitHub issues to tasks" }),
+    );
+    expect(onDelete).not.toHaveBeenCalled();
+
+    const confirmation = screen.getByRole("dialog", {
+      name: "Delete automation rule",
+    });
+    expect(confirmation).toHaveTextContent("Delete GitHub issues to tasks?");
+    await user.click(
+      within(confirmation).getByRole("button", { name: "Delete rule" }),
+    );
+
+    await waitFor(() => expect(onDelete).toHaveBeenCalledWith("rule-1"));
   });
 });

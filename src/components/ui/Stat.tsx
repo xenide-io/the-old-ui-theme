@@ -16,7 +16,7 @@ const toneMap: Record<StatTone, string> = {
   brand: "text-ph-brand",
   blue: "text-ph-blue",
   purple: "text-ph-purple",
-  warning: "text-amber-900",
+  warning: "text-ph-warning",
 };
 
 const statMap: Record<StatTone, string> = {
@@ -24,7 +24,8 @@ const statMap: Record<StatTone, string> = {
   brand: "",
   blue: "",
   purple: "",
-  warning: "border-amber-200 bg-amber-50/70",
+  warning:
+    "border-[color:color-mix(in_srgb,var(--ph-warning)_30%,var(--ph-border))] bg-[color:color-mix(in_srgb,var(--ph-warning)_10%,var(--ph-surface))]",
 };
 
 export function Stat({ icon, label, value, footer, tone = "default", className, ...props }: StatProps) {

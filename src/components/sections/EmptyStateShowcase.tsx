@@ -4,8 +4,7 @@ import { Button, ComponentDocs, EmptyState, ShowcaseWrapper } from "@/components
 import { IconBox, IconPlus } from "@/components/icons";
 
 export default function EmptyStateShowcase() {
-  const code = `import { Button, EmptyState } from "the-old-ui";
-import { IconBox, IconPlus } from "the-old-ui";
+  const code = `import { Button, EmptyState, IconBox, IconPlus } from "@xenide-io/the-old-ui-theme";
 
 <EmptyState
   icon={<IconBox className="h-7 w-7" />}

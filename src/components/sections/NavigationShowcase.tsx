@@ -4,8 +4,8 @@ import { IconBell, IconPerson } from "@/components/icons";
 import { Button, DropdownItem, DropdownMenu, SearchInput, ShowcaseWrapper } from "@/components/ui";
 
 export default function NavigationShowcase() {
-  const code = `import { IconBell, IconPerson } from "the-old-ui";
-import { Button, DropdownItem, DropdownMenu, SearchInput } from "the-old-ui";
+  const code = `import { IconBell, IconPerson } from "@xenide-io/the-old-ui-theme";
+import { Button, DropdownItem, DropdownMenu, SearchInput } from "@xenide-io/the-old-ui-theme";
 
 <div className="space-y-8">
   <div className="ph-panel">

@@ -143,10 +143,25 @@ export {
   type IconProps as IconProps,
   type IconName as IconName,
 } from "@/components/icons";
-export { Accordion } from "@/components/ui/Accordion";
-export { SegmentedControl } from "@/components/ui/SegmentedControl";
-export { CommandPalette } from "@/components/ui/CommandPalette";
-export { Calendar } from "@/components/ui/Calendar";
+export {
+  Accordion,
+  type AccordionItem,
+  type AccordionProps,
+} from "@/components/ui/Accordion";
+export {
+  SegmentedControl,
+  type SegmentedControlOption,
+  type SegmentedControlProps,
+} from "@/components/ui/SegmentedControl";
+export {
+  CommandPalette,
+  type CommandItem,
+  type CommandPaletteProps,
+} from "@/components/ui/CommandPalette";
+export {
+  Calendar,
+  type CalendarProps,
+} from "@/components/ui/Calendar";
 export {
   Tooltip,
   TooltipProvider,
@@ -155,7 +170,10 @@ export {
   type TooltipProviderProps,
   type TooltipSide,
 } from "@/components/ui/Tooltip";
-export { EmptyState } from "@/components/ui/EmptyState";
+export {
+  EmptyState,
+  type EmptyStateProps,
+} from "@/components/ui/EmptyState";
 export {
   FilterChips,
   type FilterChip,
@@ -181,7 +199,10 @@ export {
   type ComponentPropRow,
 } from "@/components/ui/ComponentDocs";
 export { ShowcaseWrapper } from "@/components/ui/ShowcaseWrapper";
-export { CollapsibleSection } from "@/components/ui/CollapsibleSection";
+export {
+  CollapsibleSection,
+  type CollapsibleSectionProps,
+} from "@/components/ui/CollapsibleSection";
 export {
   Display,
   SectionTitle,
@@ -197,6 +218,23 @@ export {
   Lead,
   Mono,
   Label,
+  type CaptionProps,
+  type DisplayProps,
+  type H1Props,
+  type H2Props,
+  type H3Props,
+  type H4Props,
+  type H5Props,
+  type LabelProps,
+  type LeadProps,
+  type MonoProps,
+  type OverlineProps,
+  type PProps,
+  type SectionTitleProps,
+  type SmallProps,
+  type TextBaseProps,
+  type TextTone,
+  type TextWeight,
 } from "@/components/ui/Typography";
 export {
   Avatar as Avatar,

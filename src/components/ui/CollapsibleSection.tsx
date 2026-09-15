@@ -4,14 +4,19 @@ import { useId, useState } from "react";
 import { IconChevronDown } from "@/components/icons";
 import { cn } from "@/lib/cn";
 
-interface CollapsibleSectionProps {
+export interface CollapsibleSectionProps {
   title: string;
   children: React.ReactNode;
   defaultOpen?: boolean;
   id?: string;
 }
 
-export function CollapsibleSection({ title, children, defaultOpen = true, id }: CollapsibleSectionProps) {
+export function CollapsibleSection({
+  title,
+  children,
+  defaultOpen = true,
+  id,
+}: CollapsibleSectionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const generatedId = useId();
   const contentId = `${id ?? generatedId}-content`;
@@ -29,7 +34,7 @@ export function CollapsibleSection({ title, children, defaultOpen = true, id }: 
         <IconChevronDown
           className={cn(
             "h-5 w-5 text-ph-subtle transition-transform duration-200",
-            isOpen && "rotate-180"
+            isOpen && "rotate-180",
           )}
           aria-hidden
         />
@@ -37,9 +42,12 @@ export function CollapsibleSection({ title, children, defaultOpen = true, id }: 
       <div
         id={contentId}
         aria-hidden={!isOpen}
+        ref={(node) => {
+          if (node) node.toggleAttribute("inert", !isOpen);
+        }}
         className={cn(
           "overflow-hidden transition-all duration-300",
-          isOpen ? "max-h-[50000px] opacity-100" : "max-h-0 opacity-0"
+          isOpen ? "max-h-[50000px] opacity-100" : "max-h-0 opacity-0",
         )}
       >
         {children}

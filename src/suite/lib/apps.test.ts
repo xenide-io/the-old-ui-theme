@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { classifySuiteHref } from "./apps";
+import { classifySuiteHref, suiteAppSlugForNotificationSource } from "./apps";
 
 const BASES = {
   tides: "http://localhost:3001",
@@ -36,5 +36,13 @@ describe("classifySuiteHref", () => {
     expect(
       classifySuiteHref("https://example.com/x", BASES, "http://localhost:3000"),
     ).toBeNull();
+  });
+});
+
+describe("suiteAppSlugForNotificationSource", () => {
+  it("maps notification source names to suite apps", () => {
+    expect(suiteAppSlugForNotificationSource("portal")).toBe("shellstack");
+    expect(suiteAppSlugForNotificationSource("kraken")).toBe("kraken");
+    expect(suiteAppSlugForNotificationSource("unknown")).toBeNull();
   });
 });

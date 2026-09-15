@@ -33,7 +33,7 @@ export const themePairs = [
 Use the built-in switcher:
 
 ```tsx
-import { ThemeSwitcher } from "the-old-ui";
+import { ThemeSwitcher } from "@xenide-io/the-old-ui-theme";
 
 <ThemeSwitcher />;
 ```
@@ -41,7 +41,7 @@ import { ThemeSwitcher } from "the-old-ui";
 Switch manually and persist to `localStorage`:
 
 ```tsx
-import { persistTheme } from "the-old-ui";
+import { persistTheme } from "@xenide-io/the-old-ui-theme";
 
 persistTheme("malibu-dark");
 ```
@@ -110,7 +110,7 @@ Every theme should define these semantic tokens:
 Custom themes work like DaisyUI themes: define a light block and a dark block.
 
 ```css
-@import "the-old-ui/styles.css";
+@import "@xenide-io/the-old-ui-theme/styles.css";
 
 [data-theme="my-theme-light"] {
   color-scheme: light;

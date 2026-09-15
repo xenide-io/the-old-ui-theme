@@ -6,10 +6,7 @@ import { NavArrowLeft, Sparks } from "iconoir-react";
 
 import { Tooltip } from "../../components/ui/Tooltip";
 import { cn } from "../lib/cn";
-import {
-  persistSuiteAskAiOpen,
-  SUITE_OPEN_ASK_AI_EVENT,
-} from "./ai-panel";
+import { persistSuiteAskAiOpen, SUITE_OPEN_ASK_AI_EVENT } from "./ai-panel";
 import type { SuiteNavIcon } from "./suite-bottom-nav";
 
 type CollapsedNode = ReactNode | ((collapsed: boolean) => ReactNode);
@@ -31,7 +28,7 @@ export interface SuiteSidebarProps {
   /** Optional custom app switcher node, or a function of collapsed state. */
   appSwitcher?: CollapsedNode;
   /** Workspace/org/project switcher rendered below the app switcher. */
-  contextSwitcher: CollapsedNode;
+  contextSwitcher?: CollapsedNode;
   navItems: SuiteSidebarNavItem[];
   /** Optional secondary nav / tree rendered below primary nav. */
   secondaryNav?: ReactNode;
@@ -157,17 +154,15 @@ export function SuiteSidebar({
             surface ? "bg-ph-surface" : "bg-ph-canvas",
           )}
         >
-          <Tooltip content="Back to navigation">
-            <button
-              type="button"
-              data-test="suite-ask-ai-back"
-              aria-label="Back to navigation"
-              onClick={() => setAskAi(false)}
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-ph-subtle transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
-            >
-              <NavArrowLeft className="h-4 w-4" aria-hidden />
-            </button>
-          </Tooltip>
+          <button
+            type="button"
+            data-test="suite-ask-ai-back"
+            aria-label="Back to navigation"
+            onClick={() => setAskAi(false)}
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-ph-subtle transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
+          >
+            <NavArrowLeft className="h-4 w-4" aria-hidden />
+          </button>
           <span className="min-w-0 flex-1 truncate text-sm font-semibold text-ph-ink">
             Shelly AI
           </span>
@@ -214,9 +209,16 @@ export function SuiteSidebar({
           collapsed ? "px-1.5 py-2" : "p-3",
         )}
       >
-        <div className={cn("mb-4 w-full shrink-0", collapsed && "flex justify-center")}>
-          {renderNode(contextSwitcher, collapsed)}
-        </div>
+        {contextSwitcher ? (
+          <div
+            className={cn(
+              "mb-4 w-full shrink-0",
+              collapsed && "flex justify-center",
+            )}
+          >
+            {renderNode(contextSwitcher, collapsed)}
+          </div>
+        ) : null}
 
         {chatOpen ? (
           <div className="flex min-h-0 flex-1 flex-col">
@@ -331,9 +333,7 @@ export function SuiteSidebar({
         >
           {renderNode(userMenu, collapsed)}
           {showAskAi ? (
-            <div
-              className={cn("shrink-0", collapsed ? "mt-2" : "ml-auto")}
-            >
+            <div className={cn("shrink-0", collapsed ? "mt-2" : "ml-auto")}>
               <Tooltip content="Shelly AI" side={collapsed ? "right" : "top"}>
                 {askAiButton}
               </Tooltip>

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
 import { cn } from "@/lib/cn";
 import { IconSearch } from "@/components/icons";
 
-interface CommandItem {
+export interface CommandItem {
   id: string;
   label: string;
   shortcut?: string;
@@ -12,7 +13,7 @@ interface CommandItem {
   onSelect: () => void;
 }
 
-interface CommandPaletteProps {
+export interface CommandPaletteProps {
   items: CommandItem[];
   isOpen: boolean;
   onClose: () => void;
@@ -38,149 +39,158 @@ export function CommandPalette({
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const listboxRef = useRef<HTMLDivElement>(null);
+  const restoreFocusRef = useRef<HTMLElement | null>(null);
+  const generatedId = useId();
+  const listboxId = `${id ?? `command-palette-${generatedId}`}-listbox`;
 
   const filtered = items.filter((item) =>
     item.label.toLowerCase().includes(query.toLowerCase()),
   );
+  const activeIndex = filtered.length
+    ? Math.min(selectedIndex, filtered.length - 1)
+    : 0;
+  const activeItem = filtered[activeIndex];
 
   useEffect(() => {
     if (!isOpen) return;
-    previousFocusRef.current =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
     setQuery("");
     setSelectedIndex(0);
-    inputRef.current?.focus();
-
-    return () => previousFocusRef.current?.focus();
   }, [isOpen]);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
+    setSelectedIndex((current) => Math.min(current, Math.max(filtered.length - 1, 0)));
+  }, [filtered.length]);
 
-      switch (e.key) {
-        case "ArrowDown":
-          if (!filtered.length) break;
-          e.preventDefault();
-          setSelectedIndex((i) => (i + 1) % filtered.length);
-          break;
-        case "ArrowUp":
-          if (!filtered.length) break;
-          e.preventDefault();
-          setSelectedIndex((i) => (i - 1 + filtered.length) % filtered.length);
-          break;
-        case "Enter":
-          e.preventDefault();
-          filtered[selectedIndex]?.onSelect();
-          onClose();
-          break;
-        case "Escape":
-          onClose();
-          break;
-        case "Tab": {
-          const focusable = panelRef.current?.querySelectorAll<HTMLElement>(
-            'input, button, [href], [tabindex]:not([tabindex="-1"])',
-          );
-          if (!focusable?.length) break;
-          const first = focusable[0];
-          const last = focusable[focusable.length - 1];
-          if (e.shiftKey && document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
-          } else if (!e.shiftKey && document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
-          }
-          break;
-        }
-      }
-    };
+  useEffect(() => {
+    if (!isOpen || !activeItem) return;
+    listboxRef.current
+      ?.querySelectorAll<HTMLElement>('[role="option"]')
+      [activeIndex]
+      ?.scrollIntoView({ block: "nearest" });
+  }, [activeIndex, activeItem, isOpen]);
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, filtered, selectedIndex, onClose]);
-
-  if (!isOpen) return null;
+  const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    switch (event.key) {
+      case "ArrowDown":
+        if (!filtered.length) return;
+        event.preventDefault();
+        setSelectedIndex((current) => (current + 1) % filtered.length);
+        return;
+      case "ArrowUp":
+        if (!filtered.length) return;
+        event.preventDefault();
+        setSelectedIndex((current) =>
+          (current - 1 + filtered.length) % filtered.length,
+        );
+        return;
+      case "Enter":
+        if (!activeItem) return;
+        event.preventDefault();
+        activeItem.onSelect();
+        onClose();
+        return;
+      default:
+        return;
+    }
+  };
 
   return (
-    <div
-      id={id}
-      data-test={dataTest}
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 pt-[20vh] backdrop-blur-sm"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+    <Dialog.Root
+      open={isOpen}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) onClose();
       }}
     >
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Command palette"
-        className={cn(
-          "w-full max-w-xl overflow-hidden rounded-xl border border-ph-border bg-ph-surface shadow-ph-md",
-          className,
-        )}
-      >
-        <div className="flex items-center gap-3 border-b border-ph-border px-4 py-3">
-          <IconSearch className="h-5 w-5 text-ph-mutedtext" />
-          <input
-            ref={inputRef}
-            id={inputId}
-            data-test={inputDataTest}
-            type="text"
-            aria-label="Search commands"
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setSelectedIndex(0);
-            }}
-            placeholder={placeholder}
-            className="flex-1 bg-transparent text-ph-ink outline-none placeholder:text-ph-mutedtext"
-          />
-          <kbd className="rounded border border-ph-border bg-ph-muted px-1.5 py-0.5 text-xs text-ph-mutedtext">
-            ESC
-          </kbd>
-        </div>
-        <div className="max-h-[50vh] overflow-y-auto py-2">
-          {filtered.length === 0 ? (
-            <div className="px-4 py-8 text-center text-sm text-ph-mutedtext">
-              No results found.
-            </div>
-          ) : (
-            filtered.map((item, index) => (
-              <button
-                key={item.id}
-                type="button"
-                id={`command-${item.id}`}
-                data-test={`command-${item.id}`}
-                onClick={() => {
-                  item.onSelect();
-                  onClose();
-                }}
-                onMouseEnter={() => setSelectedIndex(index)}
-                className={cn(
-                  "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors",
-                  index === selectedIndex
-                    ? "bg-ph-muted text-ph-ink"
-                    : "text-ph-subtle",
-                )}
-              >
-                {item.icon && <span className="h-5 w-5">{item.icon}</span>}
-                <span className="flex-1">{item.label}</span>
-                {item.shortcut && (
-                  <kbd className="rounded border border-ph-border bg-ph-surface px-1.5 py-0.5 text-xs text-ph-mutedtext">
-                    {item.shortcut}
-                  </kbd>
-                )}
-              </button>
-            ))
+      <Dialog.Portal>
+        <Dialog.Overlay
+          id={id}
+          data-test={dataTest}
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
+        />
+        <Dialog.Content
+          className={cn(
+            "fixed left-1/2 top-[20vh] z-50 w-full max-w-xl -translate-x-1/2 overflow-hidden rounded-xl border border-ph-border bg-ph-surface shadow-ph-md",
+            className,
           )}
-        </div>
-      </div>
-    </div>
+          onOpenAutoFocus={(event) => {
+            restoreFocusRef.current =
+              document.activeElement instanceof HTMLElement
+                ? document.activeElement
+                : null;
+            event.preventDefault();
+            inputRef.current?.focus();
+          }}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            restoreFocusRef.current?.focus();
+          }}
+        >
+          <Dialog.Title className="sr-only">Command palette</Dialog.Title>
+          <div className="flex items-center gap-3 border-b border-ph-border px-4 py-3">
+            <IconSearch className="h-5 w-5 text-ph-mutedtext" />
+            <input
+              ref={inputRef}
+              id={inputId}
+              data-test={inputDataTest}
+              type="text"
+              role="combobox"
+              aria-label="Search commands"
+              aria-autocomplete="list"
+              aria-controls={listboxId}
+              aria-expanded="true"
+              aria-activedescendant={activeItem ? `command-${activeItem.id}` : undefined}
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setSelectedIndex(0);
+              }}
+              onKeyDown={handleInputKeyDown}
+              placeholder={placeholder}
+              className="flex-1 bg-transparent text-ph-ink outline-none placeholder:text-ph-mutedtext"
+            />
+            <kbd aria-hidden="true" className="rounded border border-ph-border bg-ph-muted px-1.5 py-0.5 text-xs text-ph-mutedtext">
+              ESC
+            </kbd>
+          </div>
+          <div ref={listboxRef} id={listboxId} role="listbox" aria-label="Commands" className="max-h-[50vh] overflow-y-auto py-2">
+            {filtered.length === 0 ? (
+              <div role="status" className="px-4 py-8 text-center text-sm text-ph-mutedtext">
+                No results found.
+              </div>
+            ) : (
+              filtered.map((item, index) => (
+                <div
+                  key={item.id}
+                  id={`command-${item.id}`}
+                  data-test={`command-${item.id}`}
+                  role="option"
+                  aria-selected={index === activeIndex}
+                  onClick={() => {
+                    item.onSelect();
+                    onClose();
+                  }}
+                  onMouseEnter={() => setSelectedIndex(index)}
+                  className={cn(
+                    "flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors",
+                    index === activeIndex
+                      ? "bg-ph-muted text-ph-ink"
+                      : "text-ph-subtle",
+                  )}
+                >
+                  {item.icon && <span aria-hidden="true" className="h-5 w-5">{item.icon}</span>}
+                  <span className="flex-1">{item.label}</span>
+                  {item.shortcut && (
+                    <kbd aria-hidden="true" className="rounded border border-ph-border bg-ph-surface px-1.5 py-0.5 text-xs text-ph-mutedtext">
+                      {item.shortcut}
+                    </kbd>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

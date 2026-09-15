@@ -12,8 +12,7 @@ export default function SegmentedControlShowcase() {
     { value: "list", label: "List", icon: <IconListView className="h-4 w-4" /> },
   ];
 
-  const code = `import { SegmentedControl } from "the-old-ui";
-import { IconGridView, IconListView } from "the-old-ui";
+  const code = `import { SegmentedControl, IconGridView, IconListView } from "@xenide-io/the-old-ui-theme";
 
 <div className="ph-panel">
   <SegmentedControl options={options} value={view} onChange={setView} />

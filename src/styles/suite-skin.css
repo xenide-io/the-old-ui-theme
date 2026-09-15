@@ -224,7 +224,7 @@ html.dark .today-page-frame__cloud--2 {
 
 /* Today primary action — compact geometry, colour supplied by the app theme. */
 .today-primary-action {
-  color: var(--ph-ink);
+  color: var(--ph-text-primary);
   background: color-mix(in oklab, var(--ph-brand) 12%, var(--ph-surface));
   border: 1px solid color-mix(in oklab, var(--ph-brand) 28%, var(--ph-border));
   box-shadow: 0 1px 0 color-mix(in oklab, var(--ph-brand) 8%, transparent);
@@ -269,7 +269,7 @@ html.dark .today-page-frame__cloud--2 {
   color: var(--ph-violet, var(--ph-brand));
 }
 .today-primary-action--shellstack {
-  background: color-mix(in oklab, var(--ph-ink) 6%, var(--ph-surface));
+  background: color-mix(in oklab, var(--ph-text-primary) 6%, var(--ph-surface));
 }
 .today-primary-action--active .today-primary-action__icon {
   background: var(--ph-brand);
@@ -490,6 +490,12 @@ button:hover > .ph-card {
 .ph-card.suite-press:active {
   transform: scale(0.985);
   transition-duration: 80ms;
+}
+
+/* Radix focuses the first menu item on open. The menu's highlighted state is
+   sufficient feedback, so do not retain an app-wide focus ring on that row. */
+#app-switcher-menu .ph-dropdown-item:focus-visible {
+  box-shadow: none;
 }
 
 /* ── App bar (mobile) / top bar (desktop) ───────────────────────────────

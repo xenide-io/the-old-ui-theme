@@ -40,7 +40,6 @@ export function SuiteBottomNav({
   className?: string;
 }) {
   if (process.env.NODE_ENV !== "production" && items.length > 5) {
-    // eslint-disable-next-line no-console
     console.warn(
       `SuiteBottomNav: ${items.length} items — bottom nav should have at most 5 (Hick's Law).`,
     );

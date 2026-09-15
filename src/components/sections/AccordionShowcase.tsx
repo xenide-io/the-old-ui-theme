@@ -19,7 +19,7 @@ export default function AccordionShowcase() {
     },
   ];
 
-  const code = `import { Accordion } from "the-old-ui";
+  const code = `import { Accordion } from "@xenide-io/the-old-ui-theme";
 
 <Accordion items={items} allowMultiple defaultOpen={["1"]} />`;
 

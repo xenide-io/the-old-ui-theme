@@ -28,9 +28,9 @@ const sizeMap: Record<AvatarSize, string> = {
 };
 
 const statusMap: Record<AvatarStatus, string> = {
-  online: "bg-emerald-500",
+  online: "bg-ph-success",
   offline: "bg-ph-mutedtext",
-  away: "bg-amber-400",
+  away: "bg-ph-warning",
   busy: "bg-ph-danger",
 };
 
@@ -57,8 +57,10 @@ export function Avatar({
       </div>
       {status && (
         <span
+          role="img"
+          aria-label={`${status} status`}
           className={cn(
-            "absolute bottom-0 right-1 h-2.5 w-2.5 rounded-full border-2 border-white",
+            "absolute bottom-0 right-1 h-2.5 w-2.5 rounded-full border-2 border-ph-surface",
             statusMap[status],
           )}
         />

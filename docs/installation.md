@@ -24,7 +24,7 @@ Use this while developing locally:
 ```json
 {
   "dependencies": {
-    "the-old-ui": "file:../path-to/posthog-theme"
+    "@xenide-io/the-old-ui-theme": "file:../path-to/the-old-ui"
   }
 }
 ```
@@ -40,13 +40,13 @@ bun install
 After publishing:
 
 ```bash
-bun add the-old-ui
+bun add @xenide-io/the-old-ui-theme
 ```
 
 or:
 
 ```bash
-npm install the-old-ui
+npm install @xenide-io/the-old-ui-theme
 ```
 
 ## Import Styles Once
@@ -55,7 +55,7 @@ In a Next.js app:
 
 ```tsx
 // app/layout.tsx
-import "the-old-ui/styles.css";
+import "@xenide-io/the-old-ui-theme/styles.css";
 ```
 
 ## Tailwind Setup
@@ -64,26 +64,26 @@ Add the package preset and include the built package files in `content`.
 
 ```ts
 // tailwind.config.ts
-import theOldUiPreset from "the-old-ui/tailwind-preset";
+import theOldUiPreset from "@xenide-io/the-old-ui-theme/tailwind-preset";
 
 export default {
   presets: [theOldUiPreset],
   content: [
     "./src/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
-    "./node_modules/the-old-ui/dist/**/*.{js,mjs}",
+    "./node_modules/@xenide-io/the-old-ui-theme/dist/**/*.{js,mjs}",
   ],
 };
 ```
 
 ## Next.js Theme Setup
 
-Use `THEME_INIT_SCRIPT` to avoid a theme flash and `ThemeManager` to sync the stored theme after hydration.
+Use `THEME_INIT_SCRIPT` to avoid a theme flash and `ThemeDomSync` to sync the stored theme after hydration.
 
 ```tsx
 // app/layout.tsx
-import "the-old-ui/styles.css";
-import { THEME_INIT_SCRIPT, ThemeManager } from "the-old-ui";
+import "@xenide-io/the-old-ui-theme/styles.css";
+import { THEME_INIT_SCRIPT, ThemeDomSync } from "@xenide-io/the-old-ui-theme";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -92,7 +92,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body>
-        <ThemeManager>{children}</ThemeManager>
+        <ThemeDomSync />
+        {children}
       </body>
     </html>
   );
@@ -102,7 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ## Basic Usage
 
 ```tsx
-import { Button, Card, H1, P } from "the-old-ui";
+import { Button, Card, H1, P } from "@xenide-io/the-old-ui-theme";
 
 export function Example() {
   return (

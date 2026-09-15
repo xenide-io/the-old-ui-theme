@@ -6,7 +6,7 @@ import { Calendar, ComponentDocs, ShowcaseWrapper } from "@/components/ui";
 export default function CalendarShowcase() {
   const [date, setDate] = useState<Date | undefined>(new Date());
 
-  const code = `import { Calendar } from "the-old-ui";
+  const code = `import { Calendar } from "@xenide-io/the-old-ui-theme";
 
 const [date, setDate] = useState(new Date());
 

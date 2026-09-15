@@ -10,9 +10,8 @@ npm install @xenide-io/the-old-ui-theme
 bun add @xenide-io/the-old-ui-theme
 ```
 
-For full setup instructions, see [`INSTALL.md`](./INSTALL.md).
-
-For AI-readable usage docs, see [`docs/`](./docs/README.md).
+For source setup and API documentation, see the
+[repository docs](https://github.com/xenide-io/the-old-ui-theme/tree/main/docs).
 
 ## Setup In Your App
 
@@ -88,11 +87,11 @@ import { Alert, Badge, Button, Card, Input, H1, H2, P } from "@xenide-io/the-old
 | Area       | Components                                                                                                                               |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | Actions    | `Button`, `DropdownButton`, `DropdownMenu`, `DropdownItem`                                                                               |
-| Feedback   | `Alert`, `Badge`, `Toast`, `ToastStack`, `EmptyState`, `Progress` demos                                                                  |
-| Inputs     | `FormField`, `Input`, `Select`, `Textarea`, `Checkbox`, `Radio`, `Toggle`, `Range`, `Rating`, `FileUpload`, `SearchInput`, `SearchGroup` |
-| Layout     | `Card`, `Modal`, `Drawer`, `Panel`, `Accordion`, `HoverCard`                                                                             |
-| Navigation | `Tabs`, `Breadcrumbs`, `Pagination`, `SegmentedControl`, `Stepper`, `CommandPalette`, `FilterChips`                                      |
-| Data       | `Table`, `Stat`, chart components, dashboard shell components                                                                            |
+| Feedback   | `Alert`, `Badge`, `EmptyState`, `Progress`, `Loader`, `LoadingState`, `Skeleton`                                                        |
+| Inputs     | `FormField`, `Input`, `Select`, `Textarea`, `Checkbox`, `Radio`, `Toggle`, `FileUpload`, `SearchInput`                                  |
+| Layout     | `Card`, `Modal`, `Panel`, `Accordion`, `SettingsLayout`, `AuthLayout`                                                                    |
+| Navigation | `DropdownMenu`, `SegmentedControl`, `CommandPalette`, `FilterBar`, `FilterChips`                                                         |
+| Data       | `Table`, `Stat`, `Avatar`, `AvatarGroup`, `Calendar`                                                                                     |
 | Typography | `H1`, `H2`, `H3`, `H4`, `H5`, `P`, `Small`, `Caption`, `Lead`, `Mono`, `Overline`, `Display`                                             |
 | Foundation | icons, theme switcher, code block, color tokens                                                                                          |
 
@@ -132,8 +131,8 @@ from a second typeface competing with Open Runde.
 
 Marketing sizes are fluid (`clamp()`), so a hero is one class instead of three
 breakpoint variants: `.ph-hero-title`, `.ph-section-title`, `.ph-feature-title`,
-`.ph-lead`, `.ph-eyebrow`. Product UI keeps the Tailwind step scale. Self-host
-the Open Runde weights under `public/fonts/`.
+`.ph-lead`, `.ph-eyebrow`. Product UI keeps the Tailwind step scale. Open Runde
+weights are included and loaded by `styles.css`.
 
 ## Themes
 

@@ -1,4 +1,11 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { useState } from "react";
+import {
+  cleanup,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SuiteIntegrationPicker } from "@/suite/components/suite-integration-picker";
@@ -116,6 +123,102 @@ describe("SuiteIntegrationPicker", () => {
     expect(onFetchAuthFields).toHaveBeenCalledWith(
       expect.objectContaining({ id: "mixed-provider" }),
       "API_KEY",
+    );
+  });
+
+  it("supports keyboard category selection and restores focus to the control", async () => {
+    const user = userEvent.setup();
+
+    function Fixture() {
+      const [category, setCategory] = useState("all");
+      return (
+        <SuiteIntegrationPicker
+          open
+          category={category}
+          categories={["calendar", "email"]}
+          items={[]}
+          onCategoryChange={setCategory}
+          onClose={vi.fn()}
+          onConnect={vi.fn()}
+        />
+      );
+    }
+
+    render(<Fixture />);
+    const trigger = screen.getByRole("button", { name: "Filter by category" });
+    trigger.focus();
+    await user.keyboard("{ArrowDown}{ArrowDown}{Enter}");
+
+    expect(trigger).toHaveTextContent("Calendar");
+    expect(trigger).toHaveFocus();
+    expect(
+      screen.queryByRole("listbox", { name: "Integration categories" }),
+    ).not.toBeInTheDocument();
+
+    await user.keyboard("{Enter}");
+    expect(
+      screen.getByRole("textbox", { name: "Search categories" }),
+    ).toHaveFocus();
+    await user.keyboard("{Escape}");
+    expect(trigger).toHaveFocus();
+  });
+
+  it("announces connection errors for integrations without authentication", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <SuiteIntegrationPicker
+        open
+        items={[
+          {
+            id: "broken-provider",
+            label: "Broken provider",
+            description: "Cannot currently connect",
+          },
+        ]}
+        onClose={vi.fn()}
+        onConnect={vi.fn().mockRejectedValue(new Error("Connection failed"))}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Connect" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Connection failed",
+    );
+  });
+
+  it("confirms before disconnecting a connected app", async () => {
+    const user = userEvent.setup();
+    const onDisconnect = vi.fn();
+
+    render(
+      <SuiteIntegrationPicker
+        open
+        items={[]}
+        connectedItems={[
+          {
+            id: "google-calendar",
+            label: "Google Calendar",
+            description: "Events and scheduling",
+          },
+        ]}
+        onClose={vi.fn()}
+        onConnect={vi.fn()}
+        onDisconnect={onDisconnect}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Disconnect" }));
+    expect(onDisconnect).not.toHaveBeenCalled();
+
+    const confirmation = screen.getByRole("dialog", { name: "Disconnect app" });
+    expect(confirmation).toHaveTextContent("Disconnect Google Calendar?");
+    await user.click(
+      within(confirmation).getByRole("button", { name: "Disconnect app" }),
+    );
+
+    expect(onDisconnect).toHaveBeenCalledWith(
+      expect.objectContaining({ id: "google-calendar" }),
     );
   });
 });

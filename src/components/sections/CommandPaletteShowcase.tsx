@@ -15,8 +15,7 @@ export default function CommandPaletteShowcase() {
     { id: "5", label: "Profile", icon: <IconPerson className="h-5 w-5" />, onSelect: () => {} },
   ];
 
-  const code = `import { Button, CommandPalette } from "the-old-ui";
-import { IconSearch, IconBolt, IconTuning, IconHome, IconPerson } from "the-old-ui";
+  const code = `import { Button, CommandPalette, IconSearch, IconBolt, IconTuning, IconHome, IconPerson } from "@xenide-io/the-old-ui-theme";
 
 <div className="ph-panel">
   <Button onClick={() => setIsOpen(true)}>Open Command Palette</Button>

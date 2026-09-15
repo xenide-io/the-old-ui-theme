@@ -46,7 +46,6 @@ afterEach(() => {
   vi.unstubAllGlobals();
   document.cookie = `${SUITE_THEME_COOKIE}=; Path=/; Max-Age=0`;
   document.documentElement.removeAttribute("data-theme");
-  document.documentElement.removeAttribute("data-suite-lock-page-zoom");
   document.documentElement.classList.remove("dark");
   document.getElementById("theme-color-meta")?.remove();
 });

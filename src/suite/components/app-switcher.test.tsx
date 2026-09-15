@@ -4,7 +4,10 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("next/image", () => ({
-  default: (props: ComponentPropsWithoutRef<"img">) => <img {...props} />,
+  default: ({ alt = "", ...props }: ComponentPropsWithoutRef<"img">) => (
+    // eslint-disable-next-line @next/next/no-img-element -- this is the next/image test double.
+    <img alt={alt} {...props} />
+  ),
 }));
 
 import { AppSwitcher, type SuiteAppEntry } from "./app-switcher";
@@ -56,7 +59,11 @@ function TestDropdownItem({
   children,
   ...props
 }: ComponentPropsWithoutRef<"button">) {
-  return <button {...props}>{children}</button>;
+  return (
+    <button data-dropdown-item="true" {...props}>
+      {children}
+    </button>
+  );
 }
 
 describe("AppSwitcher", () => {
@@ -85,12 +92,20 @@ describe("AppSwitcher", () => {
     const newTabButton = screen.getByRole("button", {
       name: "Open Kraken in a new tab",
     });
-    expect(newTabButton).toHaveClass("absolute", "h-8", "w-8");
+    expect(newTabButton).toHaveClass("absolute", "h-8");
+    expect(newTabButton).toHaveStyle({ width: "2rem" });
+    expect(newTabButton).toHaveAttribute("data-dropdown-item", "true");
     expect(
       screen.queryByRole("button", { name: "Open Tides in a new tab" }),
     ).not.toBeInTheDocument();
 
     await user.click(newTabButton);
     expect(onSelect).toHaveBeenCalledWith(APPS[2], { newTab: true });
+
+    onSelect.mockClear();
+    await user.click(
+      document.querySelector("[data-test='switch-app-kraken']") as HTMLElement,
+    );
+    expect(onSelect).toHaveBeenCalledWith(APPS[2]);
   });
 });

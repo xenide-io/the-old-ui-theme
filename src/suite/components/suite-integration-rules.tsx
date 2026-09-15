@@ -8,6 +8,7 @@ import {
   Button,
   Card,
   Input,
+  Modal,
   Select,
   Toggle,
 } from "@/components/ui";
@@ -103,6 +104,9 @@ export function SuiteIntegrationRules({
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [ruleToDelete, setRuleToDelete] =
+    useState<SuiteIntegrationRule | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const needsProject =
     actionType === "create_tides_task" || actionType === "draft_time_entry";
@@ -152,12 +156,23 @@ export function SuiteIntegrationRules({
     }
   }
 
-  async function removeRule(rule: SuiteIntegrationRule) {
-    if (!onDelete) return;
-    setBusyId(rule.id);
+  function requestDelete(rule: SuiteIntegrationRule) {
+    setDeleteError(null);
+    setRuleToDelete(rule);
+  }
+
+  async function deleteRule() {
+    if (!onDelete || !ruleToDelete) return;
+    setBusyId(ruleToDelete.id);
+    setDeleteError(null);
     try {
-      await onDelete(rule.id);
+      await onDelete(ruleToDelete.id);
       onRefresh?.();
+      setRuleToDelete(null);
+    } catch (cause) {
+      setDeleteError(
+        cause instanceof Error ? cause.message : "Could not delete the rule.",
+      );
     } finally {
       setBusyId(null);
     }
@@ -246,7 +261,7 @@ export function SuiteIntegrationRules({
                       variant="tertiary"
                       size="sm"
                       disabled={busyId === rule.id}
-                      onClick={() => void removeRule(rule)}
+                      onClick={() => requestDelete(rule)}
                       aria-label={`Delete ${rule.name}`}
                     >
                       <Xmark className="h-4 w-4" aria-hidden />
@@ -368,6 +383,46 @@ export function SuiteIntegrationRules({
           </form>
         ) : null}
       </Card>
+
+      <Modal
+        open={ruleToDelete !== null}
+        onClose={() => {
+          if (busyId !== ruleToDelete?.id) setRuleToDelete(null);
+        }}
+        title="Delete automation rule"
+        description="This action cannot be undone."
+        dataTest={`${dataTest}-delete-confirmation`}
+        footer={
+          <div className="flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="tertiary"
+              onClick={() => setRuleToDelete(null)}
+              disabled={busyId === ruleToDelete?.id}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="danger"
+              onClick={() => void deleteRule()}
+              disabled={busyId === ruleToDelete?.id}
+              data-test={`${dataTest}-delete-confirm`}
+            >
+              {busyId === ruleToDelete?.id ? "Deleting..." : "Delete rule"}
+            </Button>
+          </div>
+        }
+      >
+        {deleteError ? (
+          <p className="text-sm text-ph-danger" role="alert">
+            {deleteError}
+          </p>
+        ) : null}
+        <p className="text-sm text-ph-ink">
+          Delete {ruleToDelete?.name}? This cannot be undone.
+        </p>
+      </Modal>
 
       <Card
         variant="outlined"
