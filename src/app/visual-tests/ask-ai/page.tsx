@@ -95,6 +95,7 @@ export default function AskAiFixture() {
   return (
     <SuiteThemeProvider config={config}>
       <main className="min-h-screen bg-ph-canvas p-6 text-ph-ink">
+        <h1 className="sr-only">Ask AI fixture</h1>
         <p className="text-sm text-ph-subtle">Ask AI fixture — {fixture}</p>
         <div className="mt-4 h-[720px] w-80 overflow-hidden rounded-xl border border-ph-border">
         <SuiteAiPanel
