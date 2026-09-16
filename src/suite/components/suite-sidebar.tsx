@@ -320,7 +320,9 @@ export function SuiteSidebar({
         className={cn(
           "shrink-0 border-t border-ph-border",
           surface ? "bg-ph-surface" : "bg-ph-canvas",
-          collapsed ? "p-1.5" : "p-3",
+          // Trim only the bottom inset: the 32px avatar sits inside a 40px
+          // trigger, so even padding read top-heavy once the avatar shrank.
+          collapsed ? "px-1.5 pt-1.5 pb-1" : "px-3 pt-3 pb-2",
         )}
       >
         <div
