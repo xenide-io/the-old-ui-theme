@@ -48,7 +48,7 @@ export function CommandPaletteHost({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k")) return;
-      // Leave editors (BlockNote uses Cmd/Ctrl+K for links) alone unless the palette is open.
+      // Leave editable fields alone unless the palette is open.
       if (!open && isEditableTarget()) return;
       e.preventDefault();
       setOpen((o) => !o);

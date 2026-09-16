@@ -63,7 +63,7 @@ export function SuiteAppLayout({
         style={{ width: `${sidebarWidth}px` }}
         data-collapsed={collapsed ? "true" : "false"}
       >
-        {/* ponytail: isolate so Ask AI / BlockNote z-index cannot cover the handle */}
+        {/* ponytail: isolate so Ask AI cannot cover the resize handle */}
         <div className="relative z-0 h-full min-h-0 isolate">{sidebar}</div>
         {onStartResize ? (
           <div

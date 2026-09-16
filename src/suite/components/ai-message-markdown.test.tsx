@@ -1,7 +1,7 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import SuiteAiBlockNoteMessage from "./ai-message-blocknote";
+import SuiteAiMarkdownMessage from "./ai-message-markdown";
 import { SuiteThemeProvider } from "./theme-provider";
 
 const themeConfig = {
@@ -11,7 +11,7 @@ const themeConfig = {
   fallbackTheme: "light" as const,
 };
 
-describe("SuiteAiBlockNoteMessage", () => {
+describe("SuiteAiMarkdownMessage", () => {
   beforeEach(() => {
     vi.stubGlobal("localStorage", {
       getItem: () => "light",
@@ -23,18 +23,19 @@ describe("SuiteAiBlockNoteMessage", () => {
     vi.unstubAllGlobals();
   });
 
-  it("renders Markdown as restricted read-only BlockNote content", async () => {
+  it("renders safe, semantic Markdown", () => {
     const { container } = render(
       <SuiteThemeProvider config={themeConfig}>
-        <SuiteAiBlockNoteMessage markdown={"## Summary\n\n- First item"} />
+        <SuiteAiMarkdownMessage
+          markdown={"## Summary\n\n- First item\n\n![Ignored](https://example.test/image.png)"}
+        />
       </SuiteThemeProvider>,
     );
 
-    await waitFor(() =>
-      expect(screen.getByText("Summary")).toBeInTheDocument(),
-    );
+    expect(screen.getByRole("heading", { name: "Summary" })).toBeInTheDocument();
     expect(screen.getByText("First item")).toBeInTheDocument();
-    expect(container.querySelector('[contenteditable="false"]')).toBeTruthy();
+    expect(container.querySelector("ul")).toBeTruthy();
+    expect(container.querySelector('[contenteditable]')).toBeNull();
     expect(container.querySelector("img")).toBeNull();
   });
 });

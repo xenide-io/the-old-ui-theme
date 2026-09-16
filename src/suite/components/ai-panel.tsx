@@ -28,7 +28,7 @@ import {
   type SuiteAppSlug,
 } from "../lib/apps";
 
-const SuiteAiBlockNoteMessage = lazy(() => import("./ai-message-blocknote"));
+const SuiteAiMarkdownMessage = lazy(() => import("./ai-message-markdown"));
 
 export const SUITE_OPEN_ASK_AI_EVENT = "shellstack:open-ask-ai";
 export const SUITE_ASK_AI_OPEN_KEY = "shellstack:shelly-open";
@@ -542,7 +542,7 @@ export function SuiteAiPanel({
                         </div>
                       }
                     >
-                      <SuiteAiBlockNoteMessage markdown={message.content} />
+                      <SuiteAiMarkdownMessage markdown={message.content} />
                     </Suspense>
                   </div>
                   {(message.actions ?? []).map((action) => (
