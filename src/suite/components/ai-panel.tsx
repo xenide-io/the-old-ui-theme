@@ -425,6 +425,13 @@ export function SuiteAiPanel({
 
   if (!open) return null;
 
+  // Only the newest reply gets the staggered word reveal; animating the whole
+  // transcript would replay whenever the panel remounts mid-conversation.
+  const lastAssistantIndex = messages.reduce(
+    (found, message, index) => (message.role === "assistant" ? index : found),
+    -1,
+  );
+
   const Icon = BrandIcon ?? Sparks;
 
   return (
@@ -505,7 +512,7 @@ export function SuiteAiPanel({
               return (
                 <div
                   key={`user-${index}`}
-                  className="flex justify-end"
+                  className="suite-msg-in suite-msg-in--user flex justify-end"
                   data-test="ask-ai-user"
                 >
                   <div className="w-fit max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-ph-brand px-3 py-2 text-sm leading-relaxed text-[var(--ph-on-accent)] [overflow-wrap:anywhere]">
@@ -521,12 +528,12 @@ export function SuiteAiPanel({
                 data-test="ask-ai-assistant"
               >
                 <span
-                  className="mb-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ph-brand/10 text-ph-brand"
+                  className="suite-msg-avatar mb-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ph-brand/10 text-ph-brand"
                   aria-hidden
                 >
                   <Icon className="h-3.5 w-3.5" />
                 </span>
-                <div className="min-w-0 max-w-[85%] space-y-2">
+                <div className="suite-msg-bubble min-w-0 max-w-[85%] space-y-2">
                   <div className="rounded-2xl rounded-bl-md bg-ph-muted px-3 py-2 text-sm leading-relaxed text-ph-ink">
                     <Suspense
                       fallback={
@@ -536,13 +543,16 @@ export function SuiteAiPanel({
                           aria-label="Rendering response"
                         >
                           <span className="sr-only">Rendering response…</span>
-                          <div className="h-3 w-11/12 rounded bg-ph-mutedtext/20 motion-safe:animate-pulse" />
-                          <div className="h-3 w-full rounded bg-ph-mutedtext/20 motion-safe:animate-pulse" />
-                          <div className="h-3 w-3/5 rounded bg-ph-mutedtext/20 motion-safe:animate-pulse" />
+                          <div className="suite-shimmer h-3 w-11/12 rounded bg-ph-mutedtext/20" />
+                          <div className="suite-shimmer h-3 w-full rounded bg-ph-mutedtext/20" />
+                          <div className="suite-shimmer h-3 w-3/5 rounded bg-ph-mutedtext/20" />
                         </div>
                       }
                     >
-                      <SuiteAiMarkdownMessage markdown={message.content} />
+                      <SuiteAiMarkdownMessage
+                        markdown={message.content}
+                        animate={index === lastAssistantIndex}
+                      />
                     </Suspense>
                   </div>
                   {(message.actions ?? []).map((action) => (
@@ -612,9 +622,9 @@ export function SuiteAiPanel({
                 <Icon className="h-3.5 w-3.5" />
               </span>
               <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-md bg-ph-muted px-3 py-2.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-ph-mutedtext motion-safe:animate-bounce" />
-                <span className="h-1.5 w-1.5 rounded-full bg-ph-mutedtext motion-safe:animate-bounce [animation-delay:0.15s]" />
-                <span className="h-1.5 w-1.5 rounded-full bg-ph-mutedtext motion-safe:animate-bounce [animation-delay:0.3s]" />
+                <span className="suite-think-dot h-1.5 w-1.5 rounded-full bg-ph-mutedtext" />
+                <span className="suite-think-dot suite-think-dot--2 h-1.5 w-1.5 rounded-full bg-ph-mutedtext" />
+                <span className="suite-think-dot suite-think-dot--3 h-1.5 w-1.5 rounded-full bg-ph-mutedtext" />
               </div>
             </div>
           ) : null}

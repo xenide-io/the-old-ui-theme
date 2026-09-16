@@ -797,6 +797,164 @@ button:hover > .ph-card {
   border-top: 1px solid var(--ph-border-subtle);
 }
 
+/* ── Ask AI conversation motion ─────────────────────────────────────────
+   Replies arrive whole (the suite chat is polled, not streamed), so the
+   motion carries the "alive" signal instead: a soft one-shot entrance per
+   message, a breathing thinking indicator, and a shimmer for the skeleton.
+   Only opacity + transform animate — height/margin would fight the
+   scroller. All of it collapses under prefers-reduced-motion. */
+@keyframes suite-msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+@keyframes suite-msg-in-user {
+  /* The user's own turn grows out of the composer corner, per the chat
+     scroller guidance, so sending feels anchored to where they typed. */
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+.suite-msg-in {
+  /* Slight overshoot rather than a flat ease-out: the bubble reads as
+     landing rather than fading up. Origin sits at the tail corner so it
+     appears to grow from the avatar (assistant) / composer (user). */
+  animation: suite-msg-in 280ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  transform-origin: 0 100%;
+}
+.suite-msg-in--user {
+  animation-name: suite-msg-in-user;
+  animation-duration: 240ms;
+  transform-origin: 100% 100%;
+}
+/* Avatar lands first, bubble follows — a small layer separation. The bubble
+   only settles (no blur) because the words themselves carry the reveal. */
+@keyframes suite-msg-settle {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.suite-msg-avatar {
+  animation: suite-msg-in 260ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+.suite-msg-bubble {
+  animation: suite-msg-settle 200ms ease-out both;
+}
+
+/* ── Answer reveal ──────────────────────────────────────────────────────
+   Replies land in one payload (the suite chat is polled), so the words
+   themselves are staggered to read as if they were being written. Delay is
+   applied per word inline by the rehype plugin in ai-message-markdown.tsx
+   and capped so a long answer still finishes settling in well under a
+   second. `both` fill keeps each word hidden until its turn. */
+@keyframes suite-word-in {
+  from {
+    opacity: 0;
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+.suite-word-in {
+  animation: suite-word-in 240ms ease-out both;
+}
+
+@keyframes suite-think-breathe {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.suite-think-dot {
+  animation: suite-think-breathe 1.4s ease-in-out infinite;
+}
+.suite-think-dot--2 {
+  animation-delay: 0.16s;
+}
+.suite-think-dot--3 {
+  animation-delay: 0.32s;
+}
+
+/* Sweep a translateX band rather than background-position: the latter
+   repaints every frame, the former stays on the compositor. */
+@keyframes suite-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(200%);
+  }
+}
+.suite-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.suite-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 60%;
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--ph-text-primary) 9%, transparent),
+    transparent
+  );
+  animation: suite-shimmer 1.6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .suite-msg-in,
+  .suite-msg-in--user,
+  .suite-msg-avatar,
+  .suite-msg-bubble,
+  .suite-word-in {
+    animation: none;
+    filter: none;
+  }
+  .suite-think-dot {
+    animation: none;
+    opacity: 0.7;
+    transform: none;
+  }
+  .suite-shimmer::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 /* ── Auth / OAuth / launch handoff ──────────────────────────────────────
    One calm opacity fade — no stacked entrance reveals on bridge pages. */
 .suite-auth-handoff {

@@ -38,4 +38,44 @@ describe("SuiteAiMarkdownMessage", () => {
     expect(container.querySelector('[contenteditable]')).toBeNull();
     expect(container.querySelector("img")).toBeNull();
   });
+
+  it("leaves words untouched unless animate is set", () => {
+    const { container } = render(
+      <SuiteThemeProvider config={themeConfig}>
+        <SuiteAiMarkdownMessage markdown={"Hello there world"} />
+      </SuiteThemeProvider>,
+    );
+
+    expect(container.querySelectorAll(".suite-word-in")).toHaveLength(0);
+    expect(container.textContent).toContain("Hello there world");
+  });
+
+  it("staggers each word when animate is set", () => {
+    const { container } = render(
+      <SuiteThemeProvider config={themeConfig}>
+        <SuiteAiMarkdownMessage markdown={"Hello there world"} animate />
+      </SuiteThemeProvider>,
+    );
+
+    const words = container.querySelectorAll<HTMLElement>(".suite-word-in");
+    expect(words).toHaveLength(3);
+    expect(words[0].textContent).toBe("Hello");
+    expect(words[0].style.animationDelay).toBe("0ms");
+    expect(words[1].style.animationDelay).toBe("18ms");
+    expect(words[2].style.animationDelay).toBe("36ms");
+    // Copy still yields the original prose.
+    expect(container.textContent).toBe("Hello there world");
+  });
+
+  it("does not stagger code spans", () => {
+    const { container } = render(
+      <SuiteThemeProvider config={themeConfig}>
+        <SuiteAiMarkdownMessage markdown={"Run `npm run dev` now"} animate />
+      </SuiteThemeProvider>,
+    );
+
+    const code = container.querySelector("code");
+    expect(code).toBeTruthy();
+    expect(code?.querySelector(".suite-word-in")).toBeNull();
+  });
 });
