@@ -16,6 +16,10 @@ export interface SuiteUserMenuProps {
   onSignOut: () => void;
   /** Fallback letter(s) when there is no avatar image. */
   fallbackInitials?: string;
+  /** Second line under the name, e.g. the workspace subscription ("Plus"). */
+  subtitle?: string | null;
+  /** Show the name + subtitle beside the avatar, for the sidebar footer. */
+  showDetails?: boolean;
   /** Show the old desktop sidebar sign-out action beside the avatar. */
   showSignOutAction?: boolean;
   dataTest?: string;
@@ -72,6 +76,8 @@ export function SuiteUserMenu({
   settingsHref,
   onSignOut,
   fallbackInitials,
+  subtitle,
+  showDetails = false,
   showSignOutAction = false,
   dataTest = "suite-user-menu",
   triggerId,
@@ -110,9 +116,27 @@ export function SuiteUserMenu({
     </span>
   );
 
+  // Sidebar footer shows who is signed in and which plan the workspace is on;
+  // the mobile header keeps the bare avatar so its action row stays compact.
+  const trigger = showDetails ? (
+    <span className="flex min-w-0 items-center gap-2">
+      {avatar}
+      <span className="flex min-w-0 flex-col text-left">
+        <span className="truncate text-sm font-medium text-ph-ink">
+          {name || email || "Account"}
+        </span>
+        {subtitle ? (
+          <span className="truncate text-xs text-ph-mutedtext">{subtitle}</span>
+        ) : null}
+      </span>
+    </span>
+  ) : (
+    avatar
+  );
+
   const accountMenu = (
     <DropdownMenu
-      trigger={avatar}
+      trigger={trigger}
       triggerId={triggerId ?? `${dataTest}-trigger`}
       triggerDataTest={triggerDataTest ?? `${dataTest}-trigger`}
       aria-label="Account menu"
@@ -123,6 +147,8 @@ export function SuiteUserMenu({
       modal={false}
       className={cn(
         "[&_.ph-dropdown-trigger]:rounded-full",
+        showDetails &&
+          "min-w-0 flex-1 [&_.ph-dropdown-trigger]:w-full [&_.ph-dropdown-trigger]:justify-start [&_.ph-dropdown-trigger]:rounded-lg",
         showSignOutAction ? undefined : className,
       )}
       data-test={dataTest}

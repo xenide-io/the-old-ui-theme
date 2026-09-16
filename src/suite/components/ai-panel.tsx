@@ -297,6 +297,13 @@ export function SuiteAiPanel({
     if (open && !hydrating) textareaRef.current?.focus();
   }, [open, hydrating]);
 
+  // Warm the lazily-imported Markdown renderer as soon as the panel opens, so a
+  // reply never flashes a placeholder while its chunk is still downloading.
+  useEffect(() => {
+    if (!open) return;
+    void import("./ai-message-markdown").catch(() => {});
+  }, [open]);
+
   useLayoutEffect(() => {
     const el = textareaRef.current;
     if (!el) return;
@@ -537,16 +544,12 @@ export function SuiteAiPanel({
                   <div className="rounded-2xl rounded-bl-md bg-ph-muted px-3 py-2 text-sm leading-relaxed text-ph-ink">
                     <Suspense
                       fallback={
-                        <div
-                          className="space-y-2 py-0.5"
-                          role="status"
-                          aria-label="Rendering response"
-                        >
-                          <span className="sr-only">Rendering response…</span>
-                          <div className="suite-shimmer h-3 w-11/12 rounded bg-ph-mutedtext/20" />
-                          <div className="suite-shimmer h-3 w-full rounded bg-ph-mutedtext/20" />
-                          <div className="suite-shimmer h-3 w-3/5 rounded bg-ph-mutedtext/20" />
-                        </div>
+                        // The chunk is pre-warmed above, so this only shows on a
+                        // cold cache. Keep it invisible — a skeleton here reads
+                        // as if it were part of the answer.
+                        <span className="sr-only" role="status">
+                          Rendering response…
+                        </span>
                       }
                     >
                       <SuiteAiMarkdownMessage
