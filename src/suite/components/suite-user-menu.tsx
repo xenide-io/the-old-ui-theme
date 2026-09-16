@@ -82,28 +82,31 @@ export function SuiteUserMenu({
   const initials = fallbackInitials ?? computeInitials(name, email);
   const fallbackColor = avatarColorClass(email || name || "?");
 
-  // Match Tides Avatar `sm` (40px). Colour comes from theme `--ph-*` tokens.
+  // Visual avatar is 32px (Avatar `xs`); the 40px trigger keeps a comfortable
+  // tap target. Colour comes from theme `--ph-*` tokens.
   const avatar = (
-    <span className="inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-ph-border">
-      {image ? (
-        <Image
-          src={image}
-          alt=""
-          width={40}
-          height={40}
-          className="h-full w-full object-cover"
-          unoptimized
-        />
-      ) : (
-        <span
-          className={cn(
-            "flex h-full w-full items-center justify-center text-sm font-semibold",
-            fallbackColor,
-          )}
-        >
-          {initials}
-        </span>
-      )}
+    <span className="inline-flex h-10 w-10 items-center justify-center">
+      <span className="inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-ph-border">
+        {image ? (
+          <Image
+            src={image}
+            alt=""
+            width={32}
+            height={32}
+            className="h-full w-full object-cover"
+            unoptimized
+          />
+        ) : (
+          <span
+            className={cn(
+              "flex h-full w-full items-center justify-center text-xs font-semibold",
+              fallbackColor,
+            )}
+          >
+            {initials}
+          </span>
+        )}
+      </span>
     </span>
   );
 
