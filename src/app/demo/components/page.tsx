@@ -7,6 +7,7 @@ import BadgeShowcase from "@/components/sections/BadgeShowcase";
 import ButtonShowcase from "@/components/sections/ButtonShowcase";
 import CalendarShowcase from "@/components/sections/CalendarShowcase";
 import CardShowcase from "@/components/sections/CardShowcase";
+import ChartsShowcase from "@/components/sections/ChartsShowcase";
 import DropdownShowcase from "@/components/sections/DropdownShowcase";
 import FormShowcase from "@/components/sections/FormShowcase";
 import NavigationShowcase from "@/components/sections/NavigationShowcase";
@@ -31,6 +32,7 @@ export default function ComponentsDemoPage() {
       <ButtonShowcase />
       <CalendarShowcase />
       <CardShowcase />
+      <ChartsShowcase />
       <DropdownShowcase />
       <FormShowcase />
       <NavigationShowcase />
