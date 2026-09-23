@@ -16,6 +16,9 @@ import {
 import {
   ArrowDown,
   ArrowUp,
+  Check,
+  Copy,
+  EditPencil,
   Erase,
   Sparks,
   Square,
@@ -157,6 +160,7 @@ export function SuiteAiPanel({
   title = "Shelly AI",
   fetchChat,
   sendMessage,
+  editMessage,
   clearChat,
   brandIcon: BrandIcon,
   spinner: Spinner,
@@ -177,6 +181,12 @@ export function SuiteAiPanel({
     jobs?: Array<{ status?: string; error?: string }>;
   }>;
   sendMessage: (params: {
+    prompt: string;
+    signal?: AbortSignal;
+  }) => Promise<{ messages: SuiteAiChatMessage[]; reply: string }>;
+  /** Rewrite the thread from a user message. Falls back to sendMessage. */
+  editMessage?: (params: {
+    index: number;
     prompt: string;
     signal?: AbortSignal;
   }) => Promise<{ messages: SuiteAiChatMessage[]; reply: string }>;
@@ -220,6 +230,9 @@ export function SuiteAiPanel({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const pendingPromptRef = useRef<string | null>(null);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editDraft, setEditDraft] = useState("");
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const waiting = loading || isWaitingForReply;
 
   useEffect(() => {
@@ -365,6 +378,58 @@ export function SuiteAiPanel({
     setError("");
     if (lastUser) void ask(lastUser);
     else void hydrate();
+  }
+
+  async function saveEdit(index: number) {
+    const trimmed = editDraft.trim();
+    if (!trimmed || waiting) return;
+    setEditingIndex(null);
+    setEditDraft("");
+    setError("");
+    setAtBottom(true);
+    setMessages((prev) => prev.slice(0, index));
+    const controller = new AbortController();
+    abortRef.current = controller;
+    setLoading(true);
+    try {
+      const result = editMessage
+        ? await editMessage({
+            index,
+            prompt: trimmed,
+            signal: controller.signal,
+          })
+        : await sendMessage({ prompt: trimmed, signal: controller.signal });
+      if (controller.signal.aborted) return;
+      const nextMessages = result.messages ?? [];
+      setMessages(nextMessages);
+      notifySuiteMutated(
+        nextMessages.flatMap((message) => message.actions ?? []),
+      );
+    } catch (err) {
+      if (controller.signal.aborted) return;
+      setError(
+        err instanceof Error
+          ? err.message
+          : "The AI request failed. Try again.",
+      );
+      void hydrate();
+    } finally {
+      if (abortRef.current === controller) abortRef.current = null;
+      setLoading(false);
+    }
+  }
+
+  async function handleCopy(index: number, content: string) {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopiedIndex(index);
+      window.setTimeout(
+        () => setCopiedIndex((current) => (current === index ? null : current)),
+        1500,
+      );
+    } catch {
+      // clipboard unavailable
+    }
   }
 
   async function handleClear() {
@@ -516,14 +581,102 @@ export function SuiteAiPanel({
           {messages.map((message, index) => {
             const isUser = message.role === "user";
             if (isUser) {
+              if (editingIndex === index) {
+                return (
+                  <div
+                    key={`user-${index}`}
+                    className="suite-msg-in suite-msg-in--user flex justify-end"
+                    data-test="ask-ai-user"
+                  >
+                    <div className="w-full max-w-[85%] space-y-2">
+                      <textarea
+                        autoFocus
+                        value={editDraft}
+                        onChange={(event) => setEditDraft(event.target.value)}
+                        onKeyDown={(event) => {
+                          if (
+                            event.key === "Enter" &&
+                            !event.shiftKey &&
+                            !event.nativeEvent.isComposing
+                          ) {
+                            event.preventDefault();
+                            void saveEdit(index);
+                          }
+                          if (event.key === "Escape") {
+                            setEditingIndex(null);
+                            setEditDraft("");
+                          }
+                        }}
+                        rows={2}
+                        data-test="ask-ai-edit-input"
+                        className="w-full resize-none rounded-2xl rounded-br-md border border-ph-border bg-ph-surface px-3 py-2 text-sm leading-relaxed text-ph-ink outline-none focus-visible:border-ph-brand/45 focus-visible:ring-2 focus-visible:ring-ph-focus/35"
+                      />
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingIndex(null);
+                            setEditDraft("");
+                          }}
+                          className="inline-flex min-h-8 items-center rounded-lg border border-ph-border bg-ph-surface px-2.5 text-xs font-medium text-ph-ink transition-colors hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          data-test="ask-ai-edit-save"
+                          disabled={!editDraft.trim() || waiting}
+                          onClick={() => void saveEdit(index)}
+                          className="inline-flex min-h-8 items-center rounded-lg bg-ph-brand px-2.5 text-xs font-medium text-[color:var(--ph-on-accent)] transition-opacity hover:bg-ph-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
               return (
                 <div
                   key={`user-${index}`}
                   className="suite-msg-in suite-msg-in--user flex justify-end"
                   data-test="ask-ai-user"
                 >
-                  <div className="w-fit max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-ph-brand px-3 py-2 text-sm leading-relaxed text-[var(--ph-on-accent)] [overflow-wrap:anywhere]">
-                    {message.content}
+                  <div className="group flex items-end gap-1.5">
+                    {!waiting ? (
+                      <div className="mb-0.5 flex items-center gap-0.5 opacity-100 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:opacity-100">
+                        <button
+                          type="button"
+                          onClick={() => void handleCopy(index, message.content)}
+                          aria-label={
+                            copiedIndex === index ? "Copied" : "Copy message"
+                          }
+                          data-test="ask-ai-copy"
+                          className="flex h-7 w-7 items-center justify-center rounded-lg text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus"
+                        >
+                          {copiedIndex === index ? (
+                            <Check className="h-3.5 w-3.5" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditDraft(message.content);
+                            setEditingIndex(index);
+                          }}
+                          aria-label="Edit message"
+                          data-test="ask-ai-edit"
+                          className="flex h-7 w-7 items-center justify-center rounded-lg text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus"
+                        >
+                          <EditPencil className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    ) : null}
+                    <div className="w-fit max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-ph-brand px-3 py-2 text-sm leading-relaxed text-[var(--ph-on-accent)] [overflow-wrap:anywhere]">
+                      {message.content}
+                    </div>
                   </div>
                 </div>
               );
