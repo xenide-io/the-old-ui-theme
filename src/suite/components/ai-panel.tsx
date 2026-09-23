@@ -865,7 +865,7 @@ export function SuiteAiPanel({
             data-test="ask-ai-input"
             className="max-h-36 min-h-10 flex-1 resize-none bg-transparent px-1.5 py-2 text-sm leading-relaxed text-ph-ink outline-none placeholder:text-ph-mutedtext"
           />
-          {loading ? (
+          {waiting ? (
             <Tooltip content="Stop generating">
               <button
                 type="button"
@@ -877,15 +877,6 @@ export function SuiteAiPanel({
                 <Square className="h-3.5 w-3.5 fill-current" />
               </button>
             </Tooltip>
-          ) : isWaitingForReply ? (
-            <span
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ph-muted text-ph-subtle"
-              data-test="ask-ai-waiting"
-              role="status"
-              aria-label="Shelly is responding"
-            >
-              <Spinner className="h-4 w-4 animate-spin" />
-            </span>
           ) : (
             <Tooltip content="Send message">
               <button
