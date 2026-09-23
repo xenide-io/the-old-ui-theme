@@ -161,6 +161,7 @@ export function SuiteAiPanel({
   fetchChat,
   sendMessage,
   editMessage,
+  cancelMessage,
   clearChat,
   brandIcon: BrandIcon,
   spinner: Spinner,
@@ -190,6 +191,8 @@ export function SuiteAiPanel({
     prompt: string;
     signal?: AbortSignal;
   }) => Promise<{ messages: SuiteAiChatMessage[]; reply: string }>;
+  /** Stop the in-flight reply on the server. */
+  cancelMessage?: () => Promise<{ messages?: SuiteAiChatMessage[] }>;
   clearChat: () => Promise<void>;
   brandIcon?: ComponentType<{ className?: string }>;
   spinner: ComponentType<{ className?: string }>;
@@ -369,6 +372,14 @@ export function SuiteAiPanel({
     abortRef.current?.abort();
     abortRef.current = null;
     setLoading(false);
+    if (!cancelMessage) return;
+    void cancelMessage()
+      .then((result) => {
+        if (result?.messages) setMessages(result.messages);
+      })
+      .catch(() => {
+        // Best-effort server cancel; the local abort already stopped the UI.
+      });
   }
 
   function retry() {
