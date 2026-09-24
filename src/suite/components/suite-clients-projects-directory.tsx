@@ -97,7 +97,7 @@ export interface SuiteClientsProjectsDirectoryProps {
 }
 
 const DEFAULT_ICON = "";
-const DEFAULT_COLOR = "#6366f1";
+const DEFAULT_COLOR = "";
 
 function DirectoryIconPicker({
   preview,
