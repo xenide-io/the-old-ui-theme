@@ -174,3 +174,20 @@ export {
   type SuiteDirectoryProject,
   type SuiteDirectoryProjectFields,
 } from "./components/suite-clients-projects-directory";
+export {
+  SuiteEntityIcon,
+} from "./components/suite-entity-icon";
+export {
+  SuitePaletteLibrary,
+  type SuitePalettePick,
+} from "./components/suite-palette-library";
+export {
+  fetchPaletteLibrary,
+  fetchPaletteCollection,
+  findPaletteIcons,
+  type PaletteCollection,
+  type PaletteCollectionDetail,
+  type PaletteHit,
+  type PaletteIcon,
+  type PaletteLibrary,
+} from "./lib/palette-api";

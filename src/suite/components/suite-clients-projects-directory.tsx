@@ -6,12 +6,13 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
+  type ReactNode,
 } from "react";
 import {
   ArrowLeft,
-  MediaImagePlus as ImagePlus,
   MoreHoriz as MoreHorizontal,
   Plus,
+  Prohibition,
   Search,
   Trash,
 } from "iconoir-react";
@@ -26,6 +27,8 @@ import {
   Select,
 } from "@/components/ui";
 import { cn } from "@/lib/cn";
+import { SuiteEntityIcon } from "./suite-entity-icon";
+import { SuitePaletteLibrary } from "./suite-palette-library";
 
 export interface SuiteDirectoryClient {
   id: string;
@@ -50,6 +53,8 @@ export interface SuiteDirectoryFields {
   icon: string;
   color: string;
   iconImageFile?: File | null;
+  /** Icon chosen from a hosted library (e.g. Palette); wins over `iconImageFile`. */
+  iconImageUrl?: string | null;
   clearIconImage?: boolean;
 }
 
@@ -80,186 +85,81 @@ export interface SuiteClientsProjectsDirectoryProps {
     fields: SuiteDirectoryProjectFields,
   ) => Promise<SuiteDirectoryProject | void>;
   onDeleteProject?: (project: SuiteDirectoryProject) => Promise<void>;
+  /**
+   * Optional hosted icon library (e.g. Palette). When provided, the picker
+   * shows a "Browse library" button; the render prop receives `onPick`, which
+   * sets the chosen icon URL as the item's custom image.
+   */
+  renderIconLibrary?: (args: {
+    onPick: (icon: { url: string; name?: string }) => void;
+  }) => ReactNode;
   dataTest?: string;
 }
 
-const DEFAULT_ICON = "castle-emblem";
+const DEFAULT_ICON = "";
 const DEFAULT_COLOR = "#6366f1";
 
-const DIRECTORY_ICON_OPTIONS = [
-  ["arena", "Arena"],
-  ["bridge", "Bridge"],
-  ["capitol", "Capitol"],
-  ["castle-emblem", "Castle"],
-  ["castle-flag", "Castle flag"],
-  ["lighthouse", "Lighthouse"],
-  ["tower", "Tower"],
-  ["wooden-sign", "Sign"],
-  ["anvil", "Anvil"],
-  ["book", "Book"],
-  ["chessboard", "Chessboard"],
-  ["cog", "Settings"],
-  ["hammer", "Build"],
-  ["light-bulb", "Idea"],
-  ["microphone", "Communication"],
-  ["quill-ink", "Writing"],
-  ["scroll-unfurled", "Notes"],
-  ["hourglass", "Planning"],
-  ["wrench", "Tools"],
-  ["archer", "Archer"],
-  ["archery-target", "Target"],
-  ["axe", "Axe"],
-  ["campfire", "Campfire"],
-  ["compass", "Compass"],
-  ["crossed-swords", "Battle"],
-  ["knight-helmet", "Knight"],
-  ["mountains", "Mountains"],
-  ["shield", "Shield"],
-  ["ship-emblem", "Voyage"],
-  ["sword", "Sword"],
-  ["trophy", "Trophy"],
-  ["apple", "Apple"],
-  ["butterfly", "Butterfly"],
-  ["clover", "Clover"],
-  ["dragon", "Dragon"],
-  ["fire", "Fire"],
-  ["flower", "Flower"],
-  ["flowers", "Flowers"],
-  ["grass", "Grass"],
-  ["leaf", "Leaf"],
-  ["pine-tree", "Pine tree"],
-  ["sun", "Sun"],
-  ["water-drop", "Water"],
-  ["aura", "Aura"],
-  ["crystal-ball", "Crystal ball"],
-  ["diamond", "Diamond"],
-  ["explosion", "Explosion"],
-  ["fire-symbol", "Fire symbol"],
-  ["gem", "Gem"],
-  ["lightning-trio", "Lightning"],
-  ["potion", "Potion"],
-  ["rune-stone", "Rune stone"],
-  ["skull", "Skull"],
-  ["tentacle", "Tentacle"],
-  ["wolf-head", "Wolf"],
-  ["anchor", "Anchor"],
-  ["beer", "Beer"],
-  ["carrot", "Carrot"],
-  ["cat", "Cat"],
-  ["crown", "Crown"],
-  ["gold-bar", "Gold bar"],
-  ["helmet", "Helmet"],
-  ["key", "Key"],
-  ["three-keys", "Keys"],
-] as const;
-
-type DirectoryIconOption = (typeof DIRECTORY_ICON_OPTIONS)[number][0];
-
-function isDirectoryIcon(value: string): value is DirectoryIconOption {
-  return DIRECTORY_ICON_OPTIONS.some(([name]) => name === value);
-}
-
 function DirectoryIconPicker({
-  value,
   preview,
+  label,
+  color,
   onFileChange,
   onClear,
-  onChange,
+  onBrowse,
 }: {
-  value: string;
   preview?: string | null;
+  label?: string;
+  color?: string | null;
   onFileChange: (file: File | null) => void;
   onClear: () => void;
-  onChange: (value: string) => void;
+  onBrowse?: () => void;
 }) {
-  const iconRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-
-  function moveSelection(event: KeyboardEvent<HTMLButtonElement>, index: number) {
-    let nextIndex: number | null = null;
-    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-      nextIndex = (index + 1) % DIRECTORY_ICON_OPTIONS.length;
-    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
-      nextIndex =
-        (index - 1 + DIRECTORY_ICON_OPTIONS.length) % DIRECTORY_ICON_OPTIONS.length;
-    } else if (event.key === "Home") {
-      nextIndex = 0;
-    } else if (event.key === "End") {
-      nextIndex = DIRECTORY_ICON_OPTIONS.length - 1;
-    }
-
-    if (nextIndex === null) return;
-    event.preventDefault();
-    const [nextIcon] = DIRECTORY_ICON_OPTIONS[nextIndex];
-    onChange(nextIcon);
-    iconRefs.current[nextIcon]?.focus();
-  }
-
   return (
     <div className="space-y-2">
       <span className="mb-1.5 block text-sm font-medium text-ph-ink">Icon</span>
-      <div
-        role="radiogroup"
-        aria-label="Icon"
-        className="grid grid-cols-6 gap-1.5 rounded-lg border border-ph-border p-1.5 sm:grid-cols-8"
-      >
-        {DIRECTORY_ICON_OPTIONS.map(([name, label], index) => {
-          const selected = value === name;
-          return (
-            <button
-              key={name}
-              type="button"
-              role="radio"
-              aria-label={label}
-              aria-checked={selected}
-              tabIndex={selected ? 0 : -1}
-              title={label}
-              onClick={() => onChange(name)}
-              onKeyDown={(event) => moveSelection(event, index)}
-              ref={(element) => {
-                iconRefs.current[name] = element;
-              }}
-              className={cn(
-                "flex h-9 items-center justify-center rounded-md text-ph-mutedtext hover:bg-ph-muted hover:text-ph-ink",
-                selected &&
-                  "bg-ph-muted text-ph-ink ring-2 ring-ph-brand ring-inset",
-              )}
-            >
-              <i
-                className={cn("ra", `ra-${name}`, "text-base leading-none")}
-                aria-hidden
-              />
-            </button>
-          );
-        })}
-      </div>
-      <div className="rounded-lg border border-ph-border bg-ph-muted p-2">
-        <div className="flex items-center gap-2 text-sm font-medium text-ph-ink">
-          <ImagePlus className="h-4 w-4" aria-hidden /> Custom image
-        </div>
-        <p className="mt-1 text-xs text-ph-mutedtext">
-          PNG, JPG, GIF, WebP, or SVG — max 512 KB.
-        </p>
-        <FileUpload
-          accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml,.svg"
-          onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
-        />
-        {preview ? (
-          <div className="mt-2 flex items-center gap-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={preview}
-              alt=""
-              className="h-8 w-8 rounded object-cover"
-            />
-            <button
-              type="button"
-              className="text-xs text-ph-mutedtext hover:text-ph-ink"
-              onClick={onClear}
-            >
-              <Trash className="mr-1 inline h-3.5 w-3.5" aria-hidden /> Remove
-              custom image
-            </button>
+      <div className="rounded-lg border border-ph-border bg-ph-muted p-3">
+        <div className="flex items-center gap-3">
+          <SuiteEntityIcon
+            imageUrl={preview}
+            label={label}
+            color={color}
+            tinted
+            className="h-9 w-9 text-base"
+          />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-ph-ink">
+              {preview ? "Custom image" : "No icon yet"}
+            </p>
+            <p className="text-xs text-ph-mutedtext">
+              {preview
+                ? "Shown on cards and lists."
+                : "Browse the library or upload your own."}
+            </p>
           </div>
+          {onBrowse ? (
+            <button
+              type="button"
+              onClick={onBrowse}
+              className="rounded-md border border-ph-border px-3 py-1.5 text-xs font-medium text-ph-ink hover:border-ph-brand hover:bg-ph-surface"
+            >
+              Browse library
+            </button>
+          ) : null}
+        </div>
+        <div className="mt-3">
+          <FileUpload
+            accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml,.svg"
+            onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
+          />
+        </div>
+        {preview ? (
+          <button
+            type="button"
+            className="mt-2 inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-ph-mutedtext hover:bg-ph-surface hover:text-ph-ink"
+            onClick={onClear}
+          >
+            <Trash className="h-3.5 w-3.5" aria-hidden /> Remove image
+          </button>
         ) : null}
       </div>
     </div>
@@ -271,27 +171,15 @@ function DirectoryIcon({
 }: {
   item: SuiteDirectoryClient | SuiteDirectoryProject;
 }) {
-  const icon =
-    item.icon && isDirectoryIcon(item.icon) ? item.icon : DEFAULT_ICON;
   return (
-    <span
-      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white"
-      style={{ backgroundColor: item.color || "var(--ph-brand)" }}
-    >
-      {item.icon_image ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={item.icon_image}
-          alt=""
-          className="h-full w-full rounded-lg object-cover"
-        />
-      ) : (
-        <i
-          className={cn("ra", `ra-${icon}`, "text-base leading-none")}
-          aria-hidden
-        />
-      )}
-    </span>
+    <SuiteEntityIcon
+      imageUrl={item.icon_image}
+      label={item.name}
+      color={item.color}
+      tinted
+      className="h-8 w-8 text-sm"
+      roundedClass="rounded-lg"
+    />
   );
 }
 
@@ -319,6 +207,7 @@ export function SuiteClientsProjectsDirectory({
   onCreateProject,
   onUpdateProject,
   onDeleteProject,
+  renderIconLibrary,
   dataTest = "suite-clients-projects-directory",
 }: SuiteClientsProjectsDirectoryProps) {
   const [query, setQuery] = useState("");
@@ -332,6 +221,7 @@ export function SuiteClientsProjectsDirectory({
   });
   const [draftClientId, setDraftClientId] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const [draftArchived, setDraftArchived] = useState(false);
   const [confirming, setConfirming] = useState<Confirming | null>(null);
   const [saving, setSaving] = useState(false);
@@ -411,6 +301,7 @@ export function SuiteClientsProjectsDirectory({
       icon: DEFAULT_ICON,
       color: DEFAULT_COLOR,
       iconImageFile: null,
+      iconImageUrl: null,
       clearIconImage: false,
     });
     setPreview(null);
@@ -426,9 +317,10 @@ export function SuiteClientsProjectsDirectory({
     setMutationError(null);
     setDraft({
       name: item.name,
-      icon: item.icon && isDirectoryIcon(item.icon) ? item.icon : DEFAULT_ICON,
+      icon: item.icon ?? DEFAULT_ICON,
       color: item.color || DEFAULT_COLOR,
       iconImageFile: null,
+      iconImageUrl: null,
       clearIconImage: false,
     });
     setPreview(item.icon_image || null);
@@ -454,6 +346,7 @@ export function SuiteClientsProjectsDirectory({
     setDraft((current) => ({
       ...current,
       iconImageFile: file,
+      iconImageUrl: null,
       clearIconImage: false,
     }));
     setPreview(URL.createObjectURL(file));
@@ -465,8 +358,22 @@ export function SuiteClientsProjectsDirectory({
     setDraft((current) => ({
       ...current,
       iconImageFile: null,
+      iconImageUrl: null,
       clearIconImage: true,
     }));
+  }
+
+  function pickFromLibrary(icon: { url: string; name?: string }) {
+    if (preview?.startsWith("blob:")) URL.revokeObjectURL(preview);
+    setMutationError(null);
+    setPreview(icon.url);
+    setDraft((current) => ({
+      ...current,
+      iconImageFile: null,
+      iconImageUrl: icon.url,
+      clearIconImage: false,
+    }));
+    setLibraryOpen(false);
   }
 
   function closeEditor() {
@@ -516,10 +423,7 @@ export function SuiteClientsProjectsDirectory({
     try {
       await onUpdateProject(project, {
         name: project.name,
-        icon:
-          project.icon && isDirectoryIcon(project.icon)
-            ? project.icon
-            : DEFAULT_ICON,
+        icon: project.icon ?? DEFAULT_ICON,
         color: project.color || DEFAULT_COLOR,
         clientId: project.clientId ?? null,
         isArchived: !project.isArchived,
@@ -845,20 +749,31 @@ export function SuiteClientsProjectsDirectory({
             }
           />
           <DirectoryIconPicker
-            value={isDirectoryIcon(draft.icon) ? draft.icon : DEFAULT_ICON}
             preview={preview}
+            label={draft.name}
+            color={draft.color}
             onFileChange={chooseImage}
             onClear={clearImage}
-            onChange={(icon) => {
-              if (preview) clearImage();
-              setDraft((current) => ({ ...current, icon }));
-            }}
+            onBrowse={() => setLibraryOpen(true)}
           />
           <div>
             <span className="mb-1.5 block text-sm font-medium text-ph-ink">
               Colour
             </span>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                aria-label="No colour"
+                aria-pressed={!draft.color}
+                title="No colour"
+                onClick={() => setDraft({ ...draft, color: "" })}
+                className={cn(
+                  "flex h-8 w-8 items-center justify-center rounded-full border border-ph-border bg-ph-surface text-ph-mutedtext ring-offset-2",
+                  !draft.color && "ring-2 ring-ph-brand",
+                )}
+              >
+                <Prohibition className="h-4 w-4" aria-hidden />
+              </button>
               {[
                 "#6366f1",
                 "#0ea5e9",
@@ -881,16 +796,53 @@ export function SuiteClientsProjectsDirectory({
                   style={{ backgroundColor: color }}
                 />
               ))}
-              <Input
-                hideLabel
-                label="Custom colour"
-                type="color"
-                value={draft.color}
-                onChange={(event) =>
-                  setDraft({ ...draft, color: event.target.value })
-                }
-                className="h-8 w-8 p-0"
-              />
+              <label
+                className={cn(
+                  "relative inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full ring-1 ring-ph-border ring-offset-2",
+                  ![
+                    "#6366f1",
+                    "#0ea5e9",
+                    "#10b981",
+                    "#f59e0b",
+                    "#ef4444",
+                    "#a855f7",
+                    "#64748b",
+                  ].includes(draft.color) && "ring-2 ring-ph-brand",
+                )}
+                style={{
+                  background:
+                    "conic-gradient(from 0deg, #ef4444, #f59e0b, #eab308, #22c55e, #06b6d4, #3b82f6, #8b5cf6, #ec4899, #ef4444)",
+                }}
+                title="Custom colour"
+              >
+                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-ph-surface">
+                  {[
+                    "#6366f1",
+                    "#0ea5e9",
+                    "#10b981",
+                    "#f59e0b",
+                    "#ef4444",
+                    "#a855f7",
+                    "#64748b",
+                  ].includes(draft.color) ? (
+                    <Plus className="h-3 w-3 text-ph-ink" aria-hidden />
+                  ) : (
+                    <span
+                      className="h-2.5 w-2.5 rounded-full"
+                      style={{ backgroundColor: draft.color }}
+                    />
+                  )}
+                </span>
+                <input
+                  type="color"
+                  aria-label="Custom colour"
+                  value={draft.color}
+                  onChange={(event) =>
+                    setDraft({ ...draft, color: event.target.value })
+                  }
+                  className="sr-only"
+                />
+              </label>
             </div>
           </div>
           {editing?.kind.includes("project") ? (
@@ -919,6 +871,17 @@ export function SuiteClientsProjectsDirectory({
           ) : null}
         </div>
       </Modal>
+      {libraryOpen ? (
+        <Modal
+          open
+          onClose={() => setLibraryOpen(false)}
+          title="Icon library"
+        >
+          {renderIconLibrary
+            ? renderIconLibrary({ onPick: pickFromLibrary })
+            : <SuitePaletteLibrary onPick={pickFromLibrary} />}
+        </Modal>
+      ) : null}
       <Modal
         open={confirming !== null}
         onClose={() => setConfirming(null)}

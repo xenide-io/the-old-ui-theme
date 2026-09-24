@@ -6,7 +6,7 @@ import { SuiteClientsProjectsDirectory } from "@/suite/components/suite-clients-
 describe("SuiteClientsProjectsDirectory", () => {
   afterEach(cleanup);
 
-  it("uses roving focus and arrow keys for the icon radiogroup", async () => {
+  it("offers the Palette icon library instead of an RPG radiogroup", async () => {
     const user = userEvent.setup();
 
     render(
@@ -19,19 +19,11 @@ describe("SuiteClientsProjectsDirectory", () => {
     );
 
     await user.click(screen.getByRole("button", { name: "New client" }));
-    const castle = screen.getByRole("radio", { name: "Castle" });
-    const castleFlag = screen.getByRole("radio", { name: "Castle flag" });
 
-    expect(castle).toHaveAttribute("tabindex", "0");
-    expect(castleFlag).toHaveAttribute("tabindex", "-1");
-
-    castle.focus();
-    await user.keyboard("{ArrowRight}");
-    expect(castleFlag).toHaveAttribute("aria-checked", "true");
-    expect(castleFlag).toHaveFocus();
-
-    await user.keyboard("{Home}");
-    expect(screen.getByRole("radio", { name: "Arena" })).toHaveFocus();
+    expect(
+      screen.getByRole("button", { name: "Browse library" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("radio")).toBeNull();
   });
 
   it("moves focus between the mobile client list and detail view", async () => {
