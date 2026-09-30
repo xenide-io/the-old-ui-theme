@@ -18,8 +18,6 @@ import {
   Xmark,
 } from "iconoir-react";
 import { Button, Input, Modal } from "@/components/ui";
-import { SUITE_APPS, SUITE_APP_MAP, type SuiteAppSlug } from "@/suite/lib/apps";
-import { SuiteAppIcon } from "@/suite/icons";
 
 export interface SuiteIntegrationPickerItem {
   id: string;
@@ -27,6 +25,8 @@ export interface SuiteIntegrationPickerItem {
   description: string;
   icon?: ReactNode;
   categories?: string[];
+  /** Product apps this toolkit can actually bridge. Empty means Shelly AI only. */
+  bridgeTargets?: string[];
   authSchemes?: string[];
   connecting?: boolean;
   unavailableReason?: string;
@@ -128,46 +128,28 @@ function authSchemesFor(item: SuiteIntegrationPickerItem) {
   );
 }
 
-/**
- * Which ShellStack apps put a connected integration to work, per the deep
- * integration plan: calendar/mail feed TurtleTime time entries and Tides
- * tasks, code/chat/ticketing feed Tides tasks and Kraken runbooks, docs and
- * knowledge sources feed Kraken, CRM/finance feed the Portal. Unmapped
- * categories default to Kraken's authorised-source search.
- */
-const CATEGORY_APP_AFFINITY: Record<string, readonly SuiteAppSlug[]> = {
-  calendar: ["turtletime", "tides"],
-  email: ["turtletime", "tides"],
-  code: ["tides", "kraken"],
-  chat: ["tides", "kraken"],
-  documents: ["kraken"],
-  notes: ["kraken"],
-  knowledge: ["kraken"],
-  file_storage: ["kraken"],
-  crm: ["shellstack", "tides"],
-  finance: ["shellstack", "tides"],
-  payment: ["shellstack", "tides"],
-  monitoring: ["tides", "kraken"],
-  design: ["tides", "kraken"],
-  support: ["tides", "shellstack"],
-  ticketing: ["tides", "kraken"],
+const BRIDGE_MARK: Record<string, { src: string; name: string }> = {
+  turtletime: { src: "/turtletime-icon.svg", name: "TurtleTime" },
+  tides: { src: "/tides-icon.svg", name: "Tides" },
+  kraken: { src: "/kraken-icon.svg", name: "Kraken" },
 };
 
-const DEFAULT_APP_AFFINITY: readonly SuiteAppSlug[] = ["tides", "kraken"];
-
 export function suiteAppsForIntegration(
-  categories: readonly string[] | undefined,
-): SuiteAppSlug[] {
-  const apps = new Set<SuiteAppSlug>();
-  for (const category of categories ?? []) {
-    for (const app of CATEGORY_APP_AFFINITY[category.trim().toLowerCase()] ??
-      []) {
-      apps.add(app);
-    }
+  itemOrCategories:
+    | { bridgeTargets?: readonly string[] }
+    | readonly string[]
+    | undefined,
+): string[] {
+  if (
+    !itemOrCategories ||
+    Array.isArray(itemOrCategories) ||
+    !("bridgeTargets" in itemOrCategories)
+  ) {
+    return [];
   }
-  return apps.size > 0
-    ? SUITE_APPS.filter((app) => apps.has(app.slug)).map((app) => app.slug)
-    : [...DEFAULT_APP_AFFINITY];
+  const explicit = itemOrCategories.bridgeTargets;
+  if (!Array.isArray(explicit)) return [];
+  return explicit.filter((app): app is string => app in BRIDGE_MARK);
 }
 
 export function SuiteIntegrationPicker({
@@ -197,6 +179,7 @@ export function SuiteIntegrationPicker({
   const [categoryQuery, setCategoryQuery] = useState("");
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [bridgeOnly, setBridgeOnly] = useState(false);
   const categoryMenuRef = useRef<HTMLDivElement>(null);
   const categoryTriggerRef = useRef<HTMLButtonElement>(null);
   const categorySearchRef = useRef<HTMLInputElement>(null);
@@ -238,7 +221,7 @@ export function SuiteIntegrationPicker({
     value
       .replace(/[-_]/g, " ")
       .replace(/\b\w/g, (letter) => letter.toUpperCase());
-  const filtered =
+  const catalogItems =
     onSearchChange || onCategoryChange
       ? items
       : items.filter((item) => {
@@ -250,6 +233,9 @@ export function SuiteIntegrationPicker({
               (item.categories ?? []).includes(activeCategory))
           );
         });
+  const filtered = bridgeOnly
+    ? catalogItems.filter((item) => (item.bridgeTargets ?? []).length > 0)
+    : catalogItems;
   const visibleCategories = categories.filter((value) =>
     categoryLabel(value)
       .toLowerCase()
@@ -524,6 +510,14 @@ export function SuiteIntegrationPicker({
               {connectionError}
             </p>
           ) : null}
+          <label className="flex items-center gap-2 text-sm text-ph-ink">
+            <input
+              type="checkbox"
+              checked={bridgeOnly}
+              onChange={(event) => setBridgeOnly(event.target.checked)}
+            />
+            Shelly Bridge only
+          </label>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="relative">
               <Search
@@ -696,26 +690,25 @@ export function SuiteIntegrationPicker({
                           </span>
                         </span>
                       </button>
-                      {suiteAppsForIntegration(item.categories).length > 0 ? (
+                      {suiteAppsForIntegration(item).length > 0 ? (
                         <div
                           className="mt-3 flex flex-wrap items-center gap-1.5"
-                          aria-label="Works with ShellStack apps"
+                          aria-label="Bridges into ShellStack apps"
                         >
-                          {suiteAppsForIntegration(item.categories).map(
-                            (app) => (
-                              <span
+                          {suiteAppsForIntegration(item).map((app) => {
+                            const mark = BRIDGE_MARK[app];
+                            if (!mark) return null;
+                            return (
+                              <img
                                 key={app}
+                                src={mark.src}
+                                alt=""
+                                title={`Bridge in ${mark.name}`}
+                                className="h-6 w-6"
                                 data-test={`${dataTest}-${item.id}-app-${app}`}
-                              >
-                                <SuiteAppIcon
-                                  app={app}
-                                  size={16}
-                                  label={`Works with ${SUITE_APP_MAP[app].name}`}
-                                  className="rounded-[4px]"
-                                />
-                              </span>
-                            ),
-                          )}
+                              />
+                            );
+                          })}
                         </div>
                       ) : null}
                       {authSchemesFor(item).length > 0 ? (
