@@ -46,6 +46,39 @@ describe("SuiteIntegrationPicker", () => {
     expect(screen.queryByText("Linear")).not.toBeInTheDocument();
   });
 
+  it("filters to bridge-capable apps when Shelly Bridge only is on", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <SuiteIntegrationPicker
+        open
+        items={[
+          {
+            id: "bridged",
+            label: "Bridged app",
+            description: "Can bridge into Tides",
+            bridgeTargets: ["tides"],
+          },
+          {
+            id: "shelly-only",
+            label: "Shelly only app",
+            description: "AI only",
+          },
+        ]}
+        onClose={vi.fn()}
+        onConnect={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Bridged app")).toBeInTheDocument();
+    expect(screen.getByText("Shelly only app")).toBeInTheDocument();
+
+    await user.click(screen.getByLabelText("Shelly Bridge only"));
+
+    expect(screen.getByText("Bridged app")).toBeInTheDocument();
+    expect(screen.queryByText("Shelly only app")).not.toBeInTheDocument();
+  });
+
   it("shows auth tags and passes the selected method to the connector", async () => {
     const user = userEvent.setup();
     const onConnect = vi.fn();
@@ -59,6 +92,7 @@ describe("SuiteIntegrationPicker", () => {
             label: "Mixed provider",
             description: "Supports multiple connection methods",
             categories: ["calendar", "email"],
+            bridgeTargets: ["turtletime", "tides"],
             authSchemes: ["OAUTH2", "API_KEY"],
           },
         ]}
@@ -69,8 +103,8 @@ describe("SuiteIntegrationPicker", () => {
 
     expect(screen.getByText("OAuth 2.0")).toBeInTheDocument();
     expect(screen.getByText("API key")).toBeInTheDocument();
-    expect(screen.getByLabelText("Works with TurtleTime")).toBeInTheDocument();
-    expect(screen.getByLabelText("Works with Tides")).toBeInTheDocument();
+    expect(screen.getByTitle("Bridge in TurtleTime")).toBeInTheDocument();
+    expect(screen.getByTitle("Bridge in Tides")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Connect" }));
     await user.click(screen.getByRole("button", { name: /API key Select/ }));

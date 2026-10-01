@@ -10,11 +10,15 @@ export {
   type SuiteAppEntry,
   type SuiteAppSelectOptions,
 } from "./components/app-switcher";
+export { SuiteNotificationBell } from "./components/suite-notification-bell";
 export {
-  SuiteNotificationBell,
+  SuiteNotificationsProvider,
+  useSuiteNotifications,
+  SUITE_NOTIFICATIONS_POLL_MS,
   type SuiteNotification,
   type SuiteNotificationsResponse,
-} from "./components/suite-notification-bell";
+  type SuiteNotificationsContextValue,
+} from "./lib/suite-notifications";
 export { CommandPaletteHost } from "./components/command-palette-host";
 export { DeferredChrome } from "./components/deferred-chrome";
 export { SuiteMobileDrawer } from "./components/suite-mobile-drawer";
@@ -174,9 +178,7 @@ export {
   type SuiteDirectoryProject,
   type SuiteDirectoryProjectFields,
 } from "./components/suite-clients-projects-directory";
-export {
-  SuiteEntityIcon,
-} from "./components/suite-entity-icon";
+export { SuiteEntityIcon } from "./components/suite-entity-icon";
 export {
   SuitePaletteLibrary,
   type SuitePalettePick,

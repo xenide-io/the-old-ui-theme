@@ -36,6 +36,7 @@ import {
   SuiteNotificationBell,
   type SuiteNotification,
 } from "@/suite/components/suite-notification-bell";
+import { SuiteNotificationsProvider } from "@/suite/lib/suite-notifications";
 import { SuiteMobileDrawer } from "@/suite/components/suite-mobile-drawer";
 import { SuiteSettingsMobileNav } from "@/suite/components/suite-settings-mobile-nav";
 import {
@@ -58,11 +59,7 @@ import {
 } from "@/suite/components/suite-sidebar";
 import { SuiteWorkspaceSwitcher } from "@/suite/components/workspace-switcher";
 import { SuiteAppLayout } from "@/suite/components/suite-app-layout";
-import {
-  SuiteIcon,
-  SUITE_ICON_NAMES,
-  APP_ACCENTS,
-} from "@/suite/icons";
+import { SuiteIcon, SUITE_ICON_NAMES, APP_ACCENTS } from "@/suite/icons";
 
 const REAL_APPS = [
   "kraken",
@@ -196,8 +193,8 @@ export default function SuiteShowcase() {
       description="The shared ShellStack chrome — app switcher, mobile header, bottom nav, account menu, notification bell, command palette, drawer, settings nav, skeletons, page layout, and icon system."
       code={`import {
   AppSwitcher, SuiteMobileHeader, SuiteBottomNav,
-  SuiteUserMenu, SuiteNotificationBell, CommandPaletteHost,
-  SuiteMobileDrawer, SuiteSettingsMobileNav,
+  SuiteUserMenu, SuiteNotificationBell, SuiteNotificationsProvider,
+  CommandPaletteHost, SuiteMobileDrawer, SuiteSettingsMobileNav,
   SuiteSkeleton, SuitePage, SuitePageHeader,
 } from "@xenide-io/the-old-ui-theme/suite";`}
       filename="SuiteExample.tsx"
@@ -636,15 +633,17 @@ export default function SuiteShowcase() {
               settingsHref="#settings"
               onSignOut={() => {}}
             />
-            <SuiteNotificationBell
+            <SuiteNotificationsProvider
               fetchNotifications={async () => ({
                 notifications: NOTIFICATIONS,
                 unread_count: 1,
               })}
               markRead={async () => {}}
               markAllRead={async () => {}}
-              dropdownMenu={DropdownMenu}
-            />
+              cacheKey={null}
+            >
+              <SuiteNotificationBell dropdownMenu={DropdownMenu} />
+            </SuiteNotificationsProvider>
           </div>
         </section>
 

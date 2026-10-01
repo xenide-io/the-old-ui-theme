@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import {
+  Bridge3d,
   EvPlug as Plug,
   Filter,
   NavArrowDown,
@@ -63,6 +64,13 @@ export interface SuiteIntegrationPickerProps {
   category?: string;
   categories?: string[];
   onCategoryChange?: (value: string) => void;
+  /**
+   * When provided, the "Shelly Bridge only" filter is controlled by the caller
+   * (so it can refetch a bridge-filtered catalogue server-side). When omitted,
+   * the picker filters the loaded items locally.
+   */
+  bridgeOnly?: boolean;
+  onBridgeOnlyChange?: (value: boolean) => void;
   onClose: () => void;
   onConnect: (
     item: SuiteIntegrationPickerItem,
@@ -87,7 +95,7 @@ function IntegrationSkeletonCard() {
       aria-hidden="true"
     >
       <div className="flex items-start gap-3">
-        <div className="h-10 w-10 shrink-0 rounded-lg bg-ph-muted" />
+        <div className="h-8 w-8 shrink-0 rounded-md bg-ph-muted" />
         <div className="min-w-0 flex-1 space-y-2 pt-1">
           <div className="h-4 w-3/5 rounded bg-ph-muted" />
           <div className="h-3 w-full rounded bg-ph-muted" />
@@ -166,6 +174,8 @@ export function SuiteIntegrationPicker({
   category: controlledCategory,
   categories: controlledCategories,
   onCategoryChange,
+  bridgeOnly: controlledBridgeOnly,
+  onBridgeOnlyChange,
   onClose,
   onConnect,
   onFetchAuthFields,
@@ -179,7 +189,7 @@ export function SuiteIntegrationPicker({
   const [categoryQuery, setCategoryQuery] = useState("");
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
-  const [bridgeOnly, setBridgeOnly] = useState(false);
+  const [bridgeOnlyInternal, setBridgeOnlyInternal] = useState(false);
   const categoryMenuRef = useRef<HTMLDivElement>(null);
   const categoryTriggerRef = useRef<HTMLButtonElement>(null);
   const categorySearchRef = useRef<HTMLInputElement>(null);
@@ -190,6 +200,7 @@ export function SuiteIntegrationPicker({
   const scrollViewportRef = useRef<HTMLDivElement>(null);
   const loadMoreSentinelRef = useRef<HTMLDivElement>(null);
   const loadMoreInFlightRef = useRef(false);
+  const sentinelVisibleRef = useRef(false);
   const authRequestRef = useRef(0);
   const [methodItem, setMethodItem] =
     useState<SuiteIntegrationPickerItem | null>(null);
@@ -217,6 +228,11 @@ export function SuiteIntegrationPicker({
   const categories = controlledCategories ?? itemCategories;
   const activeSearch = controlledSearch ?? query;
   const activeCategory = controlledCategory ?? category;
+  const bridgeOnly = controlledBridgeOnly ?? bridgeOnlyInternal;
+  const setBridgeOnly = (value: boolean) => {
+    setBridgeOnlyInternal(value);
+    onBridgeOnlyChange?.(value);
+  };
   const categoryLabel = (value: string) =>
     value
       .replace(/[-_]/g, " ")
@@ -233,9 +249,10 @@ export function SuiteIntegrationPicker({
               (item.categories ?? []).includes(activeCategory))
           );
         });
-  const filtered = bridgeOnly
-    ? catalogItems.filter((item) => (item.bridgeTargets ?? []).length > 0)
-    : catalogItems;
+  const filtered =
+    bridgeOnly && controlledBridgeOnly === undefined
+      ? catalogItems.filter((item) => (item.bridgeTargets ?? []).length > 0)
+      : catalogItems;
   const visibleCategories = categories.filter((value) =>
     categoryLabel(value)
       .toLowerCase()
@@ -466,27 +483,37 @@ export function SuiteIntegrationPicker({
   useEffect(() => {
     const root = scrollViewportRef.current;
     const sentinel = loadMoreSentinelRef.current;
-    if (
-      !open ||
-      !root ||
-      !sentinel ||
-      !hasMore ||
-      !onEndReached ||
-      loading ||
-      catalogLoading ||
-      loadingMore
-    ) {
+    if (!open || !root || !sentinel) {
+      sentinelVisibleRef.current = false;
       return;
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting || loadMoreInFlightRef.current) return;
+        // Only auto-load on the rising edge of the sentinel becoming visible.
+        // Without this, shrinking the list (search / category / Shelly Bridge
+        // only) leaves the sentinel pinned in view and each re-armed observer
+        // fires again, chain-loading the whole catalog page after page.
+        if (!entry.isIntersecting) {
+          sentinelVisibleRef.current = false;
+          return;
+        }
+        if (sentinelVisibleRef.current) return;
+        sentinelVisibleRef.current = true;
+        if (
+          loadMoreInFlightRef.current ||
+          !hasMore ||
+          !onEndReached ||
+          loading ||
+          catalogLoading ||
+          loadingMore
+        ) {
+          return;
+        }
         loadMoreInFlightRef.current = true;
-        observer.unobserve(entry.target);
         onEndReached();
       },
-      { root, rootMargin: "0px 0px 80px", threshold: 0 },
+      { root, rootMargin: "0px 0px 120px", threshold: 0 },
     );
 
     observer.observe(sentinel);
@@ -510,13 +537,23 @@ export function SuiteIntegrationPicker({
               {connectionError}
             </p>
           ) : null}
-          <label className="flex items-center gap-2 text-sm text-ph-ink">
+          <label
+            className="inline-flex w-fit cursor-pointer items-center gap-2 text-sm text-ph-ink"
+            data-test={`${dataTest}-bridge-only`}
+          >
             <input
               type="checkbox"
+              role="switch"
+              className="ph-toggle"
               checked={bridgeOnly}
               onChange={(event) => setBridgeOnly(event.target.checked)}
+              aria-label="Shelly Bridge only"
             />
-            Shelly Bridge only
+            <Bridge3d
+              className="h-4 w-4 shrink-0 text-ph-subtle"
+              aria-hidden
+            />
+            <span>Shelly Bridge only</span>
           </label>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="relative">
@@ -646,6 +683,8 @@ export function SuiteIntegrationPicker({
                   const isExpanded = expanded === item.id;
                   const longDescription =
                     item.description.length > DESCRIPTION_LIMIT;
+                  const bridgeApps = suiteAppsForIntegration(item);
+                  const schemes = authSchemesFor(item);
                   const text =
                     isExpanded || !longDescription
                       ? item.description
@@ -665,9 +704,9 @@ export function SuiteIntegrationPicker({
                         aria-expanded={isExpanded}
                       >
                         <span className="flex items-start gap-3">
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-ph-muted text-ph-ink">
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-ph-muted text-ph-ink">
                             {item.icon ?? (
-                              <Plug className="h-5 w-5" aria-hidden />
+                              <Plug className="h-4 w-4" aria-hidden />
                             )}
                           </span>
                           <span className="min-w-0">
@@ -690,12 +729,12 @@ export function SuiteIntegrationPicker({
                           </span>
                         </span>
                       </button>
-                      {suiteAppsForIntegration(item).length > 0 ? (
+                      {bridgeApps.length > 0 ? (
                         <div
                           className="mt-3 flex flex-wrap items-center gap-1.5"
                           aria-label="Bridges into ShellStack apps"
                         >
-                          {suiteAppsForIntegration(item).map((app) => {
+                          {bridgeApps.map((app) => {
                             const mark = BRIDGE_MARK[app];
                             if (!mark) return null;
                             return (
@@ -704,19 +743,19 @@ export function SuiteIntegrationPicker({
                                 src={mark.src}
                                 alt=""
                                 title={`Bridge in ${mark.name}`}
-                                className="h-6 w-6"
+                                className="h-5 w-5"
                                 data-test={`${dataTest}-${item.id}-app-${app}`}
                               />
                             );
                           })}
                         </div>
                       ) : null}
-                      {authSchemesFor(item).length > 0 ? (
+                      {schemes.length > 0 ? (
                         <div
                           className="mt-3 flex flex-wrap gap-1.5"
                           aria-label="Connection methods"
                         >
-                          {authSchemesFor(item).map((scheme) => (
+                          {schemes.map((scheme) => (
                             <span
                               key={scheme}
                               className="rounded-full border border-ph-border bg-ph-muted px-2 py-1 text-[0.6875rem] font-medium text-ph-subtle"

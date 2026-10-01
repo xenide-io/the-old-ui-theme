@@ -5,6 +5,7 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 
+import { SuiteNotificationsProvider } from "../lib/suite-notifications";
 import { SuiteNotificationBell } from "./suite-notification-bell";
 
 afterEach(() => {
@@ -14,21 +15,24 @@ afterEach(() => {
 describe("SuiteNotificationBell", () => {
   it("anchors the unread badge close to the bell glyph", async () => {
     render(
-      <SuiteNotificationBell
+      <SuiteNotificationsProvider
         fetchNotifications={async () => ({
           notifications: [],
           unread_count: 12,
         })}
         markRead={async () => undefined}
         markAllRead={async () => undefined}
-        dropdownMenu={({ trigger, "aria-label": label, children }) => (
-          <div aria-label={label}>
-            {trigger}
-            {children}
-          </div>
-        )}
         cacheKey={null}
-      />,
+      >
+        <SuiteNotificationBell
+          dropdownMenu={({ trigger, "aria-label": label, children }) => (
+            <div aria-label={label}>
+              {trigger}
+              {children}
+            </div>
+          )}
+        />
+      </SuiteNotificationsProvider>,
     );
 
     const badge = await waitFor(() => {

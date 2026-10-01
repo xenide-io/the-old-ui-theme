@@ -1,36 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Bell } from "iconoir-react";
 
 import type { SuiteDropdownMenuComponent } from "../lib/injected";
-import {
-  resolveSuiteNotificationHref,
-  suiteAppBaseUrl,
-  suiteAppSlugForNotificationSource,
-} from "../lib/apps";
+import { useSuiteNotifications } from "../lib/suite-notifications";
 
-const POLL_MS = 60_000;
-
-/** Cross-app (suite) notification from `/api/notifications/` — shared across ShellStack apps. */
-export interface SuiteNotification {
-  id: string;
-  title: string;
-  body: string;
-  href: string;
-  kind: string;
-  source_app: string;
-  read_at: string | null;
-  created_at: string;
-  workspace: string | null;
-  organisation: string | null;
-}
-
-export interface SuiteNotificationsResponse {
-  notifications: SuiteNotification[];
-  unread_count: number;
-}
+export type {
+  SuiteNotification,
+  SuiteNotificationsResponse,
+} from "../lib/suite-notifications";
 
 function timeAgo(iso: string): string {
   const then = new Date(iso).getTime();
@@ -44,155 +22,30 @@ function timeAgo(iso: string): string {
   return `${Math.round(hrs / 24)}d ago`;
 }
 
+/**
+ * Presentational notification bell. State, polling, caching and navigation
+ * live in SuiteNotificationsProvider — this just renders the shared context
+ * and forwards user intent back to it.
+ */
 export function SuiteNotificationBell({
-  fetchNotifications,
-  markRead,
-  markAllRead,
   dropdownMenu: DropdownMenu,
-  cacheKey = "suite-notifications-cache",
   dataTest = "suite-notifications",
   triggerId,
   triggerDataTest,
 }: {
-  fetchNotifications: () => Promise<SuiteNotificationsResponse>;
-  markRead: (id: string) => Promise<unknown>;
-  markAllRead: () => Promise<unknown>;
   dropdownMenu: SuiteDropdownMenuComponent;
-  /** sessionStorage key for stale-while-revalidate; `null` disables caching. */
-  cacheKey?: string | null;
   dataTest?: string;
   triggerId?: string;
   triggerDataTest?: string;
 }) {
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [items, setItems] = useState<SuiteNotification[]>([]);
-  const [unread, setUnread] = useState(0);
-
-  const load = useCallback(async () => {
-    try {
-      const data = await fetchNotifications();
-      setItems(data.notifications);
-      setUnread(data.unread_count);
-      // Stale-while-revalidate: keep last inbox for instant paint next visit.
-      if (cacheKey) {
-        try {
-          sessionStorage.setItem(
-            cacheKey,
-            JSON.stringify({
-              notifications: data.notifications,
-              unread_count: data.unread_count,
-            }),
-          );
-        } catch {
-          // ignore quota / private mode
-        }
-      }
-    } catch {
-      // Non-critical chrome — never surface bell errors to the user.
-    }
-  }, [fetchNotifications, cacheKey]);
-
-  useEffect(() => {
-    if (cacheKey) {
-      queueMicrotask(() => {
-        try {
-          const raw = sessionStorage.getItem(cacheKey);
-          if (raw) {
-            const cached = JSON.parse(raw) as {
-              notifications?: SuiteNotification[];
-              unread_count?: number;
-            };
-            if (Array.isArray(cached.notifications)) {
-              setItems(cached.notifications);
-              setUnread(cached.unread_count ?? 0);
-            }
-          }
-        } catch {
-          // ignore
-        }
-      });
-    }
-    const kick = window.setTimeout(() => void load(), 0);
-    const id = window.setInterval(() => void load(), POLL_MS);
-    return () => {
-      window.clearTimeout(kick);
-      window.clearInterval(id);
-    };
-  }, [load, cacheKey]);
-
-  const onOpenChange = useCallback(
-    (next: boolean) => {
-      setOpen(next);
-      if (next) void load();
-    },
-    [load],
-  );
-
-  const openItem = useCallback(
-    async (n: SuiteNotification) => {
-      setOpen(false);
-      if (!n.read_at) {
-        setItems((prev) =>
-          prev.map((i) =>
-            i.id === n.id ? { ...i, read_at: new Date().toISOString() } : i,
-          ),
-        );
-        setUnread((u) => Math.max(0, u - 1));
-        try {
-          await markRead(n.id);
-        } catch {
-          // ignore
-        }
-      }
-      const target = resolveSuiteNotificationHref(n.href, n.source_app);
-      if (!target) return;
-      if (/^https?:\/\//i.test(target)) {
-        try {
-          const url = new URL(target);
-          const sourceApp = suiteAppSlugForNotificationSource(n.source_app);
-          const path = `${url.pathname}${url.search}${url.hash}`;
-          if (url.origin === window.location.origin) {
-            router.push(path);
-            return;
-          }
-          if (sourceApp && sourceApp !== "shellstack") {
-            const sourceOrigin = new URL(suiteAppBaseUrl(sourceApp)).origin;
-            if (url.origin === sourceOrigin) {
-              const launchUrl = new URL(
-                `/launch/${sourceApp}`,
-                suiteAppBaseUrl("shellstack"),
-              );
-              launchUrl.searchParams.set("next", path);
-              window.location.assign(launchUrl.toString());
-              return;
-            }
-          }
-        } catch {
-          // Fall through to the original external link.
-        }
-        window.location.assign(target);
-        return;
-      }
-      router.push(target);
-    },
-    [router, markRead],
-  );
-
-  const markAll = useCallback(async () => {
-    setItems((prev) =>
-      prev.map((i) => ({
-        ...i,
-        read_at: i.read_at ?? new Date().toISOString(),
-      })),
-    );
-    setUnread(0);
-    try {
-      await markAllRead();
-    } catch {
-      // ignore
-    }
-  }, [markAllRead]);
+  const {
+    notifications,
+    unreadCount: unread,
+    open,
+    setOpen,
+    select,
+    markAllRead,
+  } = useSuiteNotifications();
 
   return (
     <DropdownMenu
@@ -204,7 +57,7 @@ export function SuiteNotificationBell({
       align="end"
       panelClassName="w-80 overflow-hidden p-0"
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={setOpen}
       trigger={
         <span className="relative inline-flex h-11 w-11 items-center justify-center overflow-visible rounded-full text-ph-mutedtext transition hover:bg-ph-muted hover:text-ph-ink">
           <span className="relative inline-flex h-5 w-5">
@@ -225,7 +78,7 @@ export function SuiteNotificationBell({
             type="button"
             id={`${dataTest}-mark-all`}
             data-test={`${dataTest}-mark-all`}
-            onClick={markAll}
+            onClick={markAllRead}
             className="text-xs font-medium text-ph-brand hover:underline"
           >
             Mark all read
@@ -233,17 +86,17 @@ export function SuiteNotificationBell({
         ) : null}
       </div>
       <div className="max-h-80 overflow-y-auto py-1">
-        {items.length === 0 ? (
+        {notifications.length === 0 ? (
           <p className="px-3 py-6 text-center text-sm text-ph-mutedtext">
             You&apos;re all caught up.
           </p>
         ) : (
-          items.map((n) => (
+          notifications.map((n) => (
             <button
               key={n.id}
               id={`${dataTest}-item-${n.id}`}
               data-test={`${dataTest}-item-${n.id}`}
-              onClick={() => void openItem(n)}
+              onClick={() => select(n)}
               className="flex w-full flex-col gap-0.5 px-3 py-2 text-left transition hover:bg-ph-muted"
             >
               <span className="flex items-center gap-2">
