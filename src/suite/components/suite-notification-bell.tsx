@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Bell } from "iconoir-react";
 
 import type { SuiteDropdownMenuComponent } from "../lib/injected";
@@ -41,11 +42,16 @@ export function SuiteNotificationBell({
   const {
     notifications,
     unreadCount: unread,
-    open,
-    setOpen,
+    refresh,
     select,
     markAllRead,
   } = useSuiteNotifications();
+  const [open, setOpen] = useState(false);
+
+  const onOpenChange = (next: boolean) => {
+    setOpen(next);
+    if (next) refresh();
+  };
 
   return (
     <DropdownMenu
@@ -57,7 +63,7 @@ export function SuiteNotificationBell({
       align="end"
       panelClassName="w-80 overflow-hidden p-0"
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={onOpenChange}
       trigger={
         <span className="relative inline-flex h-11 w-11 items-center justify-center overflow-visible rounded-full text-ph-mutedtext transition hover:bg-ph-muted hover:text-ph-ink">
           <span className="relative inline-flex h-5 w-5">
@@ -96,7 +102,10 @@ export function SuiteNotificationBell({
               key={n.id}
               id={`${dataTest}-item-${n.id}`}
               data-test={`${dataTest}-item-${n.id}`}
-              onClick={() => select(n)}
+              onClick={() => {
+                setOpen(false);
+                select(n);
+              }}
               className="flex w-full flex-col gap-0.5 px-3 py-2 text-left transition hover:bg-ph-muted"
             >
               <span className="flex items-center gap-2">

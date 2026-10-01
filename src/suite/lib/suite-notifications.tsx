@@ -39,8 +39,6 @@ export interface SuiteNotificationsResponse {
 export interface SuiteNotificationsContextValue {
   notifications: SuiteNotification[];
   unreadCount: number;
-  open: boolean;
-  setOpen: (open: boolean) => void;
   refresh: () => void;
   select: (notification: SuiteNotification) => void;
   markAllRead: () => void;
@@ -96,7 +94,6 @@ export function SuiteNotificationsProvider({
   const router = useRouter();
   const [notifications, setNotifications] = useState<SuiteNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [open, setOpen] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -168,17 +165,8 @@ export function SuiteNotificationsProvider({
     };
   }, [enabled, load, pollMs, cacheKey]);
 
-  const setOpenAndRefresh = useCallback(
-    (next: boolean) => {
-      setOpen(next);
-      if (next) void load();
-    },
-    [load],
-  );
-
   const select = useCallback(
     (notification: SuiteNotification) => {
-      setOpen(false);
       if (!notification.read_at) {
         setNotifications((prev) =>
           prev.map((item) =>
@@ -257,21 +245,11 @@ export function SuiteNotificationsProvider({
     () => ({
       notifications,
       unreadCount,
-      open,
-      setOpen: setOpenAndRefresh,
       refresh: () => void load(),
       select,
       markAllRead,
     }),
-    [
-      notifications,
-      unreadCount,
-      open,
-      setOpenAndRefresh,
-      load,
-      select,
-      markAllRead,
-    ],
+    [notifications, unreadCount, load, select, markAllRead],
   );
 
   return (
