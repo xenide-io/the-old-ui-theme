@@ -50,7 +50,7 @@ export function SuiteEntityIcon({
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src ?? undefined} alt="" className="h-full w-full object-cover" />
+        <img src={src ?? undefined} alt="" className="h-full w-full object-contain" />
       </span>
     );
   }
@@ -71,8 +71,8 @@ export function SuiteEntityIcon({
       title={label ?? undefined}
     >
       <Folder
-        className="h-[70%] w-[70%]"
-        strokeWidth={1.6}
+        className="h-[88%] w-[88%]"
+        strokeWidth={1.8}
         aria-hidden
       />
     </span>
