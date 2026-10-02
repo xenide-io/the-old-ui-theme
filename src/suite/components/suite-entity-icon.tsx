@@ -71,8 +71,8 @@ export function SuiteEntityIcon({
       title={label ?? undefined}
     >
       <Folder
-        className="h-[0.85em] w-[0.85em]"
-        strokeWidth={1.8}
+        className="h-[70%] w-[70%]"
+        strokeWidth={1.6}
         aria-hidden
       />
     </span>
