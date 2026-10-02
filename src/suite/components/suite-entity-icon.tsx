@@ -1,15 +1,16 @@
 'use client';
 
 import type { CSSProperties } from 'react';
+import { Folder } from 'iconoir-react';
 import { paletteIconSrc } from '@/suite/lib/palette-api';
 import { cn } from '@/lib/cn';
 
 /**
  * A client/project icon.
  *
- * Shows the stored image when there is one; otherwise a neutral placeholder —
- * a tinted rounded square with the entity's initial, or a small dot when no
- * label is available. No icon font is involved.
+ * Shows the stored image when there is one; otherwise a folder outline (tinted
+ * to the entity colour when set). A folder is the neutral default for clients,
+ * projects, and their sidebar entries across every app.
  */
 export function SuiteEntityIcon({
   imageUrl,
@@ -54,12 +55,10 @@ export function SuiteEntityIcon({
     );
   }
 
-  const initial = label?.trim().charAt(0).toUpperCase();
-
   return (
     <span
       className={cn(
-        'inline-flex shrink-0 items-center justify-center font-semibold leading-none',
+        'inline-flex shrink-0 items-center justify-center leading-none',
         roundedClass,
         className,
       )}
@@ -69,12 +68,13 @@ export function SuiteEntityIcon({
         ...style,
       }}
       aria-hidden="true"
+      title={label ?? undefined}
     >
-      {initial ? (
-        <span className="text-[0.7em]">{initial}</span>
-      ) : (
-        <span className="block h-1.5 w-1.5 rounded-full bg-current opacity-40" />
-      )}
+      <Folder
+        className="h-[0.85em] w-[0.85em]"
+        strokeWidth={1.8}
+        aria-hidden
+      />
     </span>
   );
 }
