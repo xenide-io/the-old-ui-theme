@@ -106,13 +106,10 @@ export function CommandPalette({
         <Dialog.Overlay
           id={id}
           data-test={dataTest}
-          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
+          className="ph-command-palette__overlay"
         />
         <Dialog.Content
-          className={cn(
-            "fixed left-1/2 top-[20vh] z-50 w-full max-w-xl -translate-x-1/2 overflow-hidden rounded-xl border border-ph-border bg-ph-surface shadow-ph-md",
-            className,
-          )}
+          className={cn("ph-command-palette", className)}
           onOpenAutoFocus={(event) => {
             restoreFocusRef.current =
               document.activeElement instanceof HTMLElement
@@ -127,7 +124,7 @@ export function CommandPalette({
           }}
         >
           <Dialog.Title className="sr-only">Command palette</Dialog.Title>
-          <div className="flex items-center gap-3 border-b border-ph-border px-4 py-3">
+          <div className="ph-command-palette__search">
             <IconSearch className="h-5 w-5 text-ph-mutedtext" />
             <input
               ref={inputRef}
@@ -149,7 +146,7 @@ export function CommandPalette({
               placeholder={placeholder}
               className="flex-1 bg-transparent text-ph-ink outline-none placeholder:text-ph-mutedtext"
             />
-            <kbd aria-hidden="true" className="rounded border border-ph-border bg-ph-muted px-1.5 py-0.5 text-xs text-ph-mutedtext">
+            <kbd aria-hidden="true" className="ph-keycap">
               ESC
             </kbd>
           </div>
@@ -172,16 +169,16 @@ export function CommandPalette({
                   }}
                   onMouseEnter={() => setSelectedIndex(index)}
                   className={cn(
-                    "flex w-full cursor-pointer items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors",
+                    "ph-command-palette__option",
                     index === activeIndex
-                      ? "bg-ph-muted text-ph-ink"
+                      ? "ph-command-palette__option--selected"
                       : "text-ph-subtle",
                   )}
                 >
                   {item.icon && <span aria-hidden="true" className="h-5 w-5">{item.icon}</span>}
                   <span className="flex-1">{item.label}</span>
                   {item.shortcut && (
-                    <kbd aria-hidden="true" className="rounded border border-ph-border bg-ph-surface px-1.5 py-0.5 text-xs text-ph-mutedtext">
+                    <kbd aria-hidden="true" className="ph-keycap text-ph-mutedtext">
                       {item.shortcut}
                     </kbd>
                   )}

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { Avatar } from "@/components/ui/Avatar";
+import { Avatar, AvatarGroup } from "@/components/ui/Avatar";
 import { Stat } from "@/components/ui/Stat";
 
 describe("Avatar status", () => {
@@ -9,6 +9,19 @@ describe("Avatar status", () => {
 
     const status = screen.getByRole("img", { name: "online status" });
     expect(status).toHaveClass("bg-ph-success", "border-ph-surface");
+  });
+
+  it("uses semantic accent contrast and counts grouped children", () => {
+    const { container } = render(
+      <AvatarGroup max={1}>
+        <Avatar label="JD" />
+        <Avatar label="AR" />
+      </AvatarGroup>,
+    );
+
+    expect(container.querySelector(".ph-avatar")).toHaveClass("text-[var(--ph-on-accent)]");
+    expect(screen.getByText("+1")).toBeInTheDocument();
+    expect(container.querySelectorAll(".ph-avatar")).toHaveLength(2);
   });
 });
 

@@ -91,7 +91,7 @@ const DESCRIPTION_LIMIT = 90;
 function IntegrationSkeletonCard() {
   return (
     <div
-      className="flex min-h-36 min-w-0 animate-pulse flex-col justify-between rounded-xl border border-ph-border bg-ph-surface p-4"
+      className="flex min-h-36 min-w-0 animate-pulse flex-col justify-between rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface p-4"
       aria-hidden="true"
     >
       <div className="flex items-start gap-3">
@@ -608,7 +608,7 @@ export function SuiteIntegrationPicker({
               </button>
               {categoryMenuOpen ? (
                 <div
-                  className="absolute z-20 mt-2 max-h-[min(22rem,calc(100dvh-12rem))] w-full max-w-full overflow-hidden rounded-lg border border-ph-border bg-ph-surface p-2 shadow-lg"
+                  className="absolute z-20 mt-2 max-h-[min(22rem,calc(100dvh-12rem))] w-full max-w-full overflow-hidden rounded-[var(--ph-radius-overlay)] border border-[var(--ph-border-control)] bg-[var(--ph-surface-overlay)] p-2 shadow-[var(--ph-shadow-floating)]"
                 >
                   <Input
                     ref={categorySearchRef}
@@ -643,7 +643,7 @@ export function SuiteIntegrationPicker({
                         ref={(element) => {
                           categoryOptionRefs.current[value] = element;
                         }}
-                        className={`flex w-full min-w-0 items-center rounded-md px-3 py-2 text-left text-sm break-words ${activeCategory === value ? "bg-ph-brand text-[var(--ph-on-accent)]" : "text-ph-ink hover:bg-ph-muted"}`}
+                        className={`flex w-full min-w-0 items-center rounded-[var(--ph-radius-control)] px-3 py-2 text-left text-sm break-words focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)] ${activeCategory === value ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)] shadow-[inset_0_0_0_1px_var(--ph-selected-border)]" : "text-ph-ink hover:bg-[var(--ph-surface-hover)]"}`}
                         onClick={() => selectCategory(value)}
                         onKeyDown={(event) => {
                           if (event.key === "Escape") {
@@ -692,7 +692,7 @@ export function SuiteIntegrationPicker({
                   return (
                     <div
                       key={item.id}
-                      className="flex min-h-36 min-w-0 flex-col justify-between rounded-xl border border-ph-border bg-ph-surface p-4"
+                      className="flex min-h-36 min-w-0 flex-col justify-between rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface p-4"
                     >
                       <button
                         type="button"
@@ -701,7 +701,7 @@ export function SuiteIntegrationPicker({
                           longDescription &&
                           setExpanded(isExpanded ? null : item.id)
                         }
-                        aria-expanded={isExpanded}
+                        aria-expanded={longDescription ? isExpanded : undefined}
                       >
                         <span className="flex items-start gap-3">
                           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-ph-muted text-ph-ink">
@@ -801,7 +801,7 @@ export function SuiteIntegrationPicker({
               {connectedItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-ph-border bg-ph-muted p-3"
+                  className="flex items-center justify-between gap-3 rounded-[var(--ph-radius-surface)] border border-ph-border bg-[var(--ph-surface-inset)] p-3"
                 >
                   <span className="flex min-w-0 items-center gap-2 text-sm text-ph-ink">
                     {item.icon}
@@ -885,7 +885,7 @@ export function SuiteIntegrationPicker({
               <button
                 key={scheme}
                 type="button"
-                className="flex w-full items-center justify-between rounded-lg border border-ph-border bg-ph-surface px-3 py-3 text-left text-sm text-ph-ink transition hover:border-ph-brand hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
+                className="flex w-full items-center justify-between rounded-[var(--ph-radius-control)] border border-ph-border bg-ph-surface px-3 py-3 text-left text-sm text-ph-ink transition-[background-color,border-color,box-shadow] hover:border-[var(--ph-selected-border)] hover:bg-[var(--ph-surface-hover)] focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]"
                 onClick={() => void prepareConnection(methodItem, scheme)}
                 data-test={`${dataTest}-choose-${scheme.toLowerCase()}`}
               >

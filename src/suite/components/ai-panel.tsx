@@ -530,7 +530,7 @@ export function SuiteAiPanel({
             type="button"
             onClick={() => void handleClear()}
             disabled={waiting}
-            className="ml-auto inline-flex h-9 items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-ph-subtle transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
+            className="ph-btn ph-btn-ghost ph-btn-sm ml-auto h-9 text-xs text-ph-subtle"
             data-test="ask-ai-clear"
           >
             <Erase className="h-3.5 w-3.5" />
@@ -558,7 +558,7 @@ export function SuiteAiPanel({
 
           {!hydrating && messages.length === 0 && !error ? (
             <div className="mx-auto mt-4 flex max-w-sm flex-col items-center px-1 text-center">
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-ph-brand/10 text-ph-brand">
+              <span className="flex h-10 w-10 items-center justify-center rounded-[var(--ph-radius-surface)] bg-ph-brand/10 text-ph-brand">
                 <Icon className="h-5 w-5" />
               </span>
               <p className="mt-3 font-display text-base font-semibold text-ph-ink">
@@ -575,7 +575,7 @@ export function SuiteAiPanel({
                       type="button"
                       onClick={() => void ask(preset.prompt)}
                       disabled={waiting || hydrating}
-                      className="group flex w-full items-center gap-2 rounded-xl border border-ph-border bg-ph-surface px-3 py-2 text-left text-sm text-ph-ink transition-colors hover:border-ph-brand/40 hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
+                      className="group flex w-full items-center gap-2 rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface px-3 py-2 text-left text-sm text-ph-ink transition-[background-color,border-color,box-shadow] hover:border-[var(--ph-selected-border)] hover:bg-[var(--ph-surface-hover)] focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)] disabled:opacity-40"
                     >
                       <Sparks className="h-4 w-4 shrink-0 text-ph-brand" />
                       <span className="min-w-0 flex-1 truncate">
@@ -620,7 +620,7 @@ export function SuiteAiPanel({
                         }}
                         rows={2}
                         data-test="ask-ai-edit-input"
-                        className="w-full resize-none rounded-2xl rounded-br-md border border-ph-border bg-ph-surface px-3 py-2 text-sm leading-relaxed text-ph-ink outline-none focus-visible:border-ph-brand/45 focus-visible:ring-2 focus-visible:ring-ph-focus/35"
+                        className="w-full resize-none rounded-2xl rounded-br-md border border-ph-border bg-ph-surface px-3 py-2 text-sm leading-relaxed text-ph-ink outline-none focus-visible:border-[var(--ph-selected-border)] focus-visible:shadow-[var(--ph-focus-halo)]"
                       />
                       <div className="flex justify-end gap-2">
                         <button
@@ -629,7 +629,7 @@ export function SuiteAiPanel({
                             setEditingIndex(null);
                             setEditDraft("");
                           }}
-                          className="inline-flex min-h-8 items-center rounded-lg border border-ph-border bg-ph-surface px-2.5 text-xs font-medium text-ph-ink transition-colors hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus"
+                          className="ph-btn ph-btn-secondary ph-btn-xs"
                         >
                           Cancel
                         </button>
@@ -638,7 +638,7 @@ export function SuiteAiPanel({
                           data-test="ask-ai-edit-save"
                           disabled={!editDraft.trim() || waiting}
                           onClick={() => void saveEdit(index)}
-                          className="inline-flex min-h-8 items-center rounded-lg bg-ph-brand px-2.5 text-xs font-medium text-[color:var(--ph-on-accent)] transition-opacity hover:bg-ph-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
+                          className="ph-btn ph-btn-primary ph-btn-xs"
                         >
                           Save
                         </button>
@@ -663,7 +663,7 @@ export function SuiteAiPanel({
                             copiedIndex === index ? "Copied" : "Copy message"
                           }
                           data-test="ask-ai-copy"
-                          className="flex h-7 w-7 items-center justify-center rounded-lg text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus"
+                          className="ph-btn ph-btn-ghost ph-btn-square ph-btn-xs h-7 w-7 text-ph-mutedtext"
                         >
                           {copiedIndex === index ? (
                             <Check className="h-3.5 w-3.5" />
@@ -679,7 +679,7 @@ export function SuiteAiPanel({
                           }}
                           aria-label="Edit message"
                           data-test="ask-ai-edit"
-                          className="flex h-7 w-7 items-center justify-center rounded-lg text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus"
+                          className="ph-btn ph-btn-ghost ph-btn-square ph-btn-xs h-7 w-7 text-ph-mutedtext"
                         >
                           <EditPencil className="h-3.5 w-3.5" />
                         </button>
@@ -727,7 +727,7 @@ export function SuiteAiPanel({
                       key={action.id}
                       data-test="ask-ai-action"
                       data-status={action.status}
-                      className="rounded-xl border border-ph-border bg-ph-surface px-3 py-2 text-sm text-ph-ink"
+                      className="rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface px-3 py-2 text-sm text-ph-ink"
                     >
                       <p className="font-medium">{action.summary}</p>
                       {action.status === "proposed" ? (
@@ -737,7 +737,7 @@ export function SuiteAiPanel({
                             data-test="ask-ai-action-confirm"
                             disabled={Boolean(resolvingId) || !resolveAction}
                             onClick={() => void handleResolve(action.id, "confirm")}
-                            className="inline-flex min-h-8 items-center rounded-lg bg-ph-brand px-2.5 text-xs font-medium text-[color:var(--ph-on-accent)] transition-opacity hover:bg-ph-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
+                            className="ph-btn ph-btn-primary ph-btn-xs"
                           >
                             {resolvingId === action.id ? "Working…" : "Confirm"}
                           </button>
@@ -746,7 +746,7 @@ export function SuiteAiPanel({
                             data-test="ask-ai-action-cancel"
                             disabled={Boolean(resolvingId) || !resolveAction}
                             onClick={() => void handleResolve(action.id, "cancel")}
-                            className="inline-flex min-h-8 items-center rounded-lg border border-ph-border bg-ph-surface px-2.5 text-xs font-medium text-ph-ink transition-colors hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
+                            className="ph-btn ph-btn-secondary ph-btn-xs"
                           >
                             Cancel
                           </button>
@@ -805,7 +805,7 @@ export function SuiteAiPanel({
           {error ? (
             <div
               role="alert"
-              className="flex items-start gap-2 rounded-xl border border-ph-danger/30 bg-ph-danger/10 px-3 py-2.5 text-sm text-ph-ink"
+              className="flex items-start gap-2 rounded-[var(--ph-radius-surface)] border border-ph-danger/30 bg-ph-danger/10 px-3 py-2.5 text-sm text-ph-ink"
             >
               <WarningTriangle className="mt-0.5 h-4 w-4 shrink-0 text-ph-danger" />
               <div className="min-w-0 flex-1">
@@ -815,7 +815,7 @@ export function SuiteAiPanel({
                   type="button"
                   onClick={retry}
                   disabled={waiting}
-                  className="mt-2 inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-ph-border bg-ph-surface px-2.5 text-xs font-medium text-ph-ink transition-colors hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
+                  className="ph-btn ph-btn-secondary ph-btn-xs mt-2 gap-1.5"
                 >
                   Try again
                 </button>
@@ -830,7 +830,7 @@ export function SuiteAiPanel({
               <button
                 type="button"
                 onClick={() => scrollToBottom("smooth")}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-ph-border bg-ph-surface text-ph-subtle shadow-ph-md transition-colors hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus"
+                className="ph-btn ph-btn-ghost ph-btn-circle h-9 w-9 border border-ph-border bg-ph-surface text-ph-subtle shadow-[var(--ph-shadow-floating)]"
                 aria-label="Scroll to latest"
               >
                 <ArrowDown className="h-4 w-4" />
@@ -841,7 +841,7 @@ export function SuiteAiPanel({
       </div>
 
       <div className="px-2 pt-2 pb-[max(2rem,calc(env(safe-area-inset-bottom)+1rem))]">
-        <div className="flex items-end gap-1.5 rounded-2xl border border-ph-border bg-ph-surface px-1.5 py-1 transition-colors focus-within:border-ph-brand/45 focus-within:ring-2 focus-within:ring-ph-focus/35">
+        <div className="suite-ai-composer flex items-end gap-1.5 border bg-ph-surface px-1.5 py-1">
           <label htmlFor={inputId} className="sr-only">
             Ask a question
           </label>
@@ -871,7 +871,7 @@ export function SuiteAiPanel({
                 type="button"
                 onClick={stop}
                 data-test="ask-ai-stop"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ph-muted text-ph-ink transition-colors hover:bg-ph-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus"
+                className="ph-btn ph-btn-ghost ph-btn-circle h-9 w-9 shrink-0 bg-ph-muted text-ph-ink"
                 aria-label="Stop generating"
               >
                 <Square className="h-3.5 w-3.5 fill-current" />
@@ -884,7 +884,7 @@ export function SuiteAiPanel({
                 onClick={() => void ask(prompt)}
                 disabled={!prompt.trim()}
                 data-test="ask-ai-send"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ph-brand text-[color:var(--ph-on-accent)] transition-opacity hover:bg-ph-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
+                className="ph-btn ph-btn-primary ph-btn-circle h-9 w-9 shrink-0"
                 aria-label="Send message"
               >
                 <ArrowUp className="h-4 w-4" />

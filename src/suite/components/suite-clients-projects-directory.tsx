@@ -117,7 +117,7 @@ function DirectoryIconPicker({
   return (
     <div className="space-y-2">
       <span className="mb-1.5 block text-sm font-medium text-ph-ink">Icon</span>
-      <div className="rounded-lg border border-ph-border bg-ph-muted p-3">
+      <div className="rounded-[var(--ph-radius-surface)] border border-ph-border bg-[var(--ph-surface-inset)] p-3">
         <div className="flex items-center gap-3">
           <SuiteEntityIcon
             imageUrl={preview}
@@ -178,7 +178,7 @@ function DirectoryIcon({
       color={item.color}
       tinted
       className="h-8 w-8 text-sm"
-      roundedClass="rounded-lg"
+      roundedClass="rounded-[var(--ph-radius-control)]"
     />
   );
 }
@@ -458,7 +458,7 @@ export function SuiteClientsProjectsDirectory({
       {loading ? (
         <p className="text-sm text-ph-mutedtext">Loading directory...</p>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-ph-border bg-ph-surface lg:grid lg:min-h-[22rem] lg:grid-cols-[minmax(14rem,18rem)_1fr]">
+        <div className="overflow-hidden rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface lg:grid lg:min-h-[22rem] lg:grid-cols-[minmax(14rem,18rem)_1fr]">
           <section
             className={cn(
               "border-ph-border lg:border-r",
@@ -515,7 +515,7 @@ export function SuiteClientsProjectsDirectory({
                           clientButtonRefs.current[client.id] = element;
                         }}
                         className={cn(
-                          "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left",
+                          "flex w-full items-center gap-2.5 rounded-[var(--ph-radius-control)] px-2.5 py-2 text-left",
                           selected ? "bg-ph-muted" : "hover:bg-ph-canvas",
                         )}
                       >
@@ -627,12 +627,12 @@ export function SuiteClientsProjectsDirectory({
                 selectedProjects.map((project) => (
                   <li key={project.id}>
                     <div
-                      className="flex items-center gap-3 rounded-lg px-2 py-1 hover:bg-ph-canvas"
+                      className="flex items-center gap-3 rounded-[var(--ph-radius-control)] px-2 py-1 hover:bg-ph-canvas"
                       onClick={() => openEdit(project, "project")}
                     >
                       <button
                         type="button"
-                        className="flex min-w-0 flex-1 items-center gap-3 rounded-lg py-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
+                        className="flex min-w-0 flex-1 items-center gap-3 rounded-[var(--ph-radius-control)] py-1 text-left focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]"
                         onClick={() => openEdit(project, "project")}
                       >
                         <DirectoryIcon item={project} />

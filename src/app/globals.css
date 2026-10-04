@@ -44,7 +44,7 @@
   --ph-chrome-inset-solid-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.14);
   --ph-radius-app: 0.375rem;
   --ph-radius-control: var(--ph-radius-app);
-  --ph-radius-surface: 0.5rem;
+  --ph-radius-surface: 0.625rem;
   --ph-radius-overlay: 0.75rem;
   --ph-border-control: color-mix(in oklab, var(--ph-border) 68%, var(--ph-border-strong));
   /** Tailwind `ph.brand` maps to `--ph-accent`; plain CSS controls used only this name, so it must exist. */
@@ -77,8 +77,10 @@
   --ph-danger-bg: color-mix(in oklab, var(--ph-danger) 12%, var(--ph-surface));
   --ph-danger-border: color-mix(in oklab, var(--ph-danger) 45%, var(--ph-border));
   --ph-danger-text: color-mix(in oklab, var(--ph-danger) 76%, var(--ph-text-primary));
-  --ph-shadow-raised: 0 1px 2px hsl(0deg 0% 0% / 0.08), 0 3px 8px hsl(0deg 0% 0% / 0.06);
-  --ph-shadow-floating: 0 18px 48px hsl(0deg 0% 0% / 0.22), 0 2px 8px hsl(0deg 0% 0% / 0.12);
+  --ph-shadow-raised: 0 1px 2px hsl(0deg 0% 0% / 0.08), 0 4px 12px hsl(0deg 0% 0% / 0.06);
+  --ph-shadow-floating: 0 18px 48px hsl(0deg 0% 0% / 0.2), 0 2px 8px hsl(0deg 0% 0% / 0.1);
+  --ph-shadow-control: 0 1px 2px hsl(0deg 0% 0% / 0.1), inset 0 1px 0 hsl(0deg 0% 100% / 0.38);
+  --ph-focus-halo: 0 0 0 3px color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
   --ph-motion-fast: 120ms;
   --ph-motion-standard: 180ms;
 }
@@ -104,21 +106,28 @@ html {
 
 body {
   @apply bg-ph-canvas text-ph-ink antialiased;
-  font-size: 15px;
-  line-height: 1.5;
+  font-family: var(--ph-font-sans-stack);
+  font-size: var(--ph-type-body);
+  line-height: var(--ph-leading-body);
 }
 
 @layer components {
+  .ph-page-title {
+    font-size: var(--ph-type-page);
+    line-height: var(--ph-leading-title);
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
 /**
  * PostHog LemonButton — from frontend/src/lib/lemon-ui/LemonButton/LemonButton.scss
  */
   .ph-btn {
-    --ph-btn-control-size: 2.3125rem;
+    --ph-btn-control-size: 2.5rem;
     @apply inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap font-medium;
     border-radius: var(--ph-radius-control);
-    min-height: 2.3125rem;
+    min-height: var(--ph-btn-control-size);
     padding: 0.25rem 0.875rem;
-    font-size: 0.875rem;
+    font-size: var(--ph-type-ui);
     line-height: 1.5rem;
     transition:
       transform var(--ph-motion-fast) ease,
@@ -131,27 +140,27 @@ body {
   }
 
   .ph-btn:focus-visible {
-    outline: 3px solid color-mix(in oklab, var(--ph-focus-ring) 38%, transparent);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: var(--ph-focus-halo);
   }
 
   .ph-btn-sm {
-    --ph-btn-control-size: 2.0625rem;
-    min-height: 2.0625rem;
+    --ph-btn-control-size: 2.125rem;
+    min-height: var(--ph-btn-control-size);
     padding: 0.25rem 0.625rem;
-    font-size: 0.8125rem;
+    font-size: var(--ph-type-meta);
   }
 
   .ph-btn-xs {
-    --ph-btn-control-size: 1.625rem;
-    min-height: 1.625rem;
+    --ph-btn-control-size: 1.75rem;
+    min-height: var(--ph-btn-control-size);
     padding: 0.125rem 0.5rem;
-    font-size: 0.6875rem;
+    font-size: var(--ph-type-overline);
   }
 
   .ph-btn-lg {
-    --ph-btn-control-size: 3.0625rem;
-    min-height: 3.0625rem;
+    --ph-btn-control-size: 3rem;
+    min-height: var(--ph-btn-control-size);
     padding: 0.375rem 1.25rem;
     font-size: 1rem;
   }
@@ -305,7 +314,7 @@ body {
     justify-content: center;
     gap: inherit;
     width: 100%;
-    min-height: 2.3125rem;
+    min-height: var(--ph-btn-control-size);
     padding:
       calc(0.25rem - var(--ph-btn-chrome-depth) * 0.5) 0.875rem
       calc(0.25rem + var(--ph-btn-chrome-depth) * 0.5);
@@ -336,25 +345,25 @@ body {
 
   .ph-btn-sm.ph-btn-raised .ph-btn-chrome,
   .ph-btn-sm:is(.ph-btn-primary, .ph-btn-secondary, .ph-btn-signal, .ph-btn-accent, .ph-btn-neutral, .ph-btn-info, .ph-btn-success, .ph-btn-warning, .ph-btn-danger):not(:has(.ph-btn-chrome)) {
-    min-height: 2.0625rem;
+    min-height: var(--ph-btn-control-size);
     padding:
       calc(0.25rem - var(--ph-btn-chrome-depth) * 0.5) 0.625rem
       calc(0.25rem + var(--ph-btn-chrome-depth) * 0.5);
-    font-size: 0.8125rem;
+    font-size: var(--ph-type-meta);
   }
 
   .ph-btn-xs.ph-btn-raised .ph-btn-chrome,
   .ph-btn-xs:is(.ph-btn-primary, .ph-btn-secondary, .ph-btn-signal, .ph-btn-accent, .ph-btn-neutral, .ph-btn-info, .ph-btn-success, .ph-btn-warning, .ph-btn-danger):not(:has(.ph-btn-chrome)) {
-    min-height: 1.625rem;
+    min-height: var(--ph-btn-control-size);
     padding:
       calc(0.125rem - var(--ph-btn-chrome-depth) * 0.5) 0.5rem
       calc(0.125rem + var(--ph-btn-chrome-depth) * 0.5);
-    font-size: 0.6875rem;
+    font-size: var(--ph-type-overline);
   }
 
   .ph-btn-lg.ph-btn-raised .ph-btn-chrome,
   .ph-btn-lg:is(.ph-btn-primary, .ph-btn-secondary, .ph-btn-signal, .ph-btn-accent, .ph-btn-neutral, .ph-btn-info, .ph-btn-success, .ph-btn-warning, .ph-btn-danger):not(:has(.ph-btn-chrome)) {
-    min-height: 3.0625rem;
+    min-height: var(--ph-btn-control-size);
     padding:
       calc(0.375rem - var(--ph-btn-chrome-depth) * 0.5) 1.25rem
       calc(0.375rem + var(--ph-btn-chrome-depth) * 0.5);
@@ -539,6 +548,7 @@ body {
     background: var(--ph-btn-face);
     border: var(--ph-btn-border-width) solid var(--ph-btn-border);
     border-radius: var(--ph-radius-control);
+    box-shadow: var(--ph-chrome-inset-solid-top);
     transform: translateY(var(--ph-btn-face-offset));
     transition:
       border-color var(--ph-motion-fast) ease,
@@ -585,9 +595,7 @@ body {
     @apply border bg-ph-muted p-6;
     border-radius: var(--ph-radius-surface);
     border-color: var(--ph-border-control);
-    box-shadow:
-      var(--ph-chrome-inset-face-top),
-      var(--ph-shadow-elevation-3000);
+    box-shadow: var(--ph-chrome-inset-face-top);
   }
 
   .ph-card {
@@ -692,7 +700,8 @@ body {
     background: var(--ph-surface-raised);
     border-radius: var(--ph-radius-control);
     border: 1px solid var(--ph-border-control);
-    min-height: 2.3125rem;
+    min-height: 2.5rem;
+    font-size: var(--ph-type-ui);
     line-height: 1.5rem;
     font-family: inherit;
     box-shadow:
@@ -705,7 +714,7 @@ body {
   .ph-textarea:focus-visible {
     outline: none;
     box-shadow:
-      0 0 0 3px color-mix(in oklab, var(--ph-focus-ring) 24%, transparent),
+      var(--ph-focus-halo),
       var(--ph-chrome-inset-face-top),
       var(--ph-chrome-inset-face-bottom);
     border-color: color-mix(in oklab, var(--ph-focus-ring) 58%, var(--ph-border));
@@ -713,6 +722,22 @@ body {
 
   .ph-input {
     @apply ph-input-base;
+  }
+
+  .ph-field-icon-button {
+    @apply absolute inset-y-0 right-0 flex w-10 items-center justify-center text-ph-mutedtext disabled:opacity-40;
+    border-radius: 0 var(--ph-radius-control) var(--ph-radius-control) 0;
+    transition: color var(--ph-motion-fast) ease;
+  }
+
+  .ph-field-icon-button:hover:not(:disabled) {
+    color: var(--ph-text-primary);
+  }
+
+  .ph-field-icon-button:focus-visible {
+    z-index: 1;
+    outline: none;
+    box-shadow: var(--ph-focus-halo);
   }
 
   .ph-input-error:focus-visible,
@@ -737,7 +762,7 @@ body {
   .ph-input-sm {
     min-height: 1.875rem;
     padding-block: 0.125rem;
-    font-size: 0.8125rem;
+    font-size: var(--ph-type-meta);
   }
 
   .ph-input-lg {
@@ -792,7 +817,7 @@ body {
   .ph-search-group__submit .ph-btn-chrome {
     box-sizing: border-box;
     height: 100%;
-    min-height: 2.3125rem;
+    min-height: 2.5rem;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }
@@ -822,6 +847,13 @@ body {
   .ph-textarea {
     @apply ph-input-base min-h-[6rem] resize-y py-2;
     min-height: 6rem;
+  }
+
+  @media (pointer: coarse) {
+    .ph-input,
+    .ph-select {
+      min-height: 2.75rem;
+    }
   }
 
   .ph-checkbox,
@@ -865,7 +897,7 @@ body {
   .ph-toggle:focus-visible {
     outline: none;
     box-shadow:
-      0 0 0 3px color-mix(in oklab, var(--ph-accent) 18%, transparent),
+      var(--ph-focus-halo),
       var(--ph-chrome-inset-face-top),
       var(--ph-chrome-inset-face-bottom);
   }
@@ -953,18 +985,24 @@ body {
   /* LemonTable.scss — sticky-header border Simulation + row rhythm */
   .ph-table-wrap {
     @apply overflow-x-auto bg-ph-surface;
-    border-radius: var(--ph-radius-app);
+    border-radius: var(--ph-radius-surface);
     border: 1px solid var(--ph-border);
-    box-shadow: var(--ph-shadow-elevation-3000);
+    box-shadow: none;
+  }
+
+  .ph-table-wrap:focus-visible {
+    outline: none;
+    border-color: color-mix(in oklab, var(--ph-focus-ring) 58%, var(--ph-border));
+    box-shadow: var(--ph-focus-halo);
   }
 
   .ph-table {
     @apply w-full border-collapse text-left;
-    font-size: 13px;
+    font-size: var(--ph-type-small);
   }
 
   .ph-table thead {
-    background: var(--ph-surface);
+    background: var(--ph-surface-inset);
     color: var(--ph-text-tertiary);
   }
 
@@ -972,8 +1010,8 @@ body {
     @apply whitespace-nowrap px-2 py-2;
     padding-left: 1rem;
     padding-right: 1rem;
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: var(--ph-type-meta);
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.03125rem;
     box-shadow: inset 0 -1px var(--ph-border);
@@ -985,6 +1023,7 @@ body {
     padding-right: 1rem;
     vertical-align: middle;
     color: var(--ph-text-secondary);
+    padding-block: 0.625rem;
   }
 
   .ph-table tbody tr + tr td {
@@ -1020,7 +1059,151 @@ body {
   }
 
   .ph-table-compact .ph-table td {
-    @apply py-1 text-[12px];
+    @apply py-1.5;
+    font-size: var(--ph-type-meta);
+  }
+
+  .ph-table td.ph-table-empty {
+    @apply py-8 text-center text-sm text-ph-mutedtext;
+  }
+
+  .ph-table--ribbon tbody td.ph-table-empty::before {
+    content: none;
+  }
+
+  .ph-avatar {
+    box-shadow: var(--ph-chrome-inset-solid-top);
+  }
+
+  .ph-empty-state {
+    @apply flex flex-col items-center justify-center border border-dashed px-8 py-16 text-center;
+    border-color: var(--ph-border-subtle);
+    border-radius: var(--ph-radius-surface);
+    background: var(--ph-surface-inset);
+  }
+
+  .ph-empty-state__icon {
+    @apply mb-4 flex h-14 w-14 items-center justify-center rounded-full text-ph-mutedtext;
+    background: var(--ph-surface-raised);
+    box-shadow: var(--ph-chrome-inset-solid-top);
+  }
+
+  .ph-accordion {
+    @apply overflow-hidden border bg-ph-surface;
+    border-color: var(--ph-border-subtle);
+    border-radius: var(--ph-radius-surface);
+  }
+
+  .ph-accordion__item + .ph-accordion__item {
+    border-top: 1px solid var(--ph-border-subtle);
+  }
+
+  .ph-accordion__trigger,
+  .ph-collapsible-trigger {
+    @apply flex w-full items-center justify-between px-5 py-4 text-left;
+    color: var(--ph-text-primary);
+    transition: background-color var(--ph-motion-fast) ease;
+  }
+
+  .ph-accordion__trigger:hover,
+  .ph-collapsible-trigger:hover {
+    background: var(--ph-surface-hover);
+  }
+
+  .ph-accordion__trigger:focus-visible {
+    outline: 3px solid color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
+    outline-offset: -3px;
+  }
+
+  .ph-collapsible-trigger {
+    border: 1px solid var(--ph-border-subtle);
+    border-radius: var(--ph-radius-surface);
+    background: var(--ph-surface-inset);
+  }
+
+  .ph-collapsible-trigger:focus-visible,
+  .ph-showcase-toggle:focus-visible {
+    outline: none;
+    box-shadow: var(--ph-focus-halo);
+  }
+
+  .ph-calendar {
+    border: 1px solid var(--ph-border-control);
+    border-radius: var(--ph-radius-overlay);
+    background: color-mix(in oklab, var(--ph-surface-overlay) 94%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(1.2);
+    backdrop-filter: blur(24px) saturate(1.2);
+    box-shadow:
+      var(--ph-chrome-inset-face-top),
+      var(--ph-shadow-floating);
+  }
+
+  .ph-calendar__nav {
+    @apply flex h-9 w-9 items-center justify-center text-ph-subtle;
+    border-radius: var(--ph-radius-control);
+    transition:
+      color var(--ph-motion-fast) ease,
+      background-color var(--ph-motion-fast) ease;
+  }
+
+  .ph-calendar__nav:hover {
+    color: var(--ph-text-primary);
+    background: var(--ph-surface-hover);
+  }
+
+  .ph-calendar__nav:focus-visible,
+  .ph-calendar__day:focus-visible {
+    z-index: 1;
+    outline: none;
+    box-shadow: var(--ph-focus-halo);
+  }
+
+  .ph-calendar__day {
+    @apply flex h-full w-full items-center justify-center text-sm text-ph-ink;
+    border-radius: var(--ph-radius-control);
+    transition:
+      color var(--ph-motion-fast) ease,
+      background-color var(--ph-motion-fast) ease,
+      box-shadow var(--ph-motion-fast) ease;
+  }
+
+  .ph-calendar__day:hover {
+    background: var(--ph-surface-hover);
+  }
+
+  .ph-calendar__day--selected {
+    color: var(--ph-on-accent);
+    background: var(--ph-brand);
+    box-shadow: var(--ph-shadow-control);
+    font-weight: 600;
+  }
+
+  .ph-calendar__day--today:not(.ph-calendar__day--selected) {
+    color: var(--ph-selected-text);
+    background: var(--ph-selected-bg);
+    box-shadow: inset 0 0 0 1px var(--ph-selected-border);
+    font-weight: 600;
+  }
+
+  .ph-code-block {
+    @apply overflow-hidden border border-ph-border bg-[#1a1a2e];
+    border-radius: var(--ph-radius-surface);
+  }
+
+  .ph-code-block__copy {
+    @apply text-xs text-white/60;
+    border-radius: var(--ph-radius-control);
+    transition: color var(--ph-motion-fast) ease;
+  }
+
+  .ph-code-block__copy:hover {
+    @apply text-white;
+  }
+
+  .ph-code-block__copy:focus-visible {
+    outline: none;
+    color: white;
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--ph-focus-ring) 55%, transparent);
   }
 
   /* Breadcrumbs */
@@ -1393,7 +1576,9 @@ body {
        overflow:hidden + border-radius, especially at the bottom-right action. */
     overflow: visible;
     overscroll-behavior: contain;
-    background: var(--ph-surface-overlay);
+    background: color-mix(in oklab, var(--ph-surface-overlay) 94%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(1.2);
+    backdrop-filter: blur(24px) saturate(1.2);
     border-radius: var(--ph-radius-overlay);
     border: 1px solid var(--ph-border-control);
     box-shadow: var(--ph-shadow-floating);
@@ -1432,6 +1617,55 @@ body {
     }
   }
 
+  /* Command palette shares the floating overlay material with menus and modals. */
+  .ph-command-palette__overlay {
+    @apply fixed inset-0 z-50 bg-black/45 backdrop-blur-sm;
+    animation: ph-modal-overlay-in var(--ph-motion-standard) ease-out;
+  }
+
+  .ph-command-palette {
+    @apply fixed left-1/2 top-[20vh] z-50 w-[calc(100%-1rem)] max-w-xl -translate-x-1/2 overflow-hidden;
+    max-height: min(32rem, calc(100dvh - 2rem));
+    border: 1px solid var(--ph-border-control);
+    border-radius: var(--ph-radius-overlay);
+    background: color-mix(in oklab, var(--ph-surface-overlay) 94%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(1.2);
+    backdrop-filter: blur(24px) saturate(1.2);
+    box-shadow:
+      var(--ph-chrome-inset-face-top),
+      var(--ph-shadow-floating);
+    animation: ph-command-palette-in var(--ph-motion-standard) cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .ph-command-palette__search {
+    @apply flex items-center gap-3 px-4 py-3;
+    border-bottom: 1px solid var(--ph-border-subtle);
+    background: var(--ph-surface-inset);
+  }
+
+  .ph-command-palette__option {
+    @apply mx-1 flex min-h-9 cursor-pointer items-center gap-3 px-3 py-2 text-left text-sm;
+    width: calc(100% - 0.5rem);
+    border-radius: var(--ph-radius-control);
+    transition:
+      color var(--ph-motion-fast) ease,
+      background-color var(--ph-motion-fast) ease,
+      box-shadow var(--ph-motion-fast) ease;
+  }
+
+  .ph-command-palette__option--selected {
+    color: var(--ph-selected-text);
+    background: var(--ph-selected-bg);
+    box-shadow: inset 0 0 0 1px var(--ph-selected-border);
+  }
+
+  @keyframes ph-command-palette-in {
+    from {
+      opacity: 0;
+      transform: translate(-50%, 0.5rem) scale(0.98);
+    }
+  }
+
   @media (max-width: 40rem) {
     .ph-modal-panel {
       width: calc(100% - 1rem);
@@ -1452,8 +1686,8 @@ body {
   }
 
   .ph-dropdown-trigger:focus-visible {
-    outline: 3px solid color-mix(in oklab, var(--ph-focus-ring) 38%, transparent);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: var(--ph-focus-halo);
   }
 
   .ph-dropdown-trigger:disabled {
@@ -1465,11 +1699,14 @@ body {
   }
 
   .ph-dropdown-panel {
-    @apply z-50 min-w-[12rem] overflow-y-auto bg-ph-surface p-1;
+    @apply z-50 min-w-[12rem] overflow-y-auto p-1;
     max-width: min(22rem, calc(100vw - 1rem));
     max-height: var(--radix-dropdown-menu-content-available-height);
     border-radius: var(--ph-radius-overlay);
     border: 1px solid var(--ph-border-control);
+    background: color-mix(in oklab, var(--ph-surface-overlay) 94%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(1.2);
+    backdrop-filter: blur(24px) saturate(1.2);
     box-shadow:
       var(--ph-chrome-inset-face-top),
       var(--ph-shadow-floating);
@@ -1511,6 +1748,12 @@ body {
   .ph-dropdown-item[data-highlighted] {
     color: var(--ph-text-primary);
     background: var(--ph-surface-hover);
+  }
+
+  .ph-dropdown-item:focus-visible {
+    color: var(--ph-selected-text);
+    background: var(--ph-selected-bg);
+    box-shadow: inset 0 0 0 1px var(--ph-selected-border);
   }
 
   .ph-dropdown-item[data-disabled] {
@@ -1857,6 +2100,52 @@ body {
     }
   }
 
+  /* Segmented control — inset track with one raised selected face. */
+  .ph-segmented-control {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--ph-border-subtle);
+    border-radius: calc(var(--ph-radius-control) + 0.1875rem);
+    background: var(--ph-surface-inset);
+    box-shadow: inset 0 1px 2px hsl(0deg 0% 0% / 0.08);
+  }
+
+  .ph-segmented-control__item {
+    @apply relative flex min-h-11 items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium sm:min-h-9;
+    border: 1px solid transparent;
+    border-radius: var(--ph-radius-control);
+    color: var(--ph-text-secondary);
+    transition:
+      color var(--ph-motion-fast) ease,
+      background-color var(--ph-motion-fast) ease,
+      border-color var(--ph-motion-fast) ease,
+      box-shadow var(--ph-motion-fast) ease,
+      transform 80ms ease-out;
+  }
+
+  .ph-segmented-control__item:hover:not([aria-checked="true"]) {
+    color: var(--ph-text-primary);
+    background: var(--ph-surface-hover);
+  }
+
+  .ph-segmented-control__item[aria-checked="true"] {
+    color: var(--ph-text-primary);
+    border-color: var(--ph-border-subtle);
+    background: var(--ph-surface-raised);
+    box-shadow: var(--ph-shadow-control);
+  }
+
+  .ph-segmented-control__item:active {
+    transform: scale(0.98);
+  }
+
+  .ph-segmented-control__item:focus-visible {
+    z-index: 1;
+    outline: none;
+    box-shadow: var(--ph-focus-halo);
+  }
+
   /* Tabs */
   .ph-tabs-row {
     @apply flex flex-wrap gap-1 rounded-lg bg-ph-muted p-1 border border-ph-border;
@@ -1881,7 +2170,8 @@ body {
   }
 
   .ph-progress-bar {
-    @apply h-full rounded-full transition-all duration-300;
+    @apply h-full rounded-full duration-300;
+    transition-property: width;
   }
 
   /* Accessible, collision-aware tooltip overlay. */

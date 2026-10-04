@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, type ReactNode } from "react";
 import { NavArrowLeft, Sparks } from "iconoir-react";
 
 import { Tooltip } from "../../components/ui/Tooltip";
@@ -83,6 +83,9 @@ export function SuiteSidebar({
 }: SuiteSidebarProps) {
   const showAskAi = Boolean(onAskAiOpenChange && askAi);
   const chatOpen = showAskAi && askAiOpen && !collapsed;
+  const askAiButtonRef = useRef<HTMLButtonElement>(null);
+  const askAiBackRef = useRef<HTMLButtonElement>(null);
+  const restoreAskAiFocusRef = useRef(false);
 
   const setAskAi = useCallback(
     (next: boolean) => {
@@ -105,15 +108,35 @@ export function SuiteSidebar({
   useEffect(() => {
     if (!chatOpen) return;
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") setAskAi(false);
+      if (event.key === "Escape") {
+        restoreAskAiFocusRef.current = true;
+        setAskAi(false);
+      }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [chatOpen, setAskAi]);
 
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      if (chatOpen) {
+        askAiBackRef.current?.focus();
+      } else if (restoreAskAiFocusRef.current) {
+        restoreAskAiFocusRef.current = false;
+        askAiButtonRef.current?.focus();
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [chatOpen]);
+
+  function closeAskAi() {
+    restoreAskAiFocusRef.current = true;
+    setAskAi(false);
+  }
+
   function toggleAskAi() {
     if (askAiOpen) {
-      setAskAi(false);
+      closeAskAi();
       return;
     }
     if (collapsed) onRequestExpand?.();
@@ -122,13 +145,14 @@ export function SuiteSidebar({
 
   const askAiButton = (
     <button
+      ref={askAiButtonRef}
       type="button"
       data-test="suite-ask-ai-toggle"
       aria-pressed={askAiOpen}
       aria-label={askAiOpen ? "Back to navigation" : "Shelly AI"}
       onClick={toggleAskAi}
       className={cn(
-        "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ph-focus-ring",
+        "ph-btn ph-btn-ghost ph-btn-square h-10 w-10 shrink-0",
         askAiOpen
           ? "bg-ph-brand/10 text-ph-brand"
           : "text-ph-mutedtext hover:bg-ph-muted hover:text-ph-ink",
@@ -142,9 +166,9 @@ export function SuiteSidebar({
     return (
       <div
         data-suite-chat-open=""
+        data-surface={surface ? "true" : "false"}
         className={cn(
-          "flex h-full w-full min-w-0 flex-col text-ph-ink",
-          surface ? "bg-ph-surface" : "bg-ph-canvas",
+          "suite-sidebar flex h-full w-full min-w-0 flex-col text-ph-ink",
           className,
         )}
       >
@@ -155,11 +179,12 @@ export function SuiteSidebar({
           )}
         >
           <button
+            ref={askAiBackRef}
             type="button"
             data-test="suite-ask-ai-back"
             aria-label="Back to navigation"
-            onClick={() => setAskAi(false)}
-            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-ph-subtle transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
+            onClick={closeAskAi}
+            className="ph-btn ph-btn-ghost ph-btn-square h-10 w-10 shrink-0 text-ph-subtle"
           >
             <NavArrowLeft className="h-4 w-4" aria-hidden />
           </button>
@@ -174,9 +199,9 @@ export function SuiteSidebar({
 
   return (
     <div
+      data-surface={surface ? "true" : "false"}
       className={cn(
-        "flex h-full w-full min-w-0 flex-col text-ph-ink",
-        surface ? "bg-ph-surface" : "bg-ph-canvas",
+        "suite-sidebar flex h-full w-full min-w-0 flex-col text-ph-ink",
         className,
       )}
     >
@@ -184,7 +209,6 @@ export function SuiteSidebar({
         <div
           className={cn(
             "flex shrink-0 border-b border-ph-border",
-            surface ? "bg-ph-surface" : "bg-ph-canvas",
             collapsed
               ? "flex-col items-center gap-1 px-1 py-2"
               : "h-14 items-center justify-between gap-2 px-3",
@@ -204,7 +228,6 @@ export function SuiteSidebar({
       <div
         className={cn(
           "flex min-h-0 flex-1 flex-col",
-          surface ? "bg-ph-surface" : "bg-ph-canvas",
           chatOpen ? "min-h-0" : "overflow-y-auto",
           collapsed ? "px-1.5 py-2" : "p-3",
         )}
@@ -226,8 +249,8 @@ export function SuiteSidebar({
               <button
                 type="button"
                 data-test="suite-ask-ai-back"
-                onClick={() => setAskAi(false)}
-                className="inline-flex h-9 items-center gap-1 rounded-lg px-2 text-sm font-medium text-ph-subtle transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
+                onClick={closeAskAi}
+                className="ph-btn ph-btn-ghost ph-btn-sm h-9 text-ph-subtle"
               >
                 <NavArrowLeft className="h-4 w-4" aria-hidden />
                 Nav
@@ -254,10 +277,10 @@ export function SuiteSidebar({
                       aria-current={active ? "page" : undefined}
                       onClick={item.onClick}
                       className={cn(
-                        "group relative flex min-h-11 touch-manipulation items-center gap-2.5 rounded-[var(--ph-radius-app)] text-sm font-medium transition-colors",
+                        "group relative flex min-h-11 touch-manipulation items-center gap-2.5 rounded-[var(--ph-radius-control)] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]",
                         active
-                          ? "bg-ph-muted"
-                          : "text-ph-subtle hover:bg-ph-muted hover:text-ph-ink",
+                          ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)] shadow-[inset_0_0_0_1px_var(--ph-selected-border)]"
+                          : "text-ph-subtle hover:bg-[var(--ph-surface-hover)] hover:text-ph-ink",
                         collapsed
                           ? "mx-auto size-11 shrink-0 justify-center gap-0 px-0 py-0"
                           : "w-full px-2.5 py-2",
@@ -279,7 +302,7 @@ export function SuiteSidebar({
                         className={cn(
                           "relative truncate",
                           active
-                            ? "text-ph-ink"
+                            ? "text-[var(--ph-selected-text)]"
                             : "text-ph-subtle group-hover:text-ph-ink",
                           collapsed && "sr-only",
                         )}
@@ -319,7 +342,6 @@ export function SuiteSidebar({
       <div
         className={cn(
           "shrink-0 border-t border-ph-border",
-          surface ? "bg-ph-surface" : "bg-ph-canvas",
           collapsed ? "p-1.5" : "p-3",
         )}
       >

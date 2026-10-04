@@ -157,13 +157,13 @@ export function Calendar({ value, onChange, className }: CalendarProps) {
   }
 
   return (
-    <div className={cn("w-[280px] rounded-xl border border-ph-border bg-ph-surface p-4 shadow-ph", className)}>
+    <div className={cn("ph-calendar w-[280px] p-4", className)}>
       <div className="mb-4 flex items-center justify-between">
         <button
           type="button"
           onClick={() => changeMonth(-1)}
           aria-label="Previous month"
-          className="rounded-lg p-1 text-ph-subtle transition hover:bg-ph-muted hover:text-ph-ink"
+          className="ph-calendar__nav"
         >
           <IconChevronLeft className="h-5 w-5" aria-hidden />
         </button>
@@ -174,7 +174,7 @@ export function Calendar({ value, onChange, className }: CalendarProps) {
           type="button"
           onClick={() => changeMonth(1)}
           aria-label="Next month"
-          className="rounded-lg p-1 text-ph-subtle transition hover:bg-ph-muted hover:text-ph-ink"
+          className="ph-calendar__nav"
         >
           <IconChevronRight className="h-5 w-5" aria-hidden />
         </button>
@@ -215,12 +215,12 @@ export function Calendar({ value, onChange, className }: CalendarProps) {
                     onClick={() => handleSelect(date)}
                     onKeyDown={(event) => handleDayKeyDown(event, date)}
                     className={cn(
-                      "flex h-full w-full items-center justify-center rounded-lg text-sm transition-colors",
+                      "ph-calendar__day",
                       value && isSameDay(value, date)
-                        ? "bg-ph-brand font-semibold text-[var(--ph-on-accent)] shadow-ph"
+                        ? "ph-calendar__day--selected"
                         : isSameDay(today, date)
-                          ? "bg-ph-muted font-semibold text-ph-brand ring-1 ring-ph-brand/30"
-                          : "text-ph-ink hover:bg-ph-muted",
+                          ? "ph-calendar__day--today"
+                          : undefined,
                     )}
                   >
                     {date.getDate()}

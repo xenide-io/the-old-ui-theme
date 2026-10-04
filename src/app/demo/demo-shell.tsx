@@ -127,7 +127,7 @@ export default function DemoShell({ children }: { children: React.ReactNode }) {
           )}
           contextSwitcher={(isCollapsed) =>
             isCollapsed ? (
-              <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-ph-muted text-xs font-bold text-ph-brand">
+              <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-[var(--ph-radius-surface)] bg-ph-muted text-xs font-bold text-ph-brand">
                 UI
               </span>
             ) : (
@@ -163,7 +163,7 @@ export default function DemoShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 aria-label="Account menu"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ph-muted text-sm font-bold text-ph-brand ring-2 ring-ph-border ring-offset-1 ring-offset-ph-canvas focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ph-focus-ring"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ph-border bg-ph-muted text-sm font-bold text-ph-brand focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]"
               >
                 T
               </button>
@@ -180,7 +180,7 @@ export default function DemoShell({ children }: { children: React.ReactNode }) {
               data-test="sidebar-sign-out"
               title="Sign out"
               aria-label="Sign out"
-              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ph-focus-ring"
+              className="ph-btn ph-btn-ghost ph-btn-square h-11 w-11 shrink-0 text-ph-mutedtext"
             >
               <LogOut className="h-4 w-4" aria-hidden />
             </button>
@@ -191,7 +191,7 @@ export default function DemoShell({ children }: { children: React.ReactNode }) {
         <SuiteMobileHeader
           title={
             <Link href="/demo" className="flex min-w-0 items-center gap-2">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-ph-brand text-xs font-bold text-[var(--ph-on-accent)]">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--ph-radius-control)] bg-ph-brand text-xs font-bold text-[var(--ph-on-accent)]">
                 T
               </span>
               <span className="truncate text-sm font-bold text-ph-ink">

@@ -18,6 +18,16 @@ export {
   type ButtonChromeProps as ButtonChromeProps,
 } from "@/components/ui/ButtonChrome";
 export {
+  MarketingHeader,
+  MarketingLink,
+  MarketingMotionControl,
+  MarketingReveal,
+} from "@/components/ui/Marketing";
+export {
+  AiWritingIllustration,
+  IntegrationBridgeIllustration,
+} from "@/components/ui/MarketingIllustrations";
+export {
   Alert as Alert,
   type AlertProps as AlertProps,
   type AlertStatus as AlertStatus,
@@ -158,10 +168,7 @@ export {
   type CommandItem,
   type CommandPaletteProps,
 } from "@/components/ui/CommandPalette";
-export {
-  Calendar,
-  type CalendarProps,
-} from "@/components/ui/Calendar";
+export { Calendar, type CalendarProps } from "@/components/ui/Calendar";
 export {
   Tooltip,
   TooltipProvider,
@@ -170,10 +177,7 @@ export {
   type TooltipProviderProps,
   type TooltipSide,
 } from "@/components/ui/Tooltip";
-export {
-  EmptyState,
-  type EmptyStateProps,
-} from "@/components/ui/EmptyState";
+export { EmptyState, type EmptyStateProps } from "@/components/ui/EmptyState";
 export {
   FilterChips,
   type FilterChip,
@@ -256,10 +260,7 @@ export {
   Spinner as Spinner,
   type SpinnerProps as SpinnerProps,
 } from "@/components/ui/Spinner";
-export {
-  Dot as Dot,
-  type DotProps as DotProps,
-} from "@/components/ui/Dot";
+export { Dot as Dot, type DotProps as DotProps } from "@/components/ui/Dot";
 export {
   Chip as Chip,
   type ChipProps as ChipProps,

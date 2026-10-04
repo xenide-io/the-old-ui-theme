@@ -53,7 +53,7 @@ export function SuiteSettingsLayout({
       {loading ?? (
         <div className="suite-page-body mt-6 flex min-h-0 flex-1 flex-col">
           {mobileNav ? (
-            <div className="sticky top-0 z-20 mb-2 shrink-0 bg-ph-canvas/95 backdrop-blur lg:hidden">
+            <div className="suite-settings-mobile-bar sticky top-0 z-20 mb-2 shrink-0 lg:hidden">
               {mobileNav}
             </div>
           ) : null}
@@ -61,7 +61,7 @@ export function SuiteSettingsLayout({
           <div className="flex min-h-0 flex-1 flex-col gap-6 lg:flex-row lg:gap-8">
             <aside
               aria-label="Settings"
-              className="hidden w-56 shrink-0 bg-transparent lg:block lg:self-stretch lg:overflow-y-auto lg:overscroll-contain"
+              className="suite-settings-sidebar hidden w-56 shrink-0 lg:block lg:self-stretch lg:overflow-y-auto lg:overscroll-contain"
             >
               {sidebar}
             </aside>

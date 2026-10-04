@@ -88,7 +88,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
               aria-label={revealed ? "Hide password" : "Show password"}
               aria-pressed={revealed}
               disabled={disabled}
-              className="absolute inset-y-0 right-0 flex w-10 items-center justify-center rounded-r-[var(--ph-radius-control)] text-ph-mutedtext transition-colors hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-focus disabled:opacity-40"
+              className="ph-field-icon-button"
             >
               {revealed ? (
                 <EyeClosed className="h-4 w-4" aria-hidden />

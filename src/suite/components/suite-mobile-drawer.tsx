@@ -98,7 +98,7 @@ export function SuiteMobileDrawer({
             data-test={panelDataTest}
             aria-modal="true"
             className={cn(
-              "fixed inset-y-0 left-0 z-50 flex h-dvh max-h-dvh w-[86%] max-w-72 flex-col overflow-hidden bg-ph-surface shadow-xl outline-none motion-safe:transition-transform motion-safe:ease-spring-fast lg:hidden",
+              "fixed inset-y-0 left-0 z-50 flex h-dvh max-h-dvh w-[86%] max-w-72 flex-col overflow-hidden border-r border-ph-border bg-ph-surface shadow-[var(--ph-shadow-floating)] outline-none motion-safe:transition-transform motion-safe:ease-spring-fast lg:hidden",
               side === "right" && "left-auto right-0",
               shown
                 ? "translate-x-0"
@@ -127,7 +127,7 @@ export function SuiteMobileDrawer({
                     type="button"
                     id={closeButtonId}
                     data-test={closeButtonDataTest}
-                    className="-mr-1.5 inline-flex h-11 w-11 items-center justify-center rounded-lg text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
+                    className="ph-btn ph-btn-ghost ph-btn-square -mr-1.5 h-11 w-11 text-ph-mutedtext"
                     aria-label={closeLabel}
                   >
                     <X className="h-4 w-4" aria-hidden />

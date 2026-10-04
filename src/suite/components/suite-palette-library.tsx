@@ -3,10 +3,12 @@
 import {
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
   type ReactNode,
+  type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
 import { Filter, FilterList, NavArrowDown, Search } from 'iconoir-react';
 import {
@@ -58,7 +60,7 @@ function FilterSelect({
         aria-label={label}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-full w-full appearance-none rounded-lg border border-ph-border bg-ph-surface py-2 pl-8 pr-7 text-sm text-ph-ink focus:border-ph-brand focus:outline-none"
+        className="ph-select h-full w-full py-2 pl-8 pr-7"
       >
         {children}
       </select>
@@ -86,6 +88,8 @@ export function SuitePaletteLibrary({
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [libraryQuery, setLibraryQuery] = useState('');
   const libraryRef = useRef<HTMLDivElement>(null);
+  const libraryTriggerRef = useRef<HTMLButtonElement>(null);
+  const libraryListboxId = useId();
   const [icons, setIcons] = useState<PaletteIcon[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -245,6 +249,45 @@ export function SuitePaletteLibrary({
     return () => document.removeEventListener('pointerdown', onPointerDown);
   }, [libraryOpen]);
 
+  const closeLibrary = (restoreFocus = false) => {
+    setLibraryOpen(false);
+    if (restoreFocus) requestAnimationFrame(() => libraryTriggerRef.current?.focus());
+  };
+
+  const handleLibraryOptionKeyDown = (
+    event: ReactKeyboardEvent<HTMLButtonElement>,
+  ) => {
+    const options = Array.from(
+      libraryRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]') ?? [],
+    );
+    const index = options.indexOf(event.currentTarget);
+    let nextIndex: number;
+
+    switch (event.key) {
+      case 'ArrowDown':
+        nextIndex = (index + 1) % options.length;
+        break;
+      case 'ArrowUp':
+        nextIndex = (index - 1 + options.length) % options.length;
+        break;
+      case 'Home':
+        nextIndex = 0;
+        break;
+      case 'End':
+        nextIndex = options.length - 1;
+        break;
+      case 'Escape':
+        event.preventDefault();
+        closeLibrary(true);
+        return;
+      default:
+        return;
+    }
+
+    event.preventDefault();
+    options[nextIndex]?.focus();
+  };
+
   return (
     <div className="space-y-3" data-test="palette-icon-library">
       <div ref={libraryRef} className="space-y-2">
@@ -260,15 +303,23 @@ export function SuitePaletteLibrary({
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search icons — handshake, rocket, briefcase…"
               aria-label="Search icons"
-              className="w-full rounded-lg border border-ph-border bg-ph-surface py-2 pl-8 pr-3 text-sm text-ph-ink placeholder:text-ph-mutedtext focus:border-ph-brand focus:outline-none"
+              className="ph-input w-full py-2 pl-8 pr-3"
             />
           </div>
           <button
+            ref={libraryTriggerRef}
             type="button"
             aria-haspopup="listbox"
             aria-expanded={libraryOpen}
+            aria-controls={libraryOpen ? libraryListboxId : undefined}
             onClick={() => setLibraryOpen((open) => !open)}
-            className="flex items-center gap-2 rounded-lg border border-ph-border bg-ph-surface px-2.5 py-2 text-sm text-ph-ink hover:border-ph-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
+            onKeyDown={(event) => {
+              if (event.key === 'Escape' && libraryOpen) {
+                event.preventDefault();
+                closeLibrary();
+              }
+            }}
+            className="ph-input flex items-center gap-2 px-2.5 py-2 text-sm text-ph-ink"
           >
             <FilterList className="h-4 w-4 shrink-0 text-ph-mutedtext" aria-hidden />
             <span className="max-w-[10rem] truncate">
@@ -297,7 +348,7 @@ export function SuitePaletteLibrary({
         </div>
 
         {libraryOpen ? (
-          <div className="rounded-lg border border-ph-border bg-ph-surface p-2">
+          <div className="rounded-[var(--ph-radius-overlay)] border border-[var(--ph-border-control)] bg-[var(--ph-surface-overlay)] p-2 shadow-[var(--ph-shadow-floating)]">
             <div className="relative mb-2">
               <Search
                 className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ph-mutedtext"
@@ -310,11 +361,23 @@ export function SuitePaletteLibrary({
                 onChange={(event) => setLibraryQuery(event.target.value)}
                 placeholder="Search libraries…"
                 aria-label="Search libraries"
-                className="w-full rounded-md border border-ph-border bg-ph-muted py-1.5 pl-8 pr-3 text-sm text-ph-ink placeholder:text-ph-mutedtext focus:border-ph-brand focus:outline-none"
+                className="ph-input w-full bg-[var(--ph-surface-inset)] py-1.5 pl-8 pr-3"
+                onKeyDown={(event) => {
+                  if (event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    libraryRef.current
+                      ?.querySelector<HTMLButtonElement>('[role="option"]')
+                      ?.focus();
+                  } else if (event.key === 'Escape') {
+                    event.preventDefault();
+                    closeLibrary(true);
+                  }
+                }}
               />
             </div>
             <ul
               role="listbox"
+              id={libraryListboxId}
               aria-label="Libraries"
               className="max-h-56 overflow-y-auto"
             >
@@ -323,15 +386,17 @@ export function SuitePaletteLibrary({
                   type="button"
                   role="option"
                   aria-selected={!collectionFilter}
+                  tabIndex={-1}
+                  onKeyDown={handleLibraryOptionKeyDown}
                   onClick={() => {
                     setCollectionFilter("");
-                    setLibraryOpen(false);
+                    closeLibrary(true);
                   }}
                   className={cn(
-                    "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm",
+                    "flex w-full items-center rounded-[var(--ph-radius-control)] px-2 py-1.5 text-left text-sm focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]",
                     !collectionFilter
-                      ? "bg-ph-muted text-ph-ink"
-                      : "text-ph-ink hover:bg-ph-muted",
+                      ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)]"
+                      : "text-ph-ink hover:bg-[var(--ph-surface-hover)]",
                   )}
                 >
                   All libraries
@@ -343,15 +408,17 @@ export function SuitePaletteLibrary({
                     type="button"
                     role="option"
                     aria-selected={collectionFilter === collection.slug}
+                    tabIndex={-1}
+                    onKeyDown={handleLibraryOptionKeyDown}
                     onClick={() => {
                       setCollectionFilter(collection.slug);
-                      setLibraryOpen(false);
+                      closeLibrary(true);
                     }}
                     className={cn(
-                      "flex w-full items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm",
+                      "flex w-full items-center justify-between gap-2 rounded-[var(--ph-radius-control)] px-2 py-1.5 text-left text-sm focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]",
                       collectionFilter === collection.slug
-                        ? "bg-ph-muted text-ph-ink"
-                        : "text-ph-ink hover:bg-ph-muted",
+                        ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)]"
+                        : "text-ph-ink hover:bg-[var(--ph-surface-hover)]",
                     )}
                   >
                     <span className="truncate">{collection.name}</span>
@@ -381,7 +448,7 @@ export function SuitePaletteLibrary({
         </p>
       ) : (
         <>
-          <div className="max-h-[320px] overflow-y-auto rounded-lg border border-ph-border p-2">
+          <div className="max-h-[320px] overflow-y-auto rounded-[var(--ph-radius-surface)] border border-ph-border p-2 focus-within:border-[var(--ph-selected-border)]">
             <div className="grid grid-cols-6 gap-1.5 sm:grid-cols-8">
               {icons.map((icon) => (
                 <button
@@ -390,7 +457,7 @@ export function SuitePaletteLibrary({
                   onClick={() => onPick({ url: icon.url, name: icon.name })}
                   title={icon.name}
                   aria-label={`Use ${icon.name}`}
-                  className="flex h-10 items-center justify-center rounded-md border border-transparent p-1.5 hover:border-ph-brand hover:bg-ph-muted"
+                  className="flex h-10 items-center justify-center rounded-[var(--ph-radius-control)] border border-transparent p-1.5 hover:border-[var(--ph-selected-border)] hover:bg-[var(--ph-surface-hover)] focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img

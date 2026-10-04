@@ -1,7 +1,11 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { sidebarColumnWidth } from "../lib/use-sidebar-width";
+import {
+  SIDEBAR_MAX_WIDTH,
+  SIDEBAR_RAIL_WIDTH,
+  sidebarColumnWidth,
+} from "../lib/use-sidebar-width";
 import { SuiteAppLayout } from "./suite-app-layout";
 import { SuitePageHeader } from "./suite-layout";
 
@@ -35,6 +39,31 @@ describe("sidebar resize handle", () => {
     expect(handle).not.toBeNull();
     expect(handle?.previousElementSibling).toHaveClass("isolate");
     expect(handle).toHaveClass("z-20");
+  });
+
+  it("supports range-style keyboard minimum, maximum, and steps", () => {
+    const onResizeBy = vi.fn();
+    render(
+      <SuiteAppLayout
+        sidebarWidth={240}
+        onStartResize={() => {}}
+        onResizeBy={onResizeBy}
+        sidebar={<div>Sidebar</div>}
+      >
+        Page
+      </SuiteAppLayout>,
+    );
+
+    const handle = screen.getByRole("separator", { name: "Resize sidebar" });
+    fireEvent.keyDown(handle, { key: "Home" });
+    fireEvent.keyDown(handle, { key: "End" });
+    fireEvent.keyDown(handle, { key: "ArrowLeft" });
+    fireEvent.keyDown(handle, { key: "ArrowRight" });
+
+    expect(onResizeBy).toHaveBeenNthCalledWith(1, SIDEBAR_RAIL_WIDTH - 240);
+    expect(onResizeBy).toHaveBeenNthCalledWith(2, SIDEBAR_MAX_WIDTH - 240);
+    expect(onResizeBy).toHaveBeenNthCalledWith(3, -16);
+    expect(onResizeBy).toHaveBeenNthCalledWith(4, 16);
   });
 });
 

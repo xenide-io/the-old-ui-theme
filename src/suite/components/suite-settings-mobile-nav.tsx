@@ -50,8 +50,8 @@ export function SuiteSettingsMobileNav({
           ) : (
             <Icon
               className={cn(
-                "h-4 w-4 shrink-0 transition",
-                active ? "text-ph-surface" : "text-ph-mutedtext",
+                "h-4 w-4 shrink-0 transition-colors",
+                active ? "text-[var(--ph-selected-text)]" : "text-ph-mutedtext",
               )}
               aria-hidden
             />
@@ -65,18 +65,14 @@ export function SuiteSettingsMobileNav({
               onClick={() => onSelect(item.href)}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "group relative flex shrink-0 snap-start items-center gap-2 rounded-full px-3.5 py-2.5 text-sm font-medium transition-colors",
-                "min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand",
+                "group relative flex min-h-[44px] shrink-0 snap-start items-center gap-2 rounded-[var(--ph-radius-control)] border px-3.5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]",
                 active
-                  ? "bg-ph-ink text-ph-surface shadow-sm"
-                  : "bg-ph-surface text-ph-subtle ring-1 ring-ph-border hover:bg-ph-muted hover:text-ph-ink",
+                  ? "border-[var(--ph-selected-border)] bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)]"
+                  : "border-ph-border bg-ph-surface text-ph-subtle hover:bg-[var(--ph-surface-hover)] hover:text-ph-ink",
               )}
             >
               {iconNode}
               <span className="whitespace-nowrap">{item.label}</span>
-              {active ? (
-                <span className="absolute inset-x-0 -bottom-3 h-0.5 rounded-full bg-ph-ink lg:hidden" />
-              ) : null}
             </button>
           );
         })}

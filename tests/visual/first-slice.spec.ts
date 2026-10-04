@@ -1,14 +1,18 @@
 import { expect, test } from "@playwright/test";
 import { THEMES } from "../../src/themes/registry";
 
+async function removeNextDevPortal(page: import("@playwright/test").Page) {
+  await page
+    .locator("nextjs-portal")
+    .evaluateAll((portals) => portals.forEach((portal) => portal.remove()));
+}
+
 async function prepareFixture(page: import("@playwright/test").Page) {
   await expect(async () => {
     await page.goto("/visual-tests/first-slice");
   }).toPass({ intervals: [250, 500, 1_000], timeout: 10_000 });
   await page.evaluate(() => document.fonts.ready);
-  await page
-    .locator("nextjs-portal")
-    .evaluateAll((portals) => portals.forEach((portal) => portal.remove()));
+  await removeNextDevPortal(page);
 }
 
 for (const theme of [
@@ -101,6 +105,135 @@ test("dropdown resolves against the viewport", async ({ page }) => {
   expect(box!.y).toBeGreaterThanOrEqual(8);
   expect(box!.y + box!.height).toBeLessThanOrEqual(viewport!.height - 8);
 });
+
+test("focused controls, selection, calendar, and empty table", async ({ page }) => {
+  await expect(async () => {
+    await page.goto("/visual-tests/interaction-states");
+  }).toPass({ intervals: [250, 500, 1_000], timeout: 10_000 });
+  await page.evaluate(() => document.fonts.ready);
+  await removeNextDevPortal(page);
+  await page.getByRole("textbox", { name: "Workspace name" }).focus();
+
+  await expect(page.getByTestId("interaction-states-fixture")).toHaveScreenshot(
+    "interaction-states.png",
+    { animations: "disabled" },
+  );
+});
+
+test("command palette floating material", async ({ page }) => {
+  await expect(async () => {
+    await page.goto("/visual-tests/interaction-states");
+  }).toPass({ intervals: [250, 500, 1_000], timeout: 10_000 });
+  await page.evaluate(() => document.fonts.ready);
+  await removeNextDevPortal(page);
+  await page.getByRole("button", { name: "Open commands" }).click();
+
+  await expect(page.getByRole("dialog", { name: "Command palette" })).toHaveScreenshot(
+    "command-palette.png",
+    { animations: "disabled" },
+  );
+});
+
+test("Ask AI composer material", async ({ page }) => {
+  await expect(async () => {
+    await page.goto("/visual-tests/ask-ai?fixture=empty&theme=hedgehog-light");
+  }).toPass({ intervals: [250, 500, 1_000], timeout: 10_000 });
+  await page.evaluate(() => document.fonts.ready);
+  await removeNextDevPortal(page);
+
+  await expect(page.locator('[data-test="suite-ask-ai-panel"]')).toHaveScreenshot(
+    "ask-ai-empty.png",
+    { animations: "disabled" },
+  );
+});
+
+test("suite chrome material", async ({ page, isMobile }) => {
+  await expect(async () => {
+    await page.goto("/demo/patterns");
+  }).toPass({ intervals: [250, 500, 1_000], timeout: 30_000 });
+  await page.evaluate(() => document.fonts.ready);
+  await removeNextDevPortal(page);
+
+  if (isMobile) {
+    await expect(page.locator(".suite-app-bar")).toHaveScreenshot(
+      "suite-mobile-header.png",
+      { animations: "disabled" },
+    );
+    await expect(page.locator(".suite-bottom-nav")).toHaveScreenshot(
+      "suite-mobile-bottom-nav.png",
+      { animations: "disabled" },
+    );
+    return;
+  }
+
+  await expect(page.locator('[data-test="app-shell"] > aside')).toHaveScreenshot(
+    "suite-desktop-sidebar.png",
+    { animations: "disabled" },
+  );
+});
+
+for (const theme of ["hedgehog-light", "hedgehog-dark"] as const) {
+  test(`${theme} compact headers preserve Today fade and scrolling`, async ({ page, isMobile }) => {
+    await page.clock.setFixedTime(new Date(2026, 0, 15, 12));
+    await page.addInitScript((nextTheme) => {
+      localStorage.setItem("ph-theme", nextTheme);
+    }, theme);
+    await page.goto("/visual-tests/suite-scale");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+    await page.evaluate(() => document.fonts.ready);
+    await removeNextDevPortal(page);
+
+    const today = page.getByRole("region", { name: "Today header" });
+    const product = page.getByRole("region", { name: "Product header" });
+    const titleStyle = (element: HTMLElement | SVGElement) => {
+      const style = getComputedStyle(element);
+      return { size: style.fontSize, family: style.fontFamily, weight: style.fontWeight };
+    };
+    expect(await product.getByRole("heading", { name: "Reports" }).evaluate(titleStyle))
+      .toEqual(await today.getByRole("heading", { name: "Today" }).evaluate(titleStyle));
+    await expect(today.getByRole("heading", { name: "Today" })).toHaveCSS(
+      "font-size", isMobile ? "22px" : "24px",
+    );
+    await expect(today.getByRole("heading", { name: "Today" })).toHaveCSS("font-weight", "600");
+
+    const headerGraphic = (element: HTMLElement | SVGElement) =>
+      getComputedStyle(element, "::before").backgroundImage;
+    expect(await today.locator("header").evaluate(headerGraphic)).toContain("linear-gradient");
+    expect(await today.locator("header").evaluate(headerGraphic)).not.toContain("radial-gradient");
+    expect(await product.locator("header").evaluate(headerGraphic)).toBe("none");
+    expect(await today.locator("header").evaluate((element) =>
+      getComputedStyle(element, "::before").backdropFilter,
+    )).toBe("blur(8px)");
+
+    const input = page.getByRole("textbox", { name: "Project name" });
+    await expect(input).toHaveCSS("font-size", isMobile ? "16px" : "15px");
+    await expect(input).toHaveCSS("min-height", isMobile ? "44px" : "40px");
+    await expect(page.getByText("Updated 4 minutes ago")).toHaveCSS(
+      "font-size", isMobile ? "14px" : "13px",
+    );
+
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth))
+      .toBe(true);
+    await expect(page.getByTestId("suite-scale-fixture")).toHaveScreenshot(
+      `${theme}-suite-scale.png`,
+      { animations: "disabled" },
+    );
+
+    await page.getByRole("button", { name: "Show scroll proof" }).click();
+    await expect(today).toHaveAttribute("data-scroll-proof", "true");
+    for (const region of [today, product]) {
+      const header = region.locator("header");
+      const restingTop = (await header.boundingBox())!.y;
+      await region.evaluate((element) => { element.scrollTop = 180; });
+      await expect.poll(async () =>
+        Math.abs((await header.boundingBox())!.y - restingTop),
+      ).toBeLessThanOrEqual(1);
+    }
+    expect(await today.locator("header").evaluate((element) =>
+      getComputedStyle(element, "::before").boxShadow,
+    )).toBe("none");
+  });
+}
 
 test("suite shell tracks the selected section and resizes its sidebar", async ({
   page,

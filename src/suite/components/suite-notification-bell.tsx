@@ -65,7 +65,7 @@ export function SuiteNotificationBell({
       open={open}
       onOpenChange={onOpenChange}
       trigger={
-        <span className="relative inline-flex h-11 w-11 items-center justify-center overflow-visible rounded-full text-ph-mutedtext transition hover:bg-ph-muted hover:text-ph-ink">
+        <span className="relative inline-flex h-11 w-11 items-center justify-center overflow-visible rounded-full text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink">
           <span className="relative inline-flex h-5 w-5">
             <Bell className="h-5 w-5" strokeWidth={1.75} aria-hidden />
             {unread > 0 ? (
@@ -85,7 +85,7 @@ export function SuiteNotificationBell({
             id={`${dataTest}-mark-all`}
             data-test={`${dataTest}-mark-all`}
             onClick={markAllRead}
-            className="text-xs font-medium text-ph-brand hover:underline"
+            className="ph-btn ph-btn-link ph-btn-xs text-xs"
           >
             Mark all read
           </button>
@@ -106,7 +106,7 @@ export function SuiteNotificationBell({
                 setOpen(false);
                 select(n);
               }}
-              className="flex w-full flex-col gap-0.5 px-3 py-2 text-left transition hover:bg-ph-muted"
+              className="ph-dropdown-item flex w-full flex-col items-stretch gap-0.5 px-3 py-2 text-left"
             >
               <span className="flex items-center gap-2">
                 {!n.read_at ? (
@@ -124,7 +124,7 @@ export function SuiteNotificationBell({
                   {n.body}
                 </span>
               ) : null}
-              <span className="text-[11px] uppercase tracking-wide text-ph-subtle">
+              <span className="text-xs text-ph-subtle">
                 {n.source_app} · {timeAgo(n.created_at)}
               </span>
             </button>

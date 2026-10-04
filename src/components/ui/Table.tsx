@@ -20,6 +20,7 @@ export interface TableProps<T> {
   getRowKey?: (row: T, index: number) => Key;
   className?: string;
   caption?: string;
+  emptyState?: ReactNode;
 }
 
 export function Table<T>({
@@ -32,10 +33,13 @@ export function Table<T>({
   getRowKey,
   className,
   caption,
+  emptyState = "No data available.",
 }: TableProps<T>) {
   return (
     <div
       className={cn("ph-table-wrap", compact && "ph-table-compact", className)}
+      role="region"
+      aria-label={caption ?? "Data table"}
       tabIndex={0}
     >
       <table className={cn("ph-table", zebra && "ph-table-zebra", ribbon && "ph-table--ribbon")}>
@@ -48,13 +52,21 @@ export function Table<T>({
           </tr>
         </thead>
         <tbody>
-          {data.map((row, i) => (
-            <tr key={getRowKey?.(row, i) ?? i} style={getRowStyle?.(row)}>
-              {columns.map((col) => (
-                <td key={col.key} className={col.className}>{col.cell(row)}</td>
-              ))}
+          {data.length === 0 ? (
+            <tr>
+              <td colSpan={columns.length} className="ph-table-empty">
+                {emptyState}
+              </td>
             </tr>
-          ))}
+          ) : (
+            data.map((row, i) => (
+              <tr key={getRowKey?.(row, i) ?? i} style={getRowStyle?.(row)}>
+                {columns.map((col) => (
+                  <td key={col.key} className={col.className}>{col.cell(row)}</td>
+                ))}
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>

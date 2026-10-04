@@ -97,13 +97,14 @@ describe("chip", () => {
 });
 
 describe("segmented control", () => {
-  it("exposes and updates the selected option as a pressed button", async () => {
+  it("exposes a radio group and moves selection with arrow keys", async () => {
     const user = userEvent.setup();
 
     function Fixture() {
       const [value, setValue] = useState("board");
       return (
         <SegmentedControl
+          aria-label="View"
           value={value}
           onChange={setValue}
           options={[
@@ -115,15 +116,20 @@ describe("segmented control", () => {
     }
 
     render(<Fixture />);
-    expect(screen.getByRole("button", { name: "Board" })).toHaveAttribute(
-      "aria-pressed",
+    expect(screen.getByRole("radiogroup", { name: "View" })).toBeInTheDocument();
+    const board = screen.getByRole("radio", { name: "Board" });
+    expect(board).toHaveAttribute(
+      "aria-checked",
       "true",
     );
 
-    await user.click(screen.getByRole("button", { name: "List" }));
-    expect(screen.getByRole("button", { name: "List" })).toHaveAttribute(
-      "aria-pressed",
+    await user.click(board);
+    await user.keyboard("{ArrowRight}");
+    const list = screen.getByRole("radio", { name: "List" });
+    expect(list).toHaveAttribute(
+      "aria-checked",
       "true",
     );
+    expect(list).toHaveFocus();
   });
 });

@@ -28,7 +28,7 @@ export function CollapsibleSection({
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-controls={contentId}
-        className="mb-6 flex w-full items-center justify-between rounded-lg border border-ph-border bg-ph-muted px-5 py-4 text-left transition hover:bg-ph-muted/80"
+        className="ph-collapsible-trigger mb-6"
       >
         <span className="text-lg font-bold text-ph-ink">{title}</span>
         <IconChevronDown
@@ -46,11 +46,11 @@ export function CollapsibleSection({
           if (node) node.toggleAttribute("inert", !isOpen);
         }}
         className={cn(
-          "overflow-hidden transition-all duration-300",
-          isOpen ? "max-h-[50000px] opacity-100" : "max-h-0 opacity-0",
+          "grid transition-[grid-template-rows,opacity] duration-200",
+          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
         )}
       >
-        {children}
+        <div className="overflow-hidden">{children}</div>
       </div>
     </section>
   );

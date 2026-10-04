@@ -38,9 +38,9 @@ export function ShowcaseWrapper({
             type="button"
             onClick={() => setShowCode(!showCode)}
             className={cn(
-              "flex h-10 w-10 items-center justify-center rounded-full border transition-all",
+              "ph-showcase-toggle flex h-10 w-10 items-center justify-center rounded-full border transition-colors",
               showCode
-                ? "border-ph-brand bg-ph-brand text-[var(--ph-on-accent)] shadow-lg shadow-ph-brand/25"
+                ? "border-ph-brand bg-ph-brand text-[var(--ph-on-accent)] shadow-[var(--ph-shadow-control)]"
                 : "border-ph-border bg-ph-surface text-ph-subtle hover:border-ph-brand hover:text-ph-brand"
             )}
             title={showCode ? "Hide code" : "Show code"}
@@ -68,7 +68,7 @@ export function ShowcaseWrapper({
 
         <div
           className={cn(
-            "transition-all duration-300",
+            "transition-opacity duration-200",
             showCode
               ? "block opacity-100"
               : "hidden opacity-0 lg:hidden"

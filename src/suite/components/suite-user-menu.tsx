@@ -148,7 +148,7 @@ export function SuiteUserMenu({
       className={cn(
         "[&_.ph-dropdown-trigger]:rounded-full",
         showDetails &&
-          "min-w-0 flex-1 [&_.ph-dropdown-trigger]:w-full [&_.ph-dropdown-trigger]:justify-start [&_.ph-dropdown-trigger]:rounded-lg",
+          "min-w-0 flex-1 [&_.ph-dropdown-trigger]:w-full [&_.ph-dropdown-trigger]:justify-start [&_.ph-dropdown-trigger]:rounded-[var(--ph-radius-control)]",
         showSignOutAction ? undefined : className,
       )}
       data-test={dataTest}
@@ -193,7 +193,7 @@ export function SuiteUserMenu({
         data-test={`${dataTest}-visible-sign-out`}
         title="Sign out"
         aria-label="Sign out"
-        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ph-focus-ring"
+        className="ph-btn ph-btn-ghost ph-btn-square h-10 w-10 shrink-0 text-ph-mutedtext"
         onClick={onSignOut}
       >
         <LogOut className="h-4 w-4" aria-hidden />

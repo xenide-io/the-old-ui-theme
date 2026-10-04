@@ -41,11 +41,11 @@ html {
   --suite-reading-max: 48rem; /* ~max-w-3xl / 65ch */
 }
 
-/* Phones/tablets only: pan/scroll, no pinch-zoom of the page. Desktop zoom stays. */
+/* Phones/tablets retain native pan and pinch zoom. */
 @media (hover: none) and (pointer: coarse) {
   html,
   body {
-    touch-action: pan-x pan-y;
+    touch-action: pan-x pan-y pinch-zoom;
   }
 }
 
@@ -62,6 +62,292 @@ body {
 }
 
 /* Shared app canvas. Dense workspaces do not paint a decorative background. */
+/* One centred marketing header and one button face across the product family. */
+.marketing-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--ph-border-subtle);
+  background: color-mix(in oklab, var(--ph-canvas) 88%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  backdrop-filter: blur(16px) saturate(1.15);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .marketing-header {
+    background: var(--ph-canvas);
+  }
+}
+.marketing-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 80rem;
+  min-height: 4.5rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+.marketing-header__brand {
+  min-width: 0;
+}
+.marketing-header__brand > a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--ph-text-primary);
+  border-radius: var(--ph-radius-control);
+}
+.marketing-header__navigation {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+}
+.marketing-header__navigation > a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.375rem;
+  padding-inline: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ph-text-secondary);
+  border-radius: var(--ph-radius-control);
+  transition:
+    color var(--ph-motion-fast) ease,
+    background-color var(--ph-motion-fast) ease;
+}
+.marketing-header__navigation > a:hover {
+  color: var(--ph-text-primary);
+  background: var(--ph-surface-hover);
+}
+.marketing-header__brand > a:focus-visible,
+.marketing-header__navigation > a:focus-visible {
+  outline: none;
+  box-shadow: var(--ph-focus-halo);
+}
+.marketing-header__navigation svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+}
+.marketing-header__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.625rem;
+}
+.marketing-button.ph-btn {
+  --ph-btn-control-size: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 0.875rem;
+}
+.marketing-button.ph-btn .ph-btn-chrome {
+  min-height: var(--ph-btn-control-size);
+  padding: 0.5rem 0.875rem;
+  font-size: inherit;
+}
+.marketing-button.ph-btn-lg {
+  --ph-btn-control-size: 3.0625rem;
+  font-size: 1rem;
+}
+.marketing-button.ph-btn-lg .ph-btn-chrome {
+  padding-inline: 1.25rem;
+}
+.marketing-motion-control {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--ph-border-control);
+  border-radius: 999px;
+  padding: 0.5rem 0.875rem;
+  color: var(--ph-text-secondary);
+  background: var(--ph-surface-raised);
+  box-shadow: var(--ph-chrome-inset-solid-top);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition:
+    color var(--ph-motion-fast) ease,
+    background-color var(--ph-motion-fast) ease,
+    border-color var(--ph-motion-fast) ease,
+    box-shadow var(--ph-motion-fast) ease;
+}
+.marketing-motion-control:hover {
+  color: var(--ph-text-primary);
+  background: var(--ph-surface-hover);
+}
+.marketing-motion-control[aria-pressed="true"] {
+  color: var(--ph-selected-text);
+  border-color: var(--ph-selected-border);
+  background: var(--ph-selected-bg);
+}
+.marketing-motion-control:focus-visible {
+  outline: none;
+  box-shadow: var(--ph-focus-halo);
+}
+.marketing-reveal--entered {
+  animation: marketing-enter 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes marketing-enter {
+  from {
+    opacity: 0.35;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.marketing-svg-float {
+  animation: marketing-art-float 7s ease-in-out infinite;
+}
+.marketing-svg-thread {
+  animation: marketing-art-thread 5s linear infinite;
+}
+.marketing-svg-polished {
+  animation: marketing-art-polish 7s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.marketing-svg-spark {
+  animation: marketing-art-spark 3.5s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes marketing-art-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+@keyframes marketing-art-thread {
+  to {
+    stroke-dashoffset: -65;
+  }
+}
+@keyframes marketing-art-polish {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 0.25;
+    transform: translateY(6px);
+  }
+  45%,
+  80% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes marketing-art-spark {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+.marketing-landing {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+}
+.marketing-landing::before {
+  content: "";
+  position: absolute;
+  inset: 5rem 0 auto;
+  height: 70rem;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 18% 12%,
+      color-mix(in oklab, var(--ph-accent) 13%, transparent),
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse at 88% 34%,
+      color-mix(in oklab, var(--ph-blue) 11%, transparent),
+      transparent 50%
+    );
+  animation: marketing-atmosphere 18s ease-in-out infinite alternate;
+}
+.landing-art-section {
+  background:
+    radial-gradient(
+      ellipse at 85% 40%,
+      color-mix(in oklab, var(--ph-accent) 8%, transparent),
+      transparent 65%
+    ),
+    var(--ph-canvas);
+}
+@keyframes marketing-atmosphere {
+  from {
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    transform: translateY(12px) scale(1.04);
+  }
+}
+html[data-marketing-paused] .marketing-landing svg *,
+html[data-marketing-paused] .marketing-landing::before {
+  animation-play-state: paused !important;
+}
+@media (min-width: 640px) {
+  .marketing-header__inner {
+    padding-inline: 2rem;
+  }
+}
+@media (min-width: 1100px) {
+  .marketing-header__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+  .marketing-header__navigation {
+    display: flex;
+    justify-content: center;
+  }
+}
+@media (max-width: 639px) {
+  .marketing-header__brand .marketing-brand-name {
+    display: none;
+  }
+  .marketing-header__actions {
+    gap: 0.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marketing-reveal--entered {
+    animation: none;
+  }
+  [data-marketing-art] * {
+    animation: none !important;
+  }
+  .marketing-landing svg * {
+    animation: none !important;
+  }
+  .marketing-landing::before {
+    animation: none;
+  }
+  .marketing-motion-control {
+    display: none;
+  }
+}
+
 .suite-app-layout {
   background: var(--ph-canvas);
 }
@@ -81,6 +367,31 @@ body {
   z-index: 2;
 }
 
+.suite-app-layout__sidebar {
+  border-color: var(--ph-border-subtle);
+  background: var(--ph-surface-inset);
+}
+
+.suite-sidebar {
+  background: color-mix(in oklab, var(--ph-surface-inset) 94%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  backdrop-filter: blur(18px) saturate(1.15);
+}
+
+.suite-sidebar[data-surface="true"] {
+  background: color-mix(in oklab, var(--ph-surface-overlay) 94%, transparent);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .suite-sidebar {
+    background: var(--ph-surface-inset);
+  }
+
+  .suite-sidebar[data-surface="true"] {
+    background: var(--ph-surface-overlay);
+  }
+}
+
 .suite-app-layout > div {
   position: relative;
   z-index: 1;
@@ -89,6 +400,21 @@ body {
 .suite-app-layout__main {
   background: color-mix(in oklab, var(--ph-canvas) 94%, transparent);
   scrollbar-gutter: stable;
+}
+
+.suite-app-layout__main:focus-visible {
+  box-shadow: inset 0 0 0 3px
+    color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
+}
+
+.suite-sidebar-resize-handle {
+  transition: background-color var(--ph-motion-fast) ease;
+}
+
+.suite-sidebar-resize-handle:hover,
+.suite-sidebar-resize-handle:focus-visible {
+  outline: none;
+  background: color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
 }
 
 @supports not (background: color-mix(in oklab, white, transparent)) {
@@ -123,6 +449,25 @@ body {
 .suite-settings-mobile-nav {
   margin-inline: calc(-1 * var(--suite-page-pad-x));
   padding-inline: var(--suite-page-pad-x);
+}
+
+.suite-settings-mobile-bar {
+  background: color-mix(in oklab, var(--ph-canvas) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  backdrop-filter: blur(12px) saturate(1.2);
+}
+
+.suite-settings-sidebar {
+  padding: 0.375rem;
+  border: 1px solid var(--ph-border-subtle);
+  border-radius: var(--ph-radius-surface);
+  background: var(--ph-surface-inset);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .suite-settings-mobile-bar {
+    background: var(--ph-canvas);
+  }
 }
 @media (min-width: 640px) {
   .suite-settings-mobile-nav {
@@ -453,29 +798,12 @@ html.dark .today-page-frame__cloud--2 {
 }
 
 /* ── Cards ──────────────────────────────────────────────────────────────
-   The MASTER spec: 12px radius, resting elevation, hover lift, and a
-   visible press state. Shadows are mixed from the theme's text colour
-   so they adapt to light AND dark themes instead of going muddy. */
-.ph-card {
-  border-radius: var(--suite-radius-card, 12px);
-  border-color: var(--ph-border-subtle);
-  background: var(--ph-surface-raised);
-  box-shadow:
-    0 1px 2px color-mix(in oklab, var(--ph-text-primary) 6%, transparent),
-    0 1px 1px color-mix(in oklab, var(--ph-text-primary) 4%, transparent);
-  transition:
-    border-color 160ms cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 160ms cubic-bezier(0.4, 0, 0.2, 1),
-    transform 160ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
+   Static cards stay flat. Only explicit interactive cards lift. */
 .ph-card-interactive:hover,
 a:hover > .ph-card,
 button:hover > .ph-card {
   border-color: var(--ph-border-control);
-  box-shadow:
-    0 2px 4px color-mix(in oklab, var(--ph-text-primary) 7%, transparent),
-    0 8px 20px color-mix(in oklab, var(--ph-text-primary) 8%, transparent);
+  box-shadow: var(--ph-shadow-raised);
   transform: translateY(-1px);
 }
 
@@ -490,12 +818,6 @@ button:hover > .ph-card {
 .ph-card.suite-press:active {
   transform: scale(0.985);
   transition-duration: 80ms;
-}
-
-/* Radix focuses the first menu item on open. The menu's highlighted state is
-   sufficient feedback, so do not retain an app-wide focus ring on that row. */
-#app-switcher-menu .ph-dropdown-item:focus-visible {
-  box-shadow: none;
 }
 
 /* ── App bar (mobile) / top bar (desktop) ───────────────────────────────
@@ -563,8 +885,9 @@ button:hover > .ph-card {
   content: "";
   position: absolute;
   inset: 0 5px;
-  border-radius: 0.9rem;
-  background: var(--ph-accent-highlight-secondary);
+  border: 1px solid var(--ph-selected-border);
+  border-radius: var(--ph-radius-surface);
+  background: var(--ph-selected-bg);
 }
 .suite-bottom-nav__icon {
   transition: color 160ms ease-out;
@@ -604,11 +927,16 @@ button:hover > .ph-card {
     padding: 0 !important;
   }
   .ph-modal-panel {
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    bottom: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
     max-height: calc(100svh - 3rem) !important;
     border-radius: 16px 16px 0 0 !important;
+    transform: none !important;
     padding-bottom: env(safe-area-inset-bottom);
   }
   /* Grabber — first in-flow child, so it sits above flush header rows. */
@@ -650,6 +978,25 @@ button:hover > .ph-card {
   -webkit-overflow-scrolling: touch;
 }
 
+.suite-ai-composer {
+  border-color: var(--ph-border-control);
+  border-radius: var(--ph-radius-surface);
+  box-shadow:
+    var(--ph-chrome-inset-face-top),
+    var(--ph-chrome-inset-face-bottom);
+  transition:
+    border-color var(--ph-motion-fast) ease,
+    box-shadow var(--ph-motion-fast) ease;
+}
+
+.suite-ai-composer:focus-within {
+  border-color: color-mix(in oklab, var(--ph-focus-ring) 58%, var(--ph-border));
+  box-shadow:
+    var(--ph-focus-halo),
+    var(--ph-chrome-inset-face-top),
+    var(--ph-chrome-inset-face-bottom);
+}
+
 /* Compact desktop controls keep their density; coarse pointers get a reliable
    44px hit area without app-specific overrides. */
 @media (pointer: coarse) {
@@ -670,7 +1017,7 @@ button:hover > .ph-card {
   padding: 0;
   color: var(--ph-text-primary);
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: var(--ph-type-small);
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
@@ -690,10 +1037,16 @@ button:hover > .ph-card {
   letter-spacing: -0.012em;
   line-height: 1.2;
 }
-.suite-ai-markdown h1 { font-size: 1.2rem; }
-.suite-ai-markdown h2 { font-size: 1.05rem; }
+.suite-ai-markdown h1 {
+  font-size: 1.2rem;
+}
+.suite-ai-markdown h2 {
+  font-size: 1.05rem;
+}
 .suite-ai-markdown h3,
-.suite-ai-markdown h4 { font-size: 0.9375rem; }
+.suite-ai-markdown h4 {
+  font-size: 0.9375rem;
+}
 .suite-ai-markdown p,
 .suite-ai-markdown ul,
 .suite-ai-markdown ol,
@@ -713,18 +1066,29 @@ button:hover > .ph-card {
 .suite-ai-markdown ol {
   padding-left: 1.375rem;
 }
-.suite-ai-markdown ul { list-style: disc; }
-.suite-ai-markdown ol { list-style: decimal; }
-.suite-ai-markdown li { padding-left: 0.125rem; }
-.suite-ai-markdown li + li { margin-top: 0.25rem; }
-.suite-ai-markdown li::marker { color: var(--ph-brand); }
+.suite-ai-markdown ul {
+  list-style: disc;
+}
+.suite-ai-markdown ol {
+  list-style: decimal;
+}
+.suite-ai-markdown li {
+  padding-left: 0.125rem;
+}
+.suite-ai-markdown li + li {
+  margin-top: 0.25rem;
+}
+.suite-ai-markdown li::marker {
+  color: var(--ph-brand);
+}
 .suite-ai-markdown pre {
   padding: 0.75rem;
   overflow-x: auto;
   border: 1px solid var(--ph-border-subtle);
   border-radius: 0.625rem;
   background: color-mix(in oklab, var(--ph-surface) 80%, var(--ph-canvas));
-  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--ph-text-primary) 4%, transparent);
+  box-shadow: inset 0 1px 0
+    color-mix(in oklab, var(--ph-text-primary) 4%, transparent);
 }
 .suite-ai-markdown code {
   font-family: var(--ph-font-monospace-stack, ui-monospace, monospace);
@@ -785,7 +1149,8 @@ button:hover > .ph-card {
 .suite-ai-markdown a {
   color: var(--ph-brand);
   font-weight: 600;
-  text-decoration: underline solid color-mix(in oklab, currentColor 45%, transparent);
+  text-decoration: underline solid
+    color-mix(in oklab, currentColor 45%, transparent);
   text-underline-offset: 0.16em;
 }
 .suite-ai-markdown a:hover {

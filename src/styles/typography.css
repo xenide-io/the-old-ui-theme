@@ -6,10 +6,25 @@
  * 2. Monospace stack — code, CSV, token chips, shortcuts. Functional only.
  *
  * Marketing type uses `clamp()` so a hero has ONE definition instead of three
- * breakpoint variants per app. Product UI keeps Tailwind's step scale.
+ * breakpoint variants per app. Product roles and Tailwind text utilities share
+ * the tokens below, including every suite component and consuming app.
  */
 
 :root {
+  --ph-font-sans-stack: var(--font-open-runde, "Open Runde"), ui-sans-serif, system-ui, sans-serif;
+  /* Product scale: comfortable body/control text, compact readable metadata. */
+  --ph-type-page: 1.5rem;
+  --ph-type-product-section: clamp(1.375rem, 1.25rem + 0.5vw, 1.5rem);
+  --ph-type-subsection: 1.25rem;
+  --ph-type-card: 1.125rem;
+  --ph-type-body: 1rem;
+  --ph-type-ui: 0.9375rem;
+  --ph-type-small: 0.9375rem;
+  --ph-type-meta: 0.8125rem;
+  --ph-type-overline: 0.75rem;
+  --ph-leading-body: 1.6;
+  --ph-leading-ui: 1.5;
+  --ph-leading-title: 1.2;
   /* Code / CSV / token chips — monospace with clear ASCII */
   --ph-font-monospace-stack:
     ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
@@ -28,6 +43,15 @@
   --ph-type-section: clamp(1.875rem, 1.3rem + 2.2vw, 2.75rem);
   --ph-type-feature: clamp(1.375rem, 1.15rem + 0.9vw, 1.75rem);
   --ph-type-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+}
+
+@media (max-width: 639px) {
+  :root {
+    --ph-type-page: 1.375rem;
+    --ph-type-ui: 1rem;
+    --ph-type-small: 1rem;
+    --ph-type-meta: 0.875rem;
+  }
 }
 
 /* ── Marketing / landing type ─────────────────────────────────────────────

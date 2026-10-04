@@ -77,9 +77,9 @@ export function SuiteWorkspaceSwitcher({
       trigger={
         <span
           className={cn(
-            "flex min-w-0 max-w-full items-center gap-2 rounded-lg border border-ph-border bg-ph-muted text-left transition-colors hover:bg-ph-muted",
+            "flex min-w-0 max-w-full items-center gap-2 rounded-[var(--ph-radius-control)] border border-ph-border bg-[var(--ph-surface-inset)] text-left transition-colors hover:bg-[var(--ph-surface-hover)]",
             collapsed ? "h-10 w-10 justify-center p-0" : "w-full px-3 py-2",
-            open && "border-ph-brand/40",
+            open && "border-[var(--ph-selected-border)] bg-[var(--ph-selected-bg)]",
           )}
           data-test="workspace-switcher-trigger"
         >
@@ -111,7 +111,7 @@ export function SuiteWorkspaceSwitcher({
         ) : (
           sections.map((section) => (
             <div key={section.id}>
-              <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ph-mutedtext">
+              <p className="px-3 py-2 text-[length:var(--ph-type-overline)] font-semibold uppercase tracking-[0.08em] text-ph-mutedtext">
                 {section.label}
               </p>
               {section.workspaces.map((workspace) => (

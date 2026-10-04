@@ -99,6 +99,7 @@ export default function TableShowcase() {
             { name: "ribbon", type: "boolean", defaultValue: "false", description: "Adds per-row accent ribbon support." },
             { name: "getRowStyle", type: "(row: T) => CSSProperties", description: "Optional row-level CSS variables or inline style." },
             { name: "caption", type: "string", description: "Accessible table caption rendered visually hidden." },
+            { name: "emptyState", type: "ReactNode", defaultValue: '"No data available."', description: "Content spanning all columns when no rows are available." },
           ]}
         />
       }

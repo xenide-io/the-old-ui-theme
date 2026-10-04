@@ -20,21 +20,14 @@ export function CodeBlock({ code, language = "tsx", filename, className }: CodeB
   };
 
   return (
-    <div className={cn("overflow-hidden rounded-lg border border-ph-border bg-[#1a1a2e]", className)}>
+    <div className={cn("ph-code-block", className)}>
       {(filename || language) && (
         <div className="flex items-center justify-between border-b border-white/10 px-4 py-2">
-          <div className="flex items-center gap-2">
-            <div className="flex gap-1.5">
-              <div className="h-3 w-3 rounded-full bg-red-400" />
-              <div className="h-3 w-3 rounded-full bg-amber-400" />
-              <div className="h-3 w-3 rounded-full bg-emerald-400" />
-            </div>
-            {filename && <span className="ml-2 text-xs text-white/60">{filename}</span>}
-          </div>
+          <span className="text-xs text-white/60">{filename ?? language}</span>
           <button
             type="button"
             onClick={handleCopy}
-            className="text-xs text-white/60 transition hover:text-white"
+            className="ph-code-block__copy"
           >
             {copied ? "Copied!" : "Copy"}
           </button>

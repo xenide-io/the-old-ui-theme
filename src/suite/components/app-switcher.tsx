@@ -12,20 +12,20 @@ import type {
 
 export function appSwitcherTriggerClass(open: boolean, collapsed = false) {
   return cn(
-    "group flex min-w-0 items-center gap-2 rounded-lg border px-2 py-1.5 text-left transition-all duration-200",
+    "group flex min-w-0 items-center gap-2 rounded-[var(--ph-radius-control)] border px-2 py-1.5 text-left transition-[color,background-color,border-color,box-shadow] duration-150",
     collapsed ? "h-11 w-11 justify-center px-0 py-0" : "w-full",
     open
-      ? "border-ph-brand/30 bg-ph-muted shadow-[0_1px_2px_rgba(0,0,0,0.06)] ring-1 ring-ph-brand/15"
-      : "border-transparent hover:border-ph-border hover:bg-ph-muted/80 hover:shadow-sm",
+      ? "border-[var(--ph-selected-border)] bg-[var(--ph-selected-bg)] shadow-[var(--ph-shadow-control)]"
+      : "border-transparent hover:border-ph-border hover:bg-[var(--ph-surface-hover)]",
   );
 }
 
 export function appSwitcherMarkClass() {
-  return "h-8 w-8 shrink-0 rounded-lg";
+  return "h-8 w-8 shrink-0 rounded-[var(--ph-radius-control)]";
 }
 
 export function appSwitcherMenuItemClass() {
-  return "rounded-lg px-2 py-2 data-[highlighted]:bg-transparent hover:bg-ph-muted/80 focus-visible:shadow-none";
+  return "px-2 py-2";
 }
 
 export function AppSwitcherMark({
@@ -58,7 +58,7 @@ export function AppSwitcherChevron({
     return (
       <span
         className={cn(
-          "absolute bottom-0 right-0 flex h-3 w-3 items-center justify-center rounded-full border border-ph-border bg-ph-surface shadow-sm transition-colors",
+          "absolute bottom-0 right-0 flex h-3 w-3 items-center justify-center rounded-full border border-ph-border bg-ph-surface transition-colors",
           open && "border-ph-brand/40 bg-ph-brand/10",
         )}
         aria-hidden
@@ -76,7 +76,7 @@ export function AppSwitcherChevron({
   return (
     <span
       className={cn(
-        "border-ph-border/80 flex h-5 w-5 shrink-0 items-center justify-center rounded-lg border bg-ph-canvas shadow-sm transition-all duration-200",
+        "border-ph-border/80 flex h-5 w-5 shrink-0 items-center justify-center rounded-[var(--ph-radius-control)] border bg-ph-canvas transition-[color,background-color,border-color] duration-150",
         open
           ? "border-ph-brand/35 bg-ph-brand/10 text-ph-brand"
           : "text-ph-mutedtext group-hover:border-ph-border group-hover:bg-ph-surface",
@@ -160,7 +160,7 @@ export function AppSwitcher({
       }
     >
       <div id="app-switcher-menu" className="p-1" data-test="app-switcher-menu">
-        <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ph-mutedtext">
+        <p className="px-3 py-2 text-[length:var(--ph-type-overline)] font-semibold uppercase tracking-[0.08em] text-ph-mutedtext">
           Switch application
         </p>
         {apps
@@ -204,7 +204,7 @@ export function AppSwitcher({
                   setOpen(false);
                   onSelect(app, { newTab: true });
                 }}
-                className="absolute right-1.5 top-1/2 z-[1] flex h-8 -translate-y-1/2 justify-center rounded-md p-0 text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink focus-visible:shadow-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-ph-brand/35"
+                className="absolute right-1.5 top-1/2 z-[1] flex h-8 -translate-y-1/2 justify-center p-0 text-ph-mutedtext"
                 style={{ width: "2rem" }}
               >
                 <OpenNewWindow className="h-4 w-4" aria-hidden="true" />

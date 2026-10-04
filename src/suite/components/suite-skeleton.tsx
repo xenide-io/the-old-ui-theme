@@ -65,7 +65,7 @@ export function SuiteSkeletonCard({
   return (
     <div
       className={cn(
-        'ph-skeleton-card animate-[skeleton-stagger_0.5s_ease-out_both] rounded-2xl border border-ph-border bg-ph-surface p-6 shadow-sm',
+        'ph-skeleton-card animate-[skeleton-stagger_0.5s_ease-out_both] rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface p-6',
         className,
       )}
       aria-hidden
@@ -75,7 +75,7 @@ export function SuiteSkeletonCard({
           className="mb-5 flex items-center gap-3 animate-[skeleton-stagger_0.5s_ease-out_both]"
           style={{ animationDelay: '100ms' }}
         >
-          <div className="ph-skeleton h-10 w-10 rounded-xl" />
+          <div className="ph-skeleton h-10 w-10 rounded-[var(--ph-radius-control)]" />
           <div className="flex-1 space-y-2">
             <div className="ph-skeleton h-4 w-1/3" />
             <div className="ph-skeleton h-3 w-1/2" />
@@ -115,8 +115,8 @@ export function SuiteSkeletonList({
           className="animate-[skeleton-stagger_0.6s_ease-out_both]"
           style={{ animationDelay: `${index * 100}ms` }}
         >
-          <div className="flex items-center gap-3 rounded-xl border border-ph-border bg-ph-surface p-4">
-            <div className="ph-skeleton h-10 w-10 rounded-lg" />
+          <div className="flex items-center gap-3 rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface p-4">
+            <div className="ph-skeleton h-10 w-10 rounded-[var(--ph-radius-control)]" />
             <div className="min-w-0 flex-1 space-y-2">
               <div className="ph-skeleton h-3.5 w-3/4" />
               <div className="ph-skeleton h-3 w-1/2" />
@@ -152,7 +152,7 @@ export function SuiteEmptyState({
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-2xl border border-ph-border bg-ph-surface text-center',
+        'relative overflow-hidden rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface text-center',
         size === 'sm' ? 'px-5 py-8' : 'px-6 py-12 sm:px-10 sm:py-16',
         className,
       )}
@@ -163,7 +163,7 @@ export function SuiteEmptyState({
       </div>
       <div className="relative">
         {icon ? (
-          <div className="mx-auto mb-4 inline-flex items-center justify-center rounded-2xl bg-ph-muted p-3 shadow-sm ring-1 ring-black/[0.06]">
+          <div className="mx-auto mb-4 inline-flex items-center justify-center rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-muted p-3 shadow-[var(--ph-shadow-control)]">
             {icon}
           </div>
         ) : null}

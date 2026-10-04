@@ -59,7 +59,7 @@ export function SuiteAppLayout({
     >
       <aside
         aria-label="Sidebar"
-        className="relative hidden shrink-0 flex-col overflow-visible border-r border-ph-border ease-out lg:flex"
+        className="suite-app-layout__sidebar relative hidden shrink-0 flex-col overflow-visible border-r ease-out lg:flex"
         style={{ width: `${sidebarWidth}px` }}
         data-collapsed={collapsed ? "true" : "false"}
       >
@@ -81,7 +81,10 @@ export function SuiteAppLayout({
             onKeyDown={(event) => {
               if (event.key === "Home") {
                 event.preventDefault();
-                onResetWidth?.();
+                onResizeBy?.(SIDEBAR_RAIL_WIDTH - sidebarWidth);
+              } else if (event.key === "End") {
+                event.preventDefault();
+                onResizeBy?.(SIDEBAR_MAX_WIDTH - sidebarWidth);
               } else if (event.key === "ArrowLeft") {
                 event.preventDefault();
                 onResizeBy?.(-16);
@@ -90,7 +93,7 @@ export function SuiteAppLayout({
                 onResizeBy?.(16);
               }
             }}
-            className="absolute inset-y-0 right-0 z-20 w-2 cursor-col-resize touch-none transition-colors before:absolute before:-left-2 before:-right-2 before:inset-y-0 before:content-[''] hover:bg-[color-mix(in_oklab,var(--ph-accent)_30%,transparent)]"
+            className="suite-sidebar-resize-handle absolute inset-y-0 right-0 z-20 w-2 cursor-col-resize touch-none before:absolute before:-left-2 before:-right-2 before:inset-y-0 before:content-['']"
           />
         ) : null}
       </aside>
@@ -104,7 +107,7 @@ export function SuiteAppLayout({
           tabIndex={0}
           data-lock-scroll={lockMainScroll ? "true" : undefined}
           className={cn(
-            "flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overscroll-contain bg-ph-canvas focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ph-focus",
+            "flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overscroll-contain bg-ph-canvas focus:outline-none",
             "suite-app-layout__main",
             lockMainScroll ? "overflow-hidden" : "overflow-y-auto",
           )}

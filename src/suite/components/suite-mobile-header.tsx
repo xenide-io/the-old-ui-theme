@@ -54,7 +54,7 @@ export function SuiteMobileHeader({
           type="button"
           id={menuId}
           data-test={menuDataTest}
-          className="suite-press inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-ph-ink transition-colors hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
+          className="ph-btn ph-btn-ghost ph-btn-square suite-press h-11 w-11 shrink-0 text-ph-ink"
           onClick={onMenuClick}
           aria-label={menuLabel}
         >

@@ -27,7 +27,7 @@ export default function TypographyShowcase() {
 <Display>Track time without the ceremony</Display>
 <Lead>Open a project, hit start, get on with the work.</Lead>
 
-// Product surfaces use the step scale
+// Product surfaces use the shared role scale (also used by SuitePageHeader)
 <H2>This week</H2>
 <P>One face everywhere; hierarchy comes from size and weight.</P>`;
 
@@ -44,10 +44,10 @@ export default function TypographyShowcase() {
           rows={[
             { name: "Display", type: "fluid", description: "Marketing hero. One per page. Uses .ph-hero-title." },
             { name: "SectionTitle", type: "fluid", description: "Landing section heading. Uses .ph-section-title." },
-            { name: "H1–H5", type: "step scale", description: "Product headings: page title down to card title." },
+            { name: "H1–H5", type: "role scale", description: "Page 22–24px, section 22–24px, subsection 20px, card 18px, small heading 16px." },
             { name: "Lead", type: "fluid", description: "Intro paragraph, capped at ~42ch for readability." },
-            { name: "P / Small", type: "step scale", description: "Body and secondary copy." },
-            { name: "Caption / Overline", type: "caps", description: "Meta and eyebrows — replaces ad-hoc text-[10px]/[11px]." },
+            { name: "P / Small", type: "shared tokens", description: "Body 16px; secondary and control text 15px desktop / 16px mobile." },
+            { name: "Caption / Overline", type: "metadata", description: "Sentence-case captions 13–14px; uppercase eyebrows 12px." },
             { name: "Mono", type: "monospace", description: "Code, IDs, and data. Never decorative." },
             { name: "tone / weight", type: "prop", description: "Semantic colour and weight without touching size." },
           ]}
@@ -65,7 +65,7 @@ export default function TypographyShowcase() {
           <SectionTitle>Built for the whole suite</SectionTitle>
         </Panel>
 
-        <Panel title="Product scale — steps" className="space-y-3">
+        <Panel title="Product scale — shared roles" className="space-y-3">
           <H1>Page title (H1)</H1>
           <H2>Section title (H2)</H2>
           <H3>Subsection (H3)</H3>

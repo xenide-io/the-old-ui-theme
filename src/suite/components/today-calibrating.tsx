@@ -30,7 +30,7 @@ export function TodayCalibrating({
   return (
     <div
       className={cn(
-        'suite-auth-handoff relative flex min-h-[14rem] flex-col items-center justify-center overflow-hidden rounded-2xl border border-ph-border bg-ph-surface px-5 py-8 text-center shadow-sm',
+        'suite-auth-handoff relative flex min-h-[14rem] flex-col items-center justify-center overflow-hidden rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface px-5 py-8 text-center',
         className,
       )}
       data-test="today-calibrating"
@@ -39,7 +39,7 @@ export function TodayCalibrating({
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(251,191,36,0.1),transparent_55%)]"
         aria-hidden
       />
-      <div className="relative mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-ph-border bg-ph-surface text-ph-ink shadow-sm">
+      <div className="relative mb-5 flex h-14 w-14 items-center justify-center rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface text-ph-ink shadow-[var(--ph-shadow-control)]">
         <Sun className="h-8 w-8" strokeWidth={2} aria-hidden />
       </div>
       <h2 className="relative text-base font-semibold tracking-tight text-ph-ink sm:text-lg md:text-xl">
@@ -56,7 +56,7 @@ export function TodayCalibrating({
           type="button"
           onClick={onRetry}
           disabled={retrying}
-          className="relative mt-6 inline-flex items-center gap-2 rounded-xl border border-ph-border bg-ph-canvas px-4 py-2 text-sm font-medium text-ph-ink transition hover:bg-ph-muted disabled:opacity-60"
+          className="ph-btn ph-btn-secondary relative mt-6"
         >
           {retrying ? (
             <Spinner size="sm" className={retrySpinnerClassName} />

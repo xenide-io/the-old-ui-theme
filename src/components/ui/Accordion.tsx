@@ -43,22 +43,19 @@ export function Accordion({
 
   return (
     <div
-      className={cn(
-        "divide-y divide-ph-border rounded-xl border border-ph-border bg-ph-surface",
-        className,
-      )}
+      className={cn("ph-accordion", className)}
     >
       {items.map((item) => {
         const isOpen = openItems.has(item.id);
         const contentId = `accordion-${idPrefix}-${item.id}-content`;
         return (
-          <div key={item.id} className="first:rounded-t-xl last:rounded-b-xl">
+          <div key={item.id} className="ph-accordion__item">
             <button
               type="button"
               onClick={() => toggleItem(item.id)}
               aria-expanded={isOpen}
               aria-controls={contentId}
-              className="flex w-full items-center justify-between px-5 py-4 text-left transition hover:bg-ph-muted"
+              className="ph-accordion__trigger"
             >
               <span className="font-semibold text-ph-ink">{item.title}</span>
               <IconChevronDown
@@ -75,7 +72,7 @@ export function Accordion({
                 if (node) node.toggleAttribute("inert", !isOpen);
               }}
               className={cn(
-                "grid transition-all duration-200",
+                "grid transition-[grid-template-rows] duration-200",
                 isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
               )}
             >

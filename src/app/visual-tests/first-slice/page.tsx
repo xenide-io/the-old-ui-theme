@@ -15,6 +15,7 @@ import {
   Input,
   Kbd,
   Modal,
+  SegmentedControl,
   Select,
   SortMenu,
   Textarea,
@@ -37,6 +38,7 @@ export default function FirstSliceFixture() {
   const [modalOpen, setModalOpen] = useState(false);
   const [status, setStatus] = useState("active");
   const [sort, setSort] = useState("updated");
+  const [view, setView] = useState("overview");
 
   return (
     <main className="min-h-screen bg-ph-canvas p-4 text-ph-ink sm:p-8">
@@ -70,6 +72,15 @@ export default function FirstSliceFixture() {
           <Button variant="danger">Danger</Button>
           <Button variant="signal" outline>Outline</Button>
           <Button variant="primary" loading>Loading</Button>
+          <SegmentedControl
+            aria-label="Dashboard view"
+            value={view}
+            onChange={setView}
+            options={[
+              { value: "overview", label: "Overview" },
+              { value: "activity", label: "Activity" },
+            ]}
+          />
         </section>
 
         <section aria-label="Keyboard and original icons" className="mt-5 flex flex-wrap items-center gap-4 border-y border-ph-border-subtle py-4">

@@ -221,7 +221,7 @@ export function SuiteIntegrationRules({
           <p className="mt-4 text-sm text-ph-subtle">Loading rules...</p>
         ) : rules.length === 0 ? (
           <div
-            className="mt-4 rounded-lg border border-dashed border-ph-border px-4 py-6 text-center"
+            className="mt-4 rounded-[var(--ph-radius-surface)] border border-dashed border-ph-border bg-[var(--ph-surface-inset)] px-4 py-6 text-center"
             data-test={`${dataTest}-empty`}
           >
             <p className="text-sm text-ph-subtle">
@@ -234,7 +234,7 @@ export function SuiteIntegrationRules({
             {rules.map((rule) => (
               <li
                 key={rule.id}
-                className="flex items-center justify-between gap-3 rounded-lg border border-ph-border bg-ph-muted px-3 py-3"
+                className="flex items-center justify-between gap-3 rounded-[var(--ph-radius-surface)] border border-ph-border bg-[var(--ph-surface-inset)] px-3 py-3"
                 data-test={`${dataTest}-rule-${rule.id}`}
               >
                 <div className="min-w-0">
@@ -282,7 +282,7 @@ export function SuiteIntegrationRules({
 
         {canManage && formOpen && onCreate ? (
           <form
-            className="mt-4 space-y-3 rounded-lg border border-ph-border bg-ph-surface p-4"
+            className="mt-4 space-y-3 rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface p-4"
             onSubmit={(event) => void submitForm(event)}
             data-test={`${dataTest}-form`}
           >
@@ -435,7 +435,7 @@ export function SuiteIntegrationRules({
         </p>
         {events.length === 0 ? (
           <p
-            className="mt-4 rounded-lg border border-dashed border-ph-border px-4 py-6 text-center text-sm text-ph-subtle"
+            className="mt-4 rounded-[var(--ph-radius-surface)] border border-dashed border-ph-border bg-[var(--ph-surface-inset)] px-4 py-6 text-center text-sm text-ph-subtle"
             data-test={`${dataTest}-events-empty`}
           >
             No integration events yet.
@@ -445,7 +445,7 @@ export function SuiteIntegrationRules({
             {events.map((event) => (
               <li
                 key={event.id}
-                className="flex items-center justify-between gap-3 rounded-lg border border-ph-border bg-ph-muted px-3 py-2"
+                className="flex items-center justify-between gap-3 rounded-[var(--ph-radius-surface)] border border-ph-border bg-[var(--ph-surface-inset)] px-3 py-2"
               >
                 <div className="min-w-0">
                   <p className="truncate text-sm text-ph-ink">

@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { Children, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl";
@@ -38,7 +38,7 @@ export function Avatar({
   label,
   icon,
   size = "md",
-  color = "bg-ph-brand text-white",
+  color = "bg-ph-brand text-[var(--ph-on-accent)]",
   status,
   badge,
   className,
@@ -48,7 +48,7 @@ export function Avatar({
     <div className={cn("relative inline-flex shrink-0", className)} {...props}>
       <div
         className={cn(
-          "flex items-center justify-center rounded-full border border-ph-border font-bold shadow-ph",
+          "ph-avatar flex items-center justify-center rounded-full border border-ph-border font-bold",
           sizeMap[size],
           color,
         )}
@@ -66,7 +66,7 @@ export function Avatar({
         />
       )}
       {badge && (
-        <span className="absolute -bottom-1 -right-1 flex min-w-[22px] items-center justify-center rounded-full bg-ph-brand px-1.5 py-px text-[10px] font-bold text-white">
+        <span className="absolute -bottom-1 -right-1 flex min-w-[22px] items-center justify-center rounded-full bg-ph-brand px-1.5 py-px text-[10px] font-bold text-[var(--ph-on-accent)]">
           {badge}
         </span>
       )}
@@ -80,7 +80,7 @@ export interface AvatarGroupProps extends ComponentPropsWithoutRef<"div"> {
 }
 
 export function AvatarGroup({ children, max, className, ...props }: AvatarGroupProps) {
-  const items = Array.isArray(children) ? children : [children];
+  const items = Children.toArray(children);
   const visible = max ? items.slice(0, max) : items;
   const remaining = max ? items.length - max : 0;
 

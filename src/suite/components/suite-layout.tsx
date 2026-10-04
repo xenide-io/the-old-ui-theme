@@ -192,7 +192,7 @@ export function SuitePageHeader({
       data-test={dataTest}
       data-stuck={sticky ? (stuck ? 'true' : 'false') : undefined}
       className={cn(
-        'flex min-w-0 shrink-0 flex-col items-start gap-3 pb-2 sm:flex-row sm:justify-between sm:gap-4 sm:pb-3',
+        'suite-page-header flex min-w-0 shrink-0 flex-col items-start gap-3 pb-2 sm:flex-row sm:justify-between sm:gap-4 sm:pb-3',
         // No extra pt here — page inset sets the shared title baseline.
         sticky && 'suite-page-header-sticky',
         className,
@@ -213,7 +213,7 @@ export function SuitePageHeader({
         <div className="flex min-w-0 items-center gap-3">
           {resolvedIcon ? (
             <div
-              className="hidden shrink-0 sm:flex sm:items-center [&_svg]:h-6 [&_svg]:w-6"
+              className="suite-page-header__icon hidden shrink-0 sm:flex sm:items-center [&_svg]:h-6 [&_svg]:w-6"
               aria-hidden="true"
             >
               {resolvedIcon}
@@ -222,14 +222,14 @@ export function SuitePageHeader({
           <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
             <h1
               className={cn(
-                'min-w-0 break-words font-display text-[1.375rem] font-semibold leading-tight tracking-tight text-ph-ink text-balance sm:text-2xl',
+                'ph-page-title min-w-0 break-words font-display font-semibold text-ph-ink text-balance',
                 titleClassName,
               )}
             >
               {title}
             </h1>
             {badge ? (
-              <span className="rounded-md bg-ph-muted px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-ph-subtle">
+              <span className="rounded-[var(--ph-radius-control)] bg-ph-muted px-2 py-0.5 text-[length:var(--ph-type-overline)] font-semibold uppercase tracking-wide text-ph-subtle">
                 {badge}
               </span>
             ) : null}

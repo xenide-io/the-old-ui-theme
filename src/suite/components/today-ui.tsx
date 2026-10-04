@@ -68,7 +68,7 @@ export function SourceAppGlyph({
     <img
       src={SOURCE_APP_LOGOS[app]}
       alt=""
-      className={cn("h-7 w-7 shrink-0 rounded-lg object-contain", className)}
+      className={cn("h-7 w-7 shrink-0 rounded-[var(--ph-radius-control)] object-contain", className)}
     />
   );
 }
@@ -210,11 +210,11 @@ export function TodayTopBar({
           {icon}
         </div>
         <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-          <h1 className="font-display text-[1.625rem] font-bold leading-tight tracking-tight text-ph-ink sm:text-[2.25rem]">
+          <h1 className="ph-page-title font-display font-semibold text-ph-ink">
             Today
           </h1>
           {appName ? (
-            <span className="rounded-md bg-ph-muted px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-ph-subtle">
+            <span className="rounded-[var(--ph-radius-control)] bg-ph-muted px-2 py-0.5 text-[length:var(--ph-type-overline)] font-semibold uppercase tracking-wide text-ph-subtle">
               {appName}
             </span>
           ) : null}
@@ -226,7 +226,7 @@ export function TodayTopBar({
           type="button"
           onClick={onRefresh}
           disabled={refreshing || loading}
-          className="press-subtle inline-flex h-10 w-10 items-center justify-center rounded-lg text-ph-subtle transition hover:bg-ph-surface hover:text-ph-ink disabled:opacity-50"
+          className="ph-btn ph-btn-ghost ph-btn-square press-subtle h-10 w-10 text-ph-subtle"
           data-test="today-refresh"
           aria-label="Refresh today"
         >
@@ -340,7 +340,7 @@ export function TodayPrimaryAction({
   dataTest?: string;
 }) {
   const classes = cn(
-    "today-primary-action group relative flex w-full max-w-md items-center gap-3 overflow-hidden rounded-xl px-3.5 py-2.5 text-left transition sm:px-4 sm:py-3",
+    "today-primary-action group relative flex w-full max-w-md items-center gap-3 overflow-hidden rounded-[var(--ph-radius-surface)] px-3.5 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)] sm:px-4 sm:py-3",
     `today-primary-action--${accent}`,
     active && "today-primary-action--active",
     loading && "pointer-events-none opacity-70",
@@ -349,7 +349,7 @@ export function TodayPrimaryAction({
 
   const body = (
     <>
-      <span className="today-primary-action__icon inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg sm:h-10 sm:w-10">
+      <span className="today-primary-action__icon inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--ph-radius-control)] sm:h-10 sm:w-10">
         {icon}
       </span>
       <span className="min-w-0 flex-1">
@@ -363,7 +363,7 @@ export function TodayPrimaryAction({
         ) : null}
       </span>
       <span
-        className="today-primary-action__chevron shrink-0 text-base opacity-60 transition group-hover:translate-x-0.5 group-hover:opacity-100"
+        className="today-primary-action__chevron shrink-0 text-base opacity-60 transition-[transform,opacity] group-hover:translate-x-0.5 group-hover:opacity-100"
         aria-hidden
       >
         →
@@ -415,7 +415,7 @@ export function TodayEmptyAction({
 }) {
   return (
     <div
-      className="rounded-lg border border-dashed border-ph-border/80 bg-ph-muted/30 px-4 py-4 text-center"
+      className="rounded-[var(--ph-radius-surface)] border border-dashed border-ph-border/80 bg-[var(--ph-surface-inset)] px-4 py-4 text-center"
       data-test={dataTest}
     >
       <p className="text-sm font-semibold text-ph-ink">{title}</p>
@@ -496,7 +496,7 @@ export function TodayAskAiCard({
   href?: string;
 }) {
   const classes = cn(
-    "group flex w-full items-start gap-3.5 rounded-2xl border border-ph-border/70 bg-ph-surface px-4 py-3.5 text-left shadow-[0_1px_12px_-8px_rgba(15,23,42,0.1)] transition hover:border-ph-brand/35 hover:bg-[color-mix(in_oklab,var(--ph-accent)_6%,var(--ph-surface))] sm:px-5",
+    "suite-press group flex w-full items-start gap-3.5 rounded-[var(--ph-radius-surface)] border border-ph-border/70 bg-ph-surface px-4 py-3.5 text-left transition-[background-color,border-color,box-shadow] hover:border-ph-brand/35 hover:bg-[var(--ph-surface-hover)] hover:shadow-[var(--ph-shadow-raised)] focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)] sm:px-5",
     className,
   );
 
@@ -575,7 +575,7 @@ export function TodaySection({
         <div className="flex min-w-0 items-start gap-3.5">
           <span
             className={cn(
-              "inline-flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-2xl shadow-sm ring-1 ring-black/[0.06]",
+              "inline-flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-[var(--ph-radius-surface)] border border-ph-border/70 shadow-[var(--ph-shadow-control)]",
               iconClassName ?? "bg-ph-muted text-ph-ink",
             )}
           >
@@ -609,7 +609,7 @@ export function TodayPanel({
   return (
     <div
       className={cn(
-        "border-ph-border/70 rounded-2xl border bg-ph-surface p-5 shadow-[0_1px_16px_-8px_rgba(15,23,42,0.12)] sm:p-5",
+        "rounded-[var(--ph-radius-surface)] border border-ph-border/70 bg-ph-surface p-5 sm:p-5",
         className,
       )}
     >
@@ -626,7 +626,7 @@ export function TodayEmptyState({
   description?: string;
 }) {
   return (
-    <div className="border-ph-border/80 rounded-xl border border-dashed px-5 py-8 text-center">
+    <div className="rounded-[var(--ph-radius-surface)] border border-dashed border-ph-border/80 bg-[var(--ph-surface-inset)] px-5 py-8 text-center">
       <p className="text-sm font-semibold text-ph-ink">{title}</p>
       {description ? (
         <p className="mt-1.5 text-sm leading-relaxed text-ph-subtle">

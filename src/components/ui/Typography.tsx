@@ -99,7 +99,7 @@ export const H1 = forwardRef<HTMLHeadingElement, H1Props>(function H1(
   { children, tone = "default", weight, truncate, className, ...props },
   ref,
 ) {
-  return <h1 ref={ref} {...props} className={textClass("text-3xl font-bold tracking-tight md:text-4xl", tone, weight, truncate, className)}>{children}</h1>;
+  return <h1 ref={ref} {...props} className={textClass("ph-page-title font-bold", tone, weight, truncate, className)}>{children}</h1>;
 });
 
 /** H2 — section title */
@@ -107,7 +107,7 @@ export const H2 = forwardRef<HTMLHeadingElement, H2Props>(function H2(
   { children, tone = "default", weight, truncate, className, ...props },
   ref,
 ) {
-  return <h2 ref={ref} {...props} className={textClass("text-2xl font-bold tracking-tight", tone, weight, truncate, className)}>{children}</h2>;
+  return <h2 ref={ref} {...props} className={textClass("text-2xl font-semibold tracking-tight", tone, weight, truncate, className)}>{children}</h2>;
 });
 
 /** H3 — subsection title */
@@ -155,7 +155,7 @@ export const Caption = forwardRef<HTMLSpanElement, CaptionProps>(function Captio
   { children, tone = "muted", weight, truncate, className, ...props },
   ref,
 ) {
-  return <span ref={ref} {...props} className={textClass("text-[11px] font-medium uppercase tracking-wider", tone, weight, truncate, className)}>{children}</span>;
+  return <span ref={ref} {...props} className={textClass("text-xs font-medium", tone, weight, truncate, className)}>{children}</span>;
 });
 
 /** Overline — tiny eyebrow text */
@@ -163,7 +163,7 @@ export const Overline = forwardRef<HTMLSpanElement, OverlineProps>(function Over
   { children, tone = "muted", weight, truncate, className, ...props },
   ref,
 ) {
-  return <span ref={ref} {...props} className={textClass("text-[10px] font-bold uppercase tracking-[0.15em]", tone, weight, truncate, className)}>{children}</span>;
+  return <span ref={ref} {...props} className={textClass("text-[length:var(--ph-type-overline)] font-semibold uppercase tracking-[0.08em]", tone, weight, truncate, className)}>{children}</span>;
 });
 
 /** Lead — intro paragraph under a Display/SectionTitle; measure-capped for readability */

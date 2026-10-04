@@ -23,6 +23,15 @@ const posthogThemePreset: Partial<Config> = {
         ],
         mono: ["var(--ph-font-monospace-stack)"],
         shortcut: ["var(--ph-font-shortcut-stack)"],
+        display: ["var(--ph-font-sans-stack)"],
+      },
+      fontSize: {
+        xs: ["var(--ph-type-meta)", { lineHeight: "var(--ph-leading-ui)" }],
+        sm: ["var(--ph-type-small)", { lineHeight: "var(--ph-leading-ui)" }],
+        base: ["var(--ph-type-body)", { lineHeight: "var(--ph-leading-body)" }],
+        lg: ["var(--ph-type-card)", { lineHeight: "1.4" }],
+        xl: ["var(--ph-type-subsection)", { lineHeight: "1.35" }],
+        "2xl": ["var(--ph-type-product-section)", { lineHeight: "1.25" }],
       },
       borderRadius: {
         lemon: "var(--ph-radius-app)",
