@@ -12,6 +12,12 @@ export {
 } from "./components/app-switcher";
 export { SuiteNotificationBell } from "./components/suite-notification-bell";
 export {
+  SuiteNotificationSettings,
+  type SuiteWebPushController,
+  type SuiteWebPushState,
+  type SuiteNotificationSettingsProps,
+} from "./components/suite-notification-settings";
+export {
   SuiteNotificationsProvider,
   useSuiteNotifications,
   SUITE_NOTIFICATIONS_POLL_MS,
