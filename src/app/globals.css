@@ -112,6 +112,20 @@ body {
 }
 
 @layer components {
+  .suite-sidebar-link:focus-visible {
+    outline: none;
+    box-shadow: var(--ph-focus-halo);
+  }
+
+  .ph-brand-spinner__column {
+    animation: ph-spinner-columns 0.85s ease-in-out infinite;
+  }
+
+  @keyframes ph-spinner-columns {
+    0%, 100% { opacity: 0.35; transform: translateY(2px); }
+    50% { opacity: 1; transform: translateY(-2px); }
+  }
+
   .ph-page-title {
     font-size: var(--ph-type-page);
     line-height: var(--ph-leading-title);
@@ -983,6 +997,47 @@ body {
   }
 
   /* LemonTable.scss — sticky-header border Simulation + row rhythm */
+  .ph-table-report-wrap {
+    overflow-x: auto;
+  }
+
+  .ph-table-report-wrap:focus-visible {
+    outline: 3px solid color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
+    outline-offset: 2px;
+  }
+
+  /* Preserve the existing report table geometry and sentence-case headings. */
+  .ph-table-report {
+    @apply w-full text-left text-sm;
+  }
+
+  .ph-table-report thead {
+    color: var(--ph-text-secondary);
+  }
+
+  .ph-table-report tr {
+    border-bottom: 1px solid var(--ph-border);
+  }
+
+  .ph-table-report th:first-child,
+  .ph-table-report td:first-child {
+    padding-block: 0.75rem;
+  }
+
+  .ph-table-report th:not(:last-child),
+  .ph-table-report td:not(:last-child) {
+    padding-right: 1rem;
+  }
+
+  .ph-table-compact .ph-table-report {
+    font-size: var(--ph-type-meta);
+  }
+
+  .ph-table-compact .ph-table-report th:first-child,
+  .ph-table-compact .ph-table-report td:first-child {
+    padding-block: 0.375rem;
+  }
+
   .ph-table-wrap {
     @apply overflow-x-auto bg-ph-surface;
     border-radius: var(--ph-radius-surface);
@@ -1063,7 +1118,8 @@ body {
     font-size: var(--ph-type-meta);
   }
 
-  .ph-table td.ph-table-empty {
+  .ph-table td.ph-table-empty,
+  .ph-table-report td.ph-table-empty {
     @apply py-8 text-center text-sm text-ph-mutedtext;
   }
 

@@ -134,6 +134,7 @@ export {
   Table as Table,
   type TableColumn as TableColumn,
   type TableProps as TableProps,
+  type TableVariant as TableVariant,
 } from "@/components/ui/Table";
 export {
   Stat as Stat,
@@ -260,6 +261,12 @@ export {
   Spinner as Spinner,
   type SpinnerProps as SpinnerProps,
 } from "@/components/ui/Spinner";
+export {
+  BrandSpinner,
+  type BrandSpinnerProps,
+  type BrandSpinnerSize,
+  type BrandSpinnerVariant,
+} from "@/components/ui/BrandSpinner";
 export { Dot as Dot, type DotProps as DotProps } from "@/components/ui/Dot";
 export {
   Chip as Chip,

@@ -282,28 +282,33 @@ export function TodayHero({
   message = "Take a nice, deep breath.",
   brief,
   briefMeta,
+  action,
 }: {
   message?: ReactNode;
   /** AI / local focus brief under the greeting. */
   brief?: ReactNode;
   briefMeta?: ReactNode;
+  action?: ReactNode;
 }) {
   return (
-    <div className="mt-4 sm:mt-6">
-      <p
-        key={typeof message === "string" ? message : "hero"}
-        className="today-hero max-w-2xl font-display text-lg font-semibold tracking-tight text-ph-ink sm:text-xl sm:leading-snug"
-      >
-        {message}
-      </p>
-      {brief ? (
-        <div className="mt-4 max-w-2xl" data-test="today-focus-brief">
-          <p className="text-[15px] leading-[1.65] text-ph-ink">{brief}</p>
-          {briefMeta ? (
-            <p className="mt-1.5 text-xs text-ph-mutedtext">{briefMeta}</p>
-          ) : null}
-        </div>
-      ) : null}
+    <div className="flex min-w-0 flex-col gap-5 border-b border-ph-border-subtle pb-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="min-w-0 flex-1">
+        <p
+          key={typeof message === "string" ? message : "hero"}
+          className="today-hero max-w-2xl font-display text-lg font-semibold tracking-tight text-ph-ink sm:text-xl"
+        >
+          {message}
+        </p>
+        {brief ? (
+          <div className="mt-2 max-w-xl" data-test="today-focus-brief">
+            <p className="text-sm leading-relaxed text-ph-subtle">{brief}</p>
+            {briefMeta ? (
+              <p className="mt-1.5 text-xs text-ph-mutedtext">{briefMeta}</p>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+      {action ? <div className="w-full shrink-0 sm:w-72">{action}</div> : null}
     </div>
   );
 }
@@ -415,12 +420,12 @@ export function TodayEmptyAction({
 }) {
   return (
     <div
-      className="rounded-[var(--ph-radius-surface)] border border-dashed border-ph-border/80 bg-[var(--ph-surface-inset)] px-4 py-4 text-center"
+      className="rounded-[var(--ph-radius-surface)] border border-ph-border-subtle bg-ph-surface px-5 py-6 text-left"
       data-test={dataTest}
     >
       <p className="text-sm font-semibold text-ph-ink">{title}</p>
       {description ? (
-        <p className="mx-auto mt-1 max-w-sm text-xs leading-relaxed text-ph-subtle sm:text-sm">
+        <p className="mt-1.5 max-w-md text-sm leading-relaxed text-ph-subtle">
           {description}
         </p>
       ) : null}
@@ -428,7 +433,7 @@ export function TodayEmptyAction({
         href ? (
           <a
             href={href}
-            className="mt-2.5 inline-flex text-sm font-semibold text-ph-brand hover:underline"
+            className="ph-btn ph-btn-link mt-3 text-sm"
           >
             {actionLabel}
           </a>
@@ -436,7 +441,7 @@ export function TodayEmptyAction({
           <button
             type="button"
             onClick={onClick}
-            className="mt-2.5 inline-flex text-sm font-semibold text-ph-brand hover:underline"
+            className="ph-btn ph-btn-link mt-3 text-sm"
           >
             {actionLabel}
           </button>
@@ -446,7 +451,7 @@ export function TodayEmptyAction({
   );
 }
 
-/** Desktop Today shell: main column + sticky Ask AI / brief aside. */
+/** Daily work queue and contextual rail; both stay in the page's scroll flow. */
 export function TodayLayout({
   primary,
   main,
@@ -464,10 +469,10 @@ export function TodayLayout({
       data-test="today-layout"
     >
       {primary ? <div className="max-w-md">{primary}</div> : null}
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,20rem)] lg:items-start lg:gap-8">
+      <div className={cn("grid gap-8 lg:items-start", aside && "lg:grid-cols-[minmax(0,1fr)_minmax(15rem,19rem)]")}>
         <div className="min-w-0 space-y-8">{main}</div>
         {aside ? (
-          <aside className="space-y-3 lg:sticky lg:top-6 lg:self-start">
+          <aside className="min-w-0 space-y-5">
             {aside}
           </aside>
         ) : null}
@@ -570,19 +575,19 @@ export function TodaySection({
   children: ReactNode;
 }) {
   return (
-    <section data-test={testId} className="space-y-5">
+    <section data-test={testId} className="space-y-4">
       <div className="flex items-start justify-between gap-4">
-        <div className="flex min-w-0 items-start gap-3.5">
+        <div className="flex min-w-0 items-start gap-3">
           <span
             className={cn(
-              "inline-flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-[var(--ph-radius-surface)] border border-ph-border/70 shadow-[var(--ph-shadow-control)]",
+              "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--ph-radius-control)]",
               iconClassName ?? "bg-ph-muted text-ph-ink",
             )}
           >
-            <Icon className="h-5 w-5" aria-hidden />
+            <Icon className="h-4 w-4" aria-hidden />
           </span>
           <div className="min-w-0 pt-0.5">
-            <h2 className="font-display text-lg font-bold tracking-tight text-ph-ink">
+            <h2 className="font-display text-lg font-semibold tracking-tight text-ph-ink">
               {title}
             </h2>
             {description ? (
@@ -609,7 +614,7 @@ export function TodayPanel({
   return (
     <div
       className={cn(
-        "rounded-[var(--ph-radius-surface)] border border-ph-border/70 bg-ph-surface p-5 sm:p-5",
+        "today-panel rounded-[var(--ph-radius-surface)] border border-ph-border-subtle bg-ph-surface p-5",
         className,
       )}
     >

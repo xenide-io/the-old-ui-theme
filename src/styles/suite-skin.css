@@ -62,20 +62,56 @@ body {
 }
 
 /* Shared app canvas. Dense workspaces do not paint a decorative background. */
-/* One centred marketing header and one button face across the product family. */
+/* One centred marketing header and one button face across the product family.
+   The header stays transparent; scrolling content blurs and fades behind it,
+   the same treatment as the Today title and the blog/guide chrome. */
+.marketing-header,
+.landing-page-nav {
+  isolation: isolate;
+  background: transparent;
+  border-bottom: none;
+}
+
 .marketing-header {
   position: sticky;
   top: 0;
   z-index: 50;
-  border-bottom: 1px solid var(--ph-border-subtle);
-  background: color-mix(in oklab, var(--ph-canvas) 88%, transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(1.15);
-  backdrop-filter: blur(16px) saturate(1.15);
 }
-@supports not (backdrop-filter: blur(1px)) {
-  .marketing-header {
-    background: var(--ph-canvas);
-  }
+
+.marketing-header::before,
+.landing-page-nav::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: calc(100% + var(--suite-scroll-fade));
+  z-index: -1;
+  /* No surface fill: the page background shows through from the very top,
+     and only passing content is blurred. Keeps the header from reading as a
+     lighter bar. */
+  background: transparent;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - var(--suite-scroll-fade)),
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* At rest the header is fully transparent so the page background starts at the
+   top. The frost only kicks in once content scrolls beneath it. */
+.marketing-header[data-scrolled="false"]::before {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 .marketing-header__inner {
   display: flex;
@@ -269,8 +305,10 @@ body {
 .marketing-landing::before {
   content: "";
   position: absolute;
-  inset: 5rem 0 auto;
-  height: 70rem;
+  /* Start at the very top so the atmosphere is behind the header too — the
+     header is transparent, so an inset here would read as a bare strip. */
+  inset: 0 0 auto;
+  height: 75rem;
   z-index: -1;
   pointer-events: none;
   background:
@@ -480,6 +518,33 @@ html[data-marketing-paused] .marketing-landing::before {
 .today-page-frame .suite-page-inset {
   padding-top: var(--suite-today-pad-y-top);
 }
+
+/* Start the body below the sticky header's fade, with a clear 16px gap. */
+.today-page-frame .suite-page-header + .suite-page-body {
+  margin-top: calc(var(--suite-scroll-fade) + var(--suite-space-4));
+}
+
+.today-work-row {
+  display: flex;
+  min-height: 2.75rem;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--ph-radius-control);
+  transition: background-color var(--ph-motion-fast) ease;
+}
+
+:is(a, button).today-work-row:hover {
+  background: var(--ph-surface-hover);
+}
+
+:is(a, button).today-work-row:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 3px
+    color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
+}
+
 @media (min-width: 640px) {
   .today-page-frame .suite-page-inset {
     padding-top: var(--suite-today-pad-y-top-sm);
@@ -734,40 +799,7 @@ html.dark .today-page-frame__cloud--2 {
   }
 }
 
-/* Public landing nav — same sit-on-the-page fade as Today. No bar, no border;
-   the page background shows through and only scrolling content dissolves. */
-.landing-page-nav {
-  isolation: isolate;
-  background: transparent;
-  border-bottom: none;
-}
-.landing-page-nav::before {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  height: calc(100% + var(--suite-scroll-fade));
-  z-index: -1;
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--ph-canvas) 18%, transparent)
-      calc(100% - var(--suite-scroll-fade)),
-    transparent
-  );
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    #000 calc(100% - var(--suite-scroll-fade)),
-    transparent
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    #000 calc(100% - var(--suite-scroll-fade)),
-    transparent
-  );
-  pointer-events: none;
-}
+/* Public landing nav (see the shared header rule above for its fade layer). */
 
 /* Page stage — ONE layout standard for every suite app.
    - Default width="full": use the full main column (no max-width centring)

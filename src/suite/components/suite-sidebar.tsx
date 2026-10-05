@@ -277,9 +277,9 @@ export function SuiteSidebar({
                       aria-current={active ? "page" : undefined}
                       onClick={item.onClick}
                       className={cn(
-                        "group relative flex min-h-11 touch-manipulation items-center gap-2.5 rounded-[var(--ph-radius-control)] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]",
+                        "suite-sidebar-link group relative flex min-h-11 touch-manipulation items-center gap-2.5 rounded-[var(--ph-radius-control)] text-sm font-medium transition-colors",
                         active
-                          ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)] shadow-[inset_0_0_0_1px_var(--ph-selected-border)]"
+                          ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)]"
                           : "text-ph-subtle hover:bg-[var(--ph-surface-hover)] hover:text-ph-ink",
                         collapsed
                           ? "mx-auto size-11 shrink-0 justify-center gap-0 px-0 py-0"

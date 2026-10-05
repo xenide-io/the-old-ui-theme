@@ -205,6 +205,14 @@ for (const theme of ["hedgehog-light", "hedgehog-dark"] as const) {
       getComputedStyle(element, "::before").backdropFilter,
     )).toBe("blur(8px)");
 
+    const clearance = await today.locator("header").evaluate((header) => {
+      const body = header.nextElementSibling;
+      if (!body) throw new Error("Today body is missing");
+      const fade = parseFloat(getComputedStyle(header).getPropertyValue("--suite-scroll-fade"));
+      return body.getBoundingClientRect().top - header.getBoundingClientRect().bottom - fade;
+    });
+    expect(clearance).toBeGreaterThanOrEqual(16);
+
     const input = page.getByRole("textbox", { name: "Project name" });
     await expect(input).toHaveCSS("font-size", isMobile ? "16px" : "15px");
     await expect(input).toHaveCSS("min-height", isMobile ? "44px" : "40px");

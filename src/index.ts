@@ -68,6 +68,7 @@ export {
   IconByName,
   Link,
   Spinner,
+  BrandSpinner,
   Dot,
   Chip,
 } from "@/components/ui";
@@ -122,6 +123,10 @@ export type {
   SearchInputProps,
   TableColumn,
   TableProps,
+  TableVariant,
+  BrandSpinnerProps,
+  BrandSpinnerSize,
+  BrandSpinnerVariant,
   StatProps,
   StatTone,
   AvatarProps,

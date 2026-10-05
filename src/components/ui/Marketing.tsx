@@ -24,8 +24,24 @@ export function MarketingHeader({
   navigation: ReactNode;
   actions: ReactNode;
 }) {
+  // At the very top nothing sits under the header, so it must stay transparent
+  // (the page background shows through from the first pixel). Only once content
+  // scrolls beneath it do we frost it.
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header {...props} className={cn("marketing-header", className)}>
+    <header
+      {...props}
+      data-scrolled={scrolled ? "true" : "false"}
+      className={cn("marketing-header", className)}
+    >
       <div className="marketing-header__inner">
         <div className="marketing-header__brand">{brand}</div>
         <nav

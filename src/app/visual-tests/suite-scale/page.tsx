@@ -21,10 +21,12 @@ export default function SuiteScaleFixture() {
                 description="Your workspace, at a glance."
                 actions={<Button variant="secondary">Refresh</Button>}
               />
-              <Card className="mt-6" title="Your focus">
-                <P>Finish the proposal, then review the next milestone.</P>
-                <Small tone="subtle">Comfortable body text with a clear secondary hierarchy.</Small>
-              </Card>
+              <div className="suite-page-body">
+                <Card title="Your focus">
+                  <P>Finish the proposal, then review the next milestone.</P>
+                  <Small tone="subtle">Comfortable body text with a clear secondary hierarchy.</Small>
+                </Card>
+              </div>
               {scrollProof ? <div className="h-[48rem] shrink-0" aria-hidden /> : null}
             </TodayPageFrame>
           </section>
