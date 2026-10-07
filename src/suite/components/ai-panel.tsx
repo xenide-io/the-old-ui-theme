@@ -26,10 +26,9 @@ import {
 } from "iconoir-react";
 
 import { Tooltip } from "../../components/ui/Tooltip";
-import {
-  classifySuiteHref,
-  type SuiteAppSlug,
-} from "../lib/apps";
+import { trackSuiteEvent } from "../../lib/suite-analytics";
+import { SuiteAiDraftEditor, suiteAiDraftFields } from "./ai-draft-editor";
+import { classifySuiteHref, type SuiteAppSlug } from "../lib/apps";
 
 const SuiteAiMarkdownMessage = lazy(() => import("./ai-message-markdown"));
 
@@ -85,10 +84,7 @@ export function consumeSuiteAskAiOpenFromLocation(): boolean {
 }
 
 export type SuiteAiActionStatus =
-  | "proposed"
-  | "applied"
-  | "cancelled"
-  | "failed";
+  "proposed" | "applied" | "cancelled" | "failed";
 
 export interface SuiteAiAction {
   id: string;
@@ -207,6 +203,7 @@ export function SuiteAiPanel({
   resolveAction?: (
     id: string,
     decision: "confirm" | "cancel",
+    edits?: Record<string, unknown>,
   ) => Promise<{ messages: SuiteAiChatMessage[] }>;
   /** A durable background job is still preparing the assistant reply. */
   isWaitingForReply?: boolean;
@@ -214,6 +211,9 @@ export function SuiteAiPanel({
   const inputId = useId();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const [resolvingId, setResolvingId] = useState("");
+  const [actionDrafts, setActionDrafts] = useState<
+    Record<string, Record<string, unknown>>
+  >({});
   const open = openProp ?? uncontrolledOpen;
   const setOpen = useCallback(
     (next: boolean) => {
@@ -251,6 +251,12 @@ export function SuiteAiPanel({
     window.addEventListener(SUITE_OPEN_ASK_AI_EVENT, onOpen);
     return () => window.removeEventListener(SUITE_OPEN_ASK_AI_EVENT, onOpen);
   }, [setOpen]);
+
+  useEffect(() => {
+    if (!open) return;
+    trackSuiteEvent("AI Chat Opened", { origin: "suite_panel" });
+    trackSuiteEvent("UI Opened", { view: "ai_panel" });
+  }, [open]);
 
   const scrollToBottom = useCallback((behavior: ScrollBehavior = "auto") => {
     const el = scrollerRef.current;
@@ -337,6 +343,14 @@ export function SuiteAiPanel({
     setPrompt("");
     setAtBottom(true);
     setMessages((prev) => [...prev, { role: "user", content: trimmed }]);
+    trackSuiteEvent("AI Message Sent", {
+      prompt_length: trimmed.length,
+      page_path:
+        typeof window !== "undefined" ? window.location.pathname : undefined,
+      is_preset: presets.some((preset) => preset.prompt === trimmed),
+      is_edit: false,
+      has_attachment: false,
+    });
     try {
       const result = await sendMessage({
         prompt: trimmed,
@@ -369,6 +383,7 @@ export function SuiteAiPanel({
   }
 
   function stop() {
+    trackSuiteEvent("AI Message Cancelled");
     abortRef.current?.abort();
     abortRef.current = null;
     setLoading(false);
@@ -399,6 +414,14 @@ export function SuiteAiPanel({
     setError("");
     setAtBottom(true);
     setMessages((prev) => prev.slice(0, index));
+    trackSuiteEvent("AI Message Sent", {
+      prompt_length: trimmed.length,
+      page_path:
+        typeof window !== "undefined" ? window.location.pathname : undefined,
+      is_preset: false,
+      is_edit: true,
+      has_attachment: false,
+    });
     const controller = new AbortController();
     abortRef.current = controller;
     setLoading(true);
@@ -449,6 +472,10 @@ export function SuiteAiPanel({
       await clearChat();
       setMessages([]);
       setError("");
+      trackSuiteEvent("AI Chat Cleared", {
+        page_path:
+          typeof window !== "undefined" ? window.location.pathname : undefined,
+      });
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Could not clear this chat.",
@@ -457,16 +484,25 @@ export function SuiteAiPanel({
   }
 
   async function handleResolve(
-    actionId: string,
+    action: SuiteAiAction,
     decision: "confirm" | "cancel",
   ) {
     if (!resolveAction || resolvingId) return;
+    const actionId = action.id;
     setResolvingId(actionId);
     setError("");
     try {
-      const result = await resolveAction(actionId, decision);
+      const edits = decision === "confirm" ? actionDrafts[actionId] : undefined;
+      const result = edits
+        ? await resolveAction(actionId, decision, edits)
+        : await resolveAction(actionId, decision);
       const nextMessages = result.messages ?? [];
       setMessages(nextMessages);
+      trackSuiteEvent("AI Action Resolved", {
+        decision,
+        action_kind: action.kind,
+        destructive: Boolean(action.payload?.destructive),
+      });
       notifySuiteMutated(
         nextMessages.flatMap((message) => message.actions ?? []),
       );
@@ -525,6 +561,32 @@ export function SuiteAiPanel({
     >
       <header className="flex items-center gap-2 px-2 pb-2">
         <h2 className="sr-only">{title}</h2>
+        {presets.length > 0 ? (
+          <details className="relative" data-test="ask-ai-workflows">
+            <summary className="ph-btn ph-btn-secondary ph-btn-sm min-h-10 cursor-pointer list-none">
+              Workflows
+            </summary>
+            <div className="absolute left-0 top-full z-30 mt-1 max-h-80 w-64 overflow-auto rounded-lg border border-ph-border bg-ph-surface p-1 shadow-lg">
+              {presets.map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  disabled={waiting || hydrating}
+                  className="flex min-h-10 w-full items-center rounded px-3 py-2 text-left text-sm hover:bg-ph-muted focus-visible:outline focus-visible:outline-2 disabled:opacity-50"
+                  onClick={(event) => {
+                    setPrompt(preset.prompt);
+                    event.currentTarget
+                      .closest("details")
+                      ?.removeAttribute("open");
+                    textareaRef.current?.focus();
+                  }}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </details>
+        ) : null}
         {messages.length > 0 ? (
           <button
             type="button"
@@ -658,7 +720,9 @@ export function SuiteAiPanel({
                       <div className="mb-0.5 flex items-center gap-0.5 opacity-100 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:opacity-100">
                         <button
                           type="button"
-                          onClick={() => void handleCopy(index, message.content)}
+                          onClick={() =>
+                            void handleCopy(index, message.content)
+                          }
                           aria-label={
                             copiedIndex === index ? "Copied" : "Copy message"
                           }
@@ -730,13 +794,101 @@ export function SuiteAiPanel({
                       className="rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface px-3 py-2 text-sm text-ph-ink"
                     >
                       <p className="font-medium">{action.summary}</p>
+                      {action.payload && action.kind.startsWith("propose_") ? (
+                        <details
+                          className="mt-2"
+                          data-test="ask-ai-workflow-preview"
+                        >
+                          <summary className="cursor-pointer rounded text-xs text-ph-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+                            Review proposed content and evidence
+                          </summary>
+                          {typeof action.payload.before === "string" ? (
+                            <div className="mt-2">
+                              <p className="text-xs font-medium text-ph-subtle">
+                                Current description
+                              </p>
+                              <pre className="mt-1 max-h-48 overflow-auto whitespace-pre-wrap break-words text-xs">
+                                {action.payload.before}
+                              </pre>
+                            </div>
+                          ) : null}
+                          <div className="mt-2">
+                            <p className="text-xs font-medium text-ph-subtle">
+                              Proposed draft
+                            </p>
+                            <pre className="mt-1 max-h-80 overflow-auto whitespace-pre-wrap break-words text-xs">
+                              {String(
+                                action.payload.body ??
+                                  action.payload.description ??
+                                  JSON.stringify(
+                                    action.payload.tasks ?? action.payload,
+                                    null,
+                                    2,
+                                  ),
+                              )}
+                            </pre>
+                          </div>
+                          <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words text-xs text-ph-subtle">
+                            {JSON.stringify(
+                              action.kind === "propose_project_handover"
+                                ? {
+                                    project_id: action.payload.project_id,
+                                    sources: action.payload.sources,
+                                    task_versions: action.payload.task_versions,
+                                  }
+                                : action.kind === "propose_requirement_update"
+                                  ? {
+                                      source_url: action.payload.source_url,
+                                      document_revision:
+                                        action.payload.document_revision,
+                                      task_updated_at:
+                                        action.payload.task_updated_at,
+                                    }
+                                  : Object.fromEntries(
+                                      Object.entries(action.payload).filter(
+                                        ([key]) =>
+                                          ![
+                                            "body",
+                                            "description",
+                                            "before",
+                                            "tasks",
+                                          ].includes(key),
+                                      ),
+                                    ),
+                              null,
+                              2,
+                            )}
+                          </pre>
+                        </details>
+                      ) : null}
                       {action.status === "proposed" ? (
                         <div className="mt-2 flex flex-wrap gap-2">
+                          {suiteAiDraftFields(action.kind, action.payload) ? (
+                            <button
+                              type="button"
+                              className="ph-btn ph-btn-secondary ph-btn-xs"
+                              onClick={() =>
+                                setActionDrafts((drafts) => ({
+                                  ...drafts,
+                                  [action.id]:
+                                    drafts[action.id] ??
+                                    suiteAiDraftFields(
+                                      action.kind,
+                                      action.payload,
+                                    )!,
+                                }))
+                              }
+                            >
+                              Edit draft
+                            </button>
+                          ) : null}
                           <button
                             type="button"
                             data-test="ask-ai-action-confirm"
                             disabled={Boolean(resolvingId) || !resolveAction}
-                            onClick={() => void handleResolve(action.id, "confirm")}
+                            onClick={() =>
+                              void handleResolve(action, "confirm")
+                            }
                             className="ph-btn ph-btn-primary ph-btn-xs"
                           >
                             {resolvingId === action.id ? "Working…" : "Confirm"}
@@ -745,12 +897,28 @@ export function SuiteAiPanel({
                             type="button"
                             data-test="ask-ai-action-cancel"
                             disabled={Boolean(resolvingId) || !resolveAction}
-                            onClick={() => void handleResolve(action.id, "cancel")}
+                            onClick={() =>
+                              void handleResolve(action, "cancel")
+                            }
                             className="ph-btn ph-btn-secondary ph-btn-xs"
                           >
                             Cancel
                           </button>
                         </div>
+                      ) : null}
+                      {action.status === "proposed" &&
+                      actionDrafts[action.id] ? (
+                        <SuiteAiDraftEditor
+                          kind={action.kind}
+                          draft={actionDrafts[action.id]}
+                          canAddTasks={Boolean(action.payload?.project_id)}
+                          onChange={(draft) =>
+                            setActionDrafts((drafts) => ({
+                              ...drafts,
+                              [action.id]: draft,
+                            }))
+                          }
+                        />
                       ) : null}
                       {action.status === "applied" ? (
                         <p className="mt-1 text-xs text-ph-subtle">
@@ -809,7 +977,9 @@ export function SuiteAiPanel({
             >
               <WarningTriangle className="mt-0.5 h-4 w-4 shrink-0 text-ph-danger" />
               <div className="min-w-0 flex-1">
-                <p className="font-medium text-ph-danger">Something went wrong</p>
+                <p className="font-medium text-ph-danger">
+                  Something went wrong
+                </p>
                 <p className="mt-0.5 text-ph-subtle">{error}</p>
                 <button
                   type="button"

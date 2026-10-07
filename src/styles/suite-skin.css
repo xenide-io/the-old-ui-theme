@@ -496,7 +496,7 @@ html[data-marketing-paused] .marketing-landing::before {
 }
 
 .suite-settings-sidebar {
-  padding: 0.375rem;
+  padding: 0.375rem 0.375rem 0.75rem;
   border: 1px solid var(--ph-border-subtle);
   border-radius: var(--ph-radius-surface);
   background: var(--ph-surface-inset);

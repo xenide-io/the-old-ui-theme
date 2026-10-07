@@ -61,7 +61,7 @@ export function SuiteSettingsLayout({
           <div className="flex min-h-0 flex-1 flex-col gap-6 lg:flex-row lg:gap-8">
             <aside
               aria-label="Settings"
-              className="suite-settings-sidebar hidden w-56 shrink-0 lg:block lg:self-stretch lg:overflow-y-auto lg:overscroll-contain"
+              className="suite-settings-sidebar hidden w-56 shrink-0 lg:block lg:self-start lg:max-h-full lg:overflow-y-auto lg:overscroll-contain"
             >
               {sidebar}
             </aside>

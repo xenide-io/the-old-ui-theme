@@ -84,6 +84,7 @@ export {
   type SuiteAiChatMessage,
   type SuiteAskAiOpenDetail,
 } from "./components/ai-panel";
+export { SuiteAiDraftEditor, suiteAiDraftFields } from "./components/ai-draft-editor";
 export {
   SuiteWorkspaceSwitcher,
   type SuiteWorkspaceEntry,
@@ -199,3 +200,10 @@ export {
   type PaletteIcon,
   type PaletteLibrary,
 } from "./lib/palette-api";
+export {
+  SUITE_ANALYTICS_EVENT,
+  subscribeSuiteAnalytics,
+  trackSuiteEvent,
+  type SuiteAnalyticsEventDetail,
+  type SuiteAnalyticsProperties,
+} from "../lib/suite-analytics";

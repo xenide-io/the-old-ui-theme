@@ -5,6 +5,7 @@ import { useState, type ReactNode } from "react";
 import { NavArrowDown as ChevronDown, OpenNewWindow } from "iconoir-react";
 
 import { cn } from "../lib/cn";
+import { trackSuiteEvent } from "../../lib/suite-analytics";
 import type {
   SuiteDropdownItemComponent,
   SuiteDropdownMenuComponent,
@@ -173,6 +174,12 @@ export function AppSwitcher({
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => {
                   setOpen(false);
+                  trackSuiteEvent('App Launched', {
+                    target_app: app.slug,
+                    from_app: currentApp,
+                    new_tab: false,
+                    origin: 'app_switcher',
+                  });
                   onSelect(app);
                 }}
                 className={cn(appSwitcherMenuItemClass(), "pr-11")}
@@ -202,6 +209,12 @@ export function AppSwitcher({
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => {
                   setOpen(false);
+                  trackSuiteEvent('App Launched', {
+                    target_app: app.slug,
+                    from_app: currentApp,
+                    new_tab: true,
+                    origin: 'app_switcher',
+                  });
                   onSelect(app, { newTab: true });
                 }}
                 className="absolute right-1.5 top-1/2 z-[1] flex h-8 -translate-y-1/2 justify-center p-0 text-ph-mutedtext"

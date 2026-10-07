@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { trackSuiteEvent } from "@/lib/suite-analytics";
 
 interface CodeBlockProps {
   code: string;
@@ -14,7 +15,16 @@ export function CodeBlock({ code, language = "tsx", filename, className }: CodeB
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(code);
+    try {
+      await navigator.clipboard.writeText(code);
+    } catch {
+      return;
+    }
+    trackSuiteEvent("Link Copied", {
+      kind: "code",
+      copy_kind: "code_block",
+      label: filename ?? language,
+    });
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

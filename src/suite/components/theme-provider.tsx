@@ -13,6 +13,7 @@ import {
 
 import { readCookie, writeCookie } from '../lib/cookies';
 import { SUITE_THEME_CHANNEL, SUITE_THEME_COOKIE } from '../lib/theme-cookie';
+import { trackSuiteEvent } from '../../lib/suite-analytics';
 
 export type SuiteTheme = 'system' | 'light' | 'dark';
 export type SuiteResolvedTheme = 'light' | 'dark';
@@ -271,6 +272,7 @@ export function SuiteThemeProvider({
       }
       writeSharedTheme(next);
       broadcastTheme(next);
+      trackSuiteEvent('Theme Updated', { theme: next, scope: 'suite' });
     },
     [config],
   );

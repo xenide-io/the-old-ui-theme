@@ -200,3 +200,12 @@ export {
 
 // Icons
 export * from "@/components/icons";
+
+// Shared analytics bridge (window emitter host apps forward to their client)
+export {
+  SUITE_ANALYTICS_EVENT,
+  subscribeSuiteAnalytics,
+  trackSuiteEvent,
+  type SuiteAnalyticsEventDetail,
+  type SuiteAnalyticsProperties,
+} from "@/lib/suite-analytics";

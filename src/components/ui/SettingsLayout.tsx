@@ -1,6 +1,9 @@
+"use client";
+
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { IconTuning } from "@/components/icons";
 import { cn } from "@/lib/cn";
+import { trackSuiteEvent } from "@/lib/suite-analytics";
 
 export interface SettingsNavItem {
   id: string;
@@ -50,6 +53,7 @@ export function SettingsNav({ groups, className, ...props }: SettingsNavProps) {
                   item.active && "ph-settings-nav__item--active",
                 )}
                 aria-current={item.active ? "page" : undefined}
+                onClick={() => trackSuiteEvent("Tab Viewed", { tab: item.id })}
               >
                 {item.icon ? (
                   <span className="ph-settings-nav__icon">{item.icon}</span>

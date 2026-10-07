@@ -1,6 +1,7 @@
 "use client";
 
 import { isValidElement, type ElementType, type ReactNode } from "react";
+import { trackSuiteEvent } from "../../lib/suite-analytics";
 import { cn } from "../lib/cn";
 
 export interface SuiteSettingsNavItem {
@@ -62,7 +63,10 @@ export function SuiteSettingsMobileNav({
               type="button"
               id={item.id}
               data-test={item.testId}
-              onClick={() => onSelect(item.href)}
+              onClick={() => {
+                trackSuiteEvent("Tab Viewed", { tab: item.id ?? item.href });
+                onSelect(item.href);
+              }}
               aria-current={active ? "page" : undefined}
               className={cn(
                 "group relative flex min-h-[44px] shrink-0 snap-start items-center gap-2 rounded-[var(--ph-radius-control)] border px-3.5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]",

@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 
+import { trackSuiteEvent } from "../../lib/suite-analytics";
 import {
   resolveSuiteNotificationHref,
   suiteAppBaseUrl,
@@ -209,6 +210,10 @@ export function SuiteNotificationsProvider({
                 suiteAppBaseUrl("shellstack"),
               );
               launchUrl.searchParams.set("next", path);
+              trackSuiteEvent("Cross-App Switch", {
+                target_app: sourceApp,
+                success: true,
+              });
               window.location.assign(launchUrl.toString());
               return;
             }

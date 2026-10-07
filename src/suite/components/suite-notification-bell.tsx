@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Bell } from "iconoir-react";
 
+import { trackSuiteEvent } from "../../lib/suite-analytics";
 import type { SuiteDropdownMenuComponent } from "../lib/injected";
 import { useSuiteNotifications } from "../lib/suite-notifications";
 
@@ -50,7 +51,14 @@ export function SuiteNotificationBell({
 
   const onOpenChange = (next: boolean) => {
     setOpen(next);
-    if (next) refresh();
+    if (next) {
+      trackSuiteEvent("UI Opened", {
+        view: "notification_bell",
+        kind: "notifications",
+        unread_count: unread,
+      });
+      refresh();
+    }
   };
 
   return (
@@ -84,7 +92,13 @@ export function SuiteNotificationBell({
             type="button"
             id={`${dataTest}-mark-all`}
             data-test={`${dataTest}-mark-all`}
-            onClick={markAllRead}
+            onClick={() => {
+              trackSuiteEvent("Notification Read", {
+                operation: "all",
+                count: unread,
+              });
+              markAllRead();
+            }}
             className="ph-btn ph-btn-link ph-btn-xs text-xs"
           >
             Mark all read
@@ -104,6 +118,13 @@ export function SuiteNotificationBell({
               data-test={`${dataTest}-item-${n.id}`}
               onClick={() => {
                 setOpen(false);
+                trackSuiteEvent("Notification Read", {
+                  operation: "read",
+                  notification_id: n.id,
+                  kind: n.kind,
+                  source_app: n.source_app,
+                  unread: !n.read_at,
+                });
                 select(n);
               }}
               className="ph-dropdown-item flex w-full flex-col items-stretch gap-0.5 px-3 py-2 text-left"

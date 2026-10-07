@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Alert, Badge, Button, Card } from "@/components/ui";
+import { trackSuiteEvent } from "../../lib/suite-analytics";
 
 export type SuiteWebPushState =
   | "unsupported"
@@ -73,6 +74,11 @@ export function SuiteNotificationSettings({
     try {
       await controller.enable();
       await refresh();
+      trackSuiteEvent("Push Notifications Configured", {
+        enabled: true,
+        permission:
+          typeof Notification !== "undefined" ? Notification.permission : "unknown",
+      });
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Could not enable notifications.",
@@ -89,6 +95,11 @@ export function SuiteNotificationSettings({
     try {
       await controller.disable();
       await refresh();
+      trackSuiteEvent("Push Notifications Configured", {
+        enabled: false,
+        permission:
+          typeof Notification !== "undefined" ? Notification.permission : "unknown",
+      });
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Could not disable notifications.",

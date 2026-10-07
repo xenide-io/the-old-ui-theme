@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import { trackSuiteEvent } from "../../lib/suite-analytics";
 import type {
   SuiteCommandItem,
   SuiteCommandPaletteComponent,
@@ -45,6 +46,23 @@ export function CommandPaletteHost({
 }) {
   const [open, setOpen] = useState(false);
 
+  // Wrap selection so a palette pick reports the chosen action. Apps own the
+  // item list, so the id is the most stable `target` available here.
+  const trackedItems = useMemo<SuiteCommandItem[]>(
+    () =>
+      items.map((item) => ({
+        ...item,
+        onSelect: () => {
+          trackSuiteEvent("Command Palette Action", {
+            action_kind: "command",
+            target: item.id,
+          });
+          item.onSelect();
+        },
+      })),
+    [items],
+  );
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k")) return;
@@ -61,7 +79,7 @@ export function CommandPaletteHost({
 
   return (
     <CommandPalette
-      items={items}
+      items={trackedItems}
       isOpen={open}
       onClose={() => setOpen(false)}
       placeholder={placeholder}
