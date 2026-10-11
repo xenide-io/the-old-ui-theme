@@ -82,8 +82,15 @@ export function SegmentedControl({
             value === option.value && "ph-segmented-control__item--selected",
           )}
         >
-          {option.icon && <span className="h-4 w-4" aria-hidden>{option.icon}</span>}
-          {option.label}
+          {option.icon ? (
+            <span
+              className="inline-flex h-4 w-4 shrink-0 items-center justify-center [&_svg]:h-4 [&_svg]:w-4"
+              aria-hidden
+            >
+              {option.icon}
+            </span>
+          ) : null}
+          <span className="truncate">{option.label}</span>
         </button>
       ))}
     </div>

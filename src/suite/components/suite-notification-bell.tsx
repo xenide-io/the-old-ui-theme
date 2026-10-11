@@ -52,11 +52,6 @@ export function SuiteNotificationBell({
   const onOpenChange = (next: boolean) => {
     setOpen(next);
     if (next) {
-      trackSuiteEvent("UI Opened", {
-        view: "notification_bell",
-        kind: "notifications",
-        unread_count: unread,
-      });
       refresh();
     }
   };

@@ -255,7 +255,6 @@ export function SuiteAiPanel({
   useEffect(() => {
     if (!open) return;
     trackSuiteEvent("AI Chat Opened", { origin: "suite_panel" });
-    trackSuiteEvent("UI Opened", { view: "ai_panel" });
   }, [open]);
 
   const scrollToBottom = useCallback((behavior: ScrollBehavior = "auto") => {
