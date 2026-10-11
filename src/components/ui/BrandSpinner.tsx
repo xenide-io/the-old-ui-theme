@@ -4,7 +4,7 @@ import { useId, useSyncExternalStore, type HTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
 export type BrandSpinnerVariant =
-  "ring" | "timer" | "columns" | "orbit" | "ink";
+  "ring-3" | "timer" | "columns" | "orbit" | "ink";
 export type BrandSpinnerSize = "sm" | "md" | "lg";
 
 export interface BrandSpinnerProps extends HTMLAttributes<HTMLDivElement> {
@@ -27,7 +27,7 @@ function readReducedMotion(): boolean {
 }
 
 export function BrandSpinner({
-  variant = "ring",
+  variant = "ring-3",
   size = "md",
   label = "Loading",
   className,
@@ -56,15 +56,15 @@ export function BrandSpinner({
       <svg
         width={dimension}
         height={dimension}
-        viewBox={variant === "ring" ? "0 0 24 24" : "0 0 40 40"}
+        viewBox={variant === "ring-3" ? "0 0 24 24" : "0 0 40 40"}
         aria-hidden
         className={
-          variant === "timer" || variant === "ring"
+          variant === "timer" || variant === "ring-3"
             ? "animate-spin motion-reduce:animate-none"
             : undefined
         }
       >
-        {variant === "ring" ? (
+        {variant === "ring-3" ? (
           <>
             <circle
               cx="12"

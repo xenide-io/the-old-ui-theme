@@ -32,7 +32,7 @@ const APPS: SuiteAppEntry[] = [
   },
   {
     slug: "shelly",
-    name: "Shelly",
+    name: "ShellyHub",
     description: "AI teammates",
     icon: "/shelly.svg",
   },

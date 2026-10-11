@@ -159,7 +159,7 @@ export default function FirstSliceFixture() {
           description="Product analytics remains current. Imported revenue may arrive shortly."
         />
 
-        <section className="mt-5 grid gap-5 lg:grid-cols-[1fr,auto]">
+        <section className="mt-5 grid gap-5 lg:grid-cols-[1fr_auto]">
           <Card title="Create audience" description="Labels, descriptions, errors, and density share one field contract.">
             <div className="grid gap-4 sm:grid-cols-2">
               <Input label="Audience name" helperText="Visible to everyone in this workspace" placeholder="Power users…" />

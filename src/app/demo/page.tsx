@@ -45,7 +45,7 @@ export default function DemoIndexPage() {
           <Link
             key={demo.href}
             href={demo.href}
-            className="group rounded-2xl border border-ph-border bg-ph-surface p-5 shadow-sm transition-colors hover:border-ph-accent hover:bg-ph-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand"
+            className="group rounded-2xl border border-ph-border bg-ph-surface p-5 shadow-xs transition-colors hover:border-ph-accent hover:bg-ph-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ph-brand"
           >
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ph-mutedtext">
               {demo.eyebrow}

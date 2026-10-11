@@ -44,7 +44,7 @@ export function AiWritingIllustration({
           stroke="var(--ph-border)"
         />
         <path d="M18 76h524" stroke="var(--ph-border)" />
-        <image href="/shelly-icon.svg" x="36" y="40" width="24" height="24" />
+        <image href="/shelly-outline-icon.svg" x="36" y="40" width="24" height="24" />
         <text
           x="70"
           y="57"
@@ -269,7 +269,7 @@ export function IntegrationBridgeIllustration({
           fill="var(--ph-canvas)"
           stroke="var(--ph-selected-border)"
         />
-        <image href="/shelly-icon.svg" x="280" y="165" width="40" height="40" />
+        <image href="/shelly-outline-icon.svg" x="280" y="165" width="40" height="40" />
         <text
           x="300"
           y="331"

@@ -632,7 +632,7 @@ export function SuiteClientsProjectsDirectory({
                     >
                       <button
                         type="button"
-                        className="flex min-w-0 flex-1 items-center gap-3 rounded-[var(--ph-radius-control)] py-1 text-left focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]"
+                        className="flex min-w-0 flex-1 items-center gap-3 rounded-[var(--ph-radius-control)] py-1 text-left focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]"
                         onClick={() => openEdit(project, "project")}
                       >
                         <DirectoryIcon item={project} />

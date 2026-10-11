@@ -44,8 +44,8 @@ export default function ButtonShowcase() {
       </DropdownButton>
       <Button variant="secondary" size="sm" shape="square" aria-label="Layout">
         <span className="flex gap-0.5" aria-hidden>
-          <span className="h-4 w-1.5 rounded-sm bg-current" />
-          <span className="h-4 w-1.5 rounded-sm bg-current opacity-40" />
+          <span className="h-4 w-1.5 rounded-xs bg-current" />
+          <span className="h-4 w-1.5 rounded-xs bg-current opacity-40" />
         </span>
       </Button>
     </div>
@@ -201,8 +201,8 @@ export default function ButtonShowcase() {
             </DropdownButton>
             <Button variant="secondary" size="sm" shape="square" aria-label="Layout">
               <span className="flex gap-0.5" aria-hidden>
-                <span className="h-4 w-1.5 rounded-sm bg-current" />
-                <span className="h-4 w-1.5 rounded-sm bg-current opacity-40" />
+                <span className="h-4 w-1.5 rounded-xs bg-current" />
+                <span className="h-4 w-1.5 rounded-xs bg-current opacity-40" />
               </span>
             </Button>
           </div>

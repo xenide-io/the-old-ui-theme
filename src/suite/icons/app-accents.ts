@@ -60,7 +60,7 @@ export const APP_ACCENTS: Record<SuiteAccentSlug, SuiteAppAccent> = {
     onTileAccent: "#a5f3fc",
   },
   shelly: {
-    label: "Shelly",
+    label: "ShellyHub",
     accent: "#0078D4",
     tile: "#1B1B1F",
     onTile: "#ECECF1",

@@ -77,6 +77,46 @@ const posthogThemePreset: Partial<Config> = {
           "btn-secondary-border": "var(--ph-secondary-button-border)",
           "btn-secondary-frame": "var(--ph-secondary-frame-bg)",
         },
+        /**
+         * shadcn/ui-compatible tokens, mapped onto the `ph.*` palette.
+         * shadcn-based libraries (e.g. `@ilamy/calendar`) use classes like
+         * `bg-background`, `text-muted-foreground`, `border-border`, `ring-ring`,
+         * so exposing them here lets those packages inherit the suite theme
+         * (including light/dark) without per-app overrides.
+         */
+        background: "var(--background, var(--ph-canvas))",
+        foreground: "var(--ph-text-primary)",
+        border: "var(--ph-border)",
+        input: "var(--ph-border)",
+        ring: "var(--ph-focus-ring)",
+        card: {
+          DEFAULT: "var(--ph-surface)",
+          foreground: "var(--ph-text-primary)",
+        },
+        popover: {
+          DEFAULT: "var(--ph-surface-raised)",
+          foreground: "var(--ph-text-primary)",
+        },
+        primary: {
+          DEFAULT: "var(--ph-accent)",
+          foreground: "var(--ph-on-accent)",
+        },
+        secondary: {
+          DEFAULT: "var(--ph-muted)",
+          foreground: "var(--ph-text-primary)",
+        },
+        muted: {
+          DEFAULT: "var(--ph-muted)",
+          foreground: "var(--ph-text-tertiary)",
+        },
+        accent: {
+          DEFAULT: "var(--ph-muted)",
+          foreground: "var(--ph-text-primary)",
+        },
+        destructive: {
+          DEFAULT: "var(--ph-danger)",
+          foreground: "var(--ph-on-accent)",
+        },
       },
     },
   },

@@ -81,7 +81,7 @@ export function SuiteAiDraftEditor({
           {tasks.map((task, index) => (
             <fieldset
               key={index}
-              className="space-y-2 rounded border border-ph-border p-2"
+              className="space-y-2 rounded-sm border border-ph-border p-2"
             >
               <legend className="px-1 text-xs">Task {index + 1}</legend>
               <label className="block text-sm">

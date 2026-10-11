@@ -97,12 +97,12 @@ function IntegrationSkeletonCard() {
       <div className="flex items-start gap-3">
         <div className="h-8 w-8 shrink-0 rounded-md bg-ph-muted" />
         <div className="min-w-0 flex-1 space-y-2 pt-1">
-          <div className="h-4 w-3/5 rounded bg-ph-muted" />
-          <div className="h-3 w-full rounded bg-ph-muted" />
-          <div className="h-3 w-4/5 rounded bg-ph-muted" />
+          <div className="h-4 w-3/5 rounded-sm bg-ph-muted" />
+          <div className="h-3 w-full rounded-sm bg-ph-muted" />
+          <div className="h-3 w-4/5 rounded-sm bg-ph-muted" />
         </div>
       </div>
-      <div className="mt-3 h-9 w-20 rounded bg-ph-muted" />
+      <div className="mt-3 h-9 w-20 rounded-sm bg-ph-muted" />
     </div>
   );
 }
@@ -643,7 +643,7 @@ export function SuiteIntegrationPicker({
                         ref={(element) => {
                           categoryOptionRefs.current[value] = element;
                         }}
-                        className={`flex w-full min-w-0 items-center rounded-[var(--ph-radius-control)] px-3 py-2 text-left text-sm break-words focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)] ${activeCategory === value ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)] shadow-[inset_0_0_0_1px_var(--ph-selected-border)]" : "text-ph-ink hover:bg-[var(--ph-surface-hover)]"}`}
+                        className={`flex w-full min-w-0 items-center rounded-[var(--ph-radius-control)] px-3 py-2 text-left text-sm break-words focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)] ${activeCategory === value ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)] shadow-[inset_0_0_0_1px_var(--ph-selected-border)]" : "text-ph-ink hover:bg-[var(--ph-surface-hover)]"}`}
                         onClick={() => selectCategory(value)}
                         onKeyDown={(event) => {
                           if (event.key === "Escape") {
@@ -885,7 +885,7 @@ export function SuiteIntegrationPicker({
               <button
                 key={scheme}
                 type="button"
-                className="flex w-full items-center justify-between rounded-[var(--ph-radius-control)] border border-ph-border bg-ph-surface px-3 py-3 text-left text-sm text-ph-ink transition-[background-color,border-color,box-shadow] hover:border-[var(--ph-selected-border)] hover:bg-[var(--ph-surface-hover)] focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]"
+                className="flex w-full items-center justify-between rounded-[var(--ph-radius-control)] border border-ph-border bg-ph-surface px-3 py-3 text-left text-sm text-ph-ink transition-[background-color,border-color,box-shadow] hover:border-[var(--ph-selected-border)] hover:bg-[var(--ph-surface-hover)] focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]"
                 onClick={() => void prepareConnection(methodItem, scheme)}
                 data-test={`${dataTest}-choose-${scheme.toLowerCase()}`}
               >

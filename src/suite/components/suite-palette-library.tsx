@@ -393,7 +393,7 @@ export function SuitePaletteLibrary({
                     closeLibrary(true);
                   }}
                   className={cn(
-                    "flex w-full items-center rounded-[var(--ph-radius-control)] px-2 py-1.5 text-left text-sm focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]",
+                    "flex w-full items-center rounded-[var(--ph-radius-control)] px-2 py-1.5 text-left text-sm focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]",
                     !collectionFilter
                       ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)]"
                       : "text-ph-ink hover:bg-[var(--ph-surface-hover)]",
@@ -415,7 +415,7 @@ export function SuitePaletteLibrary({
                       closeLibrary(true);
                     }}
                     className={cn(
-                      "flex w-full items-center justify-between gap-2 rounded-[var(--ph-radius-control)] px-2 py-1.5 text-left text-sm focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]",
+                      "flex w-full items-center justify-between gap-2 rounded-[var(--ph-radius-control)] px-2 py-1.5 text-left text-sm focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]",
                       collectionFilter === collection.slug
                         ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)]"
                         : "text-ph-ink hover:bg-[var(--ph-surface-hover)]",
@@ -457,7 +457,7 @@ export function SuitePaletteLibrary({
                   onClick={() => onPick({ url: icon.url, name: icon.name })}
                   title={icon.name}
                   aria-label={`Use ${icon.name}`}
-                  className="flex h-10 items-center justify-center rounded-[var(--ph-radius-control)] border border-transparent p-1.5 hover:border-[var(--ph-selected-border)] hover:bg-[var(--ph-surface-hover)] focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]"
+                  className="flex h-10 items-center justify-center rounded-[var(--ph-radius-control)] border border-transparent p-1.5 hover:border-[var(--ph-selected-border)] hover:bg-[var(--ph-surface-hover)] focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img

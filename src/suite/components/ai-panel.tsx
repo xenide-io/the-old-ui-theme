@@ -558,7 +558,7 @@ export function SuiteAiPanel({
       data-test="suite-ask-ai-panel"
       aria-label={title}
     >
-      <header className="flex items-center gap-2 px-2 pb-2">
+      <header className="flex items-center gap-2 px-2 pb-2 pt-2">
         <h2 className="sr-only">{title}</h2>
         {presets.length > 0 ? (
           <details className="relative" data-test="ask-ai-workflows">
@@ -571,7 +571,7 @@ export function SuiteAiPanel({
                   key={preset.label}
                   type="button"
                   disabled={waiting || hydrating}
-                  className="flex min-h-10 w-full items-center rounded px-3 py-2 text-left text-sm hover:bg-ph-muted focus-visible:outline focus-visible:outline-2 disabled:opacity-50"
+                  className="flex min-h-10 w-full items-center gap-2 rounded-sm px-3 py-2 text-left text-sm hover:bg-ph-muted focus-visible:outline focus-visible:outline-2 disabled:opacity-50"
                   onClick={(event) => {
                     setPrompt(preset.prompt);
                     event.currentTarget
@@ -580,6 +580,7 @@ export function SuiteAiPanel({
                     textareaRef.current?.focus();
                   }}
                 >
+                  <Sparks className="h-3.5 w-3.5 shrink-0 text-ph-subtle" aria-hidden />
                   {preset.label}
                 </button>
               ))}
@@ -636,7 +637,7 @@ export function SuiteAiPanel({
                       type="button"
                       onClick={() => void ask(preset.prompt)}
                       disabled={waiting || hydrating}
-                      className="group flex w-full items-center gap-2 rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface px-3 py-2 text-left text-sm text-ph-ink transition-[background-color,border-color,box-shadow] hover:border-[var(--ph-selected-border)] hover:bg-[var(--ph-surface-hover)] focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)] disabled:opacity-40"
+                      className="group flex w-full items-center gap-2 rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface px-3 py-2 text-left text-sm text-ph-ink transition-[background-color,border-color,box-shadow] hover:border-[var(--ph-selected-border)] hover:bg-[var(--ph-surface-hover)] focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)] disabled:opacity-40"
                     >
                       <Sparks className="h-4 w-4 shrink-0 text-ph-brand" />
                       <span className="min-w-0 flex-1 truncate">
@@ -681,7 +682,7 @@ export function SuiteAiPanel({
                         }}
                         rows={2}
                         data-test="ask-ai-edit-input"
-                        className="w-full resize-none rounded-2xl rounded-br-md border border-ph-border bg-ph-surface px-3 py-2 text-sm leading-relaxed text-ph-ink outline-none focus-visible:border-[var(--ph-selected-border)] focus-visible:shadow-[var(--ph-focus-halo)]"
+                        className="w-full resize-none rounded-2xl rounded-br-md border border-ph-border bg-ph-surface px-3 py-2 text-sm leading-relaxed text-ph-ink outline-hidden focus-visible:border-[var(--ph-selected-border)] focus-visible:shadow-[var(--ph-focus-halo)]"
                       />
                       <div className="flex justify-end gap-2">
                         <button
@@ -798,7 +799,7 @@ export function SuiteAiPanel({
                           className="mt-2"
                           data-test="ask-ai-workflow-preview"
                         >
-                          <summary className="cursor-pointer rounded text-xs text-ph-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+                          <summary className="cursor-pointer rounded-sm text-xs text-ph-brand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
                             Review proposed content and evidence
                           </summary>
                           {typeof action.payload.before === "string" ? (
@@ -1032,7 +1033,7 @@ export function SuiteAiPanel({
             placeholder="Ask anything…"
             rows={1}
             data-test="ask-ai-input"
-            className="max-h-36 min-h-10 flex-1 resize-none bg-transparent px-1.5 py-2 text-sm leading-relaxed text-ph-ink outline-none placeholder:text-ph-mutedtext"
+            className="max-h-36 min-h-10 flex-1 resize-none bg-transparent px-1.5 py-2 text-sm leading-relaxed text-ph-ink outline-hidden placeholder:text-ph-mutedtext"
           />
           {waiting ? (
             <Tooltip content="Stop generating">

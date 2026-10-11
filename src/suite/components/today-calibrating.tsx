@@ -15,7 +15,7 @@ export function TodayCalibrating({
   retrying = false,
   className,
   spinner: Spinner,
-  variant: _variant = 'ring',
+  variant: _variant = 'ring-3',
   retrySpinnerClassName = 'text-ph-brand',
 }: {
   onRetry?: () => void;
@@ -23,7 +23,7 @@ export function TodayCalibrating({
   className?: string;
   spinner: SuiteSpinnerComponent;
   /** @deprecated Kept for call-site compat; ornamentation is always calm. */
-  variant?: 'ring' | 'pulse';
+  variant?: 'ring-3' | 'pulse';
   retrySpinnerClassName?: string;
 }) {
   void _variant;

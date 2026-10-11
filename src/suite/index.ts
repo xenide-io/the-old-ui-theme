@@ -1,4 +1,10 @@
 export { TodayPageFrame } from "./components/today-page-frame";
+export {
+  SuiteCalendarToolbar,
+  SuiteCalendarRecord,
+  SuiteCalendarAgenda,
+  calendarRecordColour,
+} from "./components/calendar-ui";
 export * from "./components/today-ui";
 export {
   AppSwitcher,
@@ -85,7 +91,10 @@ export {
   type SuiteAiChatMessage,
   type SuiteAskAiOpenDetail,
 } from "./components/ai-panel";
-export { SuiteAiDraftEditor, suiteAiDraftFields } from "./components/ai-draft-editor";
+export {
+  SuiteAiDraftEditor,
+  suiteAiDraftFields,
+} from "./components/ai-draft-editor";
 export {
   SuiteWorkspaceSwitcher,
   type SuiteWorkspaceEntry,
@@ -130,6 +139,25 @@ export {
   useSidebarWidth,
 } from "./lib/use-sidebar-width";
 export { cn } from "./lib/cn";
+export {
+  DEFAULT_DATE_LOCALE,
+  date,
+  dayjs,
+  formatClock,
+  formatDate,
+  formatDateTime,
+  formatLoggedTime,
+  formatLongDate,
+  formatShortDate,
+  getDateLocale,
+  initSuiteDates,
+  resolveBrowserLocale,
+  setDateLocale,
+  timeAgo,
+  toDateLocaleKey,
+  toISODate,
+  type DateInput,
+} from "./lib/dates";
 export {
   SuiteMotionProvider,
   m,

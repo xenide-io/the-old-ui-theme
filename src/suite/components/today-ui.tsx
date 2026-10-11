@@ -3,6 +3,7 @@
 import { Refresh as RefreshCw } from "iconoir-react";
 import type { ReactNode } from "react";
 import { cn } from "../lib/cn";
+import { date as suiteDate } from "../lib/dates";
 import { SuiteAppIcon } from "../icons/suite-app-icon";
 import { SuiteIcon } from "../icons/suite-icon";
 type LucideIcon = import("react").ComponentType<
@@ -17,7 +18,7 @@ const APP_META: Record<SuiteAppSlug, { name: string }> = {
   tides: { name: "Tides" },
   turtletime: { name: "TurtleTime" },
   kraken: { name: "Kraken" },
-  shelly: { name: "Shelly" },
+  shelly: { name: "ShellyHub" },
 };
 
 const SUITE_APPS: SuiteAppSlug[] = [
@@ -74,10 +75,7 @@ export function SourceAppGlyph({
 }
 
 function formatLongDate(date = new Date()): string {
-  return new Intl.DateTimeFormat(undefined, {
-    month: "long",
-    day: "numeric",
-  }).format(date);
+  return suiteDate(date).format("D MMMM");
 }
 
 export function SuiteAppStrip({
@@ -98,7 +96,7 @@ export function SuiteAppStrip({
       {SUITE_APPS.map((app) => (
         <div
           key={app}
-          className="flex items-center gap-2 rounded-full border border-ph-border bg-ph-surface px-2.5 py-1.5 shadow-sm"
+          className="flex items-center gap-2 rounded-full border border-ph-border bg-ph-surface px-2.5 py-1.5 shadow-xs"
         >
           {icons?.[app] ?? <SuiteAppIcon app={app} size="sm" />}
           <span className="text-xs font-medium text-ph-subtle">
@@ -345,7 +343,7 @@ export function TodayPrimaryAction({
   dataTest?: string;
 }) {
   const classes = cn(
-    "today-primary-action group relative flex w-full max-w-md items-center gap-3 overflow-hidden rounded-[var(--ph-radius-surface)] px-3.5 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)] sm:px-4 sm:py-3",
+    "today-primary-action group relative flex w-full max-w-md items-center gap-3 overflow-hidden rounded-[var(--ph-radius-surface)] px-3.5 py-2.5 text-left transition-colors focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)] sm:px-4 sm:py-3",
     `today-primary-action--${accent}`,
     active && "today-primary-action--active",
     loading && "pointer-events-none opacity-70",
@@ -501,7 +499,7 @@ export function TodayAskAiCard({
   href?: string;
 }) {
   const classes = cn(
-    "suite-press group flex w-full items-start gap-3.5 rounded-[var(--ph-radius-surface)] border border-ph-border/70 bg-ph-surface px-4 py-3.5 text-left transition-[background-color,border-color,box-shadow] hover:border-ph-brand/35 hover:bg-[var(--ph-surface-hover)] hover:shadow-[var(--ph-shadow-raised)] focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)] sm:px-5",
+    "suite-press group flex w-full items-start gap-3.5 rounded-[var(--ph-radius-surface)] border border-ph-border/70 bg-ph-surface px-4 py-3.5 text-left transition-[background-color,border-color,box-shadow] hover:border-ph-brand/35 hover:bg-[var(--ph-surface-hover)] hover:shadow-[var(--ph-shadow-raised)] focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)] sm:px-5",
     className,
   );
 

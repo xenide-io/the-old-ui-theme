@@ -107,7 +107,7 @@ export function SuiteAppLayout({
           tabIndex={0}
           data-lock-scroll={lockMainScroll ? "true" : undefined}
           className={cn(
-            "flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overscroll-contain bg-ph-canvas focus:outline-none",
+            "flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overscroll-contain bg-ph-canvas focus:outline-hidden",
             "suite-app-layout__main",
             lockMainScroll ? "overflow-hidden" : "overflow-y-auto",
           )}

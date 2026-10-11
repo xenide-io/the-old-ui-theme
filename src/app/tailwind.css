@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@import "./globals.css";
+
+@config "../../tailwind.config.ts";
+
+/* Scan the theme source for class names (v4 no longer reads the JS `content` array). */
+@source "../**/*.{js,ts,jsx,tsx,mdx}";

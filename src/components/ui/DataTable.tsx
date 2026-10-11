@@ -166,8 +166,8 @@ export function DataTable<T>({
                         type="button"
                         onClick={header.column.getToggleSortingHandler()}
                         className={cn(
-                          "group inline-flex items-center gap-1.5 rounded-sm uppercase tracking-[0.03125rem] transition-colors",
-                          "hover:text-ph-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ph-brand",
+                          "group inline-flex items-center gap-1.5 rounded-xs uppercase tracking-[0.03125rem] transition-colors",
+                          "hover:text-ph-ink focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ph-brand",
                           sorted ? "text-ph-ink" : "text-ph-subtle",
                           meta?.align === "right" && "flex-row-reverse",
                         )}

@@ -13,6 +13,7 @@ import {
   type HTMLAttributes,
   type ReactElement,
   type ReactNode,
+  type CSSProperties,
 } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/cn";
@@ -34,6 +35,7 @@ export interface TooltipProps {
   /** Minimum distance between the tooltip and the viewport edge. */
   collisionPadding?: number;
   className?: string;
+  style?: CSSProperties;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -77,14 +79,29 @@ function tooltipPosition(
         : trigger.top + trigger.height / 2;
   const position =
     side === "top"
-      ? { left: horizontal - content.width / 2, top: trigger.top - offset - content.height }
+      ? {
+          left: horizontal - content.width / 2,
+          top: trigger.top - offset - content.height,
+        }
       : side === "bottom"
         ? { left: horizontal - content.width / 2, top: trigger.bottom + offset }
         : side === "left"
-          ? { left: trigger.left - offset - content.width, top: vertical - content.height / 2 }
-          : { left: trigger.right + offset, top: vertical - content.height / 2 };
-  const maxLeft = Math.max(collisionPadding, window.innerWidth - content.width - collisionPadding);
-  const maxTop = Math.max(collisionPadding, window.innerHeight - content.height - collisionPadding);
+          ? {
+              left: trigger.left - offset - content.width,
+              top: vertical - content.height / 2,
+            }
+          : {
+              left: trigger.right + offset,
+              top: vertical - content.height / 2,
+            };
+  const maxLeft = Math.max(
+    collisionPadding,
+    window.innerWidth - content.width - collisionPadding,
+  );
+  const maxTop = Math.max(
+    collisionPadding,
+    window.innerHeight - content.height - collisionPadding,
+  );
 
   return {
     left: Math.min(Math.max(position.left, collisionPadding), maxLeft),
@@ -100,6 +117,7 @@ export function Tooltip({
   sideOffset = 7,
   collisionPadding = 8,
   className,
+  style,
   open,
   defaultOpen = false,
   onOpenChange,
@@ -197,6 +215,7 @@ export function Tooltip({
         className="inline-flex"
         onMouseEnter={() => show(false)}
         onMouseLeave={hideFromTrigger}
+        onPointerDown={hide}
         onFocusCapture={() => show(true)}
         onBlurCapture={hide}
         onKeyDown={(event) => {
@@ -208,7 +227,11 @@ export function Tooltip({
       {isOpen && typeof document !== "undefined"
         ? createPortal(
             <span
-              style={{ position: "fixed", ...position, visibility: position ? undefined : "hidden" }}
+              style={{
+                position: "fixed",
+                ...position,
+                visibility: position ? undefined : "hidden",
+              }}
               className="pointer-events-none z-[200]"
             >
               <span
@@ -216,6 +239,7 @@ export function Tooltip({
                 id={tooltipId}
                 role="tooltip"
                 data-side={side}
+                style={{ display: "block", ...style }}
                 className={cn(
                   "ph-tooltip-content",
                   !disableHoverableContent && "pointer-events-auto",

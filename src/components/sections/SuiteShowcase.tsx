@@ -501,7 +501,7 @@ export default function SuiteShowcase() {
                 <div className="p-6 text-sm text-ph-subtle">
                   Desktop content area. The project tree lives inside the
                   sidebar via the{" "}
-                  <code className="rounded bg-ph-muted px-1 py-0.5 text-xs">
+                  <code className="rounded-sm bg-ph-muted px-1 py-0.5 text-xs">
                     secondaryNav
                   </code>{" "}
                   prop.
@@ -781,7 +781,7 @@ export default function SuiteShowcase() {
             <SuitePage
               width="content"
               inset
-              className="rounded-xl border border-ph-border bg-ph-surface shadow-sm"
+              className="rounded-xl border border-ph-border bg-ph-surface shadow-xs"
             >
               <SuitePageHeader
                 eyebrow="Workspace"

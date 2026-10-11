@@ -144,7 +144,7 @@ export function CommandPalette({
               }}
               onKeyDown={handleInputKeyDown}
               placeholder={placeholder}
-              className="flex-1 bg-transparent text-ph-ink outline-none placeholder:text-ph-mutedtext"
+              className="flex-1 bg-transparent text-ph-ink outline-hidden placeholder:text-ph-mutedtext"
             />
             <kbd aria-hidden="true" className="ph-keycap">
               ESC

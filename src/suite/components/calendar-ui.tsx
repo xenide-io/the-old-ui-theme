@@ -1,0 +1,275 @@
+"use client";
+
+import { useRef, type CSSProperties, type ReactNode } from "react";
+import {
+  NavArrowLeft,
+  NavArrowRight,
+  Calendar,
+  ViewGrid,
+  ListSelect,
+} from "iconoir-react";
+import { Button } from "../../components/ui/Button";
+import { SegmentedControl } from "../../components/ui/SegmentedControl";
+import { Tooltip } from "../../components/ui/Tooltip";
+import { date } from "../lib/dates";
+
+/** Stable category colours from the host theme's full data palette. */
+export function calendarRecordColour(key: string): string {
+  let hash = 0;
+  for (const char of key) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  return `var(--ph-data-${(hash % 7) + 1})`;
+}
+
+interface AgendaRecord {
+  id: string | number;
+  title: string;
+  description?: string;
+  start: { toDate: () => Date };
+  end: { toDate: () => Date };
+  allDay?: boolean;
+  data?: Record<string, unknown>;
+}
+
+/** Date-grouped presentation; the host calendar owns ranges and item actions. */
+export function SuiteCalendarAgenda<T extends AgendaRecord>({
+  events,
+  start,
+  end,
+  onOpen,
+  renderIcon,
+}: {
+  events: T[];
+  start: Date;
+  end: Date;
+  onOpen: (event: T) => void;
+  renderIcon?: (event: T) => ReactNode;
+}) {
+  const days: { key: string; day: Date; records: T[] }[] = [];
+  for (
+    const day = new Date(start);
+    day <= end;
+    day.setDate(day.getDate() + 1)
+  ) {
+    const next = new Date(day);
+    next.setDate(next.getDate() + 1);
+    const records = events
+      .filter(
+        (event) => event.start.toDate() < next && event.end.toDate() > day,
+      )
+      .sort(
+        (a, b) =>
+          Number(Boolean(b.allDay)) - Number(Boolean(a.allDay)) ||
+          a.start.toDate().getTime() - b.start.toDate().getTime(),
+      );
+    if (records.length)
+      days.push({ key: day.toISOString(), day: new Date(day), records });
+  }
+  return (
+    <div className="suite-calendar-agenda" data-testid="agenda-view">
+      {!days.length ? (
+        <p className="suite-calendar-agenda-empty" data-testid="agenda-empty">
+          No dated items in this period. Try another date or clear your filters.
+        </p>
+      ) : null}
+      {days.map(({ key, day, records }) => (
+        <section className="suite-calendar-agenda-day" key={key}>
+          <h3>
+            <span>{date(day).format("ddd")}</span>
+            <strong>{day.getDate()}</strong>
+            <span>{date(day).format("MMM")}</span>
+          </h3>
+          <div className="suite-calendar-agenda-items">
+            {records.map((event) => (
+              <div className="suite-calendar-agenda-row" key={event.id}>
+                <span className="suite-calendar-agenda-time">
+                  {event.allDay
+                    ? "All day"
+                    : date(event.start.toDate()).format("HH:mm")}
+                </span>
+                <SuiteCalendarRecord
+                  title={event.title}
+                  detail={event.description}
+                  colour={
+                    typeof event.data?.colour === "string"
+                      ? event.data.colour
+                      : undefined
+                  }
+                  preview={
+                    typeof event.data?.preview === "string"
+                      ? event.data.preview
+                      : undefined
+                  }
+                  icon={renderIcon?.(event)}
+                  onOpen={() => onOpen(event)}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+/** Presentation only: host apps supply their calendar's navigation and actions. */
+export function SuiteCalendarToolbar({
+  title,
+  subtitle,
+  onPrevious,
+  onNext,
+  onToday,
+  view,
+  views,
+  onViewChange,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  onPrevious: () => void;
+  onNext: () => void;
+  onToday: () => void;
+  view?: string;
+  views?: { value: string; label: string }[];
+  onViewChange?: (view: string) => void;
+  children?: ReactNode;
+}) {
+  return (
+    <div className="suite-calendar-toolbar" data-test="calendar-toolbar">
+      <div className="suite-calendar-navigation">
+        <Button variant="secondary" size="sm" onClick={onToday}>
+          Today
+        </Button>
+        <Button
+          variant="tertiary"
+          size="sm"
+          shape="square"
+          aria-label="Previous period"
+          onClick={onPrevious}
+          icon={<NavArrowLeft />}
+        />
+        <Button
+          variant="tertiary"
+          size="sm"
+          shape="square"
+          aria-label="Next period"
+          onClick={onNext}
+          icon={<NavArrowRight />}
+        />
+        <div className="suite-calendar-title">
+          <h2>{title}</h2>
+          {subtitle ? <p>{subtitle}</p> : null}
+        </div>
+      </div>
+      <div className="suite-calendar-controls">
+        {views && view && onViewChange ? (
+          <SegmentedControl
+            options={views.map((option) => ({
+              ...option,
+              icon:
+                option.value === "agenda" ? (
+                  <ListSelect />
+                ) : option.value === "week" ? (
+                  <ViewGrid />
+                ) : (
+                  <Calendar />
+                ),
+            }))}
+            value={view}
+            onChange={onViewChange}
+          />
+        ) : null}
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/** Native button keeps records keyboard-accessible when dragging is disabled. */
+export function SuiteCalendarRecord({
+  title,
+  detail,
+  icon,
+  colour,
+  preview,
+  onOpen,
+}: {
+  title: string;
+  detail?: string;
+  icon?: ReactNode;
+  colour?: string;
+  preview?: ReactNode;
+  onOpen: () => void;
+}) {
+  const pointerStart = useRef({ x: 0, y: 0 });
+  return (
+    <span className="suite-calendar-record-frame">
+      <Tooltip
+        side="bottom"
+        delayDuration={250}
+        className="suite-calendar-preview"
+        style={{
+          display: "block",
+          width: "min(340px, calc(100vw - 24px))",
+          backgroundColor: "var(--ph-surface-raised, var(--ph-surface, #fff))",
+          color: "var(--ph-text-primary, #222)",
+          border: "1px solid var(--ph-border, #ddd)",
+          borderRadius: "10px",
+          padding: "12px 14px",
+          boxShadow: "0 8px 28px rgb(0 0 0 / 15%)",
+        }}
+        content={
+          <span className="suite-calendar-preview-copy">
+            <strong>{title}</strong>
+            {detail ? <span>{detail}</span> : null}
+            {preview ? (
+              <span className="suite-calendar-preview-extra">{preview}</span>
+            ) : null}
+            <span className="suite-calendar-preview-hint">
+              Click or press Enter to open
+            </span>
+          </span>
+        }
+      >
+        <button
+          type="button"
+          // ilamy's drag wrapper has aria-disabled=true even for clickable records.
+          aria-disabled={false}
+          className="suite-calendar-record"
+          onPointerDown={(event) => {
+            pointerStart.current = { x: event.clientX, y: event.clientY };
+          }}
+          style={
+            colour
+              ? ({ "--suite-calendar-record-accent": colour } as CSSProperties)
+              : undefined
+          }
+          onClick={(event) => {
+            event.stopPropagation();
+            // Releasing a drag must not also open the native editor.
+            if (
+              event.detail > 0 &&
+              Math.hypot(
+                event.clientX - pointerStart.current.x,
+                event.clientY - pointerStart.current.y,
+              ) > 5
+            )
+              return;
+            onOpen();
+          }}
+        >
+          {icon ? (
+            <span className="suite-calendar-record-icon" aria-hidden>
+              {icon}
+            </span>
+          ) : null}
+          <span className="suite-calendar-record-copy">
+            <span className="suite-calendar-record-title">{title}</span>
+            {detail ? (
+              <span className="suite-calendar-record-detail">{detail}</span>
+            ) : null}
+          </span>
+        </button>
+      </Tooltip>
+    </span>
+  );
+}

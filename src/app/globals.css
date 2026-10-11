@@ -2,11 +2,27 @@
 @import "../styles/typography.css";
 @import "../styles/suite-skin.css";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/*
+ * Tailwind v4 entry points live elsewhere:
+ *  - the theme's own demo app: ./tailwind.css
+ *  - each consuming app:        its own global stylesheet (which @imports this file)
+ *
+ * This file is intentionally directive-free so it can be imported into any
+ * Tailwind v4 pipeline without duplicating the framework.
+ */
 
-/* Open Runde — self-hosted rounded variant of Inter */
+/* v3 -> v4 compatibility: restore the v3 default border colour (v4 uses currentColor). */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+/* Open Runde — self-hosted rounded-sm variant of Inter */
 @font-face {
   font-family: "Open Runde";
   src: url("/fonts/OpenRunde-Regular.woff2") format("woff2");
@@ -109,6 +125,23 @@ body {
   font-family: var(--ph-font-sans-stack);
   font-size: var(--ph-type-body);
   line-height: var(--ph-leading-body);
+}
+
+/* Forms — control outline + Lemon inset lip + bottom elevation.
+   Registered as a v4 utility so `.ph-input`, `.ph-select`, and `.ph-textarea`
+   can `@apply ph-input-base`. */
+@utility ph-input-base {
+  @apply w-full px-3 py-2 text-sm text-ph-ink transition box-border;
+  background: var(--ph-surface-raised);
+  border-radius: var(--ph-radius-control);
+  border: 1px solid var(--ph-border-control);
+  min-height: 2.5rem;
+  font-size: var(--ph-type-ui);
+  line-height: 1.5rem;
+  font-family: inherit;
+  box-shadow:
+    var(--ph-chrome-inset-face-top),
+    var(--ph-chrome-inset-face-bottom);
 }
 
 @layer components {
@@ -329,6 +362,9 @@ body {
     gap: inherit;
     width: 100%;
     min-height: var(--ph-btn-control-size);
+    /* Follow the button's own radius (e.g. `rounded-2xl`) so the raised base
+       and face match the outer shape instead of a fixed control radius. */
+    border-radius: inherit;
     padding:
       calc(0.25rem - var(--ph-btn-chrome-depth) * 0.5) 0.875rem
       calc(0.25rem + var(--ph-btn-chrome-depth) * 0.5);
@@ -392,7 +428,7 @@ body {
     bottom: calc(var(--ph-btn-depth) - var(--ph-btn-border-width));
     z-index: -1;
     border: var(--ph-btn-border-width) solid var(--ph-btn-border);
-    border-radius: var(--ph-radius-control);
+    border-radius: inherit;
     pointer-events: none;
   }
 
@@ -405,7 +441,7 @@ body {
     z-index: -1;
     background: var(--ph-btn-face);
     border: var(--ph-btn-border-width) solid var(--ph-btn-border);
-    border-radius: var(--ph-radius-control);
+    border-radius: inherit;
     box-shadow: 0 var(--ph-btn-chrome-depth) 0 -1px var(--ph-btn-frame);
     pointer-events: none;
     transition: border-color 50ms linear;
@@ -561,7 +597,7 @@ body {
     margin-inline: calc(-1 * var(--ph-btn-border-width));
     background: var(--ph-btn-face);
     border: var(--ph-btn-border-width) solid var(--ph-btn-border);
-    border-radius: var(--ph-radius-control);
+    border-radius: inherit;
     box-shadow: var(--ph-chrome-inset-solid-top);
     transform: translateY(var(--ph-btn-face-offset));
     transition:
@@ -708,20 +744,9 @@ body {
     @apply text-xs text-ph-mutedtext;
   }
 
-  /* Forms — control outline + Lemon inset lip + bottom elevation */
-  .ph-input-base {
-    @apply w-full px-3 py-2 text-sm text-ph-ink transition box-border;
-    background: var(--ph-surface-raised);
-    border-radius: var(--ph-radius-control);
-    border: 1px solid var(--ph-border-control);
-    min-height: 2.5rem;
-    font-size: var(--ph-type-ui);
-    line-height: 1.5rem;
-    font-family: inherit;
-    box-shadow:
-      var(--ph-chrome-inset-face-top),
-      var(--ph-chrome-inset-face-bottom);
-  }
+  /* Forms — control outline + Lemon inset lip + bottom elevation.
+     Defined as a v4 utility (see `@utility ph-input-base` above) so the
+     `.ph-input` / `.ph-select` / `.ph-textarea` classes can `@apply` it. */
 
   .ph-input:focus-visible,
   .ph-select:focus-visible,
@@ -1621,7 +1646,7 @@ body {
 
   /* Modal */
   .ph-modal-overlay {
-    @apply fixed inset-0 z-[100] bg-black/45 backdrop-blur-sm;
+    @apply fixed inset-0 z-[100] bg-black/45 backdrop-blur-xs;
     animation: ph-modal-overlay-in var(--ph-motion-standard) ease-out;
   }
 
@@ -1648,7 +1673,7 @@ body {
   .ph-modal-body {
     @apply mt-4 min-h-0 overflow-y-auto;
     overscroll-behavior: contain;
-    /* Focus ring is a 3px outer glow; pad so overflow-y:auto does not clip it. */
+    /* Focus ring-3 is a 3px outer glow; pad so overflow-y:auto does not clip it. */
     padding: 0.375rem;
     margin-inline: -0.375rem;
   }
@@ -1667,15 +1692,18 @@ body {
   }
 
   @keyframes ph-modal-panel-in {
+    /* Centring is done by the `translate` property (Tailwind v4), so animate
+       `scale`/opacity here — animating `transform: translate(-50%, …)` would
+       stack on top of it and fling the panel off-centre. */
     from {
       opacity: 0;
-      transform: translate(-50%, calc(-50% + 0.5rem)) scale(0.98);
+      scale: 0.98;
     }
   }
 
   /* Command palette shares the floating overlay material with menus and modals. */
   .ph-command-palette__overlay {
-    @apply fixed inset-0 z-50 bg-black/45 backdrop-blur-sm;
+    @apply fixed inset-0 z-50 bg-black/45 backdrop-blur-xs;
     animation: ph-modal-overlay-in var(--ph-motion-standard) ease-out;
   }
 
@@ -1794,7 +1822,7 @@ body {
   }
 
   .ph-dropdown-item {
-    @apply flex min-h-9 cursor-pointer select-none items-center gap-2 px-3 py-2 text-sm text-ph-subtle outline-none;
+    @apply flex min-h-9 cursor-pointer select-none items-center gap-2 px-3 py-2 text-sm text-ph-subtle outline-hidden;
     border-radius: var(--ph-radius-control);
     transition:
       color var(--ph-motion-fast) ease,
@@ -2212,7 +2240,7 @@ body {
   }
 
   .ph-tab-active {
-    @apply bg-ph-surface text-ph-ink shadow-sm;
+    @apply bg-ph-surface text-ph-ink shadow-xs;
   }
 
   /* Navbar */
@@ -2363,7 +2391,7 @@ body {
 
   /* Icon tiles — mimic colourful Lemon sidebar / product glyphs */
   .ph-icon-tile {
-    @apply relative flex aspect-square flex-col items-center justify-center rounded-[var(--ph-radius-app)] border text-[10px] font-bold uppercase tracking-wide shadow-sm ring-4 ring-ph-canvas transition hover:brightness-[1.02];
+    @apply relative flex aspect-square flex-col items-center justify-center rounded-[var(--ph-radius-app)] border text-[10px] font-bold uppercase tracking-wide shadow-xs ring-4 ring-ph-canvas transition hover:brightness-[1.02];
   }
 
   .ph-product-icon-tile {
@@ -2379,7 +2407,7 @@ body {
   /** Inline code / HogQL tokens are flat and distinct from physical keys. */
   .ph-code-token,
   .ph-kbd {
-    @apply inline rounded border px-1.5 py-0.5 text-[11px] text-ph-subtle;
+    @apply inline rounded-sm border px-1.5 py-0.5 text-[11px] text-ph-subtle;
     border-color: var(--ph-border-subtle);
     background: var(--ph-surface-inset);
     font-family: var(--ph-font-monospace-stack);
@@ -2693,7 +2721,7 @@ body {
   }
 
   .ph-widget__close {
-    @apply shrink-0 p-1 text-ph-mutedtext hover:text-ph-ink rounded;
+    @apply shrink-0 p-1 text-ph-mutedtext hover:text-ph-ink rounded-sm;
   }
 
   .ph-widget__content {
@@ -2906,7 +2934,7 @@ body {
   }
 
   .ph-snack__close {
-    @apply inline-flex shrink-0 items-center justify-center p-0.5 rounded hover:bg-black/10;
+    @apply inline-flex shrink-0 items-center justify-center p-0.5 rounded-sm hover:bg-black/10;
   }
 
   /* Combobox */
@@ -2927,7 +2955,7 @@ body {
   }
 
   .ph-combobox__input {
-    @apply min-w-[4rem] flex-1 border-0 bg-transparent px-1 py-0.5 text-sm text-ph-ink outline-none;
+    @apply min-w-[4rem] flex-1 border-0 bg-transparent px-1 py-0.5 text-sm text-ph-ink outline-hidden;
   }
 
   .ph-combobox__chips {
@@ -3055,7 +3083,7 @@ body {
   }
 
   .ph-number-field__input {
-    @apply w-16 border-0 bg-transparent px-2 py-1.5 text-center text-sm text-ph-ink outline-none;
+    @apply w-16 border-0 bg-transparent px-2 py-1.5 text-center text-sm text-ph-ink outline-hidden;
     -moz-appearance: textfield;
   }
 

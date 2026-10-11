@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ThemeDomSync } from "@/components/ui/ThemeDomSync";
 import { THEME_INIT_SCRIPT } from "@/themes";
-import "./globals.css";
+import "./tailwind.css";
 
 export const metadata: Metadata = {
   title: "The Old UI — Component Library",

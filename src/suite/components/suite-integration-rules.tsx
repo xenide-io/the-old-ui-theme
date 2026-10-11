@@ -12,6 +12,7 @@ import {
   Select,
   Toggle,
 } from "@/components/ui";
+import { date } from "../lib/dates";
 
 export type SuiteIntegrationRuleActionType =
   "create_tides_task" | "draft_time_entry" | "create_suite_notification";
@@ -74,10 +75,7 @@ function actionLabel(actionType: string) {
 
 function formatDateTime(value: string | null) {
   if (!value) return "—";
-  return new Date(value).toLocaleString(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
+  return date(value).format("D MMM YYYY, h:mm a");
 }
 
 export function SuiteIntegrationRules({

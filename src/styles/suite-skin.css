@@ -76,6 +76,10 @@ body {
   position: sticky;
   top: 0;
   z-index: 50;
+  /* Promote to its own compositor layer so the sticky backdrop-filter does not
+     shimmer/repaint-jitter while scrolling. No visual change. */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .marketing-header::before,
@@ -1014,8 +1018,7 @@ button:hover > .ph-card {
   border-color: var(--ph-border-control);
   border-radius: var(--ph-radius-surface);
   box-shadow:
-    var(--ph-chrome-inset-face-top),
-    var(--ph-chrome-inset-face-bottom);
+    var(--ph-chrome-inset-face-top), var(--ph-chrome-inset-face-bottom);
   transition:
     border-color var(--ph-motion-fast) ease,
     box-shadow var(--ph-motion-fast) ease;
@@ -1024,8 +1027,7 @@ button:hover > .ph-card {
 .suite-ai-composer:focus-within {
   border-color: color-mix(in oklab, var(--ph-focus-ring) 58%, var(--ph-border));
   box-shadow:
-    var(--ph-focus-halo),
-    var(--ph-chrome-inset-face-top),
+    var(--ph-focus-halo), var(--ph-chrome-inset-face-top),
     var(--ph-chrome-inset-face-bottom);
 }
 
@@ -1245,7 +1247,7 @@ button:hover > .ph-card {
   transform-origin: 100% 100%;
 }
 /* Avatar lands first, bubble follows — a small layer separation. The bubble
-   only settles (no blur) because the words themselves carry the reveal. */
+   only settles (no blur-sm) because the words themselves carry the reveal. */
 @keyframes suite-msg-settle {
   from {
     opacity: 0;
@@ -1389,4 +1391,179 @@ button:hover > .ph-card {
   .ph-modal-panel {
     transition: none !important;
   }
+}
+
+/* ── Suite calendar skin (ilamy) ─────────────────────────────────────────────
+   ilamy is built on shadcn tokens and reads the raw CSS variables directly in
+   arbitrary values — e.g. the "outside month" cells use
+   `color-mix(in oklch, var(--background), var(--foreground) 3%)`. Defining the
+   shorthand tokens on the calendar root resolves them per themed subtree, so
+   the dimmed days get a soft 3%-ink tint in both light and dark mode instead of
+   showing the grid border through a transparent cell.
+
+   Host apps provide their own headers and native creation flows. */
+[data-testid="ilamy-calendar"] button[aria-label="New"] {
+  display: none;
+}
+
+[data-testid="ilamy-calendar"] {
+  --background: var(--ph-surface);
+  --foreground: var(--ph-text-primary);
+  --card: var(--ph-surface);
+  --card-foreground: var(--ph-text-primary);
+  --popover: var(--ph-surface-raised);
+  --popover-foreground: var(--ph-text-primary);
+  --primary: var(--ph-accent);
+  --primary-foreground: var(--ph-on-accent);
+  --secondary: var(--ph-muted);
+  --secondary-foreground: var(--ph-text-primary);
+  --muted: var(--ph-muted);
+  --muted-foreground: var(--ph-text-tertiary);
+  --accent: var(--ph-muted);
+  --accent-foreground: var(--ph-text-primary);
+  --destructive: var(--ph-danger);
+  --destructive-foreground: var(--ph-on-accent);
+  --border: var(--ph-border);
+  --input: var(--ph-border);
+  --ring: var(--ph-focus-ring);
+}
+
+/* Calendars inherit the host's theme. No independent calendar palette. */
+@layer base {
+  /* Tailwind 4 makes unqualified borders currentColor, unlike ilamy's v3 skin. */
+  [data-testid="ilamy-calendar"] * {
+    border-color: var(--ph-border);
+  }
+}
+.suite-calendar-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--ph-border);
+  background: var(--ph-surface);
+}
+.suite-calendar-navigation,
+.suite-calendar-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.suite-calendar-title {
+  margin-left: 8px;
+}
+.suite-calendar-title h2 {
+  color: var(--ph-text-primary);
+  font-size: 16px;
+  font-weight: 650;
+}
+.suite-calendar-title p {
+  color: var(--ph-text-tertiary);
+  font-size: 12px;
+}
+.suite-calendar-record-frame,
+.suite-calendar-record-frame > span {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+.suite-calendar-record {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-inline-start: 3px solid
+    var(--suite-calendar-record-accent, var(--ph-accent));
+  border-radius: 6px;
+  padding: 7px 8px;
+  cursor: pointer;
+  text-align: start;
+  color: var(--ph-text-primary);
+  background: color-mix(
+    in oklab,
+    var(--suite-calendar-record-accent, var(--ph-accent)) 18%,
+    var(--ph-surface)
+  );
+}
+.suite-calendar-record:hover {
+  background: color-mix(
+    in oklab,
+    var(--suite-calendar-record-accent, var(--ph-accent)) 28%,
+    var(--ph-surface)
+  );
+}
+.suite-calendar-record-icon {
+  flex: none;
+  color: var(--suite-calendar-record-accent, var(--ph-accent));
+  padding-top: 1px;
+}
+.suite-calendar-record-icon svg {
+  width: 15px;
+  height: 15px;
+}
+.suite-calendar-record-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.suite-calendar-record-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+}
+.suite-calendar-record-detail {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--ph-text-secondary);
+}
+[data-testid="ilamy-calendar"] [role="button"]:focus-visible,
+.suite-calendar-record:focus-visible {
+  outline: 2px solid var(--ph-focus-ring);
+  outline-offset: 2px;
+}
+.suite-calendar-preview.ph-tooltip-content {
+  text-align: start;
+  white-space: normal;
+}
+.suite-calendar-preview-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.suite-calendar-preview-copy strong { font-size: 14px; }
+.suite-calendar-preview-extra { white-space: pre-line; }
+.suite-calendar-preview-hint { color: var(--ph-text-tertiary); font-size: 11px; }
+.suite-calendar-agenda { height: 100%; overflow-y: auto; padding: 8px 16px; }
+.suite-calendar-agenda-empty { padding: 64px 20px; text-align: center; color: var(--ph-text-tertiary); font-size: 14px; }
+.suite-calendar-agenda-day { display: flex; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--ph-border); }
+.suite-calendar-agenda-day h3 { display: flex; flex: none; flex-direction: column; align-items: center; width: 48px; color: var(--ph-text-secondary); font-size: 12px; }
+.suite-calendar-agenda-day h3 strong { color: var(--ph-text-primary); font-size: 24px; line-height: 32px; }
+.suite-calendar-agenda-items { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 8px; }
+.suite-calendar-agenda-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.suite-calendar-agenda-row .suite-calendar-record-frame { min-height: 54px; }
+.suite-calendar-agenda-time { flex: none; width: 52px; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--ph-text-secondary); }
+.ph-filter-menu-trigger:has(input[type="search"]):focus-within {
+  outline: 2px solid var(--ph-focus-ring);
+  outline-offset: 2px;
+}
+.ph-filter-menu-trigger:has(input[type="search"]):hover { background: var(--ph-surface-hover); }
+@media (max-width: 640px) {
+  .suite-calendar-agenda { padding: 8px; }
+  .suite-calendar-agenda-day { gap: 8px; }
+  .suite-calendar-agenda-row { gap: 6px; }
+  .suite-calendar-agenda-time { width: 42px; font-size: 11px; }
 }

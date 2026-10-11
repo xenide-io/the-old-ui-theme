@@ -115,7 +115,7 @@ export default function DemoShell({ children }: { children: React.ReactNode }) {
                 isCollapsed ? "flex justify-center" : "flex items-center gap-2"
               }
             >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-ph-brand text-xs font-bold text-[var(--ph-on-accent)] shadow-sm">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-ph-brand text-xs font-bold text-[var(--ph-on-accent)] shadow-xs">
                 T
               </span>
               {!isCollapsed ? (
@@ -163,7 +163,7 @@ export default function DemoShell({ children }: { children: React.ReactNode }) {
               <button
                 type="button"
                 aria-label="Account menu"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ph-border bg-ph-muted text-sm font-bold text-ph-brand focus-visible:outline-none focus-visible:shadow-[var(--ph-focus-halo)]"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ph-border bg-ph-muted text-sm font-bold text-ph-brand focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]"
               >
                 T
               </button>

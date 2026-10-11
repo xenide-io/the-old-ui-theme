@@ -62,7 +62,7 @@
 .ph-hero-title {
   font-size: var(--ph-type-hero);
   font-weight: 700;
-  /* Open Runde is rounded and wide; display sizes need noticeably tighter
+  /* Open Runde is rounded-sm and wide; display sizes need noticeably tighter
      tracking than the 1:1 default to stop looking loose. */
   letter-spacing: -0.032em;
   line-height: 1.05;

@@ -87,7 +87,7 @@ export function SuiteMobileDrawer({
           data-test={backdropDataTest ?? dataTest}
           aria-label={backdropLabel}
           className={cn(
-            "no-print fixed inset-0 z-50 bg-black/25 backdrop-blur-sm motion-safe:transition-opacity motion-safe:ease-spring-subtle lg:hidden",
+            "no-print fixed inset-0 z-50 bg-black/25 backdrop-blur-xs motion-safe:transition-opacity motion-safe:ease-spring-subtle lg:hidden",
             shown ? "opacity-100" : "opacity-0",
           )}
           style={{ transitionDuration: `${durationMs}ms` }}
@@ -98,7 +98,7 @@ export function SuiteMobileDrawer({
             data-test={panelDataTest}
             aria-modal="true"
             className={cn(
-              "fixed inset-y-0 left-0 z-50 flex h-dvh max-h-dvh w-[86%] max-w-72 flex-col overflow-hidden border-r border-ph-border bg-ph-surface shadow-[var(--ph-shadow-floating)] outline-none motion-safe:transition-transform motion-safe:ease-spring-fast lg:hidden",
+              "fixed inset-y-0 left-0 z-50 flex h-dvh max-h-dvh w-[86%] max-w-72 flex-col overflow-hidden border-r border-ph-border bg-ph-surface shadow-[var(--ph-shadow-floating)] outline-hidden motion-safe:transition-transform motion-safe:ease-spring-fast lg:hidden",
               side === "right" && "left-auto right-0",
               shown
                 ? "translate-x-0"
