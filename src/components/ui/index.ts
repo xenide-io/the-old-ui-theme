@@ -137,6 +137,12 @@ export {
   type TableVariant as TableVariant,
 } from "@/components/ui/Table";
 export {
+  DataTable as DataTable,
+  type DataTableColumn as DataTableColumn,
+  type DataTableProps as DataTableProps,
+  type DataTableAlign as DataTableAlign,
+} from "@/components/ui/DataTable";
+export {
   Stat as Stat,
   type StatProps as StatProps,
   type StatTone as StatTone,

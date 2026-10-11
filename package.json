@@ -78,7 +78,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:lib": "tsup --entry.index src/index.ts --entry.ui src/components/ui/index.ts --entry.suite src/suite/index.ts --entry.theme-boot src/suite/lib/theme-boot.ts --entry.tailwind-preset tailwind-preset.ts --format cjs,esm --dts --external react,react-dom,next,iconoir-react,motion --clean --tsconfig ./tsconfig.lib.json",
+    "build:lib": "tsup --entry.index src/index.ts --entry.ui src/components/ui/index.ts --entry.suite src/suite/index.ts --entry.theme-boot src/suite/lib/theme-boot.ts --entry.tailwind-preset tailwind-preset.ts --format cjs,esm --dts --external react,react-dom,next,iconoir-react,motion,@tanstack/react-table --clean --tsconfig ./tsconfig.lib.json",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -130,6 +130,7 @@
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-dropdown-menu": "^2.1.24",
+    "@tanstack/react-table": "^8.21.3",
     "clsx": "^2.1.1",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
