@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useRef, type ReactNode } from "react";
 import { NavArrowLeft, Sparks } from "iconoir-react";
 
 import { Tooltip } from "../../components/ui/Tooltip";
 import { cn } from "../lib/cn";
+import { useSuiteNavigation } from "../lib/navigation";
 import { persistSuiteAskAiOpen, SUITE_OPEN_ASK_AI_EVENT } from "./ai-panel";
 import type { SuiteNavIcon } from "./suite-bottom-nav";
 
@@ -81,6 +81,7 @@ export function SuiteSidebar({
   askAi,
   onRequestExpand,
 }: SuiteSidebarProps) {
+  const { Link } = useSuiteNavigation();
   const showAskAi = Boolean(onAskAiOpenChange && askAi);
   const chatOpen = showAskAi && askAiOpen && !collapsed;
   const askAiButtonRef = useRef<HTMLButtonElement>(null);

@@ -207,3 +207,11 @@ export {
   type SuiteAnalyticsEventDetail,
   type SuiteAnalyticsProperties,
 } from "../lib/suite-analytics";
+export {
+  SuiteNavigationProvider,
+  useSuiteNavigation,
+  type SuiteNavigation,
+  type SuiteLinkProps,
+  type SuiteImageProps,
+  type SuiteRouter,
+} from "./lib/navigation";

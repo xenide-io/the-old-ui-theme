@@ -1,10 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { LogOut, Settings } from "iconoir-react";
 
 import { cn } from "../lib/cn";
+import { useSuiteNavigation } from "../lib/navigation";
 import { DropdownMenu, DropdownItem } from "../../components/ui/DropdownMenu";
 
 export interface SuiteUserMenuProps {
@@ -84,6 +83,7 @@ export function SuiteUserMenu({
   triggerDataTest,
   className,
 }: SuiteUserMenuProps) {
+  const { Image, useRouter } = useSuiteNavigation();
   const router = useRouter();
   const initials = fallbackInitials ?? computeInitials(name, email);
   const fallbackColor = avatarColorClass(email || name || "?");

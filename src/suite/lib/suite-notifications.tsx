@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { useRouter } from "next/navigation";
+import { useSuiteNavigation } from "./navigation";
 
 import { trackSuiteEvent } from "../../lib/suite-analytics";
 import {
@@ -92,6 +92,7 @@ export function SuiteNotificationsProvider({
   enabled?: boolean;
   children: ReactNode;
 }) {
+  const { useRouter } = useSuiteNavigation();
   const router = useRouter();
   const [notifications, setNotifications] = useState<SuiteNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);

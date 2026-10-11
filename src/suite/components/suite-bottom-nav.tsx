@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import type { ComponentType } from "react";
 
 import { cn } from "../lib/cn";
+import { useSuiteNavigation } from "../lib/navigation";
 
 /** Any icon component that accepts sizing/stroke props (Lucide, theme icons). */
 export type SuiteNavIcon = ComponentType<{
@@ -39,6 +39,8 @@ export function SuiteBottomNav({
   dataTest?: string;
   className?: string;
 }) {
+  const { Link } = useSuiteNavigation();
+
   if (process.env.NODE_ENV !== "production" && items.length > 5) {
     console.warn(
       `SuiteBottomNav: ${items.length} items — bottom nav should have at most 5 (Hick's Law).`,

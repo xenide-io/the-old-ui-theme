@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { useState, type ReactNode } from "react";
 import { NavArrowDown as ChevronDown, OpenNewWindow } from "iconoir-react";
 
 import { cn } from "../lib/cn";
+import { useSuiteNavigation } from "../lib/navigation";
 import { trackSuiteEvent } from "../../lib/suite-analytics";
 import type {
   SuiteDropdownItemComponent,
@@ -134,6 +134,7 @@ export function AppSwitcher({
   triggerId?: string;
   triggerDataTest?: string;
 }) {
+  const { Image } = useSuiteNavigation();
   const [open, setOpen] = useState(false);
 
   return (
