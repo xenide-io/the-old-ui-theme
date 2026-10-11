@@ -80,12 +80,29 @@ export const SUITE_APP_MAP: Readonly<Record<SuiteAppSlug, SuiteAppDefinition>> =
     SuiteAppDefinition
   >;
 
-/** Resolve an app's base URL: env var first, dev fallback second. */
+/**
+ * Host-injected base URLs. Vite apps cannot read `process.env` at runtime, so
+ * they call `setSuiteAppBaseUrls()` at boot; env vars remain the Next fallback.
+ */
+let suiteAppBaseUrlOverrides: Partial<Record<SuiteAppSlug, string>> = {};
+
+export function setSuiteAppBaseUrls(
+  overrides: Partial<Record<SuiteAppSlug, string>>,
+): void {
+  suiteAppBaseUrlOverrides = { ...suiteAppBaseUrlOverrides, ...overrides };
+}
+
+/** Resolve an app's base URL: host override, then env var, then dev fallback. */
 export function suiteAppBaseUrl(slug: SuiteAppSlug): string {
   const def = SUITE_APP_MAP[slug];
   const fromEnv =
-    typeof process !== 'undefined' ? process.env[def.baseUrlEnv] : undefined;
-  return (fromEnv || def.baseUrlFallback).replace(/\/$/, '');
+    typeof process !== 'undefined' && process.env
+      ? process.env[def.baseUrlEnv]
+      : undefined;
+  return (suiteAppBaseUrlOverrides[slug] || fromEnv || def.baseUrlFallback).replace(
+    /\/$/,
+    '',
+  );
 }
 
 const SOURCE_APP_SLUG: Record<string, SuiteAppSlug> = {

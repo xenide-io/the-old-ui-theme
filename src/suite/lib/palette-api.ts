@@ -6,9 +6,20 @@
  * `icon_image`.
  */
 
-const PALETTE_URL = (
-  process.env.NEXT_PUBLIC_PALETTE_URL ?? 'http://localhost:8010'
-).replace(/\/$/, '');
+let paletteUrlOverride: string | null = null;
+
+/** Host apps (Vite) inject the palette URL at boot; env is the fallback. */
+export function setPaletteUrl(url: string | null): void {
+  paletteUrlOverride = url ? url.replace(/\/$/, '') : null;
+}
+
+function paletteUrl(): string {
+  if (paletteUrlOverride) return paletteUrlOverride;
+  if (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_PALETTE_URL) {
+    return process.env.NEXT_PUBLIC_PALETTE_URL.replace(/\/$/, '');
+  }
+  return 'http://localhost:8010';
+}
 
 export interface PaletteCollection {
   slug: string;
@@ -72,7 +83,7 @@ async function paletteGet<T>(
 ): Promise<T> {
   const suffix = toQuery(params);
   const response = await fetch(
-    `${PALETTE_URL}${path}${suffix ? `?${suffix}` : ''}`,
+    `${paletteUrl()}${path}${suffix ? `?${suffix}` : ''}`,
     { headers: { Accept: 'application/json' } },
   );
   if (!response.ok) {
@@ -139,5 +150,5 @@ export function paletteIconSrc(
 ): string | null | undefined {
   if (!imageUrl || !color) return imageUrl;
   if (!imageUrl.includes('/svgrepo/')) return imageUrl;
-  return `${PALETTE_URL}/render?src=${encodeURIComponent(imageUrl)}&color=${encodeURIComponent(color)}`;
+  return `${paletteUrl()}/render?src=${encodeURIComponent(imageUrl)}&color=${encodeURIComponent(color)}`;
 }
