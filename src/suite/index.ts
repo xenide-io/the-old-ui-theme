@@ -198,6 +198,10 @@ export {
   type SuiteIntegrationPickerProps,
 } from "./components/suite-integration-picker";
 export {
+  SuiteIntegrationConnection,
+  type SuiteIntegrationConnectionProps,
+} from "./components/suite-integration-connection";
+export {
   SuiteIntegrationRules,
   type SuiteIntegrationEvent,
   type SuiteIntegrationRule,

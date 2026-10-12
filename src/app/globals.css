@@ -1266,6 +1266,390 @@ body {
     font-weight: 600;
   }
 
+  /* Popover — same floating material as menus, but holds arbitrary content.
+     z-index sits above modals (101) so pickers work inside dialogs. */
+  .ph-popover-panel {
+    z-index: 120;
+    padding: 0.75rem;
+    max-width: calc(100vw - 1rem);
+    border-radius: var(--ph-radius-overlay);
+    border: 1px solid var(--ph-border-control);
+    background: color-mix(in oklab, var(--ph-surface-overlay) 94%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(1.2);
+    backdrop-filter: blur(24px) saturate(1.2);
+    box-shadow:
+      var(--ph-chrome-inset-face-top),
+      var(--ph-shadow-floating);
+    transform-origin: var(--radix-popover-content-transform-origin);
+    animation: ph-dropdown-in 120ms cubic-bezier(0.22, 1, 0.36, 1);
+    outline: none;
+  }
+
+  .ph-popover-panel[data-side="top"] {
+    --ph-dropdown-entry-y: 0.25rem;
+  }
+
+  .ph-popover-panel[data-side="bottom"] {
+    --ph-dropdown-entry-y: -0.25rem;
+  }
+
+  .ph-popover-panel--flush {
+    padding: 0;
+  }
+
+  .ph-calendar--bare {
+    border: 0;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+
+  .ph-popover-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem 0.75rem;
+    border-top: 1px solid var(--ph-border-subtle);
+  }
+
+  .ph-popover-footer__action {
+    padding: 0.25rem 0.5rem;
+    margin-inline: -0.5rem;
+    border-radius: var(--ph-radius-control);
+    color: var(--ph-brand);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    transition: background-color var(--ph-motion-fast) ease;
+  }
+
+  .ph-popover-footer__action:hover {
+    background: var(--ph-surface-hover);
+  }
+
+  .ph-popover-footer__action--muted {
+    color: var(--ph-text-tertiary);
+    font-weight: 500;
+  }
+
+  /* Chip field — a pill that is itself the control (date, owner, tag …).
+     The ✕ lives inside the pill so clearing needs no extra "Clear" text. */
+  .ph-chip-field {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    border-radius: 999px;
+    border: 1px solid var(--ph-border-control);
+    color: var(--ph-text-tertiary);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition:
+      background-color var(--ph-motion-fast) ease,
+      border-color var(--ph-motion-fast) ease,
+      color var(--ph-motion-fast) ease;
+  }
+
+  .ph-chip-field:hover {
+    background: var(--ph-surface-hover);
+    color: var(--ph-text-primary);
+  }
+
+  .ph-chip-field--set {
+    color: var(--ph-text-primary);
+    background: color-mix(in oklab, var(--ph-text-primary) 5%, transparent);
+  }
+
+  .ph-chip-field__main {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-height: 2rem;
+    padding: 0 0.75rem;
+    border-radius: inherit;
+  }
+
+  .ph-chip-field--set .ph-chip-field__main {
+    padding-right: 0.25rem;
+  }
+
+  .ph-chip-field__clear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.375rem;
+    height: 1.375rem;
+    margin-right: 0.375rem;
+    border-radius: 999px;
+    color: var(--ph-text-tertiary);
+    transition:
+      background-color var(--ph-motion-fast) ease,
+      color var(--ph-motion-fast) ease;
+  }
+
+  .ph-chip-field__clear:hover {
+    background: color-mix(in oklab, var(--ph-text-primary) 12%, transparent);
+    color: var(--ph-text-primary);
+  }
+
+  .ph-chip-field__main:focus-visible,
+  .ph-chip-field__clear:focus-visible,
+  .ph-colour-trigger:focus-visible,
+  .ph-colour-option:focus-visible,
+  .ph-colour-option:focus-within {
+    outline: none;
+    box-shadow: var(--ph-focus-halo);
+  }
+
+  /* Confirm dialog: a compact alert, like macOS / iOS. */
+  .ph-confirm-dialog {
+    width: min(20rem, calc(100vw - 2rem));
+    max-width: none;
+    padding: 1.25rem;
+    text-align: center;
+  }
+
+  .ph-confirm-dialog__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    padding: 0.25rem 0.25rem 1rem;
+  }
+
+  .ph-confirm-dialog__title {
+    color: var(--ph-text-primary);
+    font-size: 1.0625rem;
+    font-weight: 650;
+    line-height: 1.3;
+  }
+
+  .ph-confirm-dialog__text {
+    color: var(--ph-text-secondary);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .ph-confirm-dialog__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  /* Field-style date control: same box as `.ph-input`, ✕ inside on the right. */
+  .ph-date-field {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .ph-date-field .ph-chip-field__main {
+    flex: 1;
+    min-height: 2.5rem;
+    padding: 0 0.75rem;
+    color: var(--ph-text-primary);
+  }
+
+  .ph-date-field:not(.ph-chip-field--set) .ph-chip-field__main {
+    color: var(--ph-text-tertiary);
+  }
+
+  .ph-datetime {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .ph-datetime > :first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .ph-datetime__time {
+    width: 7.5rem;
+    flex: none;
+  }
+
+  /* Colour picker: a "colour well" (dot + chevron) that opens a real picker. */
+  .ph-colour-swatch {
+    display: block;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 999px;
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--ph-text-primary) 18%, transparent),
+      0 1px 2px rgb(0 0 0 / 0.12);
+  }
+
+  .ph-colour-swatch--lg {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .ph-colour-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-height: 2rem;
+    padding: 0 0.5rem 0 0.5rem;
+    border-radius: var(--ph-radius-control);
+    border: 1px solid var(--ph-border-control);
+    color: var(--ph-text-secondary);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition:
+      background-color var(--ph-motion-fast) ease,
+      border-color var(--ph-motion-fast) ease;
+  }
+
+  .ph-colour-trigger__chevron {
+    width: 0.75rem;
+    height: 0.75rem;
+    color: var(--ph-text-tertiary);
+    transition: transform var(--ph-motion-fast) ease;
+  }
+
+  .ph-colour-trigger:hover,
+  .ph-colour-trigger[data-state="open"] {
+    background: var(--ph-surface-hover);
+    color: var(--ph-text-primary);
+  }
+
+  .ph-colour-trigger[data-state="open"] .ph-colour-trigger__chevron {
+    transform: rotate(180deg);
+  }
+
+  .ph-colour-panel {
+    width: 15rem;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .ph-colour-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .ph-colour-area,
+  .ph-colour-hue {
+    position: relative;
+    cursor: crosshair;
+    touch-action: none;
+    border-radius: 0.5rem;
+    outline: none;
+  }
+
+  .ph-colour-area {
+    height: 8.5rem;
+    background-image:
+      linear-gradient(to top, #000, transparent),
+      linear-gradient(to right, #fff, transparent);
+  }
+
+  .ph-colour-hue {
+    height: 0.75rem;
+    border-radius: 999px;
+    background: linear-gradient(
+      to right,
+      #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%
+    );
+  }
+
+  .ph-colour-area:focus-visible,
+  .ph-colour-hue:focus-visible {
+    box-shadow: var(--ph-focus-halo);
+  }
+
+  .ph-colour-thumb {
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 999px;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3), 0 2px 4px rgb(0 0 0 / 0.3);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .ph-colour-thumb--hue {
+    top: 50%;
+    background: #fff;
+  }
+
+  .ph-colour-hex input {
+    width: 100%;
+    height: 2rem;
+    padding: 0 0.625rem;
+    border-radius: var(--ph-radius-control);
+    border: 1px solid var(--ph-border-control);
+    background: var(--ph-surface);
+    color: var(--ph-text-primary);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.8125rem;
+    text-transform: lowercase;
+    outline: none;
+  }
+
+  .ph-colour-hex input:focus-visible {
+    box-shadow: var(--ph-focus-halo);
+  }
+
+  .ph-colour-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 0.25rem;
+    padding-top: 0.625rem;
+    border-top: 1px solid var(--ph-border-subtle);
+  }
+
+  .ph-colour-option {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    border-radius: 999px;
+    transition: transform var(--ph-motion-fast) ease;
+  }
+
+  .ph-colour-option:hover {
+    transform: scale(1.12);
+  }
+
+  .ph-colour-option:active {
+    transform: scale(0.94);
+  }
+
+  .ph-colour-option .ph-colour-swatch {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ph-colour-option__check {
+    position: absolute;
+    width: 0.75rem;
+    height: 0.75rem;
+    color: #fff;
+    filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.55));
+    pointer-events: none;
+  }
+
+  .ph-colour-trigger:focus-visible,
+  .ph-colour-option:focus-visible {
+    outline: none;
+    box-shadow: var(--ph-focus-halo);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ph-popover-panel {
+      animation: none;
+    }
+    .ph-colour-option {
+      transition: none;
+    }
+  }
+
   .ph-code-block {
     @apply overflow-hidden border border-ph-border bg-[#1a1a2e];
     border-radius: var(--ph-radius-surface);
@@ -1783,7 +2167,7 @@ body {
   }
 
   .ph-dropdown-panel {
-    @apply z-50 min-w-[12rem] overflow-y-auto p-1;
+    @apply z-[120] min-w-[12rem] overflow-y-auto p-1;
     max-width: min(22rem, calc(100vw - 1rem));
     max-height: var(--radix-dropdown-menu-content-available-height);
     border-radius: var(--ph-radius-overlay);
@@ -2260,7 +2644,7 @@ body {
 
   /* Accessible, collision-aware tooltip overlay. */
   .ph-tooltip-content {
-    @apply z-50 max-w-xs select-none px-2.5 py-1.5 text-xs font-medium;
+    @apply z-[120] max-w-xs select-none px-2.5 py-1.5 text-xs font-medium;
     max-width: min(20rem, calc(100vw - 1rem));
     overflow-wrap: anywhere;
     color: var(--ph-surface-raised);
@@ -3003,7 +3387,7 @@ body {
 
   /* Context menu */
   .ph-context-menu__panel {
-    @apply fixed z-[100] min-w-[10rem] rounded-lg border bg-ph-surface p-1 shadow-lg;
+    @apply fixed z-[120] min-w-[10rem] rounded-lg border bg-ph-surface p-1 shadow-lg;
     border-color: var(--ph-border-control);
   }
 

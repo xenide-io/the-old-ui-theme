@@ -117,6 +117,7 @@ export {
 } from "@/components/ui/FormField";
 export {
   Modal as Modal,
+  ModalClose as ModalClose,
   type ModalProps as ModalProps,
   type ModalSize as ModalSize,
 } from "@/components/ui/Modal";
@@ -176,6 +177,27 @@ export {
   type CommandPaletteProps,
 } from "@/components/ui/CommandPalette";
 export { Calendar, type CalendarProps } from "@/components/ui/Calendar";
+export {
+  Popover,
+  PopoverAnchor,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/Popover";
+export {
+  DatePicker,
+  DateTimePicker,
+  describeDateKey,
+  toDateKey,
+  todayDateKey,
+  type DatePickerProps,
+} from "@/components/ui/DatePicker";
+export {
+  ColorPicker,
+  DEFAULT_COLOR_OPTIONS,
+  type ColorOption,
+  type ColorPickerProps,
+} from "@/components/ui/ColorPicker";
 export {
   Tooltip,
   TooltipProvider,

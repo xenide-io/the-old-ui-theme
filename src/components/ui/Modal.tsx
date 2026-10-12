@@ -37,6 +37,25 @@ const sizeMap: Record<ModalSize, string> = {
   full: "max-w-none",
 };
 
+/**
+ * Corner ✕ for `customLayout` modals (the standard layout already has one).
+ * Place it in your own top bar; it closes the surrounding Modal.
+ */
+export function ModalClose({ className }: { className?: string }) {
+  return (
+    <Dialog.Close asChild>
+      <button
+        type="button"
+        className={cn("ph-modal-close", className)}
+        aria-label="Close"
+        title="Close"
+      >
+        <IconClose className="h-5 w-5" aria-hidden />
+      </button>
+    </Dialog.Close>
+  );
+}
+
 export function Modal({
   open = false,
   onClose,
@@ -82,11 +101,22 @@ export function Modal({
           {...(ariaLabelledBy ? { "aria-labelledby": ariaLabelledBy } : {})}
           style={zIndex ? { zIndex } : undefined}
           {...(description ? {} : { "aria-describedby": undefined })}
-          onOpenAutoFocus={() => {
+          onOpenAutoFocus={(event) => {
             restoreFocusRef.current =
               document.activeElement instanceof HTMLElement
                 ? document.activeElement
                 : null;
+            // Land on the first text field when there is one, so toolbar
+            // buttons (pin, close) don't grab focus and pop their tooltips.
+            const field = (
+              event.currentTarget as HTMLElement
+            ).querySelector<HTMLElement>(
+              "[data-autofocus], input:not([type=hidden]):not([disabled]), textarea:not([disabled])",
+            );
+            if (field) {
+              event.preventDefault();
+              field.focus();
+            }
           }}
           onCloseAutoFocus={(event) => {
             event.preventDefault();
@@ -140,7 +170,9 @@ export function Modal({
                   ) : null}
                 </header>
               ) : null}
-              <div className={cn("ph-modal-body", bodyClassName)}>{children}</div>
+              <div className={cn("ph-modal-body", bodyClassName)}>
+                {children}
+              </div>
               {footer ? <div className="ph-modal-footer">{footer}</div> : null}
             </>
           )}

@@ -1,6 +1,8 @@
-import { forwardRef, useId, useState, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { forwardRef, useId, useState, type ChangeEvent, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { Eye, EyeClosed } from "iconoir-react";
 import { FormField } from "@/components/ui/FormField";
+import { ColorPicker } from "@/components/ui/ColorPicker";
+import { DatePicker, DateTimePicker } from "@/components/ui/DatePicker";
 import { IconCheck } from "@/components/icons";
 import { cn } from "@/lib/cn";
 
@@ -28,6 +30,11 @@ function joinIds(...ids: Array<string | undefined>) {
   return value || undefined;
 }
 
+/** Pickers have no real <input>, so hand callers an event-shaped value for their existing onChange. */
+function pickerEvent(name: string | undefined, value: string) {
+  return { target: { name, value }, currentTarget: { name, value } } as ChangeEvent<HTMLInputElement>;
+}
+
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
   id: idProp,
   label,
@@ -49,6 +56,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
   const hasError = Boolean(error);
   const isPassword = type === "password";
   const [revealed, setRevealed] = useState(false);
+  // Native date/colour inputs look different on every OS; use the shared pickers instead.
+  const pickerValue = String(props.value ?? props.defaultValue ?? "");
+  const emit = (next: string) => props.onChange?.(pickerEvent(props.name, next));
 
   return (
     <FormField
@@ -61,7 +71,38 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
       disabled={disabled}
       className={wrapperClassName}
     >
-      {(fieldProps) => (
+      {(fieldProps) =>
+        type === "date" ? (
+          <DatePicker
+            id={id}
+            variant="field"
+            value={pickerValue}
+            onChange={emit}
+            clearable={!required}
+            placeholder="Select date"
+            aria-label={label ?? "Date"}
+            disabled={disabled}
+            className={className}
+          />
+        ) : type === "datetime-local" ? (
+          <DateTimePicker
+            id={id}
+            value={pickerValue}
+            onChange={emit}
+            clearable={!required}
+            placeholder="Select date"
+            aria-label={label ?? "Date and time"}
+            disabled={disabled}
+            className={className}
+          />
+        ) : type === "color" ? (
+          <ColorPicker
+            value={pickerValue}
+            onChange={emit}
+            label={pickerValue || "Default"}
+            aria-label={label ?? "Colour"}
+          />
+        ) : (
         <div className="relative">
           <input
             {...fieldProps}
@@ -98,7 +139,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
             </button>
           ) : null}
         </div>
-      )}
+        )
+      }
     </FormField>
   );
 });

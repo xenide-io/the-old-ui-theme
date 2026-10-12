@@ -61,6 +61,132 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Connected accounts: identity first, quiet status and actions below. */
+.suite-integration-connections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.suite-integration-connection {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--ph-border);
+  border-radius: var(--ph-radius-surface);
+  background: var(--ph-surface-raised);
+  box-shadow: var(--ph-shadow-control);
+}
+
+.suite-integration-connection__identity {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.suite-integration-connection__logo {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border: 1px solid var(--ph-border-subtle);
+  border-radius: var(--ph-radius-control);
+  background: var(--ph-surface-inset);
+  color: var(--ph-text-secondary);
+  font-weight: 600;
+}
+
+.suite-integration-connection__logo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 8px;
+  background: white; /* Preserve provider logo contrast in dark themes. */
+}
+
+.suite-integration-connection__name {
+  min-width: 0;
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+.suite-integration-connection__name h4 {
+  margin: 0;
+  color: var(--ph-text-primary);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.suite-integration-connection__name p,
+.suite-integration-connection__detail {
+  color: var(--ph-text-secondary);
+  font-size: 13px;
+  line-height: 20px;
+  overflow-wrap: anywhere;
+}
+
+.suite-integration-connection__name p { margin: 2px 0 0; }
+
+.suite-integration-connection__detail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.suite-integration-connection__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--ph-radius-control);
+  background: color-mix(in srgb, var(--ph-danger) 8%, transparent);
+  color: var(--ph-danger);
+  font-size: 13px;
+  line-height: 20px;
+  overflow-wrap: anywhere;
+}
+
+.suite-integration-connection__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--ph-border-subtle);
+}
+
+.suite-integration-connection__footer .ph-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.suite-integration-connection__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.suite-integration-connection__actions button { min-height: 44px; }
+
 /* Shared app canvas. Dense workspaces do not paint a decorative background. */
 /* One centred marketing header and one button face across the product family.
    The header stays transparent; scrolling content blurs and fades behind it,
