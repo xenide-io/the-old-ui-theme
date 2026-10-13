@@ -1,6 +1,7 @@
 "use client";
 
 import { LogOut, Settings } from "iconoir-react";
+import type { ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import { useSuiteNavigation } from "../lib/navigation";
@@ -26,6 +27,11 @@ export interface SuiteUserMenuProps {
   triggerId?: string;
   triggerDataTest?: string;
   className?: string;
+  /**
+   * Host-injected menu items, rendered between "Profile settings" and
+   * "Sign out". Lets an app add account-scoped actions without forking the menu.
+   */
+  extraMenuItems?: ReactNode;
 }
 
 /**
@@ -47,6 +53,7 @@ export function SuiteUserMenu({
   triggerId,
   triggerDataTest,
   className,
+  extraMenuItems,
 }: SuiteUserMenuProps) {
   const { Image, useRouter } = useSuiteNavigation();
   const router = useRouter();
@@ -105,7 +112,7 @@ export function SuiteUserMenu({
       triggerId={triggerId ?? `${dataTest}-trigger`}
       triggerDataTest={triggerDataTest ?? `${dataTest}-trigger`}
       aria-label="Account menu"
-      align="end"
+      align={showDetails ? "start" : "end"}
       side="bottom"
       sideOffset={6}
       collisionPadding={16}
@@ -134,6 +141,7 @@ export function SuiteUserMenu({
         <Settings className="h-4 w-4 text-ph-mutedtext" aria-hidden />
         Profile settings
       </DropdownItem>
+      {extraMenuItems}
       <DropdownItem data-test={`${dataTest}-sign-out`} onClick={onSignOut}>
         <LogOut className="h-4 w-4 text-ph-mutedtext" aria-hidden />
         Sign out

@@ -294,3 +294,17 @@ export {
   type BridgeRecord,
 } from "./components/suite-bridge-screen";
 export { ShellyWalking } from "./components/shelly-walking";
+export {
+  SIMULATED_ROLES,
+  SIMULATED_ROLE_LABELS,
+  getSimulatedRole,
+  setSimulatedRole,
+  subscribeSimulatedRole,
+  useSimulatedRole,
+  resolveSimulatedRole,
+  type SimulatedRole,
+} from "./lib/role-simulation";
+export {
+  SuiteRoleSimulator,
+  SuiteRoleSimulatorMenuItem,
+} from "./components/suite-role-simulator";
