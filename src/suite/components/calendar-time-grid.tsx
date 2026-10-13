@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { date } from "../lib/dates";
 import { calendarTimeGroups } from "../lib/calendar-layout";
 import { SuiteCalendarRecord, type AgendaRecord } from "./calendar-ui";
@@ -85,6 +85,7 @@ export function SuiteCalendarTimeGrid<T extends AgendaRecord>({
       preview={
         typeof event.data?.preview === "string" ? event.data.preview : undefined
       }
+      avatars={event.data?.avatars as ReactNode}
       onOpen={() => onOpen(event)}
     />
   );

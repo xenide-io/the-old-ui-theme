@@ -164,7 +164,7 @@ export function AnimatedMoon({ className }: { className?: string }) {
         </linearGradient>
       </defs>
       <path
-        d="M27.5 25.5A11 11 0 1 1 14.5 9.6a9 9 0 1 0 13 15.9Z"
+        d="M34 21.3A15 15 0 1 1 18.7 6a12 12 0 0 0 15.3 15.3Z"
         fill="url(#animatedMoonBody)"
       />
       <g className="opacity-70 motion-safe:animate-[pulse_10s_ease-in-out_infinite] motion-reduce:animate-none">

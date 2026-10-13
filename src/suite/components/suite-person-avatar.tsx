@@ -52,6 +52,8 @@ export interface SuitePersonAvatarProps {
   image?: string | null;
   size?: keyof typeof SIZES;
   className?: string;
+  /** Native hover tooltip, e.g. the person's name. */
+  title?: string;
 }
 
 /** A person's photo, or their initials on a stable per-person colour. */
@@ -61,6 +63,7 @@ export function SuitePersonAvatar({
   image,
   size = "sm",
   className,
+  title,
 }: SuitePersonAvatarProps) {
   const [broken, setBroken] = useState(false);
   return (
@@ -72,6 +75,7 @@ export function SuitePersonAvatar({
         className,
       )}
       aria-hidden
+      title={title}
     >
       {image && !broken ? (
         <img

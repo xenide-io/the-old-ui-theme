@@ -1709,6 +1709,22 @@ button:hover > .ph-card {
   line-height: 16px;
   color: var(--ph-text-secondary);
 }
+.suite-calendar-record-avatars {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-inline-start: auto;
+  padding-inline-start: 4px;
+}
+/* Ring and overlap must land on the circular avatar, not the flex wrapper
+   around it — otherwise the surface ring paints as a square. */
+.suite-calendar-record-avatars .suite-calendar-avatar {
+  border-radius: 9999px;
+  box-shadow: 0 0 0 2px var(--ph-surface);
+}
+.suite-calendar-record-avatars .suite-calendar-avatar + .suite-calendar-avatar {
+  margin-inline-start: -6px;
+}
 .suite-calendar-record-time { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 11px; line-height: 16px; color: var(--ph-text-secondary); font-variant-numeric: tabular-nums; }
 /* Grid bars are one line: the title carries the meaning and the tooltip keeps
    the detail. The roomier agenda list restores it below. */

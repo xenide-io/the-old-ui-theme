@@ -100,15 +100,14 @@
   --ph-motion-fast: 120ms;
   --ph-motion-standard: 180ms;
   /* UI density. 1 = the raw design size; lower values shrink the whole product
-     (type, spacing, control heights) because the design system is rem-based.
-     This is the single knob: 0.9 reproduces a 90% browser-zoom preview. */
-  --ph-ui-scale: 0.9;
+     (type, spacing, control heights) because the design system is rem-based. */
+  --ph-ui-scale: 1;
 }
 
 html {
   scroll-behavior: smooth;
-  /* rem on the root resolves against the initial 16px, so 0.9 → 14.4px and every
-     rem-sized thing scales with it (px hairlines deliberately stay crisp). */
+  /* Root font stays at the initial 16px; every rem-sized thing scales with it
+     (px hairlines deliberately stay crisp). */
   font-size: calc(100% * var(--ph-ui-scale));
 }
 

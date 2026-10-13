@@ -94,6 +94,7 @@ export function SuiteCalendarAgenda<T extends AgendaRecord>({
                       : undefined
                   }
                   icon={renderIcon?.(event)}
+                  avatars={event.data?.avatars as ReactNode}
                   onOpen={() => onOpen(event)}
                 />
               </div>
@@ -178,6 +179,7 @@ export function SuiteCalendarRecord({
   colour,
   preview,
   time,
+  avatars,
   onOpen,
 }: {
   title: string;
@@ -186,6 +188,8 @@ export function SuiteCalendarRecord({
   colour?: string;
   preview?: ReactNode;
   time?: string;
+  /** People chips shown at the end of the row (team calendars). */
+  avatars?: ReactNode;
   onOpen: () => void;
 }) {
   const pointerStart = useRef({ x: 0, y: 0 });
@@ -259,6 +263,11 @@ export function SuiteCalendarRecord({
               <span className="suite-calendar-record-detail">{detail}</span>
             ) : null}
           </span>
+          {avatars ? (
+            <span className="suite-calendar-record-avatars" aria-hidden>
+              {avatars}
+            </span>
+          ) : null}
         </button>
       </Tooltip>
     </span>
