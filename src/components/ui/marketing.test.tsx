@@ -1,12 +1,13 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
 
-import { MarketingHeader, MarketingMotionControl } from "./Marketing";
+import { MarketingHeader, MarketingLink, MarketingMotionControl } from "./Marketing";
 
 afterEach(() => {
   cleanup();
   document.documentElement.removeAttribute("data-marketing-paused");
+  Object.defineProperty(window, "scrollY", { value: 0, configurable: true });
 });
 
 describe("marketing controls", () => {
@@ -21,6 +22,27 @@ describe("marketing controls", () => {
 
     expect(screen.getByRole("navigation", { name: "Product navigation" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "ShellStack" })).toBeInTheDocument();
+  });
+
+  it("only frosts the header while content is beneath it", () => {
+    render(<MarketingHeader brand="Tides" navigation={<a href="#product">Product</a>} actions={<MarketingLink href="/login">Sign in</MarketingLink>} />);
+    const header = screen.getByRole("banner");
+    expect(header).toHaveAttribute("data-scrolled", "false");
+    Object.defineProperty(window, "scrollY", { value: 100, configurable: true });
+    fireEvent.scroll(window);
+    expect(header).toHaveAttribute("data-scrolled", "true");
+    Object.defineProperty(window, "scrollY", { value: 0, configurable: true });
+    fireEvent.scroll(window);
+    expect(header).toHaveAttribute("data-scrolled", "false");
+  });
+
+  it("keeps marketing actions as native links with shared button faces", () => {
+    render(<MarketingLink href="/register" variant="primary" className="ph-btn-lg">Get started</MarketingLink>);
+    const link = screen.getByRole("link", { name: "Get started" });
+    expect(link).toHaveAttribute("href", "/register");
+    expect(link).toHaveClass("ph-btn-raised", "ph-btn-primary", "ph-btn-lg");
+    expect(link.querySelector(".ph-btn-chrome")).not.toBeNull();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
   it("pauses and resumes landing animation state", async () => {
