@@ -1,4 +1,5 @@
 export { TodayPageFrame } from "./components/today-page-frame";
+export { SuiteCalendarTimeGrid } from "./components/calendar-time-grid";
 export {
   SuiteCalendarToolbar,
   SuiteCalendarRecord,
@@ -16,6 +17,10 @@ export {
   type SuiteAppEntry,
   type SuiteAppSelectOptions,
 } from "./components/app-switcher";
+export {
+  SuiteSessionExpiredModal,
+  type SuiteSessionExpiredModalProps,
+} from "./components/suite-session-expired-modal";
 export { SuiteNotificationBell } from "./components/suite-notification-bell";
 export {
   SuiteNotificationSettings,
@@ -39,10 +44,36 @@ export {
   SuiteSettingsLayout,
   type SuiteSettingsLayoutProps,
 } from "./components/suite-settings-layout";
+export { SuiteSettingsHeader } from "./components/suite-settings-header";
+export {
+  SuiteSettingsShell,
+  type SuiteSettingsTabDef,
+  type SuiteSettingsSection,
+  type SuiteSettingsShellProps,
+} from "./components/suite-settings-shell";
 export {
   SuiteUserMenu,
   type SuiteUserMenuProps,
 } from "./components/suite-user-menu";
+export {
+  SuitePerson,
+  SuitePersonAvatar,
+  type SuitePersonAvatarProps,
+  type SuitePersonProps,
+} from "./components/suite-person-avatar";
+export {
+  SUITE_TEAM_APPS,
+  SuiteTeamList,
+  SuiteTeamSheet,
+  weekdaySummary,
+  type SuiteTeam,
+  type SuiteTeamApp,
+  type SuiteTeamListProps,
+  type SuiteTeamMember,
+  type SuiteTeamPatch,
+  type SuiteTeamRole,
+  type SuiteTeamSheetProps,
+} from "./components/suite-team";
 export {
   SuiteBottomNav,
   type SuiteBottomNavItem,
@@ -249,3 +280,16 @@ export {
   type SuiteImageProps,
   type SuiteRouter,
 } from "./lib/navigation";
+export {
+  BridgeScreen,
+  type BridgeObject,
+  type BridgeChoice,
+  type BridgeField,
+  type BridgePair,
+  type BridgeDefinition,
+  type BridgeConnection,
+  type BridgeBindingRow,
+  type BridgeProjectOption,
+  type BridgeRecord,
+} from "./components/suite-bridge-screen";
+export { ShellyWalking } from "./components/shelly-walking";

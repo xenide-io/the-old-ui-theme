@@ -99,10 +99,17 @@
   --ph-focus-halo: 0 0 0 3px color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
   --ph-motion-fast: 120ms;
   --ph-motion-standard: 180ms;
+  /* UI density. 1 = the raw design size; lower values shrink the whole product
+     (type, spacing, control heights) because the design system is rem-based.
+     This is the single knob: 0.9 reproduces a 90% browser-zoom preview. */
+  --ph-ui-scale: 0.9;
 }
 
 html {
   scroll-behavior: smooth;
+  /* rem on the root resolves against the initial 16px, so 0.9 → 14.4px and every
+     rem-sized thing scales with it (px hairlines deliberately stay crisp). */
+  font-size: calc(100% * var(--ph-ui-scale));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -217,8 +224,11 @@ body {
   }
 
   .ph-btn-circle {
-    @apply aspect-square rounded-full p-0;
+    @apply aspect-square p-0;
     min-width: var(--ph-btn-control-size);
+    /* Explicit radius — `rounded-full` loses to filled-button
+       `:not(:has(.ph-btn-chrome)) { border-radius: inherit }` (square control). */
+    border-radius: 9999px;
   }
 
   .ph-btn-square {
@@ -524,6 +534,23 @@ body {
     padding-inline: 0;
   }
 
+  /* Raw `ph-btn ph-btn-primary ph-btn-circle` (no ButtonChrome) still needs a
+     round face — the filled-button rule above sets border-radius: inherit. */
+  .ph-btn-circle:is(
+    .ph-btn-primary,
+    .ph-btn-secondary,
+    .ph-btn-signal,
+    .ph-btn-accent,
+    .ph-btn-neutral,
+    .ph-btn-info,
+    .ph-btn-success,
+    .ph-btn-warning,
+    .ph-btn-danger
+  ):not(:has(.ph-btn-chrome)) {
+    border-radius: 9999px;
+    padding-inline: 0;
+  }
+
   .ph-btn-circle.ph-btn-raised .ph-btn-chrome::before,
   .ph-btn-circle.ph-btn-raised .ph-btn-chrome::after {
     border-radius: 9999px;
@@ -631,6 +658,7 @@ body {
     transition-duration: 0ms;
   }
 
+  .ph-btn.ph-btn-circle,
   .ph-btn.ph-btn-circle.ph-btn-raised,
   .ph-btn-circle.ph-btn-raised .ph-btn-chrome {
     border-radius: 9999px;
@@ -761,6 +789,12 @@ body {
 
   .ph-input {
     @apply ph-input-base;
+  }
+
+  /* Decorative icons laid over an input (hand-rolled search fields) come first in
+     the DOM, so the input's own background would paint over them. */
+  svg.pointer-events-none.absolute {
+    z-index: 1;
   }
 
   .ph-field-icon-button {
@@ -1267,9 +1301,10 @@ body {
   }
 
   /* Popover — same floating material as menus, but holds arbitrary content.
-     z-index sits above modals (101) so pickers work inside dialogs. */
+     z-index sits above every modal layer (apps lift modals above their own
+     drawers, e.g. Tides at 141) so pickers always work inside dialogs. */
   .ph-popover-panel {
-    z-index: 120;
+    z-index: var(--ph-z-floating, 300);
     padding: 0.75rem;
     max-width: calc(100vw - 1rem);
     border-radius: var(--ph-radius-overlay);
@@ -1366,6 +1401,13 @@ body {
     min-height: 2rem;
     padding: 0 0.75rem;
     border-radius: inherit;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .ph-chip-field__main > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .ph-chip-field--set .ph-chip-field__main {
@@ -1384,6 +1426,18 @@ body {
     transition:
       background-color var(--ph-motion-fast) ease,
       color var(--ph-motion-fast) ease;
+  }
+
+  /* 22px glyph, 44px touch target on coarse pointers. */
+  .ph-chip-field__clear {
+    position: relative;
+  }
+  @media (pointer: coarse) {
+    .ph-chip-field__clear::after {
+      content: "";
+      position: absolute;
+      inset: -0.625rem;
+    }
   }
 
   .ph-chip-field__clear:hover {
@@ -2062,6 +2116,13 @@ body {
     margin-inline: -0.375rem;
   }
 
+  /* A bare <form> is the usual single child — give its fields a consistent rhythm. */
+  .ph-modal-body > form:not([class]) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
   .ph-modal-footer {
     @apply mt-6 flex shrink-0 flex-wrap justify-end gap-2 border-t pt-5;
     border-color: var(--ph-border-subtle);
@@ -2167,7 +2228,7 @@ body {
   }
 
   .ph-dropdown-panel {
-    @apply z-[120] min-w-[12rem] overflow-y-auto p-1;
+    @apply z-[300] min-w-[12rem] overflow-y-auto p-1;
     max-width: min(22rem, calc(100vw - 1rem));
     max-height: var(--radix-dropdown-menu-content-available-height);
     border-radius: var(--ph-radius-overlay);
@@ -2644,7 +2705,7 @@ body {
 
   /* Accessible, collision-aware tooltip overlay. */
   .ph-tooltip-content {
-    @apply z-[120] max-w-xs select-none px-2.5 py-1.5 text-xs font-medium;
+    @apply z-[300] max-w-xs select-none px-2.5 py-1.5 text-xs font-medium;
     max-width: min(20rem, calc(100vw - 1rem));
     overflow-wrap: anywhere;
     color: var(--ph-surface-raised);
@@ -3387,7 +3448,7 @@ body {
 
   /* Context menu */
   .ph-context-menu__panel {
-    @apply fixed z-[120] min-w-[10rem] rounded-lg border bg-ph-surface p-1 shadow-lg;
+    @apply fixed z-[300] min-w-[10rem] rounded-lg border bg-ph-surface p-1 shadow-lg;
     border-color: var(--ph-border-control);
   }
 

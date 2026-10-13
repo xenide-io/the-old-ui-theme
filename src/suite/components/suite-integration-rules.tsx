@@ -102,8 +102,9 @@ export function SuiteIntegrationRules({
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [ruleToDelete, setRuleToDelete] =
-    useState<SuiteIntegrationRule | null>(null);
+  const [ruleToDelete, setRuleToDelete] = useState<SuiteIntegrationRule | null>(
+    null,
+  );
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const needsProject =
@@ -277,110 +278,126 @@ export function SuiteIntegrationRules({
             ))}
           </ul>
         )}
+      </Card>
 
-        {canManage && formOpen && onCreate ? (
-          <form
-            className="mt-4 space-y-3 rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface p-4"
-            onSubmit={(event) => void submitForm(event)}
-            data-test={`${dataTest}-form`}
-          >
-            {formError ? (
-              <p className="text-sm text-ph-danger" role="alert">
-                {formError}
-              </p>
-            ) : null}
-            <Input
-              label="Rule name"
-              required
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="GitHub issues to tasks"
-              data-test={`${dataTest}-name`}
-            />
-            <Input
-              label="Trigger event type"
-              required
-              value={trigger}
-              onChange={(event) => setTrigger(event.target.value)}
-              placeholder="github.issue_assigned"
-              helperText="Provider event type, for example github.issue_assigned or googlecalendar.event_ended."
-              data-test={`${dataTest}-trigger`}
-            />
-            <Select
-              label="Action"
-              value={actionType}
-              onChange={(event) =>
-                setActionType(
-                  event.target.value as SuiteIntegrationRuleActionType,
-                )
-              }
-              data-test={`${dataTest}-action`}
+      <Modal
+        open={Boolean(canManage && formOpen && onCreate)}
+        onClose={() => {
+          if (!submitting) setFormOpen(false);
+        }}
+        title="New automation rule"
+        description="Turn an incoming integration event into a task, time entry or notification."
+        dataTest={`${dataTest}-form-modal`}
+        footer={
+          <div className="flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="tertiary"
+              onClick={() => setFormOpen(false)}
+              disabled={submitting}
             >
-              {(
-                Object.entries(ACTION_LABELS) as [
-                  SuiteIntegrationRuleActionType,
-                  string,
-                ][]
-              ).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              form={`${dataTest}-form`}
+              variant="primary"
+              disabled={submitting}
+            >
+              {submitting ? "Creating..." : "Create rule"}
+            </Button>
+          </div>
+        }
+      >
+        <form
+          id={`${dataTest}-form`}
+          className="space-y-3"
+          onSubmit={(event) => void submitForm(event)}
+          data-test={`${dataTest}-form`}
+        >
+          {formError ? (
+            <p className="text-sm text-ph-danger" role="alert">
+              {formError}
+            </p>
+          ) : null}
+          <Input
+            label="Rule name"
+            required
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="GitHub issues to tasks"
+            data-test={`${dataTest}-name`}
+          />
+          <Input
+            label="Trigger event type"
+            required
+            value={trigger}
+            onChange={(event) => setTrigger(event.target.value)}
+            placeholder="github.issue_assigned"
+            helperText="Provider event type, for example github.issue_assigned or googlecalendar.event_ended."
+            data-test={`${dataTest}-trigger`}
+          />
+          <Select
+            label="Action"
+            value={actionType}
+            onChange={(event) =>
+              setActionType(
+                event.target.value as SuiteIntegrationRuleActionType,
+              )
+            }
+            data-test={`${dataTest}-action`}
+          >
+            {(
+              Object.entries(ACTION_LABELS) as [
+                SuiteIntegrationRuleActionType,
+                string,
+              ][]
+            ).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </Select>
+          {needsProject ? (
+            <Select
+              label="Project"
+              value={projectId}
+              onChange={(event) => setProjectId(event.target.value)}
+              data-test={`${dataTest}-project`}
+            >
+              <option value="">Choose a project...</option>
+              {projects.map((project) => (
+                <option key={project.id} value={project.id}>
+                  {project.name}
                 </option>
               ))}
             </Select>
-            {needsProject ? (
-              <Select
-                label="Project"
-                value={projectId}
-                onChange={(event) => setProjectId(event.target.value)}
-                data-test={`${dataTest}-project`}
-              >
-                <option value="">Choose a project...</option>
-                {projects.map((project) => (
-                  <option key={project.id} value={project.id}>
-                    {project.name}
-                  </option>
-                ))}
-              </Select>
-            ) : null}
-            {actionType === "draft_time_entry" ? (
-              <Input
-                label="Minutes (optional)"
-                type="number"
-                min="1"
-                value={minutes}
-                onChange={(event) => setMinutes(event.target.value)}
-                data-test={`${dataTest}-minutes`}
-              />
-            ) : null}
-            {actionType === "create_tides_task" ? (
-              <Select
-                label="Priority"
-                value={priority}
-                onChange={(event) => setPriority(event.target.value)}
-                data-test={`${dataTest}-priority`}
-              >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="urgent">Urgent</option>
-              </Select>
-            ) : null}
-            <div className="flex justify-end gap-2 border-t border-ph-border pt-3">
-              <Button
-                type="button"
-                variant="tertiary"
-                onClick={() => setFormOpen(false)}
-                disabled={submitting}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" variant="primary" disabled={submitting}>
-                {submitting ? "Creating..." : "Create rule"}
-              </Button>
-            </div>
-          </form>
-        ) : null}
-      </Card>
+          ) : null}
+          {actionType === "draft_time_entry" ? (
+            <Input
+              label="Minutes (optional)"
+              type="number"
+              min="1"
+              value={minutes}
+              onChange={(event) => setMinutes(event.target.value)}
+              data-test={`${dataTest}-minutes`}
+            />
+          ) : null}
+          {actionType === "create_tides_task" ? (
+            <Select
+              label="Priority"
+              value={priority}
+              onChange={(event) => setPriority(event.target.value)}
+              data-test={`${dataTest}-priority`}
+            >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </Select>
+          ) : null}
+        </form>
+      </Modal>
 
       <Modal
         open={ruleToDelete !== null}

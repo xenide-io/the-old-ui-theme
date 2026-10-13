@@ -50,9 +50,13 @@ describe("adaptive dropdown", () => {
 
     render(<Fixture />);
     await user.click(screen.getByRole("button", { name: "Status: Active" }));
-    expect(screen.getByRole("menuitemradio", { name: "Active" })).toHaveAttribute("data-state", "checked");
+    expect(
+      screen.getByRole("menuitemradio", { name: "Active" }),
+    ).toHaveAttribute("data-state", "checked");
     await user.click(screen.getByRole("menuitemradio", { name: "Draft" }));
-    expect(screen.getByRole("button", { name: "Status: Draft" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Status: Draft" }),
+    ).toBeInTheDocument();
   });
 });
 
@@ -64,7 +68,9 @@ describe("filter chips", () => {
 
     render(
       <FilterChips
-        chips={[{ id: "status", label: "Status", value: "Active", active: true }]}
+        chips={[
+          { id: "status", label: "Status", value: "Active", active: true },
+        ]}
         onToggle={onToggle}
         onRemove={onRemove}
       />,
@@ -72,7 +78,9 @@ describe("filter chips", () => {
 
     const toggle = screen.getByRole("button", { name: "Status Active" });
     expect(toggle).toHaveAttribute("aria-pressed", "true");
-    await user.click(screen.getByRole("button", { name: "Remove Status: Active filter" }));
+    await user.click(
+      screen.getByRole("button", { name: "Remove Status: Active filter" }),
+    );
     expect(onRemove).toHaveBeenCalledWith("status");
     expect(onToggle).not.toHaveBeenCalled();
   });
@@ -97,6 +105,59 @@ describe("chip", () => {
 });
 
 describe("segmented control", () => {
+  it("supports app tabs with icons, counts and roving keyboard focus", async () => {
+    const user = userEvent.setup();
+    function Fixture() {
+      const [value, setValue] = useState("all");
+      return (
+        <SegmentedControl
+          variant="tabs"
+          aria-label="Calendar sources"
+          aria-controls="calendar-panel"
+          value={value}
+          onChange={setValue}
+          options={[
+            {
+              value: "all",
+              label: "All apps",
+              id: "all-apps",
+              dataTest: "calendar-tab-all",
+            },
+            {
+              value: "tides",
+              label: "Tides",
+              icon: (
+                <svg aria-hidden="true" viewBox="0 0 16 16">
+                  <circle cx="8" cy="8" r="6" />
+                </svg>
+              ),
+              badge: 12,
+            },
+            { value: "kraken", label: "Kraken" },
+          ]}
+        />
+      );
+    }
+    render(<Fixture />);
+    expect(
+      screen.getByRole("tablist", { name: "Calendar sources" }),
+    ).toBeInTheDocument();
+    const all = screen.getByRole("tab", { name: "All apps" });
+    expect(all).toHaveAttribute("id", "all-apps");
+    expect(all).toHaveAttribute("data-test", "calendar-tab-all");
+    expect(all).toHaveAttribute("aria-controls", "calendar-panel");
+    await user.click(all);
+    await user.keyboard("{ArrowRight}");
+    const tides = screen.getByRole("tab", { name: "Tides 12" });
+    expect(tides).toHaveAttribute("aria-selected", "true");
+    expect(tides).not.toHaveAttribute("aria-checked");
+    expect(tides).toHaveFocus();
+    expect(all).toHaveAttribute("tabindex", "-1");
+    await user.keyboard("{End}");
+    expect(screen.getByRole("tab", { name: "Kraken" })).toHaveFocus();
+    await user.keyboard("{Home}");
+    expect(all).toHaveFocus();
+  });
   it("exposes a radio group and moves selection with arrow keys", async () => {
     const user = userEvent.setup();
 
@@ -116,20 +177,16 @@ describe("segmented control", () => {
     }
 
     render(<Fixture />);
-    expect(screen.getByRole("radiogroup", { name: "View" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("radiogroup", { name: "View" }),
+    ).toBeInTheDocument();
     const board = screen.getByRole("radio", { name: "Board" });
-    expect(board).toHaveAttribute(
-      "aria-checked",
-      "true",
-    );
+    expect(board).toHaveAttribute("aria-checked", "true");
 
     await user.click(board);
     await user.keyboard("{ArrowRight}");
     const list = screen.getByRole("radio", { name: "List" });
-    expect(list).toHaveAttribute(
-      "aria-checked",
-      "true",
-    );
+    expect(list).toHaveAttribute("aria-checked", "true");
     expect(list).toHaveFocus();
   });
 });

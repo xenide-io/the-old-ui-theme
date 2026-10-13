@@ -36,6 +36,10 @@ export interface SuiteDirectoryClient {
   icon?: string | null;
   color?: string | null;
   icon_image?: string | null;
+  /** ISO timestamp when archived; archived clients are hidden by default. */
+  archived_at?: string | null;
+  /** The Internal client can never be archived or deleted. */
+  is_internal?: boolean;
 }
 
 export interface SuiteDirectoryProject {
@@ -56,11 +60,12 @@ export interface SuiteDirectoryFields {
   /** Icon chosen from a hosted library (e.g. Palette); wins over `iconImageFile`. */
   iconImageUrl?: string | null;
   clearIconImage?: boolean;
+  /** Archive state; leave undefined to keep the current value. */
+  isArchived?: boolean;
 }
 
 export interface SuiteDirectoryProjectFields extends SuiteDirectoryFields {
   clientId: string | null;
-  isArchived?: boolean;
 }
 
 export interface SuiteClientsProjectsDirectoryProps {
@@ -224,20 +229,28 @@ export function SuiteClientsProjectsDirectory({
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [draftArchived, setDraftArchived] = useState(false);
   const [confirming, setConfirming] = useState<Confirming | null>(null);
+  const [showArchived, setShowArchived] = useState(false);
   const [saving, setSaving] = useState(false);
   const [mutationError, setMutationError] = useState<string | null>(null);
   const clientButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const backToClientsRef = useRef<HTMLButtonElement>(null);
   const mobileFocusTarget = useRef<"detail" | "list" | null>(null);
 
+  const archivedCount = clients.filter((client) => client.archived_at).length;
+  const listedClients = useMemo(
+    () =>
+      showArchived ? clients : clients.filter((client) => !client.archived_at),
+    [clients, showArchived],
+  );
+
   useEffect(() => {
     if (
       selectedClientId &&
-      clients.some((client) => client.id === selectedClientId)
+      listedClients.some((client) => client.id === selectedClientId)
     )
       return;
-    setSelectedClientId(clients[0]?.id ?? null);
-  }, [clients, selectedClientId]);
+    setSelectedClientId(listedClients[0]?.id ?? null);
+  }, [listedClients, selectedClientId]);
 
   useEffect(() => {
     const target = mobileFocusTarget.current;
@@ -251,10 +264,10 @@ export function SuiteClientsProjectsDirectory({
 
   const filteredClients = useMemo(() => {
     const value = query.trim().toLowerCase();
-    return [...clients]
+    return [...listedClients]
       .sort((a, b) => a.name.localeCompare(b.name))
       .filter((client) => !value || client.name.toLowerCase().includes(value));
-  }, [clients, query]);
+  }, [listedClients, query]);
   const selectedClient =
     clients.find((client) => client.id === selectedClientId) ?? null;
   const selectedProjects = projects
@@ -435,6 +448,22 @@ export function SuiteClientsProjectsDirectory({
     }
   }
 
+  async function toggleArchiveClient(client: SuiteDirectoryClient) {
+    if (!onUpdateClient) return;
+    try {
+      await onUpdateClient(client, {
+        name: client.name,
+        icon: client.icon ?? DEFAULT_ICON,
+        color: client.color || DEFAULT_COLOR,
+        isArchived: !client.archived_at,
+      });
+    } catch (err) {
+      setMutationError(
+        err instanceof Error ? err.message : "Failed to update client.",
+      );
+    }
+  }
+
   async function confirmRemove() {
     if (!confirming) return;
     const { item, kind } = confirming;
@@ -525,6 +554,7 @@ export function SuiteClientsProjectsDirectory({
                             {client.name}
                           </span>
                           <span className="text-xs text-ph-mutedtext">
+                            {client.archived_at ? "Archived · " : ""}
                             {count} project{count === 1 ? "" : "s"}
                           </span>
                         </span>
@@ -534,12 +564,27 @@ export function SuiteClientsProjectsDirectory({
                 })
               ) : (
                 <li className="px-3 py-8 text-center text-sm text-ph-mutedtext">
-                  {clients.length
+                  {listedClients.length
                     ? "No matches."
                     : "Add a client to get started."}
                 </li>
               )}
             </ul>
+            {archivedCount ? (
+              <div className="border-t border-ph-border p-1.5">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="ph-btn-ghost w-full justify-start text-ph-mutedtext"
+                  data-test="directory-toggle-archived"
+                  onClick={() => setShowArchived((current) => !current)}
+                >
+                  {showArchived
+                    ? "Hide archived clients"
+                    : `Show archived clients (${archivedCount})`}
+                </Button>
+              </div>
+            ) : null}
           </section>
           <section
             className={cn(
@@ -568,6 +613,7 @@ export function SuiteClientsProjectsDirectory({
                       {selectedClient.name}
                     </h3>
                     <p className="text-xs text-ph-mutedtext">
+                      {selectedClient.archived_at ? "Archived · " : ""}
                       {selectedProjects.length} project
                       {selectedProjects.length === 1 ? "" : "s"}
                     </p>
@@ -590,6 +636,17 @@ export function SuiteClientsProjectsDirectory({
                               onClick={() => openEdit(selectedClient, "client")}
                             >
                               Edit client
+                            </DropdownItem>
+                          ) : null}
+                          {onUpdateClient && !selectedClient.is_internal ? (
+                            <DropdownItem
+                              onClick={() =>
+                                void toggleArchiveClient(selectedClient)
+                              }
+                            >
+                              {selectedClient.archived_at
+                                ? "Unarchive client"
+                                : "Archive client"}
                             </DropdownItem>
                           ) : null}
                           {onDeleteClient ? (

@@ -121,6 +121,19 @@ export {
   type ModalProps as ModalProps,
   type ModalSize as ModalSize,
 } from "@/components/ui/Modal";
+export { ConfirmDialog, type ConfirmDialogProps } from "@/components/ui/ConfirmDialog";
+export {
+  ModalFrame,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalActions,
+  type ModalFrameProps,
+  type ModalHeaderProps,
+  type ModalActionsProps,
+  type ModalMaxWidth,
+} from "@/components/ui/ModalParts";
+export { SidePanel, type SidePanelProps } from "@/components/ui/SidePanel";
 export {
   Panel as Panel,
   type PanelProps as PanelProps,
@@ -143,6 +156,20 @@ export {
   type DataTableProps as DataTableProps,
   type DataTableAlign as DataTableAlign,
 } from "@/components/ui/DataTable";
+export {
+  Sheet as Sheet,
+  SheetCheckboxCell as SheetCheckboxCell,
+  SheetMultiSelectCell as SheetMultiSelectCell,
+  SheetNumberCell as SheetNumberCell,
+  SheetPill as SheetPill,
+  SheetSelectCell as SheetSelectCell,
+  type SheetAlign as SheetAlign,
+  type SheetColumn as SheetColumn,
+  type SheetGroup as SheetGroup,
+  type SheetMultiOption as SheetMultiOption,
+  type SheetProps as SheetProps,
+  type SheetSelectOption as SheetSelectOption,
+} from "@/components/ui/Sheet";
 export {
   Stat as Stat,
   type StatProps as StatProps,
@@ -195,6 +222,7 @@ export {
 export {
   ColorPicker,
   DEFAULT_COLOR_OPTIONS,
+  NAMED_COLOR_OPTIONS,
   type ColorOption,
   type ColorPickerProps,
 } from "@/components/ui/ColorPicker";

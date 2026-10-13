@@ -7,6 +7,9 @@ export interface SegmentedControlOption {
   value: string;
   label: string;
   icon?: ReactNode;
+  id?: string;
+  dataTest?: string;
+  badge?: ReactNode;
 }
 
 export interface SegmentedControlProps {
@@ -15,6 +18,8 @@ export interface SegmentedControlProps {
   onChange: (value: string) => void;
   className?: string;
   "aria-label"?: string;
+  "aria-controls"?: string;
+  variant?: "segmented" | "tabs";
 }
 
 export function SegmentedControl({
@@ -23,6 +28,8 @@ export function SegmentedControl({
   onChange,
   className,
   "aria-label": ariaLabel,
+  "aria-controls": ariaControls,
+  variant = "segmented",
 }: SegmentedControlProps) {
   const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const selectedIndex = options.findIndex((option) => option.value === value);
@@ -61,36 +68,60 @@ export function SegmentedControl({
 
   return (
     <div
-      role="radiogroup"
+      role={variant === "tabs" ? "tablist" : "radiogroup"}
       aria-label={ariaLabel}
-      className={cn("ph-segmented-control", className)}
+      className={cn(
+        variant === "tabs" ? "ph-tab-control" : "ph-segmented-control",
+        className,
+      )}
     >
       {options.map((option, index) => (
         <button
           key={option.value}
+          id={option.id}
+          data-test={option.dataTest}
           ref={(node) => {
             itemRefs.current[index] = node;
           }}
           type="button"
-          role="radio"
-          aria-checked={value === option.value}
-          tabIndex={selectedIndex === index || (selectedIndex < 0 && index === 0) ? 0 : -1}
+          role={variant === "tabs" ? "tab" : "radio"}
+          aria-checked={variant === "tabs" ? undefined : value === option.value}
+          aria-selected={
+            variant === "tabs" ? value === option.value : undefined
+          }
+          aria-controls={ariaControls}
+          tabIndex={
+            selectedIndex === index || (selectedIndex < 0 && index === 0)
+              ? 0
+              : -1
+          }
           onClick={() => onChange(option.value)}
           onKeyDown={(event) => handleKeyDown(event, index)}
           className={cn(
-            "ph-segmented-control__item",
-            value === option.value && "ph-segmented-control__item--selected",
+            variant === "tabs"
+              ? "ph-tab-control__item"
+              : "ph-segmented-control__item",
+            value === option.value &&
+              (variant === "tabs"
+                ? "ph-tab-control__item--selected"
+                : "ph-segmented-control__item--selected"),
           )}
         >
           {option.icon ? (
             <span
-              className="inline-flex h-4 w-4 shrink-0 items-center justify-center [&_svg]:h-4 [&_svg]:w-4"
+              className={cn(
+                "inline-flex shrink-0 items-center justify-center [&_svg]:h-4 [&_svg]:w-4",
+                variant === "tabs" ? "h-5 w-5" : "h-4 w-4",
+              )}
               aria-hidden
             >
               {option.icon}
             </span>
           ) : null}
           <span className="truncate">{option.label}</span>
+          {option.badge != null ? (
+            <span className="ph-tab-control__badge">{option.badge}</span>
+          ) : null}
         </button>
       ))}
     </div>

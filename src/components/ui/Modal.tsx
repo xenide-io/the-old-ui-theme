@@ -147,7 +147,7 @@ export function Modal({
                 <header className="ph-modal-header">
                   <div className="min-w-0">
                     {title ? (
-                      <Dialog.Title className="text-lg font-bold text-ph-ink">
+                      <Dialog.Title className="text-lg font-semibold text-ph-ink">
                         {title}
                       </Dialog.Title>
                     ) : null}

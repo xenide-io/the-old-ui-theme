@@ -3,7 +3,12 @@
 import { useState } from "react";
 import { Calendar as CalendarIcon, Xmark } from "iconoir-react";
 import { Calendar } from "@/components/ui/Calendar";
-import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/Popover";
 import { date as dateOf, formatDate } from "@/suite/lib/dates";
 import { cn } from "@/lib/cn";
 
@@ -35,7 +40,9 @@ export function describeDateKey(key: string, placeholder: string): string {
   if (target.isSame(now, "day")) return "Today";
   if (target.isSame(now.add(1, "day"), "day")) return "Tomorrow";
   if (target.isSame(now.subtract(1, "day"), "day")) return "Yesterday";
-  return target.isSame(now, "year") ? target.format("ddd, D MMM") : formatDate(parsed);
+  return target.isSame(now, "year")
+    ? target.format("ddd, D MMM")
+    : formatDate(parsed);
 }
 
 export interface DatePickerProps {
@@ -45,6 +52,8 @@ export interface DatePickerProps {
   /** Shows an inline ✕ on the chip while a date is set. */
   clearable?: boolean;
   placeholder?: string;
+  /** Replaces the formatted date in the trigger, e.g. a week range. */
+  label?: string;
   /** `chip` is a compact pill; `field` is a full-width control that matches `Input`. */
   variant?: "chip" | "field";
   id?: string;
@@ -63,6 +72,7 @@ export function DatePicker({
   onChange,
   clearable = true,
   placeholder = "Add date",
+  label,
   variant = "chip",
   id,
   disabled,
@@ -99,7 +109,7 @@ export function DatePicker({
             aria-label={`${ariaLabel}: ${describeDateKey(value, "none")}`}
           >
             <CalendarIcon className="h-4 w-4 shrink-0" aria-hidden />
-            <span>{describeDateKey(value, placeholder)}</span>
+            <span>{label ?? describeDateKey(value, placeholder)}</span>
           </button>
         </PopoverTrigger>
         <PopoverContent className="ph-popover-panel--flush">
@@ -135,14 +145,22 @@ export function DatePicker({
   );
 }
 
-export interface DateTimePickerProps extends Omit<DatePickerProps, "value" | "onChange"> {
+export interface DateTimePickerProps extends Omit<
+  DatePickerProps,
+  "value" | "onChange"
+> {
   /** `YYYY-MM-DDTHH:mm`, or empty. */
   value: string;
   onChange: (value: string) => void;
 }
 
 /** Date picker plus a time field; emits `YYYY-MM-DDTHH:mm` like `datetime-local`. */
-export function DateTimePicker({ value, onChange, variant = "field", ...rest }: DateTimePickerProps) {
+export function DateTimePicker({
+  value,
+  onChange,
+  variant = "field",
+  ...rest
+}: DateTimePickerProps) {
   const [day = "", time = ""] = value.split("T");
   return (
     <div className="ph-datetime">
@@ -158,7 +176,9 @@ export function DateTimePicker({ value, onChange, variant = "field", ...rest }: 
         aria-label={`${rest["aria-label"] ?? "Date"} time`}
         disabled={rest.disabled || !day}
         value={time}
-        onChange={(event) => day && onChange(`${day}T${event.target.value || "00:00"}`)}
+        onChange={(event) =>
+          day && onChange(`${day}T${event.target.value || "00:00"}`)
+        }
       />
     </div>
   );

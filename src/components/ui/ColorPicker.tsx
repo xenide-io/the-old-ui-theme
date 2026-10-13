@@ -8,7 +8,11 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { Check, NavArrowDown } from "iconoir-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/Popover";
 import { cn } from "@/lib/cn";
 
 export interface ColorOption {
@@ -31,6 +35,11 @@ export const DEFAULT_COLOR_OPTIONS: ColorOption[] = [
   { value: "#8b5cf6", label: "Purple", colour: "#8b5cf6" },
   { value: "#ec4899", label: "Pink", colour: "#ec4899" },
 ];
+
+/** The named presets without the empty "Default" entry, for fields that must hold a colour. */
+export const NAMED_COLOR_OPTIONS: ColorOption[] = DEFAULT_COLOR_OPTIONS.filter(
+  (option) => option.value,
+);
 
 const HEX = /^#[0-9a-f]{6}$/i;
 
@@ -63,7 +72,11 @@ function hsvToHex({ h, s, v }: Hsv): string {
     return v - v * s * Math.max(0, Math.min(k, 4 - k, 1));
   };
   return `#${[f(5), f(3), f(1)]
-    .map((c) => Math.round(c * 255).toString(16).padStart(2, "0"))
+    .map((c) =>
+      Math.round(c * 255)
+        .toString(16)
+        .padStart(2, "0"),
+    )
     .join("")}`;
 }
 
@@ -101,7 +114,13 @@ function Swatch({ colour, className }: { colour: string; className?: string }) {
 }
 
 /** Saturation/brightness square, hue slider and hex field. */
-function ColorPanel({ value, onChange }: { value: string; onChange: (hex: string) => void }) {
+function ColorPanel({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (hex: string) => void;
+}) {
   const [hsv, setHsv] = useState<Hsv>(() => hexToHsv(value));
   const [draft, setDraft] = useState(value);
 
@@ -122,7 +141,12 @@ function ColorPanel({ value, onChange }: { value: string; onChange: (hex: string
 
   const nudge = (event: ReactKeyboardEvent, apply: (step: number) => Hsv) => {
     const step = event.shiftKey ? 0.1 : 0.02;
-    const dir: Record<string, number> = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1 };
+    const dir: Record<string, number> = {
+      ArrowRight: 1,
+      ArrowUp: 1,
+      ArrowLeft: -1,
+      ArrowDown: -1,
+    };
     if (!(event.key in dir)) return;
     event.preventDefault();
     commit(apply(dir[event.key] * step));
@@ -139,7 +163,8 @@ function ColorPanel({ value, onChange }: { value: string; onChange: (hex: string
         className="ph-colour-area"
         style={{ backgroundColor: `hsl(${hsv.h} 100% 50%)` }}
         onKeyDown={(event) => {
-          const horizontal = event.key === "ArrowLeft" || event.key === "ArrowRight";
+          const horizontal =
+            event.key === "ArrowLeft" || event.key === "ArrowRight";
           nudge(event, (step) =>
             horizontal
               ? { ...hsv, s: clamp(hsv.s + step) }
@@ -149,7 +174,11 @@ function ColorPanel({ value, onChange }: { value: string; onChange: (hex: string
       >
         <span
           className="ph-colour-thumb"
-          style={{ left: `${hsv.s * 100}%`, top: `${(1 - hsv.v) * 100}%`, backgroundColor: value }}
+          style={{
+            left: `${hsv.s * 100}%`,
+            top: `${(1 - hsv.v) * 100}%`,
+            backgroundColor: value,
+          }}
         />
       </div>
       <div
@@ -162,10 +191,16 @@ function ColorPanel({ value, onChange }: { value: string; onChange: (hex: string
         aria-valuenow={Math.round(hsv.h)}
         className="ph-colour-hue"
         onKeyDown={(event) =>
-          nudge(event, (step) => ({ ...hsv, h: clamp(hsv.h / 360 + step) * 360 }))
+          nudge(event, (step) => ({
+            ...hsv,
+            h: clamp(hsv.h / 360 + step) * 360,
+          }))
         }
       >
-        <span className="ph-colour-thumb ph-colour-thumb--hue" style={{ left: `${(hsv.h / 360) * 100}%` }} />
+        <span
+          className="ph-colour-thumb ph-colour-thumb--hue"
+          style={{ left: `${(hsv.h / 360) * 100}%` }}
+        />
       </div>
       <label className="ph-colour-hex">
         <span className="sr-only">Hex colour</span>
@@ -175,7 +210,9 @@ function ColorPanel({ value, onChange }: { value: string; onChange: (hex: string
           maxLength={7}
           aria-label="Hex colour"
           onChange={(event) => {
-            const next = event.target.value.startsWith("#") ? event.target.value : `#${event.target.value}`;
+            const next = event.target.value.startsWith("#")
+              ? event.target.value
+              : `#${event.target.value}`;
             setDraft(next);
             if (HEX.test(next)) onChange(next.toLowerCase());
           }}
@@ -199,6 +236,7 @@ export interface ColorPickerProps {
   className?: string;
   "aria-label"?: string;
   dataTest?: string;
+  disabled?: boolean;
 }
 
 /**
@@ -216,11 +254,17 @@ export function ColorPicker({
   className,
   "aria-label": ariaLabel = "Colour",
   dataTest,
+  disabled,
 }: ColorPickerProps) {
   const [open, setOpen] = useState(false);
   const preset = options.find((option) => option.value === value);
-  const current = preset?.colour ?? (value ? (resolve?.(value) ?? value) : defaultColour);
-  const panelValue = HEX.test(value) ? value.toLowerCase() : HEX.test(current) ? current : "#3b82f6";
+  const current =
+    preset?.colour ?? (value ? (resolve?.(value) ?? value) : defaultColour);
+  const panelValue = HEX.test(value)
+    ? value.toLowerCase()
+    : HEX.test(current)
+      ? current
+      : "#3b82f6";
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -231,6 +275,7 @@ export function ColorPicker({
           aria-label={`${ariaLabel}: ${preset?.label ?? (value ? "Custom" : "Default")}`}
           title={ariaLabel}
           data-test={dataTest}
+          disabled={disabled}
         >
           <Swatch colour={current} className="ph-colour-swatch--lg" />
           {label ? <span>{label}</span> : null}
@@ -239,7 +284,11 @@ export function ColorPicker({
       </PopoverTrigger>
       <PopoverContent className="ph-colour-panel" align="start">
         <ColorPanel value={panelValue} onChange={onChange} />
-        <div role="radiogroup" aria-label={`${ariaLabel} presets`} className="ph-colour-grid">
+        <div
+          role="radiogroup"
+          aria-label={`${ariaLabel} presets`}
+          className="ph-colour-grid"
+        >
           {options.map((option) => {
             const selected = option.value === value;
             return (
@@ -254,7 +303,9 @@ export function ColorPicker({
                 onClick={() => onChange(option.value)}
               >
                 <Swatch colour={option.colour ?? defaultColour} />
-                {selected ? <Check className="ph-colour-option__check" aria-hidden /> : null}
+                {selected ? (
+                  <Check className="ph-colour-option__check" aria-hidden />
+                ) : null}
               </button>
             );
           })}

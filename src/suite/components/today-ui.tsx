@@ -574,7 +574,7 @@ export function TodaySection({
 }) {
   return (
     <section data-test={testId} className="space-y-4">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div className="flex min-w-0 items-start gap-3">
           <span
             className={cn(
@@ -595,7 +595,7 @@ export function TodaySection({
             ) : null}
           </div>
         </div>
-        {action}
+        {action ? <div className="pl-11 sm:shrink-0 sm:pl-0">{action}</div> : null}
       </div>
       {children}
     </section>
