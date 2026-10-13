@@ -20,11 +20,14 @@ import {
   Copy,
   EditPencil,
   Erase,
+  NavArrowDown,
   Sparks,
   Square,
   WarningTriangle,
 } from "iconoir-react";
 
+import { Button } from "../../components/ui/Button";
+import { DropdownItem, DropdownMenu } from "../../components/ui/DropdownMenu";
 import { Tooltip } from "../../components/ui/Tooltip";
 import { trackSuiteEvent } from "../../lib/suite-analytics";
 import { SuiteAiDraftEditor, suiteAiDraftFields } from "./ai-draft-editor";
@@ -561,31 +564,32 @@ export function SuiteAiPanel({
       <header className="flex items-center gap-2 px-2 pb-2 pt-2">
         <h2 className="sr-only">{title}</h2>
         {presets.length > 0 ? (
-          <details className="relative" data-test="ask-ai-workflows">
-            <summary className="ph-btn ph-btn-secondary ph-btn-sm min-h-10 cursor-pointer list-none">
-              Workflows
-            </summary>
-            <div className="absolute left-0 top-full z-30 mt-1 max-h-80 w-64 overflow-auto rounded-lg border border-ph-border bg-ph-surface p-1 shadow-lg">
-              {presets.map((preset) => (
-                <button
-                  key={preset.label}
-                  type="button"
-                  disabled={waiting || hydrating}
-                  className="flex min-h-10 w-full items-center gap-2 rounded-sm px-3 py-2 text-left text-sm hover:bg-ph-muted focus-visible:outline focus-visible:outline-2 disabled:opacity-50"
-                  onClick={(event) => {
-                    setPrompt(preset.prompt);
-                    event.currentTarget
-                      .closest("details")
-                      ?.removeAttribute("open");
-                    textareaRef.current?.focus();
-                  }}
-                >
-                  <Sparks className="h-3.5 w-3.5 shrink-0 text-ph-subtle" aria-hidden />
-                  {preset.label}
-                </button>
-              ))}
-            </div>
-          </details>
+          <DropdownMenu
+            aria-label="Workflows"
+            disabled={waiting || hydrating}
+            data-test="ask-ai-workflows"
+            panelClassName="max-h-80 w-64 overflow-auto"
+            trigger={
+              <span className="ph-btn ph-btn-ghost ph-btn-sm h-9 text-xs text-ph-subtle">
+                <Sparks className="h-3.5 w-3.5" aria-hidden />
+                Workflows
+                <NavArrowDown className="h-3 w-3" aria-hidden />
+              </span>
+            }
+          >
+            {presets.map((preset) => (
+              <DropdownItem
+                key={preset.label}
+                onClick={() => {
+                  setPrompt(preset.prompt);
+                  // Defer so Radix returns focus to the trigger first.
+                  window.setTimeout(() => textareaRef.current?.focus());
+                }}
+              >
+                {preset.label}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
         ) : null}
         {messages.length > 0 ? (
           <button
@@ -897,9 +901,7 @@ export function SuiteAiPanel({
                             type="button"
                             data-test="ask-ai-action-cancel"
                             disabled={Boolean(resolvingId) || !resolveAction}
-                            onClick={() =>
-                              void handleResolve(action, "cancel")
-                            }
+                            onClick={() => void handleResolve(action, "cancel")}
                             className="ph-btn ph-btn-secondary ph-btn-xs"
                           >
                             Cancel
@@ -1037,28 +1039,32 @@ export function SuiteAiPanel({
           />
           {waiting ? (
             <Tooltip content="Stop generating">
-              <button
+              <Button
                 type="button"
+                variant="neutral"
+                shape="circle"
+                size="sm"
                 onClick={stop}
                 data-test="ask-ai-stop"
-                className="ph-btn ph-btn-ghost ph-btn-circle h-9 w-9 shrink-0 bg-ph-muted text-ph-ink"
+                className="shrink-0"
                 aria-label="Stop generating"
-              >
-                <Square className="h-3.5 w-3.5 fill-current" />
-              </button>
+                icon={<Square className="h-3.5 w-3.5 fill-current" />}
+              />
             </Tooltip>
           ) : (
             <Tooltip content="Send message">
-              <button
+              <Button
                 type="button"
+                variant="primary"
+                shape="circle"
+                size="sm"
                 onClick={() => void ask(prompt)}
                 disabled={!prompt.trim()}
                 data-test="ask-ai-send"
-                className="ph-btn ph-btn-primary ph-btn-circle h-9 w-9 shrink-0"
+                className="shrink-0"
                 aria-label="Send message"
-              >
-                <ArrowUp className="h-4 w-4" />
-              </button>
+                icon={<ArrowUp className="h-4 w-4" />}
+              />
             </Tooltip>
           )}
         </div>

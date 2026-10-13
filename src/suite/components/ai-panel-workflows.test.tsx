@@ -5,6 +5,7 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { SuiteAiPanel, type SuiteAiAction } from "./ai-panel";
 
@@ -109,12 +110,10 @@ describe("integration draft review", () => {
         spinner={TestSpinner}
         clearChat={vi.fn()}
         open
-        fetchChat={vi
-          .fn()
-          .mockResolvedValue({
-            configured: true,
-            messages: [{ role: "assistant", content: "Existing conversation" }],
-          })}
+        fetchChat={vi.fn().mockResolvedValue({
+          configured: true,
+          messages: [{ role: "assistant", content: "Existing conversation" }],
+        })}
         sendMessage={sendMessage}
         presets={[
           {
@@ -125,9 +124,10 @@ describe("integration draft review", () => {
       />,
     );
     await screen.findByRole("button", { name: "Clear" });
-    fireEvent.click(screen.getByText("Workflows"));
-    fireEvent.click(
-      screen.getByRole("button", { name: "Prepare knowledge pack" }),
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("button", { name: "Workflows" }));
+    await user.click(
+      await screen.findByRole("menuitem", { name: "Prepare knowledge pack" }),
     );
     expect(
       screen.getByDisplayValue("Prepare a reviewed knowledge pack."),

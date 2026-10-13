@@ -57,4 +57,9 @@ tar -C "$THEME_DIR" -cf - \
   --exclude='*.tsbuildinfo' \
   . | tar -C "$TARGET" -xf -
 
-echo "install-theme-dev: done"
+# Vite prebundles this package into node_modules/.vite; keeping that cache after a
+# fresh copy leaves stale named exports and a blank white page on localhost.
+NODE_MODULES_DIR=$(CDPATH= cd -- "$(dirname "$(dirname "$TARGET")")" && pwd)
+rm -rf "$NODE_MODULES_DIR/.vite"
+
+echo "install-theme-dev: done (cleared $NODE_MODULES_DIR/.vite)"

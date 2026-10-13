@@ -5,6 +5,7 @@ import { LogOut, Settings } from "iconoir-react";
 import { cn } from "../lib/cn";
 import { useSuiteNavigation } from "../lib/navigation";
 import { DropdownMenu, DropdownItem } from "../../components/ui/DropdownMenu";
+import { avatarColorClass, computeInitials } from "./suite-person-avatar";
 
 export interface SuiteUserMenuProps {
   name?: string | null;
@@ -25,42 +26,6 @@ export interface SuiteUserMenuProps {
   triggerId?: string;
   triggerDataTest?: string;
   className?: string;
-}
-
-function computeInitials(
-  name: string | null | undefined,
-  email: string | null | undefined,
-): string {
-  const source = (name || email || "?").trim();
-  return source
-    .split(/[\s@]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
-}
-
-/**
- * Deterministic coloured fallback: derives a stable accent from the user's
- * email or name so avatars without a photo get a per-user colour instead of a
- * flat grey. Uses theme `--ph-*` tokens so it adapts to light and dark themes.
- */
-const AVATAR_TOKENS: Array<[string, string]> = [
-  ["bg-ph-brand", "text-[var(--ph-on-accent)]"],
-  ["bg-ph-violet", "text-[var(--ph-on-violet)]"],
-  ["bg-ph-info", "text-[var(--ph-on-info)]"],
-  ["bg-ph-success", "text-[var(--ph-on-success)]"],
-  ["bg-ph-danger", "text-[var(--ph-on-danger)]"],
-];
-
-function avatarColorClass(seed: string): string {
-  let hash = 0;
-  for (let i = 0; i < seed.length; i += 1) {
-    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const [bg, ink] = AVATAR_TOKENS[Math.abs(hash) % AVATAR_TOKENS.length];
-  return `${bg} ${ink}`;
 }
 
 /**

@@ -1,13 +1,7 @@
 "use client";
 
 import { useRef, type CSSProperties, type ReactNode } from "react";
-import {
-  NavArrowLeft,
-  NavArrowRight,
-  Calendar,
-  ViewGrid,
-  ListSelect,
-} from "iconoir-react";
+import { NavArrowLeft, NavArrowRight } from "iconoir-react";
 import { Button } from "../../components/ui/Button";
 import { SegmentedControl } from "../../components/ui/SegmentedControl";
 import { Tooltip } from "../../components/ui/Tooltip";
@@ -20,7 +14,7 @@ export function calendarRecordColour(key: string): string {
   return `var(--ph-data-${(hash % 7) + 1})`;
 }
 
-interface AgendaRecord {
+export interface AgendaRecord {
   id: string | number;
   title: string;
   description?: string;
@@ -157,25 +151,17 @@ export function SuiteCalendarToolbar({
         />
         <div className="suite-calendar-title">
           <h2>{title}</h2>
-          {subtitle ? <p>{subtitle}</p> : null}
+          {subtitle ? <p className="sr-only">{subtitle}</p> : null}
         </div>
       </div>
       <div className="suite-calendar-controls">
         {views && view && onViewChange ? (
           <SegmentedControl
-            options={views.map((option) => ({
-              ...option,
-              icon:
-                option.value === "agenda" ? (
-                  <ListSelect />
-                ) : option.value === "week" ? (
-                  <ViewGrid />
-                ) : (
-                  <Calendar />
-                ),
-            }))}
+            options={views}
             value={view}
             onChange={onViewChange}
+            aria-label="Calendar view"
+            className="suite-calendar-views"
           />
         ) : null}
         {children}
@@ -191,6 +177,7 @@ export function SuiteCalendarRecord({
   icon,
   colour,
   preview,
+  time,
   onOpen,
 }: {
   title: string;
@@ -198,6 +185,7 @@ export function SuiteCalendarRecord({
   icon?: ReactNode;
   colour?: string;
   preview?: ReactNode;
+  time?: string;
   onOpen: () => void;
 }) {
   const pointerStart = useRef({ x: 0, y: 0 });
@@ -264,6 +252,9 @@ export function SuiteCalendarRecord({
           ) : null}
           <span className="suite-calendar-record-copy">
             <span className="suite-calendar-record-title">{title}</span>
+            {time ? (
+              <span className="suite-calendar-record-time">{time}</span>
+            ) : null}
             {detail ? (
               <span className="suite-calendar-record-detail">{detail}</span>
             ) : null}

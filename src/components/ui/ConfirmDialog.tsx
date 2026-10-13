@@ -16,6 +16,9 @@ export interface ConfirmDialogProps {
   onConfirm: () => void | Promise<void>;
   onCancel: () => void;
   confirmDataTest?: string;
+  confirmDisabled?: boolean;
+  /** Extra content under the description, e.g. a typed-name confirmation field. */
+  children?: ReactNode;
 }
 
 /**
@@ -33,6 +36,8 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
   confirmDataTest,
+  confirmDisabled = false,
+  children,
 }: ConfirmDialogProps) {
   return (
     <Modal
@@ -44,16 +49,25 @@ export function ConfirmDialog({
     >
       <div className="ph-confirm-dialog__body">
         <h2 className="ph-confirm-dialog__title">{title}</h2>
-        {description ? <p className="ph-confirm-dialog__text">{description}</p> : null}
+        {description ? (
+          <p className="ph-confirm-dialog__text">{description}</p>
+        ) : null}
+        {children}
       </div>
       <div className="ph-confirm-dialog__actions">
-        <Button variant="secondary" onClick={onCancel} disabled={loading} autoFocus>
+        <Button
+          variant="secondary"
+          onClick={onCancel}
+          disabled={loading}
+          autoFocus
+        >
           {cancelLabel}
         </Button>
         <Button
           variant={destructive ? "danger" : "primary"}
           onClick={() => void onConfirm()}
           loading={loading}
+          disabled={confirmDisabled}
           data-test={confirmDataTest}
         >
           {confirmLabel}

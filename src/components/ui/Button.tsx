@@ -80,7 +80,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   ...props
 }, ref) {
   const usesLemonChrome = !["tertiary", "ghost", "link"].includes(variant);
-  const label = loadingLabel ?? children;
+  const label = loading ? (loadingLabel ?? children) : children;
   const leadingIcon = loading ? <span className="ph-btn-spinner" aria-hidden /> : icon;
 
   const content = usesLemonChrome ? (

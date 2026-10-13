@@ -4,10 +4,47 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   SuiteCalendarAgenda,
   SuiteCalendarRecord,
+  SuiteCalendarToolbar,
   calendarRecordColour,
 } from "./calendar-ui";
 
 afterEach(cleanup);
+
+it("keeps calendar navigation, view selection and host actions accessible", async () => {
+  const user = userEvent.setup();
+  const previous = vi.fn();
+  const today = vi.fn();
+  const view = vi.fn();
+  render(
+    <SuiteCalendarToolbar
+      title="October 2026"
+      subtitle="Click a day for details"
+      onPrevious={previous}
+      onNext={vi.fn()}
+      onToday={today}
+      view="month"
+      views={[
+        { value: "month", label: "Month" },
+        { value: "week", label: "Week" },
+      ]}
+      onViewChange={view}
+    >
+      <button type="button">Create task</button>
+    </SuiteCalendarToolbar>,
+  );
+  await user.click(screen.getByRole("button", { name: "Previous period" }));
+  await user.click(screen.getByRole("button", { name: "Today" }));
+  await user.click(screen.getByRole("radio", { name: "Week" }));
+  expect(previous).toHaveBeenCalledOnce();
+  expect(today).toHaveBeenCalledOnce();
+  expect(view).toHaveBeenCalledWith("week");
+  expect(
+    screen.getByRole("radiogroup", { name: "Calendar view" }),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: "Create task" }),
+  ).toBeInTheDocument();
+});
 
 describe("calendar records", () => {
   it("uses the full host data palette with stable category colours", () => {
