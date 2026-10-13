@@ -1,4 +1,10 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SuiteClientsProjectsDirectory } from "@/suite/components/suite-clients-projects-directory";
@@ -59,5 +65,38 @@ describe("SuiteClientsProjectsDirectory", () => {
         value: originalMatchMedia,
       });
     }
+  });
+
+  it("previews the client colour for new folders without choosing an icon or colour", async () => {
+    const user = userEvent.setup();
+    const create = vi.fn();
+    render(
+      <SuiteClientsProjectsDirectory
+        clients={[{ id: "acme", name: "Acme", color: "#10b981" }]}
+        projects={[]}
+        canEdit
+        onCreateProject={create}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "Add project" }));
+    const dialog = screen.getByRole("dialog");
+    await user.type(
+      within(dialog).getByRole("textbox", { name: "Name" }),
+      "New folder",
+    );
+    expect(dialog.querySelector('[title="New folder"]')).toHaveStyle({
+      color: "#10b981",
+    });
+    expect(dialog.querySelector("img")).toBeNull();
+    await user.click(within(dialog).getByRole("button", { name: "Save" }));
+    expect(create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "New folder",
+        color: "",
+        clientId: "acme",
+        iconImageUrl: null,
+        iconImageFile: null,
+      }),
+    );
   });
 });

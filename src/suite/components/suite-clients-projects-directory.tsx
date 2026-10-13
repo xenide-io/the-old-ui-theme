@@ -292,8 +292,7 @@ export function SuiteClientsProjectsDirectory({
     if (event.key === "ArrowDown") {
       nextIndex = (index + 1) % filteredClients.length;
     } else if (event.key === "ArrowUp") {
-      nextIndex =
-        (index - 1 + filteredClients.length) % filteredClients.length;
+      nextIndex = (index - 1 + filteredClients.length) % filteredClients.length;
     } else if (event.key === "Home") {
       nextIndex = 0;
     } else if (event.key === "End") {
@@ -482,7 +481,9 @@ export function SuiteClientsProjectsDirectory({
   return (
     <div data-test={dataTest} className="space-y-3">
       {error || mutationError ? (
-        <Alert status="danger" live="assertive">{error || mutationError}</Alert>
+        <Alert status="danger" live="assertive">
+          {error || mutationError}
+        </Alert>
       ) : null}
       {loading ? (
         <p className="text-sm text-ph-mutedtext">Loading directory...</p>
@@ -808,7 +809,12 @@ export function SuiteClientsProjectsDirectory({
           <DirectoryIconPicker
             preview={preview}
             label={draft.name}
-            color={draft.color}
+            color={
+              draft.color ||
+              (!preview && editing?.kind.includes("project")
+                ? clients.find((client) => client.id === draftClientId)?.color
+                : undefined)
+            }
             onFileChange={chooseImage}
             onClear={clearImage}
             onBrowse={() => setLibraryOpen(true)}
@@ -820,9 +826,9 @@ export function SuiteClientsProjectsDirectory({
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
-                aria-label="No colour"
+                aria-label="Automatic colour"
                 aria-pressed={!draft.color}
-                title="No colour"
+                title="Automatic colour"
                 onClick={() => setDraft({ ...draft, color: "" })}
                 className={cn(
                   "flex h-8 w-8 items-center justify-center rounded-full border border-ph-border bg-ph-surface text-ph-mutedtext ring-offset-2",
@@ -893,7 +899,7 @@ export function SuiteClientsProjectsDirectory({
                 <input
                   type="color"
                   aria-label="Custom colour"
-                  value={draft.color}
+                  value={draft.color || "#6366f1"}
                   onChange={(event) =>
                     setDraft({ ...draft, color: event.target.value })
                   }
@@ -929,14 +935,12 @@ export function SuiteClientsProjectsDirectory({
         </div>
       </Modal>
       {libraryOpen ? (
-        <Modal
-          open
-          onClose={() => setLibraryOpen(false)}
-          title="Icon library"
-        >
-          {renderIconLibrary
-            ? renderIconLibrary({ onPick: pickFromLibrary })
-            : <SuitePaletteLibrary onPick={pickFromLibrary} />}
+        <Modal open onClose={() => setLibraryOpen(false)} title="Icon library">
+          {renderIconLibrary ? (
+            renderIconLibrary({ onPick: pickFromLibrary })
+          ) : (
+            <SuitePaletteLibrary onPick={pickFromLibrary} />
+          )}
         </Modal>
       ) : null}
       <Modal

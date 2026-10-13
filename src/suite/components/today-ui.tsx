@@ -289,7 +289,7 @@ export function TodayHero({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-5 border-b border-ph-border-subtle pb-6 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex min-w-0 flex-col gap-5 border-b border-ph-border-subtle pb-6 sm:flex-row sm:items-start sm:justify-between">
       <div className="min-w-0 flex-1">
         <p
           key={typeof message === "string" ? message : "hero"}

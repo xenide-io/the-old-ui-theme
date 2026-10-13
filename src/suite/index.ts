@@ -116,6 +116,7 @@ export {
   SUITE_ASK_AI_OPEN_QUERY,
   SUITE_MUTATED_EVENT,
   TURTLETIME_TIMER_MUTATED_EVENT,
+  SUITE_GUIDE_PRESET,
   type SuiteAiAction,
   type SuiteAiActionStatus,
   type SuiteAiPreset,

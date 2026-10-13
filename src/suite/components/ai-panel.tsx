@@ -124,6 +124,17 @@ export interface SuiteAiPreset {
   prompt: string;
 }
 
+/**
+ * One-click entry point to Shelly as the guide for the whole suite. Every app ships
+ * it first, so "where do I…?" works from anywhere — the answer comes from the
+ * access-filtered Suite map in the workspace snapshot.
+ */
+export const SUITE_GUIDE_PRESET: SuiteAiPreset = {
+  label: "How do I…?",
+  prompt:
+    "Act as my guide to the ShellStack apps. List briefly what each app I can open is for and how they connect, then ask which one I need help with. Do not read out my tasks, time or documents.",
+};
+
 export interface SuiteAiChatMessage {
   role: "user" | "assistant";
   content: string;

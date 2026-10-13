@@ -27,13 +27,12 @@ html {
   --suite-page-pad-x: var(--suite-space-4);
   --suite-page-pad-x-sm: var(--suite-space-5);
   --suite-page-pad-x-lg: var(--suite-space-6);
-  --suite-page-pad-y-top: var(--suite-space-4);
-  --suite-page-pad-y-top-sm: var(--suite-space-5);
+  --suite-page-pad-y-top: var(--suite-space-2);
+  --suite-page-pad-y-top-sm: var(--suite-space-3);
   --suite-page-pad-y-bottom: 20px;
   --suite-page-pad-y-bottom-sm: var(--suite-space-5);
-  /* Today needs a calmer opening rhythm than dense workspace screens. */
-  --suite-today-pad-y-top: var(--suite-space-4);
-  --suite-today-pad-y-top-sm: var(--suite-space-5);
+  --suite-today-pad-y-top: var(--suite-page-pad-y-top);
+  --suite-today-pad-y-top-sm: var(--suite-page-pad-y-top-sm);
   --suite-scroll-fade: var(--suite-space-5);
   --suite-section-gap: var(--suite-space-5);
   --suite-header-gap: var(--suite-space-4);
@@ -613,6 +612,11 @@ html[data-marketing-paused] .marketing-landing::before {
   }
 }
 
+/* Bridge keeps its split panes edge-to-edge, but shares the page title inset. */
+.suite-bridge-header {
+  padding-bottom: var(--suite-space-2);
+}
+
 /* Mobile settings tabs bleed to the screen edge; the scroller carries the inset so a
    clipped pill at the edge reads as "scrolls". */
 .suite-settings-mobile-nav {
@@ -652,14 +656,14 @@ html[data-marketing-paused] .marketing-landing::before {
   }
 }
 
-/* Today: extra top inset so the title isn't jammed under the shell. */
+/* Today uses the same compact title inset as the other suite pages. */
 .today-page-frame .suite-page-inset {
   padding-top: var(--suite-today-pad-y-top);
 }
 
-/* Start the body below the sticky header's fade, with a clear 16px gap. */
+/* Keep the opening compact; the sticky fade ends before the greeting. */
 .today-page-frame .suite-page-header + .suite-page-body {
-  margin-top: calc(var(--suite-scroll-fade) + var(--suite-space-4));
+  margin-top: var(--suite-space-2);
 }
 
 .today-work-row {
@@ -693,6 +697,7 @@ html[data-marketing-paused] .marketing-landing::before {
    theme. The backdrop is sticky so the original glow/cloud composition stays
    fixed while only the page content scrolls. */
 .today-page-frame {
+  --suite-scroll-fade: var(--suite-space-2);
   background-color: var(--ph-canvas);
   /* clip does not create a scroll container, so the title can stick to
      #main-content. overflow-x: hidden would trap sticky inside the frame. */
@@ -816,9 +821,6 @@ html.dark .today-page-frame__cloud--2 {
   );
   color: var(--ph-violet, var(--ph-brand));
 }
-.today-primary-action--shellstack {
-  background: color-mix(in oklab, var(--ph-text-primary) 6%, var(--ph-surface));
-}
 .today-primary-action--active .today-primary-action__icon {
   background: var(--ph-brand);
   color: var(--ph-canvas);
@@ -902,6 +904,12 @@ html.dark .today-page-frame__cloud--2 {
 .today-page-frame .suite-page-header-sticky::before {
   top: calc(-1 * var(--suite-today-pad-y-top));
   height: calc(100% + var(--suite-today-pad-y-top) + var(--suite-scroll-fade));
+  background: transparent;
+  box-shadow: none;
+}
+
+/* No glass strip at rest: only blur content once it scrolls under the title. */
+.today-page-frame .suite-page-header-sticky[data-stuck="true"]::before {
   background: linear-gradient(
     to bottom,
     color-mix(in srgb, var(--ph-canvas) 18%, transparent)
@@ -920,9 +928,6 @@ html.dark .today-page-frame__cloud--2 {
     #000 calc(100% - var(--suite-scroll-fade)),
     transparent
   );
-  box-shadow: none;
-}
-.today-page-frame .suite-page-header-sticky[data-stuck="true"]::before {
   box-shadow: none;
 }
 @media (min-width: 640px) {

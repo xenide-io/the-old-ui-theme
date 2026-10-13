@@ -8,6 +8,7 @@ import {
 } from "../lib/use-sidebar-width";
 import { SuiteAppLayout } from "./suite-app-layout";
 import { SuitePageHeader } from "./suite-layout";
+import { BridgeScreen } from "./suite-bridge-screen";
 
 afterEach(cleanup);
 
@@ -16,6 +17,52 @@ describe("sidebarColumnWidth", () => {
     expect(sidebarColumnWidth(320, false, false)).toBe(320);
     expect(sidebarColumnWidth(320, false, true)).toBe(320);
     expect(sidebarColumnWidth(56, true, true)).toBe(56);
+  });
+});
+
+describe("Bridge page header", () => {
+  it("uses the shared header without losing app and workspace controls", () => {
+    const onAppChange = vi.fn();
+    const onWorkspaceChange = vi.fn();
+    render(
+      <BridgeScreen
+        bridges={[]}
+        connections={[]}
+        bindings={[]}
+        projects={[]}
+        canManage
+        loading={false}
+        error="Could not load bridges."
+        busy={false}
+        onConnect={vi.fn()}
+        onDisconnect={vi.fn()}
+        onSaveChoice={vi.fn()}
+        apps={[
+          { id: "turtletime", name: "TurtleTime", icon: "/turtletime.svg" },
+          { id: "tides", name: "Tides", icon: "/tides.svg" },
+        ]}
+        activeApp="turtletime"
+        onAppChange={onAppChange}
+        workspaces={[
+          { id: "one", name: "First workspace" },
+          { id: "two", name: "Second workspace" },
+        ]}
+        activeWorkspaceId="one"
+        onWorkspaceChange={onWorkspaceChange}
+      />,
+    );
+
+    const header = screen.getByRole("heading", { name: "Bridge" }).closest("header");
+    expect(header).toHaveClass("suite-page-header");
+    // The split panes own scrolling; this title is already fixed above them.
+    expect(header).not.toHaveClass("suite-page-header-sticky");
+    expect(screen.getByText("Could not load bridges.")).toBeVisible();
+    fireEvent.click(screen.getByRole("tab", { name: "Tides" }));
+    expect(onAppChange).toHaveBeenCalledWith("tides");
+    fireEvent.change(screen.getByRole("combobox", { name: "Workspace" }), {
+      target: { value: "two" },
+    });
+    expect(onWorkspaceChange).toHaveBeenCalledWith("two");
   });
 });
 

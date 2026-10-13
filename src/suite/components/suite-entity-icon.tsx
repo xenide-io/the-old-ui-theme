@@ -1,9 +1,29 @@
-'use client';
+"use client";
 
-import type { CSSProperties } from 'react';
-import { Folder } from 'iconoir-react';
-import { paletteIconSrc } from '@/suite/lib/palette-api';
-import { cn } from '@/lib/cn';
+import type { CSSProperties } from "react";
+import { Folder } from "iconoir-react";
+import { paletteIconSrc } from "@/suite/lib/palette-api";
+import { cn } from "@/lib/cn";
+
+const ENTITY_COLOURS = [
+  "#6366f1",
+  "#0ea5e9",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#a855f7",
+  "#64748b",
+];
+
+export function automaticEntityColour(label: string): string {
+  // Matches core.entity_icon.default_entity_colour; stable across refreshes and apps.
+  const index =
+    Array.from(label).reduce(
+      (sum, char, i) => sum + (i + 1) * char.codePointAt(0)!,
+      0,
+    ) % ENTITY_COLOURS.length;
+  return ENTITY_COLOURS[index];
+}
 
 /**
  * A client/project icon.
@@ -17,7 +37,7 @@ export function SuiteEntityIcon({
   label,
   color,
   className,
-  roundedClass = 'rounded-md',
+  roundedClass = "rounded-md",
   style,
   tinted = false,
 }: {
@@ -31,16 +51,20 @@ export function SuiteEntityIcon({
   tinted?: boolean;
 }) {
   const hasColor =
-    typeof color === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(color);
-  const tint = hasColor ? (color as string) : null;
-  const neutralBackground = 'var(--ph-muted, rgba(127,127,127,0.08))';
+    typeof color === "string" && /^#[0-9a-fA-F]{3,8}$/.test(color);
+  const tint = hasColor
+    ? (color as string)
+    : !imageUrl
+      ? automaticEntityColour(label ?? "")
+      : null;
+  const neutralBackground = "var(--ph-muted, rgba(127,127,127,0.08))";
 
   if (imageUrl) {
     const src = tinted && tint ? paletteIconSrc(imageUrl, tint) : imageUrl;
     return (
       <span
         className={cn(
-          'inline-flex shrink-0 items-center justify-center overflow-hidden leading-none',
+          "inline-flex shrink-0 items-center justify-center overflow-hidden leading-none",
           roundedClass,
           className,
         )}
@@ -50,7 +74,11 @@ export function SuiteEntityIcon({
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src ?? undefined} alt="" className="h-full w-full object-contain" />
+        <img
+          src={src ?? undefined}
+          alt=""
+          className="h-full w-full object-contain"
+        />
       </span>
     );
   }
@@ -58,23 +86,19 @@ export function SuiteEntityIcon({
   return (
     <span
       className={cn(
-        'inline-flex shrink-0 items-center justify-center leading-none',
+        "inline-flex shrink-0 items-center justify-center leading-none",
         roundedClass,
         className,
       )}
       style={{
-        color: tint ?? 'var(--ph-mutedtext)',
+        color: tint ?? "var(--ph-mutedtext)",
         backgroundColor: tint ? `${tint}18` : neutralBackground,
         ...style,
       }}
       aria-hidden="true"
       title={label ?? undefined}
     >
-      <Folder
-        className="h-[88%] w-[88%]"
-        strokeWidth={1.8}
-        aria-hidden
-      />
+      <Folder className="h-[88%] w-[88%]" strokeWidth={1.8} aria-hidden />
     </span>
   );
 }

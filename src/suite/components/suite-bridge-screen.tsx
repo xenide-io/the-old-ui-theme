@@ -17,6 +17,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Select, Toggle } from "@/components/ui/Input";
 import { SuiteSkeletonList } from "./suite-skeleton";
 import { ShellyWalking } from "./shelly-walking";
+import { SuitePage, SuitePageHeader } from "./suite-layout";
 
 export interface BridgeObject {
   remote: string;
@@ -782,13 +783,15 @@ export function BridgeScreen({
       className="flex h-full min-h-0 flex-1 flex-col overflow-hidden"
       data-test="bridge-screen"
     >
-      <header className="shrink-0 border-b border-ph-border px-5 py-5 sm:px-8">
-        <h1 className="text-xl font-semibold text-ph-ink">Bridge</h1>
-        <p className="mt-1 max-w-2xl text-sm text-ph-subtle">
-          Connected apps that can be bridged. Each one has its own setup.
-        </p>
+      <SuitePage className="suite-bridge-header shrink-0 border-b border-ph-border">
+        <SuitePageHeader
+          title="Bridge"
+          description="Connected apps that can be bridged. Each one has its own setup."
+          dataTest="bridge-page-header"
+          sticky={false}
+        />
         {apps.length > 0 || workspaces.length > 0 ? (
-          <div className="mt-4 flex flex-wrap items-center gap-3">
+          <div className="mt-2 flex flex-wrap items-center gap-3">
             {apps.length > 0 ? (
               <div
                 className="flex flex-wrap gap-2"
@@ -836,7 +839,7 @@ export function BridgeScreen({
           </div>
         ) : null}
         {error ? <p className="mt-3 text-sm text-ph-danger">{error}</p> : null}
-      </header>
+      </SuitePage>
       {loading ? (
         <div className="px-8 py-10 text-sm text-ph-subtle">
           <ShellyWalking label="Loading bridges…" />

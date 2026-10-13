@@ -192,7 +192,7 @@ export function SuitePageHeader({
       data-test={dataTest}
       data-stuck={sticky ? (stuck ? 'true' : 'false') : undefined}
       className={cn(
-        'suite-page-header flex min-w-0 shrink-0 flex-col items-start gap-3 pb-2 sm:flex-row sm:justify-between sm:gap-4 sm:pb-3',
+        'suite-page-header flex min-w-0 shrink-0 flex-col items-start gap-2 pb-1 sm:flex-row sm:justify-between sm:gap-3',
         // No extra pt here — page inset sets the shared title baseline.
         sticky && 'suite-page-header-sticky',
         className,
@@ -238,7 +238,7 @@ export function SuitePageHeader({
         {description ? (
           <div
             className={cn(
-              'mt-1.5 max-w-2xl text-pretty text-sm leading-5 text-ph-subtle',
+              'mt-1 max-w-2xl text-pretty text-sm leading-5 text-ph-subtle',
               resolvedIcon && 'sm:pl-9',
             )}
           >
