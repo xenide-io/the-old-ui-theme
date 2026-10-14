@@ -27,6 +27,8 @@ import {
   Select,
 } from "@/components/ui";
 import { cn } from "@/lib/cn";
+import { BrandSpinner } from "@/components/ui/BrandSpinner";
+import type { SuiteSpinnerComponent } from "../lib/injected";
 import { SuiteEntityIcon } from "./suite-entity-icon";
 import { SuitePaletteLibrary } from "./suite-palette-library";
 
@@ -73,6 +75,7 @@ export interface SuiteClientsProjectsDirectoryProps {
   projects: SuiteDirectoryProject[];
   canEdit?: boolean;
   loading?: boolean;
+  spinner?: SuiteSpinnerComponent;
   error?: string | null;
   onCreateClient?: (
     fields: SuiteDirectoryFields,
@@ -205,6 +208,7 @@ export function SuiteClientsProjectsDirectory({
   projects,
   canEdit = false,
   loading = false,
+  spinner: LoadingSpinner = BrandSpinner,
   error,
   onCreateClient,
   onUpdateClient,
@@ -486,7 +490,9 @@ export function SuiteClientsProjectsDirectory({
         </Alert>
       ) : null}
       {loading ? (
-        <p className="text-sm text-ph-mutedtext">Loading directory...</p>
+        <div className="flex justify-center py-10">
+          <LoadingSpinner size="md" label="Loading directory…" />
+        </div>
       ) : (
         <div className="overflow-hidden rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface lg:grid lg:min-h-[22rem] lg:grid-cols-[minmax(14rem,18rem)_1fr]">
           <section

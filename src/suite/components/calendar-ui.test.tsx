@@ -47,6 +47,16 @@ it("keeps calendar navigation, view selection and host actions accessible", asyn
 });
 
 describe("calendar records", () => {
+  it("places assignees before the title and omits them for personal records", () => {
+    const { container, rerender } = render(
+      <SuiteCalendarRecord title="Team task" avatars={<span>Assignee</span>} onOpen={vi.fn()} />,
+    );
+    const avatar = container.querySelector(".suite-calendar-record-avatars")!;
+    const title = container.querySelector(".suite-calendar-record-title")!;
+    expect(avatar.compareDocumentPosition(title) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    rerender(<SuiteCalendarRecord title="My time" onOpen={vi.fn()} />);
+    expect(container.querySelector(".suite-calendar-record-avatars")).toBeNull();
+  });
   it("uses the full host data palette with stable category colours", () => {
     const colours = new Set(
       Array.from({ length: 50 }, (_, i) =>

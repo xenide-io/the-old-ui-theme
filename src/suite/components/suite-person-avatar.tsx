@@ -69,7 +69,7 @@ export function SuitePersonAvatar({
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-ph-border font-semibold",
+        "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full font-semibold",
         SIZES[size],
         !image || broken ? avatarColorClass(email || name || "?") : undefined,
         className,

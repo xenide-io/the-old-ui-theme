@@ -1717,14 +1717,13 @@ button:hover > .ph-card {
   display: flex;
   flex: none;
   align-items: center;
-  margin-inline-start: auto;
-  padding-inline-start: 4px;
+  padding-inline-end: 2px;
 }
-/* Ring and overlap must land on the circular avatar, not the flex wrapper
-   around it — otherwise the surface ring paints as a square. */
+/* Keep avatars crisp on coloured event chips without a contrasting white halo. */
 .suite-calendar-record-avatars .suite-calendar-avatar {
   border-radius: 9999px;
-  box-shadow: 0 0 0 2px var(--ph-surface);
+  border: 0;
+  box-shadow: none;
 }
 .suite-calendar-record-avatars .suite-calendar-avatar + .suite-calendar-avatar {
   margin-inline-start: -6px;

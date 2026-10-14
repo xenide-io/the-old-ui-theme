@@ -9,6 +9,7 @@ import {
 import { SuiteAppLayout } from "./suite-app-layout";
 import { SuitePageHeader } from "./suite-layout";
 import { BridgeScreen } from "./suite-bridge-screen";
+import { BrandSpinner } from "@/components/ui/BrandSpinner";
 
 afterEach(cleanup);
 
@@ -21,6 +22,26 @@ describe("sidebarColumnWidth", () => {
 });
 
 describe("Bridge page header", () => {
+  it("uses the host app loader rather than inline Shelly for page loading", () => {
+    render(
+      <BridgeScreen
+        bridges={[]}
+        connections={[]}
+        bindings={[]}
+        projects={[]}
+        canManage
+        loading
+        error={null}
+        busy={false}
+        onConnect={vi.fn()}
+        onDisconnect={vi.fn()}
+        onSaveChoice={vi.fn()}
+        spinner={(props) => <BrandSpinner {...props} variant="columns" />}
+      />,
+    );
+    expect(screen.getByRole("status", { name: "Loading bridges…" })).toHaveAttribute("data-variant", "columns");
+    expect(document.querySelector('[data-test="shelly-walking"]')).toBeNull();
+  });
   it("uses the shared header without losing app and workspace controls", () => {
     const onAppChange = vi.fn();
     const onWorkspaceChange = vi.fn();

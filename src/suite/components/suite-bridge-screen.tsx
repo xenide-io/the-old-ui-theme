@@ -16,7 +16,8 @@ import { DatePicker } from "@/components/ui/DatePicker";
 import { Modal } from "@/components/ui/Modal";
 import { Select, Toggle } from "@/components/ui/Input";
 import { SuiteSkeletonList } from "./suite-skeleton";
-import { ShellyWalking } from "./shelly-walking";
+import { BrandSpinner } from "@/components/ui/BrandSpinner";
+import type { SuiteSpinnerComponent } from "../lib/injected";
 import { SuitePage, SuitePageHeader } from "./suite-layout";
 
 export interface BridgeObject {
@@ -155,9 +156,11 @@ export function BridgeScreen({
   activeWorkspaceId = "",
   onWorkspaceChange,
   conflictPriority = false,
+  spinner: LoadingSpinner = BrandSpinner,
 }: {
   /** Offer "which side wins" for two-way syncs (time-tracking bridges only). */
   conflictPriority?: boolean;
+  spinner?: SuiteSpinnerComponent;
   bridges: BridgeDefinition[];
   connections: BridgeConnection[];
   bindings: BridgeBindingRow[];
@@ -841,8 +844,8 @@ export function BridgeScreen({
         {error ? <p className="mt-3 text-sm text-ph-danger">{error}</p> : null}
       </SuitePage>
       {loading ? (
-        <div className="px-8 py-10 text-sm text-ph-subtle">
-          <ShellyWalking label="Loading bridges…" />
+        <div className="flex items-center justify-center px-8 py-10">
+          <LoadingSpinner size="lg" label="Loading bridges…" />
         </div>
       ) : (
         <div className="grid min-h-0 flex-1 overflow-hidden lg:grid-cols-[20rem_minmax(0,1fr)]">

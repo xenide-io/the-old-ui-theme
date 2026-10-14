@@ -5,6 +5,19 @@ import { BrandSpinner } from "./BrandSpinner";
 afterEach(cleanup);
 
 describe("BrandSpinner", () => {
+  it.each(["timer", "columns", "orbit", "ink", "squares"] as const)(
+    "renders the %s app graphic with an accessible label",
+    (variant) => {
+      const { container } = render(<BrandSpinner variant={variant} size="lg" label="Loading page" />);
+      expect(screen.getByRole("status", { name: "Loading page" })).toHaveAttribute("data-variant", variant);
+      expect(container.querySelector("svg")).toHaveAttribute("width", "56");
+      expect(container.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+      if (variant === "squares") {
+        expect(container.querySelectorAll("rect")).toHaveLength(2);
+        expect(container.querySelector("g")).toHaveClass("motion-safe:animate-spin");
+      }
+    },
+  );
   it("keeps orbit gradient references unique when multiple loaders render", () => {
     const { container } = render(
       <>

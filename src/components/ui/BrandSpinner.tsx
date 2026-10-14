@@ -4,7 +4,7 @@ import { useId, useSyncExternalStore, type HTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
 export type BrandSpinnerVariant =
-  "ring-3" | "timer" | "columns" | "orbit" | "ink";
+  "ring-3" | "timer" | "columns" | "orbit" | "ink" | "squares";
 export type BrandSpinnerSize = "sm" | "md" | "lg";
 
 export interface BrandSpinnerProps extends HTMLAttributes<HTMLDivElement> {
@@ -46,6 +46,7 @@ export function BrandSpinner({
       role="status"
       aria-label={label}
       data-test="app-spinner"
+      data-variant={variant}
       className={cn(
         "inline-flex shrink-0",
         variant !== "orbit" && "text-ph-brand",
@@ -140,6 +141,18 @@ export function BrandSpinner({
               style={{ animationDelay: "0.28s" }}
             />
           </>
+        ) : variant === "squares" ? (
+          <g className="origin-[20px_20px] motion-safe:animate-spin">
+            <rect
+              x="9" y="9" width="22" height="22" rx="5"
+              fill="none" stroke="currentColor" strokeWidth="2.4"
+            />
+            <rect
+              x="14" y="14" width="12" height="12" rx="3"
+              fill="none" stroke="currentColor" strokeWidth="2"
+              opacity="0.45" transform="rotate(45 20 20)"
+            />
+          </g>
         ) : variant === "orbit" ? (
           <>
             <defs>

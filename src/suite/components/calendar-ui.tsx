@@ -188,7 +188,7 @@ export function SuiteCalendarRecord({
   colour?: string;
   preview?: ReactNode;
   time?: string;
-  /** People chips shown at the end of the row (team calendars). */
+  /** People chips shown before the title (team calendars). */
   avatars?: ReactNode;
   onOpen: () => void;
 }) {
@@ -254,6 +254,11 @@ export function SuiteCalendarRecord({
               {icon}
             </span>
           ) : null}
+          {avatars ? (
+            <span className="suite-calendar-record-avatars" aria-hidden>
+              {avatars}
+            </span>
+          ) : null}
           <span className="suite-calendar-record-copy">
             <span className="suite-calendar-record-title">{title}</span>
             {time ? (
@@ -263,11 +268,6 @@ export function SuiteCalendarRecord({
               <span className="suite-calendar-record-detail">{detail}</span>
             ) : null}
           </span>
-          {avatars ? (
-            <span className="suite-calendar-record-avatars" aria-hidden>
-              {avatars}
-            </span>
-          ) : null}
         </button>
       </Tooltip>
     </span>
