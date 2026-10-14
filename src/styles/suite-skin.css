@@ -48,9 +48,13 @@ html {
   }
 }
 
+/* Keep the page inset at 2rem on every sidebar page, matching the settings
+   sidebar-to-content gap. The old 3rem wide-screen bump made the page gutter
+   wider than every other horizontal gap in the suite. Landing / blog / guide
+   pages do not consume this token, so they are unaffected. */
 @media (min-width: 1536px) {
   html {
-    --suite-page-pad-x-lg: var(--suite-space-7);
+    --suite-page-pad-x-lg: var(--suite-space-6);
   }
 }
 
