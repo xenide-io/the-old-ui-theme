@@ -51,6 +51,7 @@ export interface SuiteTeamMember {
   client_ids?: string[];
   project_ids?: string[];
   hourly_rate?: number | null;
+  rate_currency?: string | null;
   monthly_rate?: number | null;
   monthly_hours_basis?: number | null;
   hours_per_day?: number;
@@ -68,6 +69,7 @@ export interface SuiteTeam {
     name: string;
     color: string | null;
     is_internal?: boolean;
+    currency?: string | null;
   }>;
   projects?: Array<{
     id: string;
@@ -226,12 +228,15 @@ export function SuiteTeamList({
             detail={member.user.email}
             className="min-w-[14rem] flex-1"
           />
-          <span className="w-24 shrink-0">
+          {/* Fixed columns keep role, apps and actions aligned down the list. */}
+          <span className="w-28 shrink-0">
             <RoleLabel member={member} />
           </span>
-          <AppIcons member={member} />
+          <span className="w-24 shrink-0">
+            <AppIcons member={member} />
+          </span>
           {rowActions ? (
-            <span className="ml-auto flex shrink-0 items-center gap-1">
+            <span className="flex w-full shrink-0 items-center justify-end gap-1 sm:w-72">
               {rowActions(member)}
             </span>
           ) : null}
@@ -318,7 +323,7 @@ function ClientRatesCell({
           {member.hourly_rate != null
             ? `${member.hourly_rate}/h`
             : "their default"}
-          .
+          . Fallback applies only when currencies match.
         </p>
         {clients.length ? (
           <div className="divide-y divide-ph-border">
@@ -332,15 +337,22 @@ function ClientRatesCell({
                   aria-hidden
                 />
                 <span className="min-w-0 flex-1 truncate text-sm">
-                  {client.name}
+                  {client.name} ·{" "}
+                  {client.currency === undefined
+                    ? team.currency
+                    : (client.currency ?? "Review currency")}
                 </span>
                 <span className="w-24">
                   <SheetNumberCell
                     column={`client-rate-${member.id}`}
                     nullable
-                    label={`${client.name} rate for ${name(member)}`}
+                    disabled={client.currency === null}
+                    label={`${client.name} rate for ${name(member)} (${client.currency ?? team.currency})`}
                     placeholder={
-                      member.hourly_rate != null
+                      member.hourly_rate != null &&
+                      (client.currency === undefined ||
+                        client.currency ===
+                          (member.rate_currency ?? team.currency))
                         ? String(member.hourly_rate)
                         : "—"
                     }
@@ -504,19 +516,27 @@ export function SuiteTeamSheet({
       header: string,
     ): SheetColumn<SuiteTeamMember> => ({
       key,
-      header: currency ? `${header} (${currency})` : header,
+      header,
       icon: <Coins />,
       width: 140,
       align: "right",
       cell: (member) => (
-        <SheetNumberCell
-          column={key}
-          nullable
-          label={label(member, header)}
-          placeholder="—"
-          value={member[key] ?? null}
-          onCommit={(value) => save(member, { [key]: value })}
-        />
+        <div className="flex items-center gap-1">
+          <SheetNumberCell
+            column={key}
+            nullable
+            label={label(
+              member,
+              `${header} (${member.rate_currency ?? currency})`,
+            )}
+            placeholder="—"
+            value={member[key] ?? null}
+            onCommit={(value) => save(member, { [key]: value })}
+          />
+          <span className="text-xs text-ph-subtle">
+            {member.rate_currency ?? currency}
+          </span>
+        </div>
       ),
     });
     columns.push(

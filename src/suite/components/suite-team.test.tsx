@@ -73,7 +73,7 @@ describe("SuiteTeamSheet", () => {
       />,
     );
 
-    const hourly = screen.getByLabelText("Hourly for Maya Chen");
+    const hourly = screen.getByLabelText("Hourly (AUD) for Maya Chen");
     fireEvent.change(hourly, { target: { value: "135" } });
     fireEvent.blur(hourly);
 
@@ -85,7 +85,17 @@ describe("SuiteTeamSheet", () => {
         },
       ),
     );
-    expect(screen.getByText("Hourly (AUD)")).toBeTruthy();
+    expect(screen.getAllByText("AUD")).toHaveLength(2);
+  });
+
+  it("shows the recorded rate denomination after the workspace default changes", () => {
+    const data = team(true);
+    data.currency = "USD";
+    data.members[0].rate_currency = "EUR";
+    render(<SuiteTeamSheet open onClose={() => {}} team={data} onPatch={vi.fn()} />);
+    expect(screen.getByLabelText("Hourly (EUR) for Maya Chen")).toBeTruthy();
+    expect(screen.getAllByText("EUR")).toHaveLength(2);
+    expect(screen.queryByText("USD")).toBeNull();
   });
 
   it("summarises working days as a range when they are consecutive", () => {

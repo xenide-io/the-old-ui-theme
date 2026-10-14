@@ -402,6 +402,15 @@ body {
     z-index: 1;
   }
 
+  /* Icons passed as button children land inside the label; keep them on the text
+     line (Tailwind preflight makes `svg` display:block). */
+  .ph-btn-label {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
   .ph-btn-sm.ph-btn-raised .ph-btn-chrome,
   .ph-btn-sm:is(.ph-btn-primary, .ph-btn-secondary, .ph-btn-signal, .ph-btn-accent, .ph-btn-neutral, .ph-btn-info, .ph-btn-success, .ph-btn-warning, .ph-btn-danger):not(:has(.ph-btn-chrome)) {
     min-height: var(--ph-btn-control-size);
