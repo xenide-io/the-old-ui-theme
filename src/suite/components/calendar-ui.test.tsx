@@ -32,7 +32,7 @@ it("keeps calendar navigation, view selection and host actions accessible", asyn
       <button type="button">Create task</button>
     </SuiteCalendarToolbar>,
   );
-  await user.click(screen.getByRole("button", { name: "Previous period" }));
+  await user.click(screen.getByRole("button", { name: "Previous month" }));
   await user.click(screen.getByRole("button", { name: "Today" }));
   await user.click(screen.getByRole("radio", { name: "Week" }));
   expect(previous).toHaveBeenCalledOnce();

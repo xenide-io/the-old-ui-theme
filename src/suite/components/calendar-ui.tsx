@@ -128,6 +128,16 @@ export function SuiteCalendarToolbar({
   onViewChange?: (view: string) => void;
   children?: ReactNode;
 }) {
+  const period =
+    view === "week"
+      ? "week"
+      : view === "day"
+        ? "day"
+        : view === "agenda"
+          ? "agenda"
+          : view === "month"
+            ? "month"
+            : "period";
   return (
     <div className="suite-calendar-toolbar" data-test="calendar-toolbar">
       <div className="suite-calendar-navigation">
@@ -138,7 +148,8 @@ export function SuiteCalendarToolbar({
           variant="tertiary"
           size="sm"
           shape="square"
-          aria-label="Previous period"
+          aria-label={`Previous ${period}`}
+          tooltipSide="bottom"
           onClick={onPrevious}
           icon={<NavArrowLeft />}
         />
@@ -146,7 +157,8 @@ export function SuiteCalendarToolbar({
           variant="tertiary"
           size="sm"
           shape="square"
-          aria-label="Next period"
+          aria-label={`Next ${period}`}
+          tooltipSide="bottom"
           onClick={onNext}
           icon={<NavArrowRight />}
         />

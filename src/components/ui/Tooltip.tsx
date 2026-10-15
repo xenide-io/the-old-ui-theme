@@ -3,6 +3,7 @@
 import {
   cloneElement,
   createContext,
+  forwardRef,
   useCallback,
   useContext,
   useEffect,
@@ -14,6 +15,7 @@ import {
   type ReactElement,
   type ReactNode,
   type CSSProperties,
+  type Ref,
 } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/cn";
@@ -109,7 +111,24 @@ function tooltipPosition(
   };
 }
 
-export function Tooltip({
+function mergeRefs<T>(...refs: Array<Ref<T> | undefined>) {
+  return (node: T) => {
+    for (const ref of refs) {
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    }
+  };
+}
+
+type TooltipTriggerProps = Omit<
+  HTMLAttributes<HTMLSpanElement>,
+  keyof TooltipProps
+>;
+
+export const Tooltip = forwardRef<
+  HTMLSpanElement,
+  TooltipProps & TooltipTriggerProps
+>(function Tooltip({
   content,
   children,
   side = "top",
@@ -123,7 +142,8 @@ export function Tooltip({
   onOpenChange,
   delayDuration,
   disableHoverableContent = false,
-}: TooltipProps) {
+  ...rest
+}, forwardedRef) {
   const providerDelay = useContext(TooltipDelayContext);
   const generatedId = useId().replace(/:/g, "");
   const triggerRef = useRef<HTMLSpanElement>(null);
@@ -203,22 +223,55 @@ export function Tooltip({
 
   useEffect(() => () => clearTimer(), []);
 
+  const accessibleName =
+    typeof children.props["aria-label"] === "string"
+      ? children.props["aria-label"].trim()
+      : "";
+  const tipText = typeof content === "string" ? content.trim() : "";
   const describedBy = [children.props["aria-describedby"], tooltipId]
     .filter(Boolean)
     .join(" ");
-  const trigger = cloneElement(children, { "aria-describedby": describedBy });
+  const childClass = children.props.className;
+  const stretch =
+    typeof childClass === "string" && /(^|\s)w-full(\s|$)/.test(childClass);
+  // Native `title` draws a second, unstyled browser tip. Skip aria-describedby
+  // when the tip only repeats the accessible name.
+  const trigger = cloneElement(children, {
+    title: undefined,
+    "aria-describedby":
+      tipText && tipText === accessibleName
+        ? children.props["aria-describedby"]
+        : describedBy || undefined,
+  });
 
   return (
     <>
       <span
-        ref={triggerRef}
-        className="inline-flex"
-        onMouseEnter={() => show(false)}
-        onMouseLeave={hideFromTrigger}
-        onPointerDown={hide}
-        onFocusCapture={() => show(true)}
-        onBlurCapture={hide}
+        {...rest}
+        ref={mergeRefs(triggerRef, forwardedRef)}
+        className={stretch ? "flex w-full min-w-0" : "inline-flex"}
+        onMouseEnter={(event) => {
+          rest.onMouseEnter?.(event);
+          show(false);
+        }}
+        onMouseLeave={(event) => {
+          rest.onMouseLeave?.(event);
+          hideFromTrigger();
+        }}
+        onPointerDown={(event) => {
+          rest.onPointerDown?.(event);
+          hide();
+        }}
+        onFocusCapture={(event) => {
+          rest.onFocusCapture?.(event);
+          show(true);
+        }}
+        onBlurCapture={(event) => {
+          rest.onBlurCapture?.(event);
+          hide();
+        }}
         onKeyDown={(event) => {
+          rest.onKeyDown?.(event);
           if (event.key === "Escape") hide();
         }}
       >
@@ -255,5 +308,54 @@ export function Tooltip({
           )
         : null}
     </>
+  );
+});
+
+Tooltip.displayName = "Tooltip";
+
+/**
+ * Shows `text` in a tooltip only while the label is clipped.
+ * Full labels stay quiet — the tip is the hidden remainder, not a second title.
+ */
+export function OverflowTooltip({
+  text,
+  className,
+  side = "top",
+}: {
+  text: string;
+  className?: string;
+  side?: TooltipSide;
+}) {
+  const [node, setNode] = useState<HTMLSpanElement | null>(null);
+  const [overflow, setOverflow] = useState(false);
+
+  useEffect(() => {
+    if (!node) return;
+    const update = () => {
+      setOverflow(node.scrollWidth > node.clientWidth + 1);
+    };
+    update();
+    const observer =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
+    observer?.observe(node);
+    return () => observer?.disconnect();
+  }, [node, text]);
+
+  // `w-full` makes the Tooltip trigger a full-width flex box (see its `stretch`
+  // branch) instead of an `inline-flex` that shrink-wraps to the text. Without
+  // it, revealing the tip widens the label out of its truncating box, so the
+  // measurement flips back and this component loops until React throws.
+  const label = (
+    <span ref={setNode} className={cn("block w-full min-w-0 truncate", className)}>
+      {text}
+    </span>
+  );
+
+  if (!overflow || !text) return label;
+
+  return (
+    <Tooltip content={text} side={side} disableHoverableContent>
+      {label}
+    </Tooltip>
   );
 }

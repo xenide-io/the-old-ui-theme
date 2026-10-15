@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { OverflowTooltip, Tooltip } from "../../components/ui/Tooltip";
 import { cn } from "../lib/cn";
 
 export function computeInitials(
@@ -52,7 +53,7 @@ export interface SuitePersonAvatarProps {
   image?: string | null;
   size?: keyof typeof SIZES;
   className?: string;
-  /** Native hover tooltip, e.g. the person's name. */
+  /** Hover tip when the avatar is the only name on screen, e.g. initials. */
   title?: string;
 }
 
@@ -66,7 +67,7 @@ export function SuitePersonAvatar({
   title,
 }: SuitePersonAvatarProps) {
   const [broken, setBroken] = useState(false);
-  return (
+  const face = (
     <span
       className={cn(
         "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full font-semibold",
@@ -75,7 +76,6 @@ export function SuitePersonAvatar({
         className,
       )}
       aria-hidden
-      title={title}
     >
       {image && !broken ? (
         <img
@@ -90,6 +90,12 @@ export function SuitePersonAvatar({
       )}
     </span>
   );
+  if (!title) return face;
+  return (
+    <Tooltip content={title} side="top">
+      {face}
+    </Tooltip>
+  );
 }
 
 export interface SuitePersonProps extends SuitePersonAvatarProps {
@@ -98,14 +104,18 @@ export interface SuitePersonProps extends SuitePersonAvatarProps {
 }
 
 /** Avatar with the person's name and an optional second line. */
-export function SuitePerson({ detail, className, ...person }: SuitePersonProps) {
+export function SuitePerson({
+  detail,
+  className,
+  title: _avatarTip,
+  ...person
+}: SuitePersonProps) {
+  const name = person.name || person.email || "Account";
   return (
     <span className={cn("flex min-w-0 items-center gap-2.5", className)}>
       <SuitePersonAvatar {...person} />
       <span className="min-w-0">
-        <span className="block truncate font-medium text-ph-ink">
-          {person.name || person.email}
-        </span>
+        <OverflowTooltip text={name} className="font-medium text-ph-ink" />
         {detail ? (
           <span className="block truncate text-xs text-ph-mutedtext">{detail}</span>
         ) : null}

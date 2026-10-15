@@ -85,6 +85,22 @@ export const IconTuning = createIconBase({
   ),
 });
 
+/** Funnel glyph for filter triggers (ClickUp / Asana-style toolbars). */
+export const IconFilter = createIconBase({
+  name: "IconFilter",
+  paths: fill(
+    "M4.25 5.61C6.27 8.2 10 13 10 13v6c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-6s3.73-4.8 5.75-7.39c.51-.66.04-1.61-.79-1.61H5.04c-.83 0-1.3.95-.79 1.61z",
+  ),
+});
+
+/** Ascending / descending sort arrows for compact sort menus. */
+export const IconSort = createIconBase({
+  name: "IconSort",
+  paths: fill(
+    "M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z",
+  ),
+});
+
 export const IconSync = createIconBase({
   paths: fill(
     "m12.5 4v-3l-4 4 4 4v-3c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46c.78-1.23 1.24-2.69 1.24-4.26 0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8l-1.46-1.46c-.78 1.23-1.24 2.69-1.24 4.26 0 4.42 3.58 8 8 8v3l4-4-4-4z",
@@ -475,6 +491,7 @@ export const CANONICAL_ICONS = {
   exclamation: IconExclamation,
   experimentSplit: IconExperimentSplit,
   featureGate: IconFeatureGate,
+  filter: IconFilter,
   flag: IconFlag,
   flare: IconFlare,
   flask: IconFlask,
@@ -506,6 +523,7 @@ export const CANONICAL_ICONS = {
   search: IconSearch,
   selectEvents: IconSelectEvents,
   shoppingCart: IconShoppingCart,
+  sort: IconSort,
   spinner: IconSpinner,
   star: IconStar,
   subArrowRight: IconSubArrowRight,

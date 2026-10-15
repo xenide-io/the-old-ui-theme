@@ -14,6 +14,7 @@ export interface SuiteWorkspaceEntry {
   id: string;
   name: string;
   description?: string;
+  image?: string | null;
 }
 
 export interface SuiteWorkspaceGroup {
@@ -38,6 +39,7 @@ export function SuiteWorkspaceSwitcher({
   dropdownItem: DropdownItem,
   triggerId,
   triggerDataTest,
+  menuLabel = "Switch workspace",
   footer,
 }: {
   workspaces?: SuiteWorkspaceEntry[];
@@ -51,6 +53,7 @@ export function SuiteWorkspaceSwitcher({
   dropdownItem: SuiteDropdownItemComponent;
   triggerId?: string;
   triggerDataTest?: string;
+  menuLabel?: string;
   footer?: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -59,10 +62,13 @@ export function SuiteWorkspaceSwitcher({
     (workspaces.length > 0
       ? [{ id: "workspaces", label: "Switch workspace", workspaces }]
       : []);
+  const current = sections
+    .flatMap((section) => section.workspaces)
+    .find((workspace) => workspace.id === currentId);
 
   return (
     <DropdownMenu
-      aria-label="Switch workspace"
+      aria-label={menuLabel}
       triggerId={triggerId ?? "workspace-switcher-trigger"}
       triggerDataTest={triggerDataTest ?? "workspace-switcher-trigger"}
       className={
@@ -79,11 +85,20 @@ export function SuiteWorkspaceSwitcher({
           className={cn(
             "flex min-w-0 max-w-full items-center gap-2 rounded-[var(--ph-radius-control)] border border-ph-border bg-[var(--ph-surface-inset)] text-left transition-colors hover:bg-[var(--ph-surface-hover)]",
             collapsed ? "h-10 w-10 justify-center p-0" : "w-full px-3 py-2",
-            open && "border-[var(--ph-selected-border)] bg-[var(--ph-selected-bg)]",
+            open &&
+              "border-[var(--ph-selected-border)] bg-[var(--ph-selected-bg)]",
           )}
           data-test="workspace-switcher-trigger"
         >
-          <Building className="h-4 w-4 shrink-0 text-ph-ink" aria-hidden />
+          {current?.image ? (
+            <img
+              src={current.image}
+              alt=""
+              className="h-5 w-5 shrink-0 rounded object-cover"
+            />
+          ) : (
+            <Building className="h-4 w-4 shrink-0 text-ph-ink" aria-hidden />
+          )}
           {!collapsed ? (
             <>
               <span className="min-w-0 flex-1 truncate text-sm font-semibold text-ph-ink">
@@ -102,7 +117,7 @@ export function SuiteWorkspaceSwitcher({
       }
     >
       <div
-        id="workspace-switcher-menu"
+        id={triggerId ? `${triggerId}-menu` : "workspace-switcher-menu"}
         className="p-1"
         data-test="workspace-switcher-menu"
       >
@@ -118,9 +133,7 @@ export function SuiteWorkspaceSwitcher({
                 <DropdownItem
                   key={workspace.id}
                   id={`workspace-option-${workspace.id}`}
-                  aria-current={
-                    workspace.id === currentId ? "true" : undefined
-                  }
+                  aria-current={workspace.id === currentId ? "true" : undefined}
                   data-test="workspace-option"
                   data-workspace-id={workspace.id}
                   onMouseDown={(event) => event.preventDefault()}
@@ -131,6 +144,17 @@ export function SuiteWorkspaceSwitcher({
                   className={appSwitcherMenuItemClass()}
                 >
                   <span className="flex min-w-0 w-full items-center gap-3">
+                    {workspace.image ? (
+                      <img
+                        src={workspace.image}
+                        alt=""
+                        className="h-6 w-6 shrink-0 rounded object-cover"
+                      />
+                    ) : (
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-ph-muted text-[11px] font-semibold text-ph-ink">
+                        {workspace.name.charAt(0).toUpperCase()}
+                      </span>
+                    )}
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-medium text-ph-ink">
                         {workspace.name}

@@ -1,11 +1,57 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Tooltip, TooltipProvider } from "@/components/ui/Tooltip";
+import { OverflowTooltip, Tooltip, TooltipProvider } from "@/components/ui/Tooltip";
 
 afterEach(cleanup);
 
+/** jsdom never lays text out, so drive the truncation check directly. */
+function mockTruncation(scrollWidth: number, clientWidth: number) {
+  const scroll = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "scrollWidth");
+  const client = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "clientWidth");
+  Object.defineProperty(HTMLElement.prototype, "scrollWidth", {
+    configurable: true,
+    get: () => scrollWidth,
+  });
+  Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+    configurable: true,
+    get: () => clientWidth,
+  });
+  return () => {
+    if (scroll) Object.defineProperty(HTMLElement.prototype, "scrollWidth", scroll);
+    if (client) Object.defineProperty(HTMLElement.prototype, "clientWidth", client);
+  };
+}
+
 describe("Tooltip", () => {
+  it("drops a native title so the browser tip cannot stack on the custom one", () => {
+    render(
+      <Tooltip content="Custom tip">
+        <button type="button" title="Native tip">
+          Target
+        </button>
+      </Tooltip>,
+    );
+
+    expect(screen.getByRole("button", { name: "Target" })).not.toHaveAttribute("title");
+  });
+
+  it("does not describe a control with a tip that only repeats its name", async () => {
+    const user = userEvent.setup();
+    render(
+      <Tooltip content="Close">
+        <button type="button" aria-label="Close">
+          <span aria-hidden>×</span>
+        </button>
+      </Tooltip>,
+    );
+
+    await user.tab();
+    const trigger = screen.getByRole("button", { name: "Close" });
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Close");
+    expect(trigger).not.toHaveAttribute("aria-describedby");
+  });
+
   it("opens when its trigger is hovered", async () => {
     const user = userEvent.setup();
     render(
@@ -122,6 +168,43 @@ describe("Tooltip", () => {
       rect.mockRestore();
       Object.defineProperty(window, "innerWidth", { configurable: true, value: originalInnerWidth });
       Object.defineProperty(window, "innerHeight", { configurable: true, value: originalInnerHeight });
+    }
+  });
+});
+
+describe("OverflowTooltip", () => {
+  it("reveals a clipped label without changing the label's own box", async () => {
+    const restore = mockTruncation(300, 100);
+
+    try {
+      render(<OverflowTooltip text="A label that is definitely clipped" />);
+      const label = await screen.findByText("A label that is definitely clipped");
+
+      // The measured span stays full-width, and so does the Tooltip trigger
+      // around it. An `inline-flex` trigger shrink-wraps to the full text,
+      // which flips the measurement back and re-renders until React throws
+      // "Maximum update depth exceeded".
+      expect(label).toHaveClass("w-full");
+      expect(label.parentElement).not.toBeNull();
+      expect(label.parentElement).not.toHaveClass("inline-flex");
+      expect(label.parentElement).toHaveClass("w-full");
+    } finally {
+      restore();
+    }
+  });
+
+  it("stays quiet when the label already fits", async () => {
+    const restore = mockTruncation(100, 100);
+
+    try {
+      render(<OverflowTooltip text="Short" />);
+      const label = await screen.findByText("Short");
+
+      expect(label).toHaveClass("w-full");
+      expect(label).not.toHaveAttribute("aria-describedby");
+      expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    } finally {
+      restore();
     }
   });
 });

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { NavArrowDown as ChevronDown, OpenNewWindow } from "iconoir-react";
 
+import { Tooltip } from "../../components/ui/Tooltip";
 import { cn } from "../lib/cn";
 import { useSuiteNavigation } from "../lib/navigation";
 import { trackSuiteEvent } from "../../lib/suite-analytics";
@@ -136,6 +137,31 @@ export function AppSwitcher({
 }) {
   const { Image } = useSuiteNavigation();
   const [open, setOpen] = useState(false);
+  const iconKey = apps.map((app) => app.icon).join("|");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    for (const src of iconKey.split("|")) {
+      if (!src) continue;
+      const img = new window.Image();
+      img.decoding = "async";
+      img.src = src;
+    }
+  }, [iconKey]);
+
+  const trigger = (
+    <span
+      className={appSwitcherTriggerClass(open, collapsed)}
+      data-test="app-switcher-trigger"
+    >
+      <AppSwitcherMark collapsed={collapsed}>
+        {mark}
+        {collapsed ? <AppSwitcherChevron open={open} collapsed /> : null}
+      </AppSwitcherMark>
+      {!collapsed ? title : null}
+      {!collapsed ? <AppSwitcherChevron open={open} /> : null}
+    </span>
+  );
 
   return (
     <DropdownMenu
@@ -148,17 +174,13 @@ export function AppSwitcher({
       open={open}
       onOpenChange={setOpen}
       trigger={
-        <span
-          className={appSwitcherTriggerClass(open, collapsed)}
-          data-test="app-switcher-trigger"
-        >
-          <AppSwitcherMark collapsed={collapsed}>
-            {mark}
-            {collapsed ? <AppSwitcherChevron open={open} collapsed /> : null}
-          </AppSwitcherMark>
-          {!collapsed ? title : null}
-          {!collapsed ? <AppSwitcherChevron open={open} /> : null}
-        </span>
+        collapsed ? (
+          <Tooltip content="Switch application" side="right">
+            {trigger}
+          </Tooltip>
+        ) : (
+          trigger
+        )
       }
     >
       <div id="app-switcher-menu" className="p-1" data-test="app-switcher-menu">

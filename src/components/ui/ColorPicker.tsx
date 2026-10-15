@@ -13,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/Popover";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { cn } from "@/lib/cn";
 
 export interface ColorOption {
@@ -273,7 +274,6 @@ export function ColorPicker({
           type="button"
           className={cn("ph-colour-trigger", className)}
           aria-label={`${ariaLabel}: ${preset?.label ?? (value ? "Custom" : "Default")}`}
-          title={ariaLabel}
           data-test={dataTest}
           disabled={disabled}
         >
@@ -292,13 +292,12 @@ export function ColorPicker({
           {options.map((option) => {
             const selected = option.value === value;
             return (
+              <Tooltip key={option.value || "default"} content={option.label} side="bottom">
               <button
-                key={option.value || "default"}
                 type="button"
                 role="radio"
                 aria-checked={selected}
                 aria-label={option.label}
-                title={option.label}
                 className="ph-colour-option"
                 onClick={() => onChange(option.value)}
               >
@@ -307,6 +306,7 @@ export function ColorPicker({
                   <Check className="ph-colour-option__check" aria-hidden />
                 ) : null}
               </button>
+              </Tooltip>
             );
           })}
         </div>

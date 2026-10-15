@@ -10,7 +10,7 @@ import {
   type ReactNode,
   type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
-import { Filter, FilterList, NavArrowDown, Search } from 'iconoir-react';
+import { NavArrowDown, Search } from 'iconoir-react';
 import {
   fetchPaletteCollection,
   fetchPaletteLibrary,
@@ -18,6 +18,7 @@ import {
   type PaletteCollection,
   type PaletteIcon,
 } from '@/suite/lib/palette-api';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { cn } from '@/lib/cn';
 
 const PAGE_SIZE = 60;
@@ -38,36 +39,26 @@ export interface SuitePalettePick {
 }
 
 function FilterSelect({
-  icon: Icon,
   label,
   value,
   onChange,
   children,
 }: {
-  icon: typeof Filter;
   label: string;
   value: string;
   onChange: (value: string) => void;
   children: ReactNode;
 }) {
   return (
-    <div className="relative">
-      <Icon
-        className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ph-mutedtext"
-        aria-hidden
-      />
+    <div className="min-w-0">
       <select
         aria-label={label}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="ph-select h-full w-full py-2 pl-8 pr-7"
+        className="ph-select h-full min-w-0 w-full py-2 pl-3 pr-10"
       >
         {children}
       </select>
-      <NavArrowDown
-        className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-ph-mutedtext"
-        aria-hidden
-      />
     </div>
   );
 }
@@ -291,8 +282,8 @@ export function SuitePaletteLibrary({
   return (
     <div className="space-y-3" data-test="palette-icon-library">
       <div ref={libraryRef} className="space-y-2">
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <div className="relative flex-1">
+        <div className="grid min-w-0 grid-cols-2 gap-2" data-test="palette-toolbar">
+          <div className="relative col-span-2 min-w-0">
             <Search
               className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ph-mutedtext"
               aria-hidden
@@ -301,9 +292,9 @@ export function SuitePaletteLibrary({
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search icons — handshake, rocket, briefcase…"
+              placeholder="Search icons…"
               aria-label="Search icons"
-              className="ph-input w-full py-2 pl-8 pr-3"
+              className="ph-input min-w-0 w-full py-2 pl-8 pr-3"
             />
           </div>
           <button
@@ -319,10 +310,9 @@ export function SuitePaletteLibrary({
                 closeLibrary();
               }
             }}
-            className="ph-input flex items-center gap-2 px-2.5 py-2 text-sm text-ph-ink"
+            className="ph-input flex min-w-0 w-full items-center gap-2 px-2.5 py-2 text-sm text-ph-ink"
           >
-            <FilterList className="h-4 w-4 shrink-0 text-ph-mutedtext" aria-hidden />
-            <span className="max-w-[10rem] truncate">
+            <span className="min-w-0 flex-1 truncate text-left">
               {activeLibrary?.name ?? "All libraries"}
             </span>
             <NavArrowDown
@@ -334,7 +324,6 @@ export function SuitePaletteLibrary({
             />
           </button>
           <FilterSelect
-            icon={Filter}
             label="Filter by icon type"
             value={typeFilter}
             onChange={setTypeFilter}
@@ -451,11 +440,10 @@ export function SuitePaletteLibrary({
           <div className="max-h-[320px] overflow-y-auto rounded-[var(--ph-radius-surface)] border border-ph-border p-2 focus-within:border-[var(--ph-selected-border)]">
             <div className="grid grid-cols-6 gap-1.5 sm:grid-cols-8">
               {icons.map((icon) => (
+                <Tooltip key={icon.id} content={icon.name} side="bottom">
                 <button
-                  key={icon.id}
                   type="button"
                   onClick={() => onPick({ url: icon.url, name: icon.name })}
-                  title={icon.name}
                   aria-label={`Use ${icon.name}`}
                   className="flex h-10 items-center justify-center rounded-[var(--ph-radius-control)] border border-transparent p-1.5 hover:border-[var(--ph-selected-border)] hover:bg-[var(--ph-surface-hover)] focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]"
                 >
@@ -468,6 +456,7 @@ export function SuitePaletteLibrary({
                     className="h-6 w-6"
                   />
                 </button>
+                </Tooltip>
               ))}
             </div>
           </div>

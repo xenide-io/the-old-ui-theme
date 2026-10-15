@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Bell } from "iconoir-react";
 
+import { Tooltip } from "../../components/ui/Tooltip";
 import { trackSuiteEvent } from "../../lib/suite-analytics";
 import type { SuiteDropdownMenuComponent } from "../lib/injected";
 import { useSuiteNotifications } from "../lib/suite-notifications";
@@ -68,6 +69,16 @@ export function SuiteNotificationBell({
       open={open}
       onOpenChange={onOpenChange}
       trigger={
+        <Tooltip
+          side="bottom"
+          content={
+            unread === 0
+              ? "Notifications"
+              : unread === 1
+                ? "1 unread notification"
+                : `${unread} unread notifications`
+          }
+        >
         <span className="relative inline-flex h-11 w-11 items-center justify-center overflow-visible rounded-full text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink">
           <span className="relative inline-flex h-5 w-5">
             <Bell className="h-5 w-5" strokeWidth={1.75} aria-hidden />
@@ -78,6 +89,7 @@ export function SuiteNotificationBell({
             ) : null}
           </span>
         </span>
+        </Tooltip>
       }
     >
       <div className="flex items-center justify-between border-b border-ph-border px-3 py-2">

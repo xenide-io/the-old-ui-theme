@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Alert, Badge, Button, Card } from "@/components/ui";
+import { Alert, Badge, Button, Card, Toggle } from "@/components/ui";
 import { trackSuiteEvent } from "../../lib/suite-analytics";
 
 export type SuiteWebPushState =
@@ -20,8 +20,16 @@ export interface SuiteWebPushController {
   disable(): Promise<void>;
 }
 
+export interface SuiteEmailNotificationPreference {
+  enabled: boolean;
+  busy?: boolean;
+  error?: string;
+  onChange: (enabled: boolean) => void;
+}
+
 export interface SuiteNotificationSettingsProps {
   controller: SuiteWebPushController;
+  email?: SuiteEmailNotificationPreference;
   title?: string;
   description?: string;
   dataTest?: string;
@@ -45,6 +53,7 @@ const STATUS_COPY: Record<SuiteWebPushState, string> = {
  */
 export function SuiteNotificationSettings({
   controller,
+  email,
   title = "Notifications",
   description = "Get suite notifications — tasks, documents and AI runs — as OS notifications on this device, even when the app is closed.",
   dataTest = "suite-notification-settings",
@@ -129,6 +138,41 @@ export function SuiteNotificationSettings({
           description={error}
           live="assertive"
         />
+      ) : null}
+
+      {email ? (
+        <Card
+          id={`${dataTest}-email`}
+          data-test={`${dataTest}-email`}
+          variant="outlined"
+          title="Email notifications"
+          description="Send the same alerts you see in the bell to your email address."
+          className="mt-4"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-ph-subtle">
+              Assignments, comments, mentions and other alerts are emailed when
+              this is on. Mail uses the same sender as sign-up.
+            </p>
+            <Toggle
+              id={`${dataTest}-email-toggle`}
+              data-test={`${dataTest}-email-toggle`}
+              checked={email.enabled}
+              disabled={email.busy}
+              label={email.enabled ? "On" : "Off"}
+              onChange={(event) => email.onChange(event.target.checked)}
+            />
+          </div>
+          {email.error ? (
+            <Alert
+              className="mt-3"
+              status="danger"
+              title="Could not save"
+              description={email.error}
+              data-test={`${dataTest}-email-error`}
+            />
+          ) : null}
+        </Card>
       ) : null}
 
       <Card

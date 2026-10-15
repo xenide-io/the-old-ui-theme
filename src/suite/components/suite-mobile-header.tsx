@@ -3,6 +3,7 @@
 import type { ComponentType, ReactNode } from "react";
 import { Menu } from "iconoir-react";
 
+import { Tooltip } from "../../components/ui/Tooltip";
 import { cn } from "../lib/cn";
 
 type SuiteMenuIcon = ComponentType<{
@@ -50,16 +51,18 @@ export function SuiteMobileHeader({
       )}
     >
       {onMenuClick ? (
-        <button
-          type="button"
-          id={menuId}
-          data-test={menuDataTest}
-          className="ph-btn ph-btn-ghost ph-btn-square suite-press h-11 w-11 shrink-0 text-ph-ink"
-          onClick={onMenuClick}
-          aria-label={menuLabel}
-        >
-          <MenuIcon className="h-5 w-5" aria-hidden />
-        </button>
+        <Tooltip content={menuLabel} side="bottom">
+          <button
+            type="button"
+            id={menuId}
+            data-test={menuDataTest}
+            className="ph-btn ph-btn-ghost ph-btn-square suite-press h-11 w-11 shrink-0 text-ph-ink"
+            onClick={onMenuClick}
+            aria-label={menuLabel}
+          >
+            <MenuIcon className="h-5 w-5" aria-hidden />
+          </button>
+        </Tooltip>
       ) : null}
       <div
         className={cn(

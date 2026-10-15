@@ -127,6 +127,7 @@ export default function FirstSliceFixture() {
             <FilterMenu
               label="Status"
               value={status}
+              inactiveValue="all"
               onValueChange={setStatus}
               options={[
                 { value: "all", label: "Any status" },
@@ -137,6 +138,7 @@ export default function FirstSliceFixture() {
             <SortMenu
               label="Sort"
               value={sort}
+              inactiveValue="updated"
               onValueChange={setSort}
               options={[
                 { value: "updated", label: "Recently updated" },

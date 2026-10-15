@@ -96,7 +96,7 @@ export function SuiteEntityIcon({
         ...style,
       }}
       aria-hidden="true"
-      title={label ?? undefined}
+      data-icon-label={label || undefined}
     >
       <Folder className="h-[88%] w-[88%]" strokeWidth={1.8} aria-hidden />
     </span>

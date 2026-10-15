@@ -16,6 +16,7 @@ import {
 } from "iconoir-react";
 
 import { Alert } from "@/components/ui/Alert";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { Badge } from "@/components/ui/Badge";
 import { Modal, ModalClose } from "@/components/ui/Modal";
 import {
@@ -179,9 +180,11 @@ function AppIcons({ member }: { member: SuiteTeamMember }) {
         .join(", ")}`}
     >
       {enabledApps(member).map((app) => (
-        <span key={app.key} title={app.label} className="inline-flex">
-          <SuiteAppIcon app={app.key} size={20} />
-        </span>
+        <Tooltip key={app.key} content={`${app.label} access`} side="top">
+          <span className="inline-flex">
+            <SuiteAppIcon app={app.key} size={20} />
+          </span>
+        </Tooltip>
       ))}
     </span>
   );

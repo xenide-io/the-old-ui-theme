@@ -238,16 +238,12 @@ body {
   pointer-events: none;
 }
 
-/* At rest the header is fully transparent so the page background starts at the
-   top. The frost only kicks in once content scrolls beneath it. */
+/* Keep the header clear at rest; only passing content needs the blur layer. */
 .marketing-header[data-scrolled="false"]::before {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   -webkit-mask-image: none;
   mask-image: none;
-}
-.marketing-header[data-scrolled="true"]::before {
-  background: color-mix(in oklab, var(--ph-canvas) 88%, transparent);
 }
 .marketing-header__inner {
   display: flex;
@@ -949,14 +945,8 @@ html.dark .today-page-frame__cloud--2 {
   box-shadow: none;
 }
 
-/* No glass strip at rest: only blur content once it scrolls under the title. */
+/* No surface tint on scroll: blur passing content without painting a panel. */
 .today-page-frame .suite-page-header-sticky[data-stuck="true"]::before {
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--ph-canvas) 18%, transparent)
-      calc(100% - var(--suite-scroll-fade)),
-    transparent
-  );
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   -webkit-mask-image: linear-gradient(
@@ -1153,8 +1143,10 @@ button:hover > .ph-card {
     max-height: calc(100svh - 3rem) !important;
     border-radius: 16px 16px 0 0 !important;
     transform: none !important;
-    /* Tailwind v4 centres with the `translate` property, which `transform: none`
-       does not reset — without this the sheet sits half off-screen. */
+    /* Reset Tailwind's variables too: CSS lowering may turn `translate: none`
+       into a transform reset, leaving the original 50% translation active. */
+    --tw-translate-x: 0px !important;
+    --tw-translate-y: 0px !important;
     translate: none !important;
     padding-bottom: env(safe-area-inset-bottom);
   }

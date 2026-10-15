@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Check,
   InfoCircle,
@@ -35,9 +35,21 @@ export interface BridgeChoice {
   required: boolean;
 }
 
+export interface BridgeProperty {
+  path: string;
+  label: string;
+  group: string;
+  note: string;
+}
+
 export interface BridgeField {
   remote: string;
+  /** Their name lands on this path. A dot means it is nested. */
+  path: string;
+  /** Human label for the path, so a different remote name stays visible. */
   local: string;
+  group: string;
+  note: string;
   locked: boolean;
 }
 
@@ -59,6 +71,7 @@ export interface BridgeDefinition {
   ready?: boolean;
   match: { remote: string; local: string } | null;
   pairs: BridgePair[];
+  properties?: BridgeProperty[];
   fields: BridgeField[];
   unmapped: string[];
   objects: BridgeObject[];
@@ -92,6 +105,23 @@ export interface BridgeRecord {
   detail: string;
 }
 
+export interface BridgeConflictField {
+  label: string;
+  value: string;
+}
+
+export interface BridgeConflict {
+  id: string;
+  record_type: string;
+  remote_id: string;
+  local_id: string;
+  direction: string;
+  summary: string;
+  can_push: boolean;
+  local_fields: BridgeConflictField[];
+  remote_fields: BridgeConflictField[];
+}
+
 const KIND_LABEL: Record<BridgeDefinition["kind"], string> = {
   sync: "Sync",
   import: "Import only",
@@ -104,6 +134,7 @@ const APP_MARK: Record<string, { label: string; icon: string }> = {
   turtletime: { label: "TurtleTime", icon: "/turtletime-icon.svg" },
   tides: { label: "Tides", icon: "/tides-icon.svg" },
   kraken: { label: "Kraken", icon: "/kraken-icon.svg" },
+  shellstack: { label: "ShellStack", icon: "/shellstack-icon.svg" },
 };
 
 function logoUrl(slug: string) {
@@ -148,6 +179,8 @@ export function BridgeScreen({
   localCategories = [],
   loadSetup,
   onSync,
+  loadConflicts,
+  onResolveConflict,
   apps = [],
   activeApp = "",
   onAppChange,
@@ -155,11 +188,9 @@ export function BridgeScreen({
   workspaces = [],
   activeWorkspaceId = "",
   onWorkspaceChange,
-  conflictPriority = false,
+  workspaceSwitcher,
   spinner: LoadingSpinner = BrandSpinner,
 }: {
-  /** Offer "which side wins" for two-way syncs (time-tracking bridges only). */
-  conflictPriority?: boolean;
   spinner?: SuiteSpinnerComponent;
   bridges: BridgeDefinition[];
   connections: BridgeConnection[];
@@ -188,6 +219,12 @@ export function BridgeScreen({
     direction: "import" | "export" | "both",
     priority: "turtletime" | "harvest",
   ) => Promise<string>;
+  loadConflicts?: (slug: string) => Promise<BridgeConflict[]>;
+  onResolveConflict?: (
+    slug: string,
+    id: string,
+    choice: "local" | "remote" | "skip",
+  ) => Promise<void>;
   apps?: { id: string; name: string; icon: string }[];
   activeApp?: string;
   onAppChange?: (id: string) => void;
@@ -195,6 +232,7 @@ export function BridgeScreen({
   workspaces?: { id: string; name: string }[];
   activeWorkspaceId?: string;
   onWorkspaceChange?: (id: string) => void;
+  workspaceSwitcher?: ReactNode;
 }) {
   function bridgeId(bridge: { slug: string; label: string }) {
     return `${bridge.slug}:${bridge.label}`;
@@ -232,8 +270,10 @@ export function BridgeScreen({
     "turtletime",
   );
   const [syncSince, setSyncSince] = useState("");
-  const [instruction, setInstruction] = useState("");
   const [syncMessage, setSyncMessage] = useState<string | null>(null);
+  const [conflicts, setConflicts] = useState<BridgeConflict[]>([]);
+  const [conflictsLoading, setConflictsLoading] = useState(false);
+  const [resolvingId, setResolvingId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -327,8 +367,29 @@ export function BridgeScreen({
         : "turtletime",
     );
     setSyncSince(bindingValue(selected.slug, "sync:since"));
-    setInstruction(bindingValue(selected.slug, "instruction"));
   }, [bindings, selected]);
+
+  useEffect(() => {
+    if (!selected || !loadConflicts || !isConnected(connection)) {
+      setConflicts([]);
+      return;
+    }
+    let cancelled = false;
+    setConflictsLoading(true);
+    loadConflicts(selected.slug)
+      .then((rows) => {
+        if (!cancelled) setConflicts(rows);
+      })
+      .catch(() => {
+        if (!cancelled) setConflicts([]);
+      })
+      .finally(() => {
+        if (!cancelled) setConflictsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [connection, loadConflicts, selected]);
 
   async function changeChoice(slug: string, key: string, value: string) {
     setSaveError(null);
@@ -363,6 +424,10 @@ export function BridgeScreen({
       );
       setToast(message);
       window.dispatchEvent(new Event("tt-bridge-synced"));
+      if (loadConflicts) {
+        const rows = await loadConflicts(selected.slug).catch(() => []);
+        setConflicts(rows);
+      }
     } catch (cause) {
       setSyncMessage(cause instanceof Error ? cause.message : "Sync failed.");
     } finally {
@@ -489,6 +554,46 @@ export function BridgeScreen({
         </div>
       </div>
 
+      <BridgeAlign
+        objects={selected.objects}
+        providerLabel={selected.label}
+        targetLabel={appMark.label}
+        target={target}
+      />
+
+      {isConnected(connection) ? (
+        <BridgeConflictReview
+          conflicts={conflicts}
+          loading={conflictsLoading}
+          resolvingId={resolvingId}
+          providerLabel={selected.label}
+          appLabel={appMark.label}
+          canManage={canManage}
+          onResolve={
+            onResolveConflict
+              ? async (id, choice) => {
+                  setResolvingId(id);
+                  setSyncMessage(null);
+                  try {
+                    await onResolveConflict(selected.slug, id, choice);
+                    setConflicts((current) =>
+                      current.filter((row) => row.id !== id),
+                    );
+                  } catch (cause) {
+                    setSyncMessage(
+                      cause instanceof Error
+                        ? cause.message
+                        : "Could not resolve that conflict.",
+                    );
+                  } finally {
+                    setResolvingId(null);
+                  }
+                }
+              : undefined
+          }
+        />
+      ) : null}
+
       {isConnected(connection) &&
       selected.ready &&
       selected.pairs.length > 0 ? (
@@ -530,9 +635,6 @@ export function BridgeScreen({
           syncMode={syncMode}
           syncSince={syncSince}
           syncDirection={syncDirection}
-          syncPriority={syncPriority}
-          conflictPriority={conflictPriority}
-          instruction={instruction}
           syncMessage={syncMessage}
           onSyncMode={(value) => {
             setSyncMode(value);
@@ -546,89 +648,25 @@ export function BridgeScreen({
             setSyncDirection(value);
             void changeChoice(selected.slug, "sync:direction", value);
           }}
-          onSyncPriority={(value) => {
-            setSyncPriority(value);
-            void changeChoice(selected.slug, "sync:priority", value);
-          }}
-          onInstruction={setInstruction}
-          onInstructionCommit={(value) =>
-            void changeChoice(selected.slug, "instruction", value)
-          }
           onRun={() => setPendingSync("backfill")}
         />
       ) : null}
 
       {selected.fields.length > 0 ? (
-        <section className="mt-8" aria-labelledby="bridge-fields-heading">
-          <h3
-            id="bridge-fields-heading"
-            className="text-sm font-semibold text-ph-ink"
-          >
-            Match fields and tags
-          </h3>
-          <p className="mt-1 max-w-xl text-sm text-ph-subtle">
-            After the database is chosen, each property is pointed at a{" "}
-            {appMark.label} field. Each status or tag option is then pointed at
-            a status or tag that already exists.
-          </p>
-          <ul className="mt-3 divide-y divide-ph-border rounded-lg border border-ph-border">
-            {selected.fields.map((field) => (
-              <li
-                key={field.remote}
-                className="flex items-center justify-between gap-3 px-4 py-3"
-              >
-                <span className="flex min-w-0 items-center gap-2">
-                  <BrandIcon
-                    src={logoUrl(selected.slug)}
-                    label={selected.label}
-                    className="h-4 w-4"
-                  />
-                  <span className="truncate text-sm text-ph-ink">
-                    {field.remote}
-                  </span>
-                </span>
-                {field.locked ? (
-                  <span className="shrink-0 text-sm font-medium text-ph-ink">
-                    {field.local}
-                  </span>
-                ) : (
-                  <Select
-                    hideLabel
-                    label={`${field.remote} lands on`}
-                    value={
-                      bindingValue(selected.slug, `field:${field.remote}`) ||
-                      field.local
-                    }
-                    disabled={!canManage || busy}
-                    onChange={(event) =>
-                      void changeChoice(
-                        selected.slug,
-                        `field:${field.remote}`,
-                        event.target.value,
-                      )
-                    }
-                    wrapperClassName="w-48 shrink-0"
-                  >
-                    <option value={field.local}>{field.local}</option>
-                    {field.local !== "Status" ? (
-                      <option value="Status">Status</option>
-                    ) : null}
-                    {field.local !== "Tags" ? (
-                      <option value="Tags">Tags</option>
-                    ) : null}
-                    <option value="skip">Don&apos;t map</option>
-                  </Select>
-                )}
-              </li>
-            ))}
-          </ul>
-          {selected.unmapped.length > 0 ? (
-            <p className="mt-2 text-xs text-ph-subtle">
-              No {appMark.label} field for {selected.unmapped.join(", ")}. Those
-              stay unmapped.
-            </p>
-          ) : null}
-        </section>
+        <PropertyMap
+          fields={selected.fields}
+          properties={selected.properties ?? []}
+          providerLabel={selected.label}
+          providerSlug={selected.slug}
+          targetLabel={appMark.label}
+          canManage={canManage}
+          busy={busy}
+          valueFor={(key) => bindingValue(selected.slug, key)}
+          onChange={(key, value) =>
+            void changeChoice(selected.slug, key, value)
+          }
+          unmapped={selected.unmapped}
+        />
       ) : null}
 
       {selected.kind === "action" ? (
@@ -641,8 +679,8 @@ export function BridgeScreen({
           </h3>
           <p className="mt-1 max-w-xl text-sm text-ph-subtle">
             {isConnected(connection)
-              ? `These run on demand from ${selected.label}. Nothing is imported or exported automatically.`
-              : `Connect ${selected.label} to use these actions.`}
+              ? "Connected once for this workspace. My Calendar stays on. Turn the other rows on only when you want that result."
+              : `Connect ${selected.label} here. It is shared by the workspace, not set up inside each app.`}
           </p>
           <div className="mt-3 overflow-hidden rounded-lg border border-ph-border">
             <div className="grid grid-cols-2 gap-3 bg-ph-muted px-4 py-2 text-xs font-semibold tracking-wide text-ph-subtle uppercase">
@@ -659,8 +697,9 @@ export function BridgeScreen({
               </span>
             </div>
             {selected.objects.map((object) => {
+              const feed = object.local === "My Calendar";
               const actionKey = `action:${object.local}`;
-              const enabled = bindingValue(selected.slug, actionKey) !== "off";
+              const enabled = feed || bindingValue(selected.slug, actionKey) === "on";
               return (
                 <div
                   key={`${object.remote}-${object.local}`}
@@ -671,21 +710,27 @@ export function BridgeScreen({
                       {object.remote} → {object.local}
                     </span>
                     <span className="block text-xs text-ph-subtle">
-                      {enabled ? "On demand · on" : "On demand · off"}
+                      {feed
+                        ? "Always, from this connection"
+                        : enabled
+                          ? "On demand · on"
+                          : "On demand · off"}
                     </span>
                   </span>
-                  <Toggle
-                    label={enabled ? "On" : "Off"}
-                    checked={enabled}
-                    disabled={!canManage || busy || !isConnected(connection)}
-                    onChange={(event) =>
-                      void changeChoice(
-                        selected.slug,
-                        actionKey,
-                        event.target.checked ? "on" : "off",
-                      )
-                    }
-                  />
+                  {feed ? null : (
+                    <Toggle
+                      label={enabled ? "On" : "Off"}
+                      checked={enabled}
+                      disabled={!canManage || busy || !isConnected(connection)}
+                      onChange={(event) =>
+                        void changeChoice(
+                          selected.slug,
+                          actionKey,
+                          event.target.checked ? "on" : "off",
+                        )
+                      }
+                    />
+                  )}
                 </div>
               );
             })}
@@ -792,6 +837,7 @@ export function BridgeScreen({
           description="Connected apps that can be bridged. Each one has its own setup."
           dataTest="bridge-page-header"
           sticky={false}
+          actions={workspaceSwitcher}
         />
         {apps.length > 0 || workspaces.length > 0 ? (
           <div className="mt-2 flex flex-wrap items-center gap-3">
@@ -1233,16 +1279,10 @@ function BridgeSyncPanel({
   syncMode,
   syncSince,
   syncDirection,
-  syncPriority,
-  conflictPriority,
-  instruction,
   syncMessage,
   onSyncMode,
   onSyncSince,
   onSyncDirection,
-  onSyncPriority,
-  onInstruction,
-  onInstructionCommit,
   onRun,
 }: {
   providerLabel: string;
@@ -1258,16 +1298,10 @@ function BridgeSyncPanel({
   syncMode: string;
   syncSince: string;
   syncDirection: SyncDirection;
-  syncPriority: "turtletime" | "harvest";
-  conflictPriority: boolean;
-  instruction: string;
   syncMessage: string | null;
   onSyncMode: (value: string) => void;
   onSyncSince: (value: string) => void;
   onSyncDirection: (value: SyncDirection) => void;
-  onSyncPriority: (value: "turtletime" | "harvest") => void;
-  onInstruction: (value: string) => void;
-  onInstructionCommit: (value: string) => void;
   onRun: () => void;
 }) {
   const providerLogo = logoUrl(providerSlug);
@@ -1388,21 +1422,6 @@ function BridgeSyncPanel({
             />
           </div>
         ) : null}
-        {conflictPriority && kind !== "import" && syncDirection === "both" ? (
-          <Select
-            label="Priority"
-            value={syncPriority}
-            onChange={(event) =>
-              onSyncPriority(
-                event.target.value === "harvest" ? "harvest" : "turtletime",
-              )
-            }
-            wrapperClassName="min-w-[12rem]"
-          >
-            <option value="turtletime">{appLabel} wins conflicts</option>
-            <option value="harvest">{providerLabel} wins conflicts</option>
-          </Select>
-        ) : null}
         {runEnabled ? (
           <button
             type="button"
@@ -1440,24 +1459,351 @@ function BridgeSyncPanel({
         </div>
       ) : null}
       <p className="text-xs text-ph-subtle">
-        Re-runs match {providerLabel} ids so nothing is duplicated. With{" "}
-        {appLabel} priority, local edits are pushed and entries deleted in{" "}
-        {providerLabel} are recreated.
+        Re-runs match {providerLabel} ids so nothing is duplicated. A row both
+        sides changed is skipped and listed under Needs a decision.
       </p>
-      <label className="block max-w-xl text-sm text-ph-ink">
-        AI instruction
-        <textarea
-          value={instruction}
-          disabled={!canManage || busy}
-          maxLength={255}
-          onChange={(event) => onInstruction(event.target.value)}
-          onBlur={(event) => onInstructionCommit(event.target.value)}
-          rows={3}
-          placeholder={`Example: match records by name, skip archived items, and keep ${providerLabel} labels as ${appLabel} categories.`}
-          className="mt-1 w-full rounded-md border border-ph-border bg-ph-surface px-3 py-2 text-sm"
-        />
-      </label>
     </section>
+  );
+}
+
+function PropertyMap({
+  fields,
+  properties,
+  providerLabel,
+  providerSlug,
+  targetLabel,
+  canManage,
+  busy,
+  valueFor,
+  onChange,
+  unmapped,
+}: {
+  fields: BridgeField[];
+  properties: BridgeProperty[];
+  providerLabel: string;
+  providerSlug: string;
+  targetLabel: string;
+  canManage: boolean;
+  busy: boolean;
+  valueFor: (key: string) => string;
+  onChange: (key: string, value: string) => void;
+  unmapped: string[];
+}) {
+  const groups: string[] = [];
+  for (const field of fields) {
+    if (!groups.includes(field.group || "Other"))
+      groups.push(field.group || "Other");
+  }
+  const choices = properties.length
+    ? properties
+    : fields.map((field) => ({
+        path: field.path,
+        label: field.local,
+        group: field.group,
+        note: field.note,
+      }));
+  const optionGroups: string[] = [];
+  for (const choice of choices) {
+    const name = choice.group || "Other";
+    if (!optionGroups.includes(name)) optionGroups.push(name);
+  }
+  return (
+    <section className="mt-6 rounded-xl border border-ph-border bg-ph-surface">
+      <div className="border-b border-ph-border px-4 py-3">
+        <h3 className="text-sm font-semibold text-ph-ink">Properties</h3>
+        <p className="mt-0.5 text-sm text-ph-subtle">
+          Point each {providerLabel} property at a {targetLabel} field. Nested
+          fields are in their own group. Leave a property unmapped to skip it.
+        </p>
+      </div>
+      {groups.map((group) => {
+        const rows = fields.filter(
+          (field) => (field.group || "Other") === group,
+        );
+        const note = rows.find((field) => field.note)?.note;
+        return (
+          <div
+            key={group}
+            className="border-b border-ph-border last:border-b-0"
+          >
+            <div className="px-4 pt-3">
+              <h4 className="text-xs font-semibold tracking-wide text-ph-subtle uppercase">
+                {group}
+              </h4>
+              {note ? (
+                <p className="mt-0.5 text-xs text-ph-subtle">{note}</p>
+              ) : null}
+            </div>
+            <ul>
+              {rows.map((field) => {
+                const key = `field:${field.remote}`;
+                const stored = valueFor(key);
+                const value =
+                  stored === "skip" ||
+                  choices.some((choice) => choice.path === stored)
+                    ? stored
+                    : field.path;
+                return (
+                  <li
+                    key={field.remote}
+                    className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,12rem)] items-center gap-3 px-4 py-2"
+                  >
+                    <span className="flex min-w-0 items-center gap-2">
+                      <BrandIcon
+                        src={logoUrl(providerSlug)}
+                        label={providerLabel}
+                        className="h-4 w-4"
+                      />
+                      <span className="truncate text-sm text-ph-ink">
+                        {field.remote}
+                      </span>
+                    </span>
+                    <span className="text-sm text-ph-subtle" aria-hidden>
+                      →
+                    </span>
+                    <Select
+                      hideLabel
+                      label={`${field.remote} lands on`}
+                      value={value}
+                      disabled={!canManage || busy}
+                      onChange={(event) => onChange(key, event.target.value)}
+                      wrapperClassName="min-w-0"
+                    >
+                      {optionGroups.map((name) => {
+                        const options = choices.filter(
+                          (choice) => (choice.group || "Other") === name,
+                        );
+                        if (options.length === 0) return null;
+                        return (
+                          <optgroup key={name} label={name}>
+                            {options.map((choice) => (
+                              <option key={choice.path} value={choice.path}>
+                                {choice.label}
+                              </option>
+                            ))}
+                          </optgroup>
+                        );
+                      })}
+                      <option value="skip">Don&apos;t map</option>
+                    </Select>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        );
+      })}
+      {unmapped.length > 0 ? (
+        <p className="px-4 py-3 text-xs text-ph-subtle">
+          No {targetLabel} field for {unmapped.join(", ")}. Those stay unmapped.
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
+const DIRECTION_LABEL: Record<BridgeObject["direction"], string> = {
+  both: "Both ways",
+  import: "Import only",
+  export: "Export only",
+  action: "One at a time",
+};
+
+function BridgeAlign({
+  objects,
+  providerLabel,
+  targetLabel,
+  target,
+}: {
+  objects: BridgeObject[];
+  providerLabel: string;
+  targetLabel: string;
+  target: string;
+}) {
+  if (objects.length === 0) return null;
+  const note =
+    target === "tides"
+      ? "Pair the container with a Tides project first. Tasks, status, and comments only follow that pair."
+      : target === "kraken"
+        ? "Pages copy as plain text. A file bridge attaches files and does not build a second document tree."
+        : "Pair clients, projects, and categories by id. Time entries follow the project pair.";
+  return (
+    <section className="mt-6 rounded-xl border border-ph-border bg-ph-surface">
+      <div className="border-b border-ph-border px-4 py-3">
+        <h3 className="text-sm font-semibold text-ph-ink">What lines up</h3>
+        <p className="mt-0.5 text-sm text-ph-subtle">{note}</p>
+      </div>
+      <ul>
+        {objects.map((item) => (
+          <li
+            key={`${item.remote}-${item.local}-${item.direction}`}
+            className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-3 border-b border-ph-border px-4 py-2 last:border-b-0"
+          >
+            <span className="truncate text-sm text-ph-ink">{item.remote}</span>
+            <span className="text-sm text-ph-subtle" aria-hidden>
+              {item.direction === "import"
+                ? "→"
+                : item.direction === "export"
+                  ? "←"
+                  : "↔"}
+            </span>
+            <span className="truncate text-sm text-ph-ink">{item.local}</span>
+            <span className="text-xs text-ph-subtle">
+              {DIRECTION_LABEL[item.direction]}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p className="sr-only">
+        {providerLabel} records on the left, {targetLabel} records on the right.
+      </p>
+    </section>
+  );
+}
+
+function BridgeConflictReview({
+  conflicts,
+  loading,
+  resolvingId,
+  providerLabel,
+  appLabel,
+  canManage,
+  onResolve,
+}: {
+  conflicts: BridgeConflict[];
+  loading: boolean;
+  resolvingId: string | null;
+  providerLabel: string;
+  appLabel: string;
+  canManage: boolean;
+  onResolve?: (
+    id: string,
+    choice: "local" | "remote" | "skip",
+  ) => Promise<void>;
+}) {
+  const [openId, setOpenId] = useState<string | null>(null);
+  if (!loading && conflicts.length === 0) return null;
+  return (
+    <section className="mt-6 rounded-xl border border-ph-warning/40 bg-ph-surface">
+      <div className="border-b border-ph-border px-4 py-3">
+        <h3 className="text-sm font-semibold text-ph-ink">Needs a decision</h3>
+        <p className="mt-0.5 text-sm text-ph-subtle">
+          These rows were skipped because both sides changed. Nothing was
+          overwritten.
+        </p>
+      </div>
+      {loading && conflicts.length === 0 ? (
+        <p className="px-4 py-3 text-sm text-ph-subtle">Loading conflicts…</p>
+      ) : (
+        <ul>
+          {conflicts.map((row) => {
+            const open = openId === row.id;
+            const busy = resolvingId === row.id;
+            return (
+              <li
+                key={row.id}
+                className="border-b border-ph-border last:border-b-0"
+              >
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  onClick={() => setOpenId(open ? null : row.id)}
+                  className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+                >
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-medium text-ph-ink">
+                      {row.summary}
+                    </span>
+                    <span className="block truncate text-xs text-ph-subtle">
+                      {row.record_type.replace(/_/g, " ")} · {row.remote_id}
+                    </span>
+                  </span>
+                  <NavArrowDown
+                    className={`h-4 w-4 shrink-0 text-ph-subtle transition-transform ${
+                      open ? "rotate-180" : ""
+                    }`}
+                    aria-hidden
+                  />
+                </button>
+                {open ? (
+                  <div className="space-y-3 px-4 pb-4">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <ConflictSide
+                        title={providerLabel}
+                        fields={row.remote_fields}
+                      />
+                      <ConflictSide
+                        title={appLabel}
+                        fields={row.local_fields}
+                      />
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        disabled={!canManage || !onResolve || busy}
+                        onClick={() => void onResolve?.(row.id, "remote")}
+                        className="inline-flex h-9 items-center rounded-md border border-ph-border px-3 text-sm text-ph-ink disabled:opacity-60"
+                      >
+                        Use {providerLabel}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={!canManage || !onResolve || busy}
+                        onClick={() => void onResolve?.(row.id, "local")}
+                        className="inline-flex h-9 items-center rounded-md bg-ph-brand px-3 text-sm font-medium text-[var(--ph-on-accent)] disabled:opacity-60"
+                      >
+                        {row.can_push
+                          ? `Use ${appLabel}`
+                          : `Keep ${appLabel} here`}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={!canManage || !onResolve || busy}
+                        onClick={() => void onResolve?.(row.id, "skip")}
+                        className="inline-flex h-9 items-center rounded-md px-3 text-sm text-ph-subtle disabled:opacity-60"
+                      >
+                        Leave both
+                      </button>
+                    </div>
+                    {!row.can_push ? (
+                      <p className="text-xs text-ph-subtle">
+                        Keep {appLabel} here stops the next import from
+                        overwriting it. {providerLabel} is not changed.
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function ConflictSide({
+  title,
+  fields,
+}: {
+  title: string;
+  fields: BridgeConflictField[];
+}) {
+  return (
+    <div className="rounded-lg border border-ph-border bg-ph-canvas px-3 py-2">
+      <p className="text-xs font-semibold text-ph-subtle">{title}</p>
+      <dl className="mt-2 space-y-1">
+        {fields.map((field) => (
+          <div
+            key={field.label}
+            className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-2"
+          >
+            <dt className="text-xs text-ph-subtle">{field.label}</dt>
+            <dd className="truncate text-sm text-ph-ink">{field.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   );
 }
 

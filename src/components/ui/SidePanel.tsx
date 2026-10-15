@@ -3,7 +3,6 @@
 import { useEffect, type ReactNode } from "react";
 import { IconClose } from "@/components/icons";
 import { Button } from "@/components/ui/Button";
-import { Tooltip } from "@/components/ui/Tooltip";
 import { cn } from "@/lib/cn";
 
 export interface SidePanelProps {
@@ -56,18 +55,17 @@ export function SidePanel({
           {icon}
           {title}
         </h2>
-        <Tooltip content="Close" side="bottom">
           <Button
             type="button"
             variant="tertiary"
             size="sm"
             shape="square"
             aria-label={`Close ${label.toLowerCase()}`}
+            tooltip={`Close ${label.toLowerCase()}`}
+            tooltipSide="bottom"
             onClick={onClose}
-          >
-            <IconClose className="h-3.5 w-3.5" aria-hidden />
-          </Button>
-        </Tooltip>
+            icon={<IconClose className="h-3.5 w-3.5" aria-hidden />}
+          />
       </header>
       <div
         className={cn(

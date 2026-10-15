@@ -3,6 +3,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useRef, type ReactNode } from "react";
 import { IconClose } from "@/components/icons";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { cn } from "@/lib/cn";
 
 export type ModalSize = "sm" | "md" | "lg" | "xl" | "full";
@@ -44,14 +45,15 @@ const sizeMap: Record<ModalSize, string> = {
 export function ModalClose({ className }: { className?: string }) {
   return (
     <Dialog.Close asChild>
-      <button
-        type="button"
-        className={cn("ph-modal-close", className)}
-        aria-label="Close"
-        title="Close"
-      >
-        <IconClose className="h-5 w-5" aria-hidden />
-      </button>
+      <Tooltip content="Close" side="bottom">
+        <button
+          type="button"
+          className={cn("ph-modal-close", className)}
+          aria-label="Close"
+        >
+          <IconClose className="h-5 w-5" aria-hidden />
+        </button>
+      </Tooltip>
     </Dialog.Close>
   );
 }

@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -96,12 +97,22 @@ export function SuiteNotificationsProvider({
   const router = useRouter();
   const [notifications, setNotifications] = useState<SuiteNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [loadedScope, setLoadedScope] = useState<string | null>(null);
+  const currentScope = useRef({ cacheKey, enabled });
+  currentScope.current = { cacheKey, enabled };
 
   const load = useCallback(async () => {
+    if (!enabled) return;
     try {
       const data = await fetchNotifications();
+      if (
+        !currentScope.current.enabled ||
+        currentScope.current.cacheKey !== cacheKey
+      )
+        return;
       setNotifications(data.notifications);
       setUnreadCount(data.unread_count);
+      setLoadedScope(cacheKey);
       if (cacheKey) {
         try {
           sessionStorage.setItem(
@@ -118,13 +129,18 @@ export function SuiteNotificationsProvider({
     } catch {
       // Non-critical chrome — never surface bell errors to the user.
     }
-  }, [fetchNotifications, cacheKey]);
+  }, [fetchNotifications, cacheKey, enabled]);
 
   useEffect(() => {
     if (!enabled) return;
 
     if (cacheKey) {
       queueMicrotask(() => {
+        if (
+          !currentScope.current.enabled ||
+          currentScope.current.cacheKey !== cacheKey
+        )
+          return;
         try {
           const raw = sessionStorage.getItem(cacheKey);
           if (!raw) return;
@@ -135,6 +151,7 @@ export function SuiteNotificationsProvider({
           if (Array.isArray(cached.notifications)) {
             setNotifications(cached.notifications);
             setUnreadCount(cached.unread_count ?? 0);
+            setLoadedScope(cacheKey);
           }
         } catch {
           // ignore
@@ -161,9 +178,12 @@ export function SuiteNotificationsProvider({
 
     if (document.visibilityState === "visible") start();
     document.addEventListener("visibilitychange", onVisibilityChange);
+    const onSuiteRefresh = () => void load();
+    window.addEventListener("suite-notifications-refresh", onSuiteRefresh);
     return () => {
       stop();
       document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("suite-notifications-refresh", onSuiteRefresh);
     };
   }, [enabled, load, pollMs, cacheKey]);
 
@@ -249,13 +269,22 @@ export function SuiteNotificationsProvider({
 
   const value = useMemo<SuiteNotificationsContextValue>(
     () => ({
-      notifications,
-      unreadCount,
+      notifications: enabled && loadedScope === cacheKey ? notifications : [],
+      unreadCount: enabled && loadedScope === cacheKey ? unreadCount : 0,
       refresh: () => void load(),
       select,
       markAllRead,
     }),
-    [notifications, unreadCount, load, select, markAllRead],
+    [
+      notifications,
+      unreadCount,
+      load,
+      select,
+      markAllRead,
+      enabled,
+      loadedScope,
+      cacheKey,
+    ],
   );
 
   return (

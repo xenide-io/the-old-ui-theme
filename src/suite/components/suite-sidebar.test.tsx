@@ -25,7 +25,7 @@ describe("SuiteSidebar Ask AI", () => {
     }
 
     render(<Fixture />);
-    const trigger = screen.getByRole("button", { name: "Shelly AI" });
+    const trigger = screen.getByRole("button", { name: "Ask Shelly" });
     await user.click(trigger);
 
     const back = screen.getByRole("button", { name: "Back to navigation" });
@@ -33,7 +33,7 @@ describe("SuiteSidebar Ask AI", () => {
     await user.keyboard("{Escape}");
 
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Shelly AI" })).toHaveFocus(),
+      expect(screen.getByRole("button", { name: "Ask Shelly" })).toHaveFocus(),
     );
   });
 });

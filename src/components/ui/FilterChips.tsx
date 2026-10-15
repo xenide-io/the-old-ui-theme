@@ -34,7 +34,14 @@ export function FilterChips({
         const content = (
           <>
             <span className="ph-filter-chip__label">{chip.label}</span>
-            {chip.value != null ? <span className="ph-filter-chip__value">{chip.value}</span> : null}
+            {chip.value != null ? (
+              <>
+                <span className="ph-filter-chip__op" aria-hidden>
+                  is
+                </span>
+                <span className="ph-filter-chip__value">{chip.value}</span>
+              </>
+            ) : null}
           </>
         );
 

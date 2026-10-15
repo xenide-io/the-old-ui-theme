@@ -85,6 +85,98 @@ describe("Bridge page header", () => {
     });
     expect(onWorkspaceChange).toHaveBeenCalledWith("two");
   });
+
+  it("shows what lines up and a conflict that can be opened", async () => {
+    const onResolveConflict = vi.fn();
+    render(
+      <BridgeScreen
+        bridges={[
+          {
+            slug: "LINEAR",
+            label: "Linear",
+            provider_id: "linear",
+            kind: "sync",
+            summary: "Issues follow the team you pair.",
+            targets: ["tides"],
+            push_blocked: "",
+            ready: false,
+            match: null,
+            pairs: [],
+            fields: [],
+            unmapped: [],
+            choices: [],
+            objects: [
+              {
+                remote: "Teams",
+                local: "Projects",
+                direction: "both",
+                target: "tides",
+              },
+              {
+                remote: "Issues",
+                local: "Tasks",
+                direction: "both",
+                target: "tides",
+              },
+            ],
+          },
+        ]}
+        connections={[
+          {
+            id: "c1",
+            provider: "linear",
+            toolkit_slug: "LINEAR",
+            status: "active",
+            display_name: "Acme",
+          },
+        ]}
+        bindings={[]}
+        projects={[]}
+        canManage
+        loading={false}
+        error={null}
+        busy={false}
+        target="tides"
+        onConnect={vi.fn()}
+        onDisconnect={vi.fn()}
+        onSaveChoice={vi.fn()}
+        loadConflicts={async () => [
+          {
+            id: "conflict-1",
+            record_type: "task",
+            remote_id: "LIN-4",
+            local_id: "local-1",
+            direction: "import",
+            summary: "Title differs",
+            can_push: false,
+            remote_fields: [{ label: "Title", value: "Remote title" }],
+            local_fields: [{ label: "Title", value: "Local title" }],
+          },
+        ]}
+        onResolveConflict={onResolveConflict}
+      />,
+    );
+
+    expect(
+      screen.getByText(
+        "Pair the container with a Tides project first. Tasks, status, and comments only follow that pair.",
+      ),
+    ).toBeVisible();
+    expect(screen.getAllByText("Issues").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Tasks").length).toBeGreaterThan(0);
+    const [conflict] = await screen.findAllByRole("button", {
+      name: /Title differs/,
+    });
+    fireEvent.click(conflict);
+    expect(screen.getAllByText("Remote title").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Local title").length).toBeGreaterThan(0);
+    fireEvent.click(screen.getAllByRole("button", { name: "Leave both" })[0]);
+    expect(onResolveConflict).toHaveBeenCalledWith(
+      "LINEAR",
+      "conflict-1",
+      "skip",
+    );
+  });
 });
 
 describe("sidebar resize handle", () => {

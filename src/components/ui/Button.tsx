@@ -1,5 +1,12 @@
-import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
+import {
+  forwardRef,
+  isValidElement,
+  type ButtonHTMLAttributes,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { ButtonChrome } from "@/components/ui/ButtonChrome";
+import { Tooltip, type TooltipSide } from "@/components/ui/Tooltip";
 import { cn } from "@/lib/cn";
 
 export type ButtonVariant =
@@ -31,6 +38,12 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
   loading?: boolean;
   loadingLabel?: ReactNode;
+  /**
+   * Hover/focus tip. Icon-only buttons use this, then `title`, then `aria-label`.
+   * `false` shows nothing. A native `title` is never left on the button.
+   */
+  tooltip?: ReactNode | false;
+  tooltipSide?: TooltipSide;
 }
 
 const variantClass: Record<ButtonVariant, string> = {
@@ -62,6 +75,26 @@ const shapeClass: Record<ButtonShape, string> = {
   wide: "ph-btn-wide",
 };
 
+function visibleLabel(node: ReactNode): string {
+  if (node == null || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node).trim();
+  if (Array.isArray(node)) {
+    return node.map(visibleLabel).filter(Boolean).join(" ").trim();
+  }
+  if (isValidElement(node)) {
+    const el = node as ReactElement<{ className?: string; children?: ReactNode }>;
+    const className = el.props.className ?? "";
+    if (
+      typeof className === "string" &&
+      className.split(/\s+/).includes("sr-only")
+    ) {
+      return "";
+    }
+    return visibleLabel(el.props.children);
+  }
+  return "";
+}
+
 /** Filled variants keep a stationary depth plate while the face and content move together. */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({
   variant = "secondary",
@@ -77,6 +110,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   children,
   type = "button",
   disabled,
+  tooltip,
+  tooltipSide = "top",
+  title,
+  "aria-label": ariaLabel,
   ...props
 }, ref) {
   const usesLemonChrome = !["tertiary", "ghost", "link"].includes(variant);
@@ -94,12 +131,29 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     </>
   );
 
-  return (
+  const shown = visibleLabel(loading ? (loadingLabel ?? children) : children);
+  const nativeTitle = typeof title === "string" ? title.trim() : "";
+  const named = typeof ariaLabel === "string" ? ariaLabel.trim() : "";
+  // Labelled controls only tip when the text adds something the label doesn't.
+  // Icon-only controls always name the action, because nothing else is visible.
+  const tip =
+    tooltip === false
+      ? undefined
+      : tooltip !== undefined
+        ? tooltip
+        : !shown
+          ? nativeTitle || named || undefined
+          : nativeTitle && nativeTitle !== shown && nativeTitle !== named
+            ? nativeTitle
+            : undefined;
+
+  const button = (
     <button
       ref={ref}
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
+      aria-label={ariaLabel}
       className={cn(
         "ph-btn",
         usesLemonChrome && "ph-btn-raised",
@@ -114,6 +168,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     >
       {content}
     </button>
+  );
+
+  if (tip == null || tip === "") return button;
+
+  return (
+    <Tooltip content={tip} side={tooltipSide}>
+      {button}
+    </Tooltip>
   );
 });
 

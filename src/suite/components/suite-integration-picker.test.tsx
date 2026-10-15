@@ -13,6 +13,52 @@ import { SuiteIntegrationPicker } from "@/suite/components/suite-integration-pic
 describe("SuiteIntegrationPicker", () => {
   afterEach(cleanup);
 
+  it("keeps host workspace context and connection feedback in compact mode", async () => {
+    const user = userEvent.setup();
+    const onConnect = vi.fn().mockRejectedValue(new Error("Try again"));
+    render(
+      <SuiteIntegrationPicker
+        open
+        compact
+        headerContent={
+          <label>
+            Workspace
+            <select aria-label="Workspace">
+              <option>Design</option>
+              <option>Engineering</option>
+            </select>
+          </label>
+        }
+        items={[
+          { id: "linear", label: "Linear", description: "Issue tracking" },
+          {
+            id: "github",
+            label: "GitHub",
+            description: "Code hosting",
+            unavailableReason: "Already connected",
+          },
+        ]}
+        onClose={vi.fn()}
+        onConnect={onConnect}
+      />,
+    );
+    await user.selectOptions(
+      screen.getByRole("combobox", { name: "Workspace" }),
+      "Engineering",
+    );
+    expect(screen.getByRole("combobox", { name: "Workspace" })).toHaveValue(
+      "Engineering",
+    );
+    expect(
+      screen.getByRole("button", { name: "Connect GitHub" }),
+    ).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: "Connect Linear" }));
+    expect(onConnect).toHaveBeenCalledWith(
+      expect.objectContaining({ id: "linear" }),
+    );
+    expect(await screen.findByRole("alert")).toHaveTextContent("Try again");
+  });
+
   it("matches search text against provider titles only", async () => {
     const user = userEvent.setup();
 

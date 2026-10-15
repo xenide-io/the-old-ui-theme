@@ -25,6 +25,7 @@ import {
   Input,
   Modal,
   Select,
+  Tooltip,
 } from "@/components/ui";
 import { cn } from "@/lib/cn";
 import { BrandSpinner } from "@/components/ui/BrandSpinner";
@@ -74,6 +75,8 @@ export interface SuiteClientsProjectsDirectoryProps {
   clients: SuiteDirectoryClient[];
   projects: SuiteDirectoryProject[];
   canEdit?: boolean;
+  /** Dense embedded browser for settings panels. */
+  compact?: boolean;
   loading?: boolean;
   spinner?: SuiteSpinnerComponent;
   error?: string | null;
@@ -106,6 +109,15 @@ export interface SuiteClientsProjectsDirectoryProps {
 
 const DEFAULT_ICON = "";
 const DEFAULT_COLOR = "";
+const DIRECTORY_COLOURS: Array<[string, string]> = [
+  ["#6366f1", "Indigo"],
+  ["#0ea5e9", "Sky"],
+  ["#10b981", "Green"],
+  ["#f59e0b", "Amber"],
+  ["#ef4444", "Red"],
+  ["#a855f7", "Purple"],
+  ["#64748b", "Slate"],
+];
 
 function DirectoryIconPicker({
   preview,
@@ -176,8 +188,10 @@ function DirectoryIconPicker({
 
 function DirectoryIcon({
   item,
+  compact = false,
 }: {
   item: SuiteDirectoryClient | SuiteDirectoryProject;
+  compact?: boolean;
 }) {
   return (
     <SuiteEntityIcon
@@ -185,7 +199,7 @@ function DirectoryIcon({
       label={item.name}
       color={item.color}
       tinted
-      className="h-8 w-8 text-sm"
+      className={compact ? "h-6 w-6 text-xs" : "h-8 w-8 text-sm"}
       roundedClass="rounded-[var(--ph-radius-control)]"
     />
   );
@@ -207,6 +221,7 @@ export function SuiteClientsProjectsDirectory({
   clients,
   projects,
   canEdit = false,
+  compact = false,
   loading = false,
   spinner: LoadingSpinner = BrandSpinner,
   error,
@@ -483,7 +498,11 @@ export function SuiteClientsProjectsDirectory({
   }
 
   return (
-    <div data-test={dataTest} className="space-y-3">
+    <div
+      data-test={dataTest}
+      data-compact={compact || undefined}
+      className="space-y-3"
+    >
       {error || mutationError ? (
         <Alert status="danger" live="assertive">
           {error || mutationError}
@@ -494,14 +513,26 @@ export function SuiteClientsProjectsDirectory({
           <LoadingSpinner size="md" label="Loading directory…" />
         </div>
       ) : (
-        <div className="overflow-hidden rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface lg:grid lg:min-h-[22rem] lg:grid-cols-[minmax(14rem,18rem)_1fr]">
+        <div
+          className={cn(
+            "overflow-hidden rounded-[var(--ph-radius-surface)] border border-ph-border bg-ph-surface lg:grid",
+            compact
+              ? "lg:min-h-[12rem] lg:grid-cols-[minmax(12rem,15rem)_1fr]"
+              : "lg:min-h-[22rem] lg:grid-cols-[minmax(14rem,18rem)_1fr]",
+          )}
+        >
           <section
             className={cn(
               "border-ph-border lg:border-r",
               mobileDetail ? "hidden lg:block" : "block",
             )}
           >
-            <div className="flex h-14 items-center gap-2 border-b border-ph-border px-3">
+            <div
+              className={cn(
+                "flex items-center gap-2 border-b border-ph-border",
+                compact ? "min-h-12 px-2 py-1.5" : "h-14 px-3",
+              )}
+            >
               <div className="relative min-w-0 flex-1">
                 <Search
                   className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ph-mutedtext"
@@ -513,24 +544,39 @@ export function SuiteClientsProjectsDirectory({
                   placeholder="Search clients..."
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  className="pl-9"
+                  className={cn(
+                    "pl-9",
+                    compact &&
+                      "h-8 min-h-8 text-sm [@media(pointer:coarse)]:h-11",
+                  )}
                 />
               </div>
               {canEdit && onCreateClient ? (
                 <Button
                   size="sm"
-                  variant="primary"
+                  variant={compact ? "tertiary" : "primary"}
+                  aria-label="New client"
+                  className={
+                    compact
+                      ? "h-8 w-8 min-h-8 shrink-0 px-0 [@media(pointer:coarse)]:h-11 [@media(pointer:coarse)]:w-11"
+                      : undefined
+                  }
                   icon={<Plus className="h-4 w-4" />}
                   onClick={() => openNew("client")}
                 >
-                  New client
+                  <span className={compact ? "sr-only" : undefined}>
+                    New client
+                  </span>
                 </Button>
               ) : null}
             </div>
             <ul
               role="listbox"
               aria-label="Clients"
-              className="max-h-[28rem] overflow-y-auto p-1.5"
+              className={cn(
+                "overflow-y-auto p-1.5",
+                compact ? "max-h-80" : "max-h-[28rem]",
+              )}
             >
               {filteredClients.length ? (
                 filteredClients.map((client, index) => {
@@ -551,18 +597,31 @@ export function SuiteClientsProjectsDirectory({
                           clientButtonRefs.current[client.id] = element;
                         }}
                         className={cn(
-                          "flex w-full items-center gap-2.5 rounded-[var(--ph-radius-control)] px-2.5 py-2 text-left",
+                          "flex w-full items-center rounded-[var(--ph-radius-control)] text-left",
+                          compact
+                            ? "min-h-10 gap-2 px-2 py-1.5 [@media(pointer:coarse)]:min-h-11"
+                            : "gap-2.5 px-2.5 py-2",
                           selected ? "bg-ph-muted" : "hover:bg-ph-canvas",
                         )}
                       >
-                        <DirectoryIcon item={client} />
-                        <span className="min-w-0 flex-1">
+                        <DirectoryIcon item={client} compact={compact} />
+                        <span
+                          className={cn(
+                            "min-w-0 flex-1",
+                            compact &&
+                              "flex items-center justify-between gap-2",
+                          )}
+                        >
                           <span className="block truncate text-sm font-medium text-ph-ink">
                             {client.name}
                           </span>
-                          <span className="text-xs text-ph-mutedtext">
+                          <span className="shrink-0 text-xs text-ph-mutedtext">
                             {client.archived_at ? "Archived · " : ""}
-                            {count} project{count === 1 ? "" : "s"}
+                            {count}
+                            <span className={compact ? "sr-only" : undefined}>
+                              {" "}
+                              project{count === 1 ? "" : "s"}
+                            </span>
                           </span>
                         </span>
                       </button>
@@ -599,13 +658,22 @@ export function SuiteClientsProjectsDirectory({
               mobileDetail ? "flex" : "hidden lg:flex",
             )}
           >
-            <div className="flex min-h-14 items-center gap-2 border-b border-ph-border px-3 py-2">
+            <div
+              className={cn(
+                "flex items-center gap-2 border-b border-ph-border",
+                compact ? "min-h-12 px-2 py-1.5" : "min-h-14 px-3 py-2",
+              )}
+            >
               {selectedClient ? (
                 <>
                   <button
                     type="button"
                     ref={backToClientsRef}
-                    className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-ph-mutedtext hover:bg-ph-muted lg:hidden"
+                    className={cn(
+                      "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-ph-mutedtext hover:bg-ph-muted lg:hidden",
+                      compact &&
+                        "[@media(pointer:coarse)]:h-11 [@media(pointer:coarse)]:w-11",
+                    )}
                     onClick={() => {
                       mobileFocusTarget.current = "list";
                       setMobileDetail(false);
@@ -614,12 +682,16 @@ export function SuiteClientsProjectsDirectory({
                   >
                     <ArrowLeft className="h-4 w-4" />
                   </button>
-                  <DirectoryIcon item={selectedClient} />
+                  <DirectoryIcon item={selectedClient} compact={compact} />
                   <div className="min-w-0 flex-1">
                     <h3 className="truncate text-sm font-semibold text-ph-ink">
                       {selectedClient.name}
                     </h3>
-                    <p className="text-xs text-ph-mutedtext">
+                    <p
+                      className={
+                        compact ? "sr-only" : "text-xs text-ph-mutedtext"
+                      }
+                    >
                       {selectedClient.archived_at ? "Archived · " : ""}
                       {selectedProjects.length} project
                       {selectedProjects.length === 1 ? "" : "s"}
@@ -631,7 +703,13 @@ export function SuiteClientsProjectsDirectory({
                         aria-label={`Actions for ${selectedClient.name}`}
                         align="end"
                         trigger={
-                          <span className="inline-flex h-8 w-8 items-center justify-center rounded-md text-ph-mutedtext hover:bg-ph-muted hover:text-ph-ink">
+                          <span
+                            className={cn(
+                              "inline-flex h-8 w-8 items-center justify-center rounded-md text-ph-mutedtext hover:bg-ph-muted hover:text-ph-ink",
+                              compact &&
+                                "[@media(pointer:coarse)]:h-11 [@media(pointer:coarse)]:w-11",
+                            )}
+                          >
                             <MoreHorizontal className="h-4 w-4" aria-hidden />
                             <span className="sr-only">Client actions</span>
                           </span>
@@ -672,10 +750,24 @@ export function SuiteClientsProjectsDirectory({
                   ) : null}
                 </>
               ) : (
-                <p className="text-sm text-ph-mutedtext">Select a client</p>
+                <p className="min-w-0 flex-1 text-sm text-ph-mutedtext">
+                  Select a client
+                </p>
               )}
+              {compact && canEdit && onCreateProject ? (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="shrink-0 max-sm:w-8 max-sm:px-0 [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11"
+                  aria-label="Add project"
+                  icon={<Plus className="h-3.5 w-3.5" aria-hidden />}
+                  onClick={() => openNew("project")}
+                >
+                  <span className="hidden sm:inline">Add project</span>
+                </Button>
+              ) : null}
             </div>
-            {canEdit && onCreateProject ? (
+            {!compact && canEdit && onCreateProject ? (
               <div className="border-b border-ph-border p-3">
                 <Button
                   variant="primary"
@@ -691,15 +783,23 @@ export function SuiteClientsProjectsDirectory({
                 selectedProjects.map((project) => (
                   <li key={project.id}>
                     <div
-                      className="flex items-center gap-3 rounded-[var(--ph-radius-control)] px-2 py-1 hover:bg-ph-canvas"
+                      className={cn(
+                        "flex items-center rounded-[var(--ph-radius-control)] hover:bg-ph-canvas",
+                        compact ? "gap-2 px-1" : "gap-3 px-2 py-1",
+                      )}
                       onClick={() => openEdit(project, "project")}
                     >
                       <button
                         type="button"
-                        className="flex min-w-0 flex-1 items-center gap-3 rounded-[var(--ph-radius-control)] py-1 text-left focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]"
+                        className={cn(
+                          "flex min-w-0 flex-1 items-center rounded-[var(--ph-radius-control)] text-left focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]",
+                          compact
+                            ? "min-h-10 gap-2 py-1 [@media(pointer:coarse)]:min-h-11"
+                            : "gap-3 py-1",
+                        )}
                         onClick={() => openEdit(project, "project")}
                       >
-                        <DirectoryIcon item={project} />
+                        <DirectoryIcon item={project} compact={compact} />
                         <span className="min-w-0 flex-1">
                           <span
                             className={cn(
@@ -711,7 +811,12 @@ export function SuiteClientsProjectsDirectory({
                           >
                             {project.name}
                           </span>
-                          <span className="text-xs text-ph-mutedtext">
+                          <span
+                            className={cn(
+                              "text-xs text-ph-mutedtext",
+                              compact && !project.isArchived && "sr-only",
+                            )}
+                          >
                             {project.isArchived ? "Archived" : "Active"}
                           </span>
                         </span>
@@ -722,7 +827,13 @@ export function SuiteClientsProjectsDirectory({
                             aria-label={`Actions for ${project.name}`}
                             align="end"
                             trigger={
-                              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-ph-mutedtext hover:bg-ph-muted hover:text-ph-ink">
+                              <span
+                                className={cn(
+                                  "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-ph-mutedtext hover:bg-ph-muted hover:text-ph-ink",
+                                  compact &&
+                                    "[@media(pointer:coarse)]:h-11 [@media(pointer:coarse)]:w-11",
+                                )}
+                              >
                                 <MoreHorizontal
                                   className="h-4 w-4"
                                   aria-hidden
@@ -830,11 +941,11 @@ export function SuiteClientsProjectsDirectory({
               Colour
             </span>
             <div className="flex flex-wrap items-center gap-2">
+              <Tooltip content="Match the client colour" side="bottom">
               <button
                 type="button"
                 aria-label="Automatic colour"
                 aria-pressed={!draft.color}
-                title="Automatic colour"
                 onClick={() => setDraft({ ...draft, color: "" })}
                 className={cn(
                   "flex h-8 w-8 items-center justify-center rounded-full border border-ph-border bg-ph-surface text-ph-mutedtext ring-offset-2",
@@ -843,57 +954,36 @@ export function SuiteClientsProjectsDirectory({
               >
                 <Prohibition className="h-4 w-4" aria-hidden />
               </button>
-              {[
-                "#6366f1",
-                "#0ea5e9",
-                "#10b981",
-                "#f59e0b",
-                "#ef4444",
-                "#a855f7",
-                "#64748b",
-              ].map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  aria-label={`Colour ${color}`}
-                  aria-pressed={draft.color === color}
-                  onClick={() => setDraft({ ...draft, color })}
-                  className={cn(
-                    "h-8 w-8 rounded-full ring-offset-2",
-                    draft.color === color && "ring-2 ring-ph-brand",
-                  )}
-                  style={{ backgroundColor: color }}
-                />
+              </Tooltip>
+              {DIRECTORY_COLOURS.map(([color, name]) => (
+                <Tooltip key={color} content={name} side="bottom">
+                  <button
+                    type="button"
+                    aria-label={name}
+                    aria-pressed={draft.color === color}
+                    onClick={() => setDraft({ ...draft, color })}
+                    className={cn(
+                      "h-8 w-8 rounded-full ring-offset-2",
+                      draft.color === color && "ring-2 ring-ph-brand",
+                    )}
+                    style={{ backgroundColor: color }}
+                  />
+                </Tooltip>
               ))}
+              <Tooltip content="Choose a custom colour" side="bottom">
               <label
                 className={cn(
                   "relative inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full ring-1 ring-ph-border ring-offset-2",
-                  ![
-                    "#6366f1",
-                    "#0ea5e9",
-                    "#10b981",
-                    "#f59e0b",
-                    "#ef4444",
-                    "#a855f7",
-                    "#64748b",
-                  ].includes(draft.color) && "ring-2 ring-ph-brand",
+                  !DIRECTORY_COLOURS.some(([color]) => color === draft.color) &&
+                    "ring-2 ring-ph-brand",
                 )}
                 style={{
                   background:
                     "conic-gradient(from 0deg, #ef4444, #f59e0b, #eab308, #22c55e, #06b6d4, #3b82f6, #8b5cf6, #ec4899, #ef4444)",
                 }}
-                title="Custom colour"
               >
                 <span className="flex h-4 w-4 items-center justify-center rounded-full bg-ph-surface">
-                  {[
-                    "#6366f1",
-                    "#0ea5e9",
-                    "#10b981",
-                    "#f59e0b",
-                    "#ef4444",
-                    "#a855f7",
-                    "#64748b",
-                  ].includes(draft.color) ? (
+                  {DIRECTORY_COLOURS.some(([color]) => color === draft.color) ? (
                     <Plus className="h-3 w-3 text-ph-ink" aria-hidden />
                   ) : (
                     <span
@@ -912,6 +1002,7 @@ export function SuiteClientsProjectsDirectory({
                   className="sr-only"
                 />
               </label>
+              </Tooltip>
             </div>
           </div>
           {editing?.kind.includes("project") ? (

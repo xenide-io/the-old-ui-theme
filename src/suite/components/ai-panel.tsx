@@ -733,35 +733,48 @@ export function SuiteAiPanel({
                   <div className="group flex items-end gap-1.5">
                     {!waiting ? (
                       <div className="mb-0.5 flex items-center gap-0.5 opacity-100 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:opacity-100">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            void handleCopy(index, message.content)
+                        <Tooltip
+                          content={
+                            copiedIndex === index
+                              ? "Copied to clipboard"
+                              : "Copy message"
                           }
-                          aria-label={
-                            copiedIndex === index ? "Copied" : "Copy message"
-                          }
-                          data-test="ask-ai-copy"
-                          className="ph-btn ph-btn-ghost ph-btn-square ph-btn-xs h-7 w-7 text-ph-mutedtext"
+                          side="top"
                         >
-                          {copiedIndex === index ? (
-                            <Check className="h-3.5 w-3.5" />
-                          ) : (
-                            <Copy className="h-3.5 w-3.5" />
-                          )}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditDraft(message.content);
-                            setEditingIndex(index);
-                          }}
-                          aria-label="Edit message"
-                          data-test="ask-ai-edit"
-                          className="ph-btn ph-btn-ghost ph-btn-square ph-btn-xs h-7 w-7 text-ph-mutedtext"
-                        >
-                          <EditPencil className="h-3.5 w-3.5" />
-                        </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              void handleCopy(index, message.content)
+                            }
+                            aria-label={
+                              copiedIndex === index
+                                ? "Copied to clipboard"
+                                : "Copy message"
+                            }
+                            data-test="ask-ai-copy"
+                            className="ph-btn ph-btn-ghost ph-btn-square ph-btn-xs h-7 w-7 text-ph-mutedtext"
+                          >
+                            {copiedIndex === index ? (
+                              <Check className="h-3.5 w-3.5" />
+                            ) : (
+                              <Copy className="h-3.5 w-3.5" />
+                            )}
+                          </button>
+                        </Tooltip>
+                        <Tooltip content="Edit this message" side="top">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditDraft(message.content);
+                              setEditingIndex(index);
+                            }}
+                            aria-label="Edit this message"
+                            data-test="ask-ai-edit"
+                            className="ph-btn ph-btn-ghost ph-btn-square ph-btn-xs h-7 w-7 text-ph-mutedtext"
+                          >
+                            <EditPencil className="h-3.5 w-3.5" />
+                          </button>
+                        </Tooltip>
                       </div>
                     ) : null}
                     <div className="w-fit max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-ph-brand px-3 py-2 text-sm leading-relaxed text-[var(--ph-on-accent)] [overflow-wrap:anywhere]">
@@ -1049,34 +1062,36 @@ export function SuiteAiPanel({
             className="max-h-36 min-h-10 flex-1 resize-none bg-transparent px-1.5 py-2 text-sm leading-relaxed text-ph-ink outline-hidden placeholder:text-ph-mutedtext"
           />
           {waiting ? (
-            <Tooltip content="Stop generating">
-              <Button
-                type="button"
-                variant="neutral"
-                shape="circle"
-                size="sm"
-                onClick={stop}
-                data-test="ask-ai-stop"
-                className="shrink-0"
-                aria-label="Stop generating"
-                icon={<Square className="h-3.5 w-3.5 fill-current" />}
-              />
-            </Tooltip>
+            <Button
+              type="button"
+              variant="neutral"
+              shape="circle"
+              size="sm"
+              onClick={stop}
+              data-test="ask-ai-stop"
+              className="shrink-0"
+              aria-label="Stop generating"
+              tooltip="Stop generating"
+              icon={<Square className="h-3.5 w-3.5 fill-current" />}
+            />
           ) : (
-            <Tooltip content="Send message">
-              <Button
-                type="button"
-                variant="primary"
-                shape="circle"
-                size="sm"
-                onClick={() => void ask(prompt)}
-                disabled={!prompt.trim()}
-                data-test="ask-ai-send"
-                className="shrink-0"
-                aria-label="Send message"
-                icon={<ArrowUp className="h-4 w-4" />}
-              />
-            </Tooltip>
+            <Button
+              type="button"
+              variant="primary"
+              shape="circle"
+              size="sm"
+              onClick={() => void ask(prompt)}
+              disabled={!prompt.trim()}
+              data-test="ask-ai-send"
+              className="shrink-0"
+              aria-label="Send message"
+              tooltip={
+                prompt.trim()
+                  ? "Send message"
+                  : "Write a message to send"
+              }
+              icon={<ArrowUp className="h-4 w-4" />}
+            />
           )}
         </div>
       </div>

@@ -24,6 +24,7 @@ export {
 export { SuiteNotificationBell } from "./components/suite-notification-bell";
 export {
   SuiteNotificationSettings,
+  type SuiteEmailNotificationPreference,
   type SuiteWebPushController,
   type SuiteWebPushState,
   type SuiteNotificationSettingsProps,
@@ -286,12 +287,15 @@ export {
   type BridgeObject,
   type BridgeChoice,
   type BridgeField,
+  type BridgeProperty,
   type BridgePair,
   type BridgeDefinition,
   type BridgeConnection,
   type BridgeBindingRow,
   type BridgeProjectOption,
   type BridgeRecord,
+  type BridgeConflict,
+  type BridgeConflictField,
 } from "./components/suite-bridge-screen";
 export { ShellyWalking } from "./components/shelly-walking";
 export {

@@ -1,7 +1,7 @@
 "use client";
 
 import type { HTMLAttributes, ReactNode } from "react";
-import { IconArrowDown, IconTuning } from "@/components/icons";
+import { IconFilter, IconSort } from "@/components/icons";
 import { cn } from "@/lib/cn";
 import {
   DropdownMenu,
@@ -24,12 +24,16 @@ export interface FilterMenuProps {
   options: readonly FilterMenuOption[];
   onValueChange: (value: string) => void;
   placeholder?: ReactNode;
+  /** Hide the value chip when it matches this option (e.g. "any" / "none"). */
+  inactiveValue?: string;
   align?: DropdownAlign;
   disabled?: boolean;
   className?: string;
+  /** Optional leading icon; defaults to the funnel filter glyph. */
+  icon?: ReactNode;
 }
 
-export interface SortMenuProps extends Omit<FilterMenuProps, "placeholder"> {
+export interface SortMenuProps extends Omit<FilterMenuProps, "placeholder" | "icon"> {
   direction?: "ascending" | "descending";
 }
 
@@ -75,11 +79,17 @@ export function FilterMenu({
   options,
   onValueChange,
   placeholder = "Any",
+  inactiveValue,
   align = "start",
   disabled,
   className,
+  icon,
 }: FilterMenuProps) {
   const selected = options.find((option) => option.value === value);
+  const isInactive =
+    inactiveValue != null && (selected == null || selected.value === inactiveValue);
+  const showValue = selected != null && !isInactive;
+  const isActive = showValue && inactiveValue != null;
   const displayValue = selected?.label ?? placeholder;
   const accessibleValue = selected ? getOptionText(selected) : String(placeholder);
 
@@ -90,10 +100,16 @@ export function FilterMenu({
       disabled={disabled}
       className={className}
       trigger={
-        <span className={cn("ph-filter-menu-trigger", selected && "ph-filter-menu-trigger--active")}>
-          <IconTuning className="h-3.5 w-3.5" aria-hidden />
+        <span className={cn("ph-filter-menu-trigger", isActive && "ph-filter-menu-trigger--active")}>
+          {icon === undefined ? (
+            <IconFilter className="ph-filter-menu-trigger__icon" aria-hidden />
+          ) : (
+            icon
+          )}
           <span className="ph-filter-menu-trigger__label">{label}</span>
-          <span className="ph-filter-menu-trigger__value">{displayValue}</span>
+          {showValue ? (
+            <span className="ph-filter-menu-trigger__value">{displayValue}</span>
+          ) : null}
         </span>
       }
     >
@@ -118,12 +134,16 @@ export function SortMenu({
   value,
   options,
   onValueChange,
+  inactiveValue,
   direction = "descending",
   align = "end",
   disabled,
   className,
 }: SortMenuProps) {
   const selected = options.find((option) => option.value === value);
+  const isInactive = inactiveValue != null && selected?.value === inactiveValue;
+  const showValue = selected != null && !isInactive;
+  const isActive = showValue && inactiveValue != null;
 
   return (
     <DropdownMenu
@@ -132,13 +152,23 @@ export function SortMenu({
       disabled={disabled}
       className={className}
       trigger={
-        <span className="ph-filter-menu-trigger ph-sort-menu-trigger">
-          <IconArrowDown
-            className={cn("h-3.5 w-3.5", direction === "ascending" && "rotate-180")}
+        <span
+          className={cn(
+            "ph-filter-menu-trigger",
+            isActive && "ph-filter-menu-trigger--active",
+          )}
+        >
+          <IconSort
+            className={cn(
+              "ph-filter-menu-trigger__icon",
+              direction === "ascending" && "rotate-180",
+            )}
             aria-hidden
           />
           <span className="ph-filter-menu-trigger__label">{label}</span>
-          {selected ? <span className="ph-filter-menu-trigger__value">{selected.label}</span> : null}
+          {showValue ? (
+            <span className="ph-filter-menu-trigger__value">{selected.label}</span>
+          ) : null}
         </span>
       }
     >

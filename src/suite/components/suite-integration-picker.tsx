@@ -18,7 +18,8 @@ import {
   Search,
   Xmark,
 } from "iconoir-react";
-import { Button, Input, Modal } from "@/components/ui";
+import { Button, Input, Modal, Tooltip } from "@/components/ui";
+import { cn } from "@/lib/cn";
 
 export interface SuiteIntegrationPickerItem {
   id: string;
@@ -84,6 +85,9 @@ export interface SuiteIntegrationPickerProps {
   title?: string;
   description?: string;
   dataTest?: string;
+  /** Host-specific context, such as the workspace to connect to. */
+  headerContent?: ReactNode;
+  compact?: boolean;
 }
 
 const DESCRIPTION_LIMIT = 90;
@@ -144,9 +148,7 @@ const BRIDGE_MARK: Record<string, { src: string; name: string }> = {
 
 export function suiteAppsForIntegration(
   itemOrCategories:
-    | { bridgeTargets?: readonly string[] }
-    | readonly string[]
-    | undefined,
+    { bridgeTargets?: readonly string[] } | readonly string[] | undefined,
 ): string[] {
   if (
     !itemOrCategories ||
@@ -183,6 +185,8 @@ export function SuiteIntegrationPicker({
   title = "Integrate an app",
   description = "Connect an app to this workspace securely.",
   dataTest = "suite-integration-picker",
+  headerContent,
+  compact = false,
 }: SuiteIntegrationPickerProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
@@ -193,7 +197,9 @@ export function SuiteIntegrationPicker({
   const categoryMenuRef = useRef<HTMLDivElement>(null);
   const categoryTriggerRef = useRef<HTMLButtonElement>(null);
   const categorySearchRef = useRef<HTMLInputElement>(null);
-  const categoryOptionRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const categoryOptionRefs = useRef<Record<string, HTMLButtonElement | null>>(
+    {},
+  );
   const pendingCategoryFocus = useRef<"trigger" | "search" | string | null>(
     null,
   );
@@ -290,7 +296,8 @@ export function SuiteIntegrationPicker({
   ) {
     const index = categoryValues.indexOf(value);
     let nextIndex: number | null = null;
-    if (event.key === "ArrowDown") nextIndex = (index + 1) % categoryValues.length;
+    if (event.key === "ArrowDown")
+      nextIndex = (index + 1) % categoryValues.length;
     else if (event.key === "ArrowUp")
       nextIndex = (index - 1 + categoryValues.length) % categoryValues.length;
     else if (event.key === "Home") nextIndex = 0;
@@ -419,7 +426,9 @@ export function SuiteIntegrationPicker({
       setItemToDisconnect(null);
     } catch (cause) {
       setDisconnectError(
-        cause instanceof Error ? cause.message : "Could not disconnect the app.",
+        cause instanceof Error
+          ? cause.message
+          : "Could not disconnect the app.",
       );
     } finally {
       setDisconnecting(false);
@@ -527,11 +536,23 @@ export function SuiteIntegrationPicker({
         onClose={onClose}
         title={title}
         description={description}
-        size="xl"
+        size={compact ? "lg" : "xl"}
         dataTest={dataTest}
-        bodyClassName="!overflow-hidden"
+        className={
+          compact
+            ? "flex max-h-[min(46rem,calc(100dvh-2rem))] flex-col p-0 [&>.ph-modal-header]:px-4 [&>.ph-modal-header]:py-3"
+            : undefined
+        }
+        bodyClassName={cn(
+          "!overflow-hidden",
+          compact && "!m-0 !flex min-h-0 flex-col !p-4",
+        )}
       >
-        <div className="space-y-4">
+        <div
+          className={compact ? "flex min-h-0 flex-col gap-3" : "space-y-4"}
+          data-compact={compact || undefined}
+        >
+          {headerContent}
           {connectionError ? (
             <p className="text-sm text-ph-danger" role="alert">
               {connectionError}
@@ -549,13 +570,12 @@ export function SuiteIntegrationPicker({
               onChange={(event) => setBridgeOnly(event.target.checked)}
               aria-label="Shelly Bridge only"
             />
-            <Bridge3d
-              className="h-4 w-4 shrink-0 text-ph-subtle"
-              aria-hidden
-            />
+            <Bridge3d className="h-4 w-4 shrink-0 text-ph-subtle" aria-hidden />
             <span>Shelly Bridge only</span>
           </label>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div
+            className={cn("grid md:grid-cols-2", compact ? "gap-2" : "gap-4")}
+          >
             <div className="relative">
               <Search
                 className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-ph-subtle"
@@ -569,7 +589,11 @@ export function SuiteIntegrationPicker({
                 }}
                 placeholder="Search apps..."
                 aria-label="Search apps"
-                className="pl-10"
+                className={cn(
+                  "pl-10",
+                  compact &&
+                    "h-9 min-h-9 text-sm [@media(pointer:coarse)]:min-h-11",
+                )}
               />
             </div>
             <div ref={categoryMenuRef} className="relative">
@@ -577,7 +601,11 @@ export function SuiteIntegrationPicker({
                 ref={categoryTriggerRef}
                 id={`${dataTest}-category`}
                 type="button"
-                className="ph-input flex w-full items-center justify-between text-left"
+                className={cn(
+                  "ph-input flex w-full items-center justify-between text-left",
+                  compact &&
+                    "h-9 min-h-9 text-sm [@media(pointer:coarse)]:min-h-11",
+                )}
                 aria-haspopup="listbox"
                 aria-expanded={categoryMenuOpen}
                 aria-controls={
@@ -607,9 +635,7 @@ export function SuiteIntegrationPicker({
                 />
               </button>
               {categoryMenuOpen ? (
-                <div
-                  className="absolute z-20 mt-2 max-h-[min(22rem,calc(100dvh-12rem))] w-full max-w-full overflow-hidden rounded-[var(--ph-radius-overlay)] border border-[var(--ph-border-control)] bg-[var(--ph-surface-overlay)] p-2 shadow-[var(--ph-shadow-floating)]"
-                >
+                <div className="absolute z-20 mt-2 max-h-[min(22rem,calc(100dvh-12rem))] w-full max-w-full overflow-hidden rounded-[var(--ph-radius-overlay)] border border-[var(--ph-border-control)] bg-[var(--ph-surface-overlay)] p-2 shadow-[var(--ph-shadow-floating)]">
                   <Input
                     ref={categorySearchRef}
                     value={categoryQuery}
@@ -649,7 +675,10 @@ export function SuiteIntegrationPicker({
                           if (event.key === "Escape") {
                             event.preventDefault();
                             closeCategoryMenu(true);
-                          } else if (event.key === "Enter" || event.key === " ") {
+                          } else if (
+                            event.key === "Enter" ||
+                            event.key === " "
+                          ) {
                             event.preventDefault();
                             selectCategory(value);
                           } else moveCategoryFocus(event, value);
@@ -666,7 +695,10 @@ export function SuiteIntegrationPicker({
 
           <div
             ref={scrollViewportRef}
-            className="min-h-0 max-h-[min(60vh,32rem)] w-full overflow-y-auto pr-1"
+            className={cn(
+              "min-h-0 w-full overflow-y-auto pr-1",
+              compact ? "max-h-[min(48dvh,24rem)]" : "max-h-[min(60vh,32rem)]",
+            )}
           >
             {loading || catalogLoading ? (
               <div
@@ -678,7 +710,13 @@ export function SuiteIntegrationPicker({
                 ))}
               </div>
             ) : (
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <div
+                className={
+                  compact
+                    ? "space-y-2"
+                    : "grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+                }
+              >
                 {filtered.map((item) => {
                   const isExpanded = expanded === item.id;
                   const longDescription =
@@ -689,6 +727,81 @@ export function SuiteIntegrationPicker({
                     isExpanded || !longDescription
                       ? item.description
                       : `${item.description.slice(0, DESCRIPTION_LIMIT).trimEnd()}...`;
+                  if (compact)
+                    return (
+                      <div
+                        key={item.id}
+                        className="flex min-w-0 items-center gap-3 rounded-lg border border-ph-border bg-ph-surface p-3"
+                      >
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-ph-muted text-ph-ink">
+                          {item.icon ?? (
+                            <Plug className="h-4 w-4" aria-hidden />
+                          )}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="break-words text-sm font-semibold text-ph-ink">
+                            {item.label}
+                          </p>
+                          <p className="mt-0.5 hidden text-xs leading-5 text-ph-subtle sm:block">
+                            {text}
+                          </p>
+                          {longDescription ? (
+                            <button
+                              type="button"
+                              className="hidden text-xs font-medium text-ph-brand sm:inline"
+                              aria-expanded={isExpanded}
+                              onClick={() =>
+                                setExpanded(isExpanded ? null : item.id)
+                              }
+                            >
+                              {isExpanded ? "See less" : "See more"}
+                            </button>
+                          ) : null}
+                          {schemes.length || bridgeApps.length ? (
+                            <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                              {schemes.map((scheme) => (
+                                <span
+                                  key={scheme}
+                                  className="rounded border border-ph-border bg-ph-muted/50 px-1.5 py-0.5 text-[11px] text-ph-mutedtext"
+                                  data-test={`${dataTest}-${item.id}-auth-${scheme.toLowerCase()}`}
+                                >
+                                  {authSchemeLabel(scheme)}
+                                </span>
+                              ))}
+                              {bridgeApps.map((app) => (
+                                <Tooltip
+                                  key={app}
+                                  content={`Also available in ${BRIDGE_MARK[app].name}`}
+                                  side="top"
+                                >
+                                <img
+                                  src={BRIDGE_MARK[app].src}
+                                  alt=""
+                                  className="h-4 w-4"
+                                  data-test={`${dataTest}-${item.id}-app-${app}`}
+                                />
+                                </Tooltip>
+                              ))}
+                            </div>
+                          ) : null}
+                        </div>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          className="shrink-0"
+                          disabled={
+                            Boolean(item.unavailableReason) || item.connecting
+                          }
+                          onClick={() => connectItem(item)}
+                          aria-label={`Connect ${item.label}`}
+                        >
+                          {item.connecting
+                            ? "Connecting…"
+                            : (item.unavailableReason ?? "Connect")}
+                        </Button>
+                      </div>
+                    );
                   return (
                     <div
                       key={item.id}
@@ -738,14 +851,18 @@ export function SuiteIntegrationPicker({
                             const mark = BRIDGE_MARK[app];
                             if (!mark) return null;
                             return (
-                              <img
+                              <Tooltip
                                 key={app}
-                                src={mark.src}
-                                alt=""
-                                title={`Bridge in ${mark.name}`}
-                                className="h-5 w-5"
-                                data-test={`${dataTest}-${item.id}-app-${app}`}
-                              />
+                                content={`Bridges into ${mark.name}`}
+                                side="top"
+                              >
+                                <img
+                                  src={mark.src}
+                                  alt=""
+                                  className="h-5 w-5"
+                                  data-test={`${dataTest}-${item.id}-app-${app}`}
+                                />
+                              </Tooltip>
                             );
                           })}
                         </div>

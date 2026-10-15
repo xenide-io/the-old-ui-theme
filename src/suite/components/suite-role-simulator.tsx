@@ -15,10 +15,12 @@ import { Modal } from "../../components/ui/Modal";
 import { Button } from "../../components/ui/Button";
 
 const ROLE_DESCRIPTIONS: Record<SimulatedRole, string> = {
-  owner: "Everything, including workspace and integration settings.",
-  admin: "Manage the workspace, projects, and people. No ownership transfer.",
-  editor: "Create and edit the workspace's work items and settings.",
-  member: "See and work on their own assigned items only.",
+  owner: "Everything an admin sees, plus billing and ownership.",
+  admin: "Everything an editor sees, plus people, workspace settings, and reports.",
+  editor:
+    "Everything a member sees, plus clients, projects, invoices, and shared documents.",
+  member:
+    "Today, tasks, time, and documents. No client, project, people, or billing management.",
 };
 
 /**

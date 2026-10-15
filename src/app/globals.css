@@ -2318,110 +2318,206 @@ body {
     }
   }
 
-  /* Composable filter/sort bar and applied chips. */
+  /*
+   * View controls (Filter, Sort, Group, search). Ghost 28px buttons, like
+   * ClickUp / Asana toolbars. A tint means the control is narrowing the view.
+   * Inputs keep a field so search doesn't disappear into the toolbar.
+   */
   .ph-filter-bar {
-    @apply flex flex-wrap items-center justify-between gap-3 px-3 py-2;
-    background: var(--ph-surface-raised);
-    border: 1px solid var(--ph-border-control);
-    border-radius: var(--ph-radius-app);
-    box-shadow:
-      var(--ph-chrome-inset-face-top),
-      var(--ph-shadow-elevation-3000);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.375rem;
   }
 
   .ph-filter-bar__controls,
   .ph-filter-chips {
-    @apply flex min-w-0 flex-wrap items-center gap-2;
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.125rem;
   }
 
   .ph-filter-bar__clear {
-    @apply min-h-8 rounded-md px-2 text-xs font-medium text-ph-mutedtext underline-offset-4;
+    height: 1.75rem;
+    border-radius: 0.375rem;
+    padding-inline: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ph-text-tertiary);
   }
 
   .ph-filter-bar__clear:hover {
-    @apply text-ph-ink underline;
+    color: var(--ph-text-primary);
+    background: var(--ph-surface-hover);
   }
 
   .ph-filter-bar__clear:focus-visible,
   .ph-filter-chip__main:focus-visible,
-  .ph-filter-chip__remove:focus-visible {
-    outline: 3px solid color-mix(in oklab, var(--ph-focus-ring) 38%, transparent);
-    outline-offset: 2px;
+  .ph-filter-chip__remove:focus-visible,
+  .ph-filter-field:focus-visible,
+  .ph-filter-option:focus-visible,
+  .ph-filter-panel__back:focus-visible,
+  .ph-filter-panel__add:focus-visible,
+  .ph-filter-row__remove:focus-visible,
+  .ph-filter-menu-trigger:focus-visible {
+    outline: 2px solid var(--ph-focus-ring);
+    outline-offset: 1px;
   }
 
   .ph-filter-bar__results {
-    @apply whitespace-nowrap text-xs tabular-nums text-ph-mutedtext;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ph-text-tertiary);
   }
 
   .ph-filter-menu-trigger {
-    @apply inline-flex min-h-8 max-w-full items-center gap-1.5 whitespace-nowrap px-2.5 text-xs font-medium text-ph-subtle;
-    border: 1px solid var(--ph-border-control);
-    border-radius: 9999px;
-    background: var(--ph-surface-inset);
+    display: inline-flex;
+    height: 1.75rem;
+    min-height: 1.75rem;
+    max-width: 100%;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
+    padding-inline: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--ph-text-secondary);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
     transition:
-      border-color var(--ph-motion-fast) ease,
       background-color var(--ph-motion-fast) ease,
       color var(--ph-motion-fast) ease;
   }
 
+  .ph-filter-menu-trigger:hover,
   .ph-dropdown-trigger:hover .ph-filter-menu-trigger,
   .ph-dropdown-trigger[data-state="open"] .ph-filter-menu-trigger {
     color: var(--ph-text-primary);
-    border-color: var(--ph-border-strong);
     background: var(--ph-surface-hover);
   }
 
-  .ph-filter-menu-trigger--active {
-    border-color: color-mix(in oklab, var(--ph-accent) 45%, var(--ph-border-control));
-    background: color-mix(in oklab, var(--ph-accent) 10%, var(--ph-surface-raised));
-  }
-
-  .ph-filter-menu-trigger__label {
-    color: var(--ph-text-tertiary);
-  }
-
-  .ph-filter-menu-trigger__value {
-    @apply max-w-40 overflow-hidden text-ellipsis;
+  .ph-filter-menu-trigger--active,
+  .ph-dropdown-trigger:hover .ph-filter-menu-trigger--active,
+  .ph-dropdown-trigger[data-state="open"] .ph-filter-menu-trigger--active {
     color: var(--ph-text-primary);
+    background: color-mix(in oklab, var(--ph-accent) 14%, transparent);
   }
 
-  .ph-sort-menu-trigger {
-    border-radius: var(--ph-radius-control);
-  }
-
-  .ph-filter-chip {
-    @apply inline-flex min-h-8 max-w-full items-stretch overflow-hidden;
-    color: var(--ph-text-secondary);
-    border: 1px solid var(--ph-border-control);
-    border-radius: 9999px;
+  .ph-filter-menu-trigger:has(input) {
+    gap: 0.375rem;
+    padding-inline: 0.5rem;
+    border-color: var(--ph-border-control);
     background: var(--ph-surface-inset);
   }
 
-  .ph-filter-chip--active {
-    color: var(--ph-text-primary);
-    border-color: color-mix(in oklab, var(--ph-accent) 45%, var(--ph-border-control));
-    background: color-mix(in oklab, var(--ph-accent) 10%, var(--ph-surface-raised));
+  .ph-filter-menu-trigger:has(input):hover,
+  .ph-filter-menu-trigger:has(input):focus-within {
+    border-color: var(--ph-border-strong);
+    background: var(--ph-surface);
   }
 
-  .ph-filter-chip__main {
-    @apply inline-flex min-w-0 items-center gap-1.5 rounded-l-full px-2.5 text-xs font-medium;
-  }
-
-  button.ph-filter-chip__main:hover {
-    background: var(--ph-surface-hover);
-  }
-
-  .ph-filter-chip__label {
+  .ph-filter-menu-trigger__icon {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
     color: var(--ph-text-tertiary);
   }
 
+  .ph-filter-menu-trigger--active .ph-filter-menu-trigger__icon {
+    color: var(--ph-accent);
+  }
+
+  .ph-filter-menu-trigger__label {
+    color: inherit;
+  }
+
+  .ph-filter-menu-trigger__value {
+    max-width: 9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+    color: var(--ph-text-primary);
+  }
+
+  .ph-filter-menu-trigger__value::before {
+    content: "·";
+    margin-right: 0.25rem;
+    font-weight: 500;
+    color: var(--ph-text-tertiary);
+  }
+
+  .ph-filter-menu-trigger__count {
+    display: inline-flex;
+    min-width: 1rem;
+    height: 1rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding-inline: 0.25rem;
+    background: var(--ph-accent);
+    color: var(--ph-on-accent);
+    font-size: 0.625rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .ph-filter-chip {
+    display: inline-flex;
+    height: 1.75rem;
+    min-height: 1.75rem;
+    max-width: 100%;
+    align-items: stretch;
+    overflow: hidden;
+    color: var(--ph-text-primary);
+    border-radius: 0.375rem;
+    background: color-mix(in oklab, var(--ph-accent) 12%, var(--ph-surface-hover));
+  }
+
+  .ph-filter-chip__main {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.25rem;
+    padding-inline: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  button.ph-filter-chip__main:hover {
+    background: color-mix(in oklab, var(--ph-accent) 8%, transparent);
+  }
+
+  .ph-filter-chip__label {
+    color: var(--ph-text-secondary);
+  }
+
+  .ph-filter-chip__op {
+    color: var(--ph-text-tertiary);
+    font-weight: 400;
+  }
+
   .ph-filter-chip__value {
-    @apply max-w-40 overflow-hidden text-ellipsis whitespace-nowrap;
+    max-width: 11rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
   }
 
   .ph-filter-chip__remove {
-    @apply inline-flex min-h-7 min-w-7 items-center justify-center rounded-r-full;
-    border-left: 1px solid color-mix(in oklab, currentColor 16%, transparent);
+    display: inline-flex;
+    width: 1.5rem;
+    min-width: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--ph-text-tertiary);
   }
 
   .ph-filter-chip__remove:hover {
@@ -2430,7 +2526,165 @@ body {
   }
 
   .ph-filter-controls {
-    @apply space-y-3;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .ph-filter-panel__bar {
+    display: flex;
+    min-height: 1.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-inline: 0.125rem;
+  }
+
+  .ph-filter-panel__title {
+    padding-inline: 0.375rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ph-text-tertiary);
+  }
+
+  .ph-filter-panel__back,
+  .ph-filter-panel__add,
+  .ph-filter-panel__clear {
+    display: inline-flex;
+    min-height: 1.75rem;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 0.375rem;
+    padding-inline: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ph-text-primary);
+  }
+
+  .ph-filter-panel__clear {
+    font-weight: 500;
+    color: var(--ph-text-tertiary);
+  }
+
+  .ph-filter-panel__back:hover,
+  .ph-filter-panel__add:hover,
+  .ph-filter-panel__clear:hover {
+    background: var(--ph-surface-hover);
+    color: var(--ph-text-primary);
+  }
+
+  .ph-filter-panel__query {
+    height: 1.75rem;
+    width: 100%;
+    border-radius: 0.375rem;
+    border: 1px solid var(--ph-border-control);
+    background: var(--ph-surface-inset);
+    padding-inline: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--ph-text-primary);
+    outline: none;
+  }
+
+  .ph-filter-panel__query:focus {
+    border-color: color-mix(in oklab, var(--ph-accent) 55%, var(--ph-border-control));
+  }
+
+  .ph-filter-field,
+  .ph-filter-option,
+  .ph-filter-row {
+    display: flex;
+    width: 100%;
+    min-height: 1.75rem;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.375rem;
+    padding: 0 0.375rem;
+    text-align: left;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    color: var(--ph-text-primary);
+  }
+
+  .ph-filter-field,
+  .ph-filter-option {
+    cursor: pointer;
+  }
+
+  .ph-filter-field:hover,
+  .ph-filter-option:hover,
+  .ph-filter-row:hover {
+    background: var(--ph-surface-hover);
+  }
+
+  .ph-filter-field__icon,
+  .ph-filter-field__chevron {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
+    color: var(--ph-text-tertiary);
+  }
+
+  .ph-filter-field__meta {
+    margin-left: auto;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--ph-accent);
+  }
+
+  .ph-filter-field__chevron {
+    margin-left: auto;
+  }
+
+  .ph-filter-option__check {
+    width: 0.875rem;
+    height: 0.875rem;
+    flex-shrink: 0;
+    accent-color: var(--ph-accent);
+  }
+
+  .ph-filter-row__main {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    align-items: center;
+    gap: 0.375rem;
+    text-align: left;
+  }
+
+  .ph-filter-row__field,
+  .ph-filter-row__op {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    color: var(--ph-text-tertiary);
+  }
+
+  .ph-filter-row__value {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .ph-filter-row__remove {
+    display: inline-flex;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+    color: var(--ph-text-tertiary);
+  }
+
+  .ph-filter-row__remove:hover {
+    color: var(--ph-danger-text);
+    background: var(--ph-danger-bg);
   }
 
   /* Authentication shells keep product forms focused without owning auth logic. */

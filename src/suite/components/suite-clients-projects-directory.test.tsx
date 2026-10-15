@@ -12,6 +12,60 @@ import { SuiteClientsProjectsDirectory } from "@/suite/components/suite-clients-
 describe("SuiteClientsProjectsDirectory", () => {
   afterEach(cleanup);
 
+  it("keeps client navigation and project creation in the compact browser", async () => {
+    const user = userEvent.setup();
+    const create = vi.fn();
+    const { container } = render(
+      <SuiteClientsProjectsDirectory
+        compact
+        clients={[
+          { id: "acme", name: "Acme" },
+          { id: "atlas", name: "Atlas" },
+        ]}
+        projects={[{ id: "project", name: "Client portal", clientId: "atlas" }]}
+        canEdit
+        onCreateClient={vi.fn()}
+        onCreateProject={create}
+      />,
+    );
+
+    expect(container.firstElementChild).toHaveAttribute("data-compact", "true");
+    await user.click(screen.getByRole("option", { name: /Atlas/ }));
+    expect(
+      screen.getByRole("button", { name: /Client portal/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "New client" }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Add project" }));
+    const dialog = screen.getByRole("dialog");
+    await user.type(
+      within(dialog).getByRole("textbox", { name: "Name" }),
+      "Compact project",
+    );
+    await user.click(within(dialog).getByRole("button", { name: "Save" }));
+    expect(create).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "Compact project", clientId: "atlas" }),
+    );
+  });
+
+  it("allows project creation with no clients in compact mode", async () => {
+    const user = userEvent.setup();
+    render(
+      <SuiteClientsProjectsDirectory
+        compact
+        clients={[]}
+        projects={[]}
+        canEdit
+        onCreateProject={vi.fn()}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "Add project" }));
+    expect(
+      screen.getByRole("dialog", { name: "New project" }),
+    ).toBeInTheDocument();
+  });
+
   it("offers the Palette icon library instead of an RPG radiogroup", async () => {
     const user = userEvent.setup();
 
@@ -84,7 +138,7 @@ describe("SuiteClientsProjectsDirectory", () => {
       within(dialog).getByRole("textbox", { name: "Name" }),
       "New folder",
     );
-    expect(dialog.querySelector('[title="New folder"]')).toHaveStyle({
+    expect(dialog.querySelector('[data-icon-label="New folder"]')).toHaveStyle({
       color: "#10b981",
     });
     expect(dialog.querySelector("img")).toBeNull();

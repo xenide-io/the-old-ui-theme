@@ -29,6 +29,8 @@ export interface SuiteSidebarProps {
   appSwitcher?: CollapsedNode;
   /** Workspace/org/project switcher rendered below the app switcher. */
   contextSwitcher?: CollapsedNode;
+  /** Extra nodes rendered after the nav item with this href. */
+  insertAfter?: Record<string, CollapsedNode>;
   navItems: SuiteSidebarNavItem[];
   /** Optional secondary nav / tree rendered below primary nav. */
   secondaryNav?: ReactNode;
@@ -68,6 +70,7 @@ function renderNode(
 export function SuiteSidebar({
   appSwitcher,
   contextSwitcher,
+  insertAfter,
   navItems,
   secondaryNav,
   userMenu,
@@ -150,7 +153,7 @@ export function SuiteSidebar({
       type="button"
       data-test="suite-ask-ai-toggle"
       aria-pressed={askAiOpen}
-      aria-label={askAiOpen ? "Back to navigation" : "Shelly AI"}
+      aria-label={askAiOpen ? "Back to navigation" : "Ask Shelly"}
       onClick={toggleAskAi}
       className={cn(
         "ph-btn ph-btn-ghost ph-btn-square h-10 w-10 shrink-0",
@@ -271,7 +274,6 @@ export function SuiteSidebar({
                   const active = Boolean(item.active);
                   const link = (
                     <Link
-                      key={item.label}
                       href={item.href}
                       id={item.id}
                       data-test={item.dataTest ?? "nav-link"}
@@ -317,12 +319,28 @@ export function SuiteSidebar({
                       ) : null}
                     </Link>
                   );
-                  return collapsed ? (
-                    <Tooltip key={item.label} content={item.label} side="right">
+                  const row = collapsed ? (
+                    <Tooltip content={item.label} side="right">
                       {link}
                     </Tooltip>
                   ) : (
                     link
+                  );
+                  const extra = insertAfter?.[item.href];
+                  return (
+                    <div key={item.href}>
+                      {row}
+                      {extra ? (
+                        <div
+                          className={cn(
+                            "py-2",
+                            collapsed && "flex justify-center",
+                          )}
+                        >
+                          {renderNode(extra, collapsed)}
+                        </div>
+                      ) : null}
+                    </div>
                   );
                 })}
               </div>
@@ -357,7 +375,10 @@ export function SuiteSidebar({
           {renderNode(userMenu, collapsed)}
           {showAskAi ? (
             <div className={cn("shrink-0", collapsed ? "mt-2" : "ml-auto")}>
-              <Tooltip content="Shelly AI" side={collapsed ? "right" : "top"}>
+              <Tooltip
+                content={askAiOpen ? "Back to navigation" : "Ask Shelly"}
+                side={collapsed ? "right" : "bottom"}
+              >
                 {askAiButton}
               </Tooltip>
             </div>

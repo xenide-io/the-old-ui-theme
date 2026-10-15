@@ -2,6 +2,7 @@
 
 import { Refresh as RefreshCw } from "iconoir-react";
 import type { ReactNode } from "react";
+import { Tooltip } from "../../components/ui/Tooltip";
 import { cn } from "../lib/cn";
 import { date as suiteDate } from "../lib/dates";
 import { SuiteAppIcon } from "../icons/suite-app-icon";
@@ -220,19 +221,24 @@ export function TodayTopBar({
         </div>
       </div>
       <div className="flex shrink-0 items-center">
-        <button
-          type="button"
-          onClick={onRefresh}
-          disabled={refreshing || loading}
-          className="ph-btn ph-btn-ghost ph-btn-square press-subtle h-10 w-10 text-ph-subtle"
-          data-test="today-refresh"
-          aria-label="Refresh today"
+        <Tooltip
+          content={refreshing ? "Refreshing today" : "Refresh today"}
+          side="bottom"
         >
-          <RefreshCw
-            className={cn("h-4 w-4", refreshing && "animate-spin")}
-            aria-hidden
-          />
-        </button>
+          <button
+            type="button"
+            onClick={onRefresh}
+            disabled={refreshing || loading}
+            className="ph-btn ph-btn-ghost ph-btn-square press-subtle h-10 w-10 text-ph-subtle"
+            data-test="today-refresh"
+            aria-label={refreshing ? "Refreshing today" : "Refresh today"}
+          >
+            <RefreshCw
+              className={cn("h-4 w-4", refreshing && "animate-spin")}
+              aria-hidden
+            />
+          </button>
+        </Tooltip>
       </div>
     </header>
   );

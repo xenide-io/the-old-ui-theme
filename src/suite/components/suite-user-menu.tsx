@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { useSuiteNavigation } from "../lib/navigation";
 import { DropdownMenu, DropdownItem } from "../../components/ui/DropdownMenu";
+import { Tooltip } from "../../components/ui/Tooltip";
 import { avatarColorClass, computeInitials } from "./suite-person-avatar";
 
 export interface SuiteUserMenuProps {
@@ -161,16 +162,17 @@ export function SuiteUserMenu({
       )}
     >
       <div className="shrink-0">{accountMenu}</div>
-      <button
-        type="button"
-        data-test={`${dataTest}-visible-sign-out`}
-        title="Sign out"
-        aria-label="Sign out"
-        className="ph-btn ph-btn-ghost ph-btn-square h-10 w-10 shrink-0 text-ph-mutedtext"
-        onClick={onSignOut}
-      >
-        <LogOut className="h-4 w-4" aria-hidden />
-      </button>
+      <Tooltip content="Sign out" side="top">
+        <button
+          type="button"
+          data-test={`${dataTest}-visible-sign-out`}
+          aria-label="Sign out"
+          className="ph-btn ph-btn-ghost ph-btn-square h-10 w-10 shrink-0 text-ph-mutedtext"
+          onClick={onSignOut}
+        >
+          <LogOut className="h-4 w-4" aria-hidden />
+        </button>
+      </Tooltip>
     </div>
   );
 }

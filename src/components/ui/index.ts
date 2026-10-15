@@ -227,6 +227,7 @@ export {
   type ColorPickerProps,
 } from "@/components/ui/ColorPicker";
 export {
+  OverflowTooltip,
   Tooltip,
   TooltipProvider,
   type TooltipAlign,

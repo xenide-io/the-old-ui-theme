@@ -89,9 +89,9 @@ export default function FilterChipsShowcase() {
         chipsProps={{ chips: applied, onRemove: remove }}
         emptyState={<p className="text-xs text-ph-mutedtext">No filters applied</p>}
       >
-          <FilterMenu label="Status" value={status} options={statusOptions} onValueChange={setStatus} />
-          <FilterMenu label="Owner" value={owner} options={ownerOptions} onValueChange={setOwner} />
-          <SortMenu label="Sort" value={sort} options={sortOptions} onValueChange={setSort} />
+          <FilterMenu label="Status" value={status} inactiveValue="all" options={statusOptions} onValueChange={setStatus} />
+          <FilterMenu label="Owner" value={owner} inactiveValue="anyone" options={ownerOptions} onValueChange={setOwner} />
+          <SortMenu label="Sort" value={sort} inactiveValue="updated" options={sortOptions} onValueChange={setSort} />
       </FilterControls>
     </ShowcaseWrapper>
   );
