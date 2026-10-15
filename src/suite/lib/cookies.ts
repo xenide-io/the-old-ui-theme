@@ -27,7 +27,12 @@ export function suiteCookieDomainAttr(): string {
   if (parts.length >= 3 && known.has(parts[0] ?? "")) {
     return `; Domain=.${parts.slice(1).join(".")}`;
   }
-  if (parts.length >= 2) return `; Domain=.${parts.slice(1).join(".")}`;
+  // Two-label host (e.g. shellstack.io) IS the registrable domain, so the
+  // cookie must be scoped to the whole host to reach its subdomains. Using
+  // parts.slice(1) here produced an invalid `.io` domain and the cookie was
+  // rejected outright on the apex portal.
+  if (parts.length === 2) return `; Domain=.${host}`;
+  if (parts.length >= 3) return `; Domain=.${parts.slice(1).join(".")}`;
   return "";
 }
 

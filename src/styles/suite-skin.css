@@ -246,9 +246,6 @@ body {
   -webkit-mask-image: none;
   mask-image: none;
 }
-.marketing-header[data-scrolled="true"]::before {
-  background: color-mix(in oklab, var(--ph-canvas) 88%, transparent);
-}
 .marketing-header__inner {
   display: flex;
   align-items: center;

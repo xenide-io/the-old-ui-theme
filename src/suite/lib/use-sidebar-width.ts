@@ -125,10 +125,15 @@ export function useSidebarWidth(
   defaultWidth = SIDEBAR_DEFAULT_WIDTH,
 ) {
   const fallbackWidth = snapWidth(clampWidth(defaultWidth));
-  // ponytail: always start at the default so SSR and the first client render
-  // match. Reading the cookie in useState() hydrates 320 vs 412 and React
-  // keeps the server width — TurtleTime / ShellStack / Shelly stay stuck.
-  const [width, setWidth] = useState(fallbackWidth);
+  // The suite apps are client-only SPAs (no SSR), so the stored width can be
+  // read during the first render. Starting at the default and correcting it in
+  // an effect made the sidebar visibly pop from 320 to the saved width on every
+  // load and app switch.
+  const [width, setWidth] = useState(() => {
+    if (typeof window === "undefined") return fallbackWidth;
+    const stored = readSidebarWidth(storageKey);
+    return stored == null ? fallbackWidth : snapWidth(clampWidth(stored));
+  });
   const [narrowViewport, setNarrowViewport] = useState(false);
   const collapsed = narrowViewport || width <= SIDEBAR_COLLAPSE_THRESHOLD;
 
