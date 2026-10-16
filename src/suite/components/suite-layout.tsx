@@ -294,7 +294,7 @@ export function SuiteTabList({
       aria-label={label}
       data-test={dataTest}
       className={cn(
-        'flex min-w-0 flex-wrap gap-2 [&_a]:min-h-[48px] [&_button]:min-h-[48px] sm:[&_a]:min-h-[44px] sm:[&_button]:min-h-[44px]',
+        'flex min-w-0 flex-wrap gap-2 [&_a]:min-h-[3rem] [&_button]:min-h-[3rem] sm:[&_a]:min-h-[2.75rem] sm:[&_button]:min-h-[2.75rem]',
         className,
       )}
     >
@@ -332,7 +332,7 @@ export function SuiteSectionHeader({
         ) : null}
       </div>
       {action ? (
-        <div className="flex min-h-[44px] shrink-0 items-center">{action}</div>
+        <div className="flex min-h-[2.75rem] shrink-0 items-center">{action}</div>
       ) : null}
     </div>
   );

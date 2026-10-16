@@ -213,13 +213,13 @@ export function SuiteCalendarRecord({
         className="suite-calendar-preview"
         style={{
           display: "block",
-          width: "min(340px, calc(100vw - 24px))",
+          width: "min(21.25rem, calc(100vw - 1.5rem))",
           backgroundColor: "var(--ph-surface-raised, var(--ph-surface, #fff))",
           color: "var(--ph-text-primary, #222)",
           border: "1px solid var(--ph-border, #ddd)",
-          borderRadius: "10px",
-          padding: "12px 14px",
-          boxShadow: "0 8px 28px rgb(0 0 0 / 15%)",
+          borderRadius: "0.625rem",
+          padding: "0.75rem 0.875rem",
+          boxShadow: "0 0.5rem 1.75rem rgb(0 0 0 / 15%)",
         }}
         content={
           <span className="suite-calendar-preview-copy">

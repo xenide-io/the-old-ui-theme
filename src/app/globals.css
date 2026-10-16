@@ -54,7 +54,7 @@
 
 /* Structural tokens — shared across colour themes */
 :where(:root) {
-  --ph-shadow-elevation-3000: 0 3px 0 var(--ph-border-3000);
+  --ph-shadow-elevation-3000: 0 0.1875rem 0 var(--ph-border-3000);
   --ph-chrome-depth: 0.1875rem;
   --ph-chrome-inset-solid-top: inset 0 1px 0 hsl(0deg 0% 100% / 0.26);
   --ph-chrome-inset-solid-bottom: inset 0 -1px 0 hsl(0deg 0% 0% / 0.14);
@@ -93,10 +93,10 @@
   --ph-danger-bg: color-mix(in oklab, var(--ph-danger) 12%, var(--ph-surface));
   --ph-danger-border: color-mix(in oklab, var(--ph-danger) 45%, var(--ph-border));
   --ph-danger-text: color-mix(in oklab, var(--ph-danger) 76%, var(--ph-text-primary));
-  --ph-shadow-raised: 0 1px 2px hsl(0deg 0% 0% / 0.08), 0 4px 12px hsl(0deg 0% 0% / 0.06);
-  --ph-shadow-floating: 0 18px 48px hsl(0deg 0% 0% / 0.2), 0 2px 8px hsl(0deg 0% 0% / 0.1);
-  --ph-shadow-control: 0 1px 2px hsl(0deg 0% 0% / 0.1), inset 0 1px 0 hsl(0deg 0% 100% / 0.38);
-  --ph-focus-halo: 0 0 0 3px color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
+  --ph-shadow-raised: 0 1px 0.125rem hsl(0deg 0% 0% / 0.08), 0 0.25rem 0.75rem hsl(0deg 0% 0% / 0.06);
+  --ph-shadow-floating: 0 1.125rem 3rem hsl(0deg 0% 0% / 0.2), 0 0.125rem 0.5rem hsl(0deg 0% 0% / 0.1);
+  --ph-shadow-control: 0 1px 0.125rem hsl(0deg 0% 0% / 0.1), inset 0 1px 0 hsl(0deg 0% 100% / 0.38);
+  --ph-focus-halo: 0 0 0 0.1875rem color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
   --ph-motion-fast: 120ms;
   --ph-motion-standard: 180ms;
   /* UI density. 1 = the raw design size; lower values shrink the whole product
@@ -106,7 +106,7 @@
 
 html {
   scroll-behavior: smooth;
-  /* Root font stays at the initial 16px; every rem-sized thing scales with it
+  /* Root font stays at the initial 1rem; every rem-sized thing scales with it
      (px hairlines deliberately stay crisp). */
   font-size: calc(100% * var(--ph-ui-scale));
 }
@@ -161,8 +161,8 @@ body {
   }
 
   @keyframes ph-spinner-columns {
-    0%, 100% { opacity: 0.35; transform: translateY(2px); }
-    50% { opacity: 1; transform: translateY(-2px); }
+    0%, 100% { opacity: 0.35; transform: translateY(0.125rem); }
+    50% { opacity: 1; transform: translateY(-0.125rem); }
   }
 
   .ph-page-title {
@@ -611,7 +611,7 @@ body {
 
   /* A real face over a real frame stays connected at every interaction state. */
   .ph-btn.ph-btn-raised {
-    --ph-btn-face-offset: -2px;
+    --ph-btn-face-offset: -0.125rem;
     position: relative;
     min-height: var(--ph-btn-control-size);
     border: var(--ph-btn-border-width) solid var(--ph-btn-border);
@@ -647,7 +647,7 @@ body {
   }
 
   .ph-btn.ph-btn-raised:hover:not(:disabled) {
-    --ph-btn-face-offset: -3px;
+    --ph-btn-face-offset: -0.1875rem;
     border-color: var(--ph-btn-border-hover);
   }
 
@@ -716,8 +716,8 @@ body {
   }
 
   .ph-card-interactive:focus-within {
-    outline: 3px solid color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
-    outline-offset: 2px;
+    outline: 0.1875rem solid color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
+    outline-offset: 0.125rem;
   }
 
   /* Dashboard / inset insight shells */
@@ -826,7 +826,7 @@ body {
   .ph-textarea.ph-input-error:focus-visible {
     border-color: var(--ph-danger);
     box-shadow:
-      0 0 0 3px color-mix(in oklab, var(--ph-danger) 20%, transparent),
+      0 0 0 0.1875rem color-mix(in oklab, var(--ph-danger) 20%, transparent),
       var(--ph-chrome-inset-face-top),
       var(--ph-chrome-inset-face-bottom);
   }
@@ -879,7 +879,7 @@ body {
     outline: none;
     border-color: color-mix(in oklab, var(--ph-accent) 45%, var(--ph-border));
     box-shadow:
-      0 0 0 3px color-mix(in oklab, var(--ph-accent) 18%, transparent),
+      0 0 0 0.1875rem color-mix(in oklab, var(--ph-accent) 18%, transparent),
       var(--ph-chrome-inset-face-top),
       var(--ph-chrome-inset-face-bottom),
       var(--ph-shadow-elevation-3000);
@@ -1018,7 +1018,7 @@ body {
     height: 1.125rem;
     border-radius: 9999px;
     background: var(--ph-surface);
-    box-shadow: 0 1px 2px hsl(0deg 0% 0% / 0.12);
+    box-shadow: 0 1px 0.125rem hsl(0deg 0% 0% / 0.12);
     transition: transform 0.15s ease;
   }
 
@@ -1057,7 +1057,7 @@ body {
 
   .ph-file-upload:focus-within {
     border-color: color-mix(in oklab, var(--ph-focus-ring) 58%, var(--ph-border));
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--ph-focus-ring) 24%, transparent);
+    box-shadow: 0 0 0 0.1875rem color-mix(in oklab, var(--ph-focus-ring) 24%, transparent);
   }
 
   .ph-control-row-between {
@@ -1074,8 +1074,8 @@ body {
   }
 
   .ph-table-report-wrap:focus-visible {
-    outline: 3px solid color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
-    outline-offset: 2px;
+    outline: 0.1875rem solid color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
+    outline-offset: 0.125rem;
   }
 
   /* Preserve the existing report table geometry and sentence-case headings. */
@@ -1174,10 +1174,10 @@ body {
     content: "";
     position: absolute;
     left: 0.65rem;
-    top: 6px;
-    bottom: 6px;
+    top: 0.375rem;
+    bottom: 0.375rem;
     width: 0.28rem;
-    border-radius: 3px;
+    border-radius: 0.1875rem;
     background: var(--row-ribbon, var(--ph-data-1));
   }
 
@@ -1239,8 +1239,8 @@ body {
   }
 
   .ph-accordion__trigger:focus-visible {
-    outline: 3px solid color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
-    outline-offset: -3px;
+    outline: 0.1875rem solid color-mix(in oklab, var(--ph-focus-ring) 30%, transparent);
+    outline-offset: -0.1875rem;
   }
 
   .ph-collapsible-trigger {
@@ -1259,8 +1259,8 @@ body {
     border: 1px solid var(--ph-border-control);
     border-radius: var(--ph-radius-overlay);
     background: color-mix(in oklab, var(--ph-surface-overlay) 94%, transparent);
-    -webkit-backdrop-filter: blur(24px) saturate(1.2);
-    backdrop-filter: blur(24px) saturate(1.2);
+    -webkit-backdrop-filter: blur(1.5rem) saturate(1.2);
+    backdrop-filter: blur(1.5rem) saturate(1.2);
     box-shadow:
       var(--ph-chrome-inset-face-top),
       var(--ph-shadow-floating);
@@ -1323,8 +1323,8 @@ body {
     border-radius: var(--ph-radius-overlay);
     border: 1px solid var(--ph-border-control);
     background: color-mix(in oklab, var(--ph-surface-overlay) 94%, transparent);
-    -webkit-backdrop-filter: blur(24px) saturate(1.2);
-    backdrop-filter: blur(24px) saturate(1.2);
+    -webkit-backdrop-filter: blur(1.5rem) saturate(1.2);
+    backdrop-filter: blur(1.5rem) saturate(1.2);
     box-shadow:
       var(--ph-chrome-inset-face-top),
       var(--ph-shadow-floating);
@@ -1441,7 +1441,7 @@ body {
       color var(--ph-motion-fast) ease;
   }
 
-  /* 22px glyph, 44px touch target on coarse pointers. */
+  /* 1.375rem glyph, 2.75rem touch target on coarse pointers. */
   .ph-chip-field__clear {
     position: relative;
   }
@@ -1543,7 +1543,7 @@ body {
     border-radius: 999px;
     box-shadow:
       inset 0 0 0 1px color-mix(in oklab, var(--ph-text-primary) 18%, transparent),
-      0 1px 2px rgb(0 0 0 / 0.12);
+      0 1px 0.125rem rgb(0 0 0 / 0.12);
   }
 
   .ph-colour-swatch--lg {
@@ -1633,8 +1633,8 @@ body {
     width: 1rem;
     height: 1rem;
     border-radius: 999px;
-    border: 2px solid #fff;
-    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3), 0 2px 4px rgb(0 0 0 / 0.3);
+    border: 0.125rem solid #fff;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3), 0 0.125rem 0.25rem rgb(0 0 0 / 0.3);
     transform: translate(-50%, -50%);
     pointer-events: none;
   }
@@ -1698,7 +1698,7 @@ body {
     width: 0.75rem;
     height: 0.75rem;
     color: #fff;
-    filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.55));
+    filter: drop-shadow(0 0 0.125rem rgb(0 0 0 / 0.55));
     pointer-events: none;
   }
 
@@ -1735,7 +1735,7 @@ body {
   .ph-code-block__copy:focus-visible {
     outline: none;
     color: white;
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--ph-focus-ring) 55%, transparent);
+    box-shadow: 0 0 0 0.1875rem color-mix(in oklab, var(--ph-focus-ring) 55%, transparent);
   }
 
   /* Breadcrumbs */
@@ -1873,14 +1873,14 @@ body {
 
   .ph-loading {
     @apply inline-block h-6 w-6 rounded-full;
-    border: 2px solid var(--ph-border);
+    border: 0.125rem solid var(--ph-border);
     border-top-color: var(--ph-brand);
     animation: ph-spin 0.65s linear infinite;
   }
 
   .ph-loading-sm {
     @apply h-4 w-4;
-    border-width: 1.5px;
+    border-width: 0.09375rem;
   }
 
   .ph-loading-dots {
@@ -1908,7 +1908,7 @@ body {
   .ph-loader-sm .ph-loading {
     width: 1rem;
     height: 1rem;
-    border-width: 1.5px;
+    border-width: 0.09375rem;
   }
 
   .ph-loader-md .ph-loading {
@@ -1919,7 +1919,7 @@ body {
   .ph-loader-lg .ph-loading {
     width: 2rem;
     height: 2rem;
-    border-width: 2.5px;
+    border-width: 0.15625rem;
   }
 
   .ph-loader-sm .ph-loading-dots > span {
@@ -1968,7 +1968,7 @@ body {
 
   /* Badges — tight pills */
   .ph-badge {
-    @apply inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide;
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wide;
   }
 
   .ph-badge-neutral {
@@ -2009,7 +2009,7 @@ body {
   .ph-alert {
     @apply flex items-start gap-3 px-4 py-3 text-sm;
     border: 1px solid var(--ph-alert-border);
-    border-left-width: 4px;
+    border-left-width: 0.25rem;
     border-radius: var(--ph-radius-surface);
     background: var(--ph-alert-bg);
     color: var(--ph-text-primary);
@@ -2065,14 +2065,14 @@ body {
 
   .ph-alert-dismiss:focus-visible,
   .ph-modal-close:focus-visible {
-    outline: 3px solid color-mix(in oklab, var(--ph-focus-ring) 32%, transparent);
+    outline: 0.1875rem solid color-mix(in oklab, var(--ph-focus-ring) 32%, transparent);
     outline-offset: 1px;
   }
 
   /* Toasts — same semantic tints as alerts */
   .ph-toast {
     @apply relative flex gap-3 rounded-lg border border-ph-border p-4 text-sm shadow-ph;
-    border-left-width: 4px;
+    border-left-width: 0.25rem;
   }
   .ph-toast-info {
     border-left-color: var(--ph-info);
@@ -2109,8 +2109,8 @@ body {
     overflow: visible;
     overscroll-behavior: contain;
     background: color-mix(in oklab, var(--ph-surface-overlay) 94%, transparent);
-    -webkit-backdrop-filter: blur(24px) saturate(1.2);
-    backdrop-filter: blur(24px) saturate(1.2);
+    -webkit-backdrop-filter: blur(1.5rem) saturate(1.2);
+    backdrop-filter: blur(1.5rem) saturate(1.2);
     border-radius: var(--ph-radius-overlay);
     border: 1px solid var(--ph-border-control);
     box-shadow: var(--ph-shadow-floating);
@@ -2124,7 +2124,7 @@ body {
   .ph-modal-body {
     @apply mt-4 min-h-0 overflow-y-auto;
     overscroll-behavior: contain;
-    /* Focus ring-3 is a 3px outer glow; pad so overflow-y:auto does not clip it. */
+    /* Focus ring-3 is a 0.1875rem outer glow; pad so overflow-y:auto does not clip it. */
     padding: 0.375rem;
     margin-inline: -0.375rem;
   }
@@ -2171,8 +2171,8 @@ body {
     border: 1px solid var(--ph-border-control);
     border-radius: var(--ph-radius-overlay);
     background: color-mix(in oklab, var(--ph-surface-overlay) 94%, transparent);
-    -webkit-backdrop-filter: blur(24px) saturate(1.2);
-    backdrop-filter: blur(24px) saturate(1.2);
+    -webkit-backdrop-filter: blur(1.5rem) saturate(1.2);
+    backdrop-filter: blur(1.5rem) saturate(1.2);
     box-shadow:
       var(--ph-chrome-inset-face-top),
       var(--ph-shadow-floating);
@@ -2247,8 +2247,8 @@ body {
     border-radius: var(--ph-radius-overlay);
     border: 1px solid var(--ph-border-control);
     background: color-mix(in oklab, var(--ph-surface-overlay) 94%, transparent);
-    -webkit-backdrop-filter: blur(24px) saturate(1.2);
-    backdrop-filter: blur(24px) saturate(1.2);
+    -webkit-backdrop-filter: blur(1.5rem) saturate(1.2);
+    backdrop-filter: blur(1.5rem) saturate(1.2);
     box-shadow:
       var(--ph-chrome-inset-face-top),
       var(--ph-shadow-floating);
@@ -2324,7 +2324,7 @@ body {
   }
 
   /*
-   * View controls (Filter, Sort, Group, search). Ghost 28px buttons, like
+   * View controls (Filter, Sort, Group, search). Ghost 1.75rem buttons, like
    * ClickUp / Asana toolbars. A tint means the control is narrowing the view.
    * Inputs keep a field so search doesn't disappear into the toolbar.
    */
@@ -2368,7 +2368,7 @@ body {
   .ph-filter-panel__add:focus-visible,
   .ph-filter-row__remove:focus-visible,
   .ph-filter-menu-trigger:focus-visible {
-    outline: 2px solid var(--ph-focus-ring);
+    outline: 0.125rem solid var(--ph-focus-ring);
     outline-offset: 1px;
   }
 
@@ -2762,7 +2762,7 @@ body {
   }
 
   .ph-auth-divider {
-    @apply relative flex items-center justify-center text-[11px] text-ph-mutedtext;
+    @apply relative flex items-center justify-center text-[0.6875rem] text-ph-mutedtext;
   }
 
   .ph-auth-divider::before {
@@ -2829,7 +2829,7 @@ body {
   }
 
   .ph-settings-nav__heading {
-    @apply mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-ph-mutedtext;
+    @apply mb-1 px-2 text-[0.625rem] font-semibold uppercase tracking-wider text-ph-mutedtext;
   }
 
   .ph-settings-nav__items {
@@ -2855,7 +2855,7 @@ body {
   }
 
   .ph-settings-nav__badge {
-    @apply ml-auto text-[10px] text-ph-mutedtext;
+    @apply ml-auto text-[0.625rem] text-ph-mutedtext;
   }
 
   @media (max-width: 47.999rem) {
@@ -2899,12 +2899,12 @@ body {
   /* Segmented control — inset track with one raised selected face. */
   .ph-segmented-control {
     display: inline-flex;
-    gap: 2px;
-    padding: 3px;
+    gap: 0.125rem;
+    padding: 0.1875rem;
     border: 1px solid var(--ph-border-subtle);
     border-radius: calc(var(--ph-radius-control) + 0.1875rem);
     background: var(--ph-surface-inset);
-    box-shadow: inset 0 1px 2px hsl(0deg 0% 0% / 0.08);
+    box-shadow: inset 0 1px 0.125rem hsl(0deg 0% 0% / 0.08);
   }
 
   .ph-segmented-control__item {
@@ -3085,7 +3085,7 @@ body {
   }
 
   .ph-stat-label {
-    @apply text-[11px] font-semibold uppercase tracking-wider text-ph-mutedtext;
+    @apply text-[0.6875rem] font-semibold uppercase tracking-wider text-ph-mutedtext;
   }
 
   .ph-stat-val {
@@ -3103,7 +3103,7 @@ body {
 
   /* Icon tiles — mimic colourful Lemon sidebar / product glyphs */
   .ph-icon-tile {
-    @apply relative flex aspect-square flex-col items-center justify-center rounded-[var(--ph-radius-app)] border text-[10px] font-bold uppercase tracking-wide shadow-xs ring-4 ring-ph-canvas transition hover:brightness-[1.02];
+    @apply relative flex aspect-square flex-col items-center justify-center rounded-[var(--ph-radius-app)] border text-[0.625rem] font-bold uppercase tracking-wide shadow-xs ring-4 ring-ph-canvas transition hover:brightness-[1.02];
   }
 
   .ph-product-icon-tile {
@@ -3119,7 +3119,7 @@ body {
   /** Inline code / HogQL tokens are flat and distinct from physical keys. */
   .ph-code-token,
   .ph-kbd {
-    @apply inline rounded-sm border px-1.5 py-0.5 text-[11px] text-ph-subtle;
+    @apply inline rounded-sm border px-1.5 py-0.5 text-[0.6875rem] text-ph-subtle;
     border-color: var(--ph-border-subtle);
     background: var(--ph-surface-inset);
     font-family: var(--ph-font-monospace-stack);
@@ -3132,13 +3132,13 @@ body {
     @apply inline-flex items-center gap-0.5 align-middle;
   }
 
-  /** PostHog KeyboardShortcut: one compact cap per chord, with a crisp 2px lower edge. */
+  /** PostHog KeyboardShortcut: one compact cap per chord, with a crisp 0.125rem lower edge. */
   .ph-keycap,
   .ph-shortcut {
     @apply inline-flex min-w-5 items-center justify-center whitespace-nowrap px-1 py-0.5 text-xs font-medium text-ph-ink;
     height: 1.25rem;
     border: 1px solid var(--ph-border-strong);
-    border-bottom-width: 2px;
+    border-bottom-width: 0.125rem;
     border-radius: 0.25rem;
     background: var(--ph-surface-raised);
     box-shadow: none;
@@ -3155,7 +3155,7 @@ body {
   }
 
   .ph-shortcut-separator {
-    @apply select-none text-[10px] font-medium text-ph-mutedtext;
+    @apply select-none text-[0.625rem] font-medium text-ph-mutedtext;
   }
 
   /* LemonIcon parity — bespoke filled glyphs */
@@ -3299,7 +3299,7 @@ body {
   }
 
   .ph-tag-sm {
-    @apply px-2 py-0 text-[10px];
+    @apply px-2 py-0 text-[0.625rem];
   }
 
   .ph-tag__icon {
@@ -3449,7 +3449,7 @@ body {
     color: var(--ph-text-secondary);
   }
 
-  .ph-lettermark--xs { @apply h-5 w-5 text-[10px]; }
+  .ph-lettermark--xs { @apply h-5 w-5 text-[0.625rem]; }
   .ph-lettermark--sm { @apply h-7 w-7 text-xs; }
   .ph-lettermark--md { @apply h-10 w-10 text-sm; }
   .ph-lettermark--lg { @apply h-14 w-14 text-lg; }
@@ -3589,8 +3589,8 @@ body {
   }
 
   .ph-link:focus-visible {
-    outline: 3px solid color-mix(in oklab, var(--ph-focus-ring) 32%, transparent);
-    outline-offset: 2px;
+    outline: 0.1875rem solid color-mix(in oklab, var(--ph-focus-ring) 32%, transparent);
+    outline-offset: 0.125rem;
     border-radius: var(--ph-radius-control);
   }
 
@@ -3663,7 +3663,7 @@ body {
   .ph-combobox__input-wrap:focus-within {
     outline: none;
     border-color: color-mix(in oklab, var(--ph-focus-ring) 58%, var(--ph-border));
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--ph-focus-ring) 24%, transparent), var(--ph-chrome-inset-face-top), var(--ph-chrome-inset-face-bottom);
+    box-shadow: 0 0 0 0.1875rem color-mix(in oklab, var(--ph-focus-ring) 24%, transparent), var(--ph-chrome-inset-face-top), var(--ph-chrome-inset-face-bottom);
   }
 
   .ph-combobox__input {
@@ -4040,7 +4040,7 @@ body {
   }
 
   .ph-datepicker__day-header {
-    @apply py-1 text-[11px] font-semibold uppercase text-ph-mutedtext;
+    @apply py-1 text-[0.6875rem] font-semibold uppercase text-ph-mutedtext;
   }
 
   .ph-datepicker__day {

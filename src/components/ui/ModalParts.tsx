@@ -71,7 +71,7 @@ export function ModalFrame({
         className={cn(
           maxWidth === "md" && "max-w-md",
           flush &&
-            "flex max-h-[min(100svh_-_2rem,900px)] flex-col overflow-hidden p-0",
+            "flex max-h-[min(100svh_-_2rem,56.25rem)] flex-col overflow-hidden p-0",
           panelClassName,
         )}
       >
@@ -124,7 +124,7 @@ export function ModalHeader({
         shape="square"
         aria-label="Close"
         onClick={onClose}
-        className="min-h-[44px] min-w-[44px] sm:min-h-[2.3125rem] sm:min-w-[2.3125rem]"
+        className="min-h-[2.75rem] min-w-[2.75rem] sm:min-h-[2.3125rem] sm:min-w-[2.3125rem]"
       >
         <IconClose className="h-3.5 w-3.5" aria-hidden />
       </Button>
@@ -203,7 +203,7 @@ export function ModalActions({
         variant="secondary"
         onClick={onCancel}
         disabled={cancelDisabled || saving}
-        className="min-h-[44px] sm:min-h-[2.3125rem]"
+        className="min-h-[2.75rem] sm:min-h-[2.3125rem]"
       >
         {cancelLabel}
       </Button>
@@ -214,7 +214,7 @@ export function ModalActions({
         disabled={saveDisabled || saving}
         loading={saving}
         icon={!saving ? saveIcon : undefined}
-        className="min-h-[44px] min-w-[7rem] sm:min-h-[2.3125rem]"
+        className="min-h-[2.75rem] min-w-[7rem] sm:min-h-[2.3125rem]"
       >
         {saveLabel}
       </Button>

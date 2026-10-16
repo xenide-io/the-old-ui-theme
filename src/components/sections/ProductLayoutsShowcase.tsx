@@ -52,7 +52,7 @@ export default function ProductLayoutsShowcase() {
             navigation={
               <div className="ph-settings-nav space-y-5">
                 <div>
-                  <h3 className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-ph-mutedtext">General</h3>
+                  <h3 className="mb-1 px-2 text-[0.625rem] font-semibold uppercase tracking-wider text-ph-mutedtext">General</h3>
                   <div className="space-y-0.5">
                     <a className="ph-settings-nav__item ph-settings-nav__item--active">Overview</a>
                     <a className="ph-settings-nav__item">Display</a>
@@ -60,7 +60,7 @@ export default function ProductLayoutsShowcase() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-ph-mutedtext">Team</h3>
+                  <h3 className="mb-1 px-2 text-[0.625rem] font-semibold uppercase tracking-wider text-ph-mutedtext">Team</h3>
                   <div className="space-y-0.5">
                     <a className="ph-settings-nav__item">Members</a>
                     <a className="ph-settings-nav__item">Roles</a>

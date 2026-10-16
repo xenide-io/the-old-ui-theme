@@ -69,7 +69,7 @@ export function SuiteSettingsMobileNav({
               }}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "group relative flex min-h-[44px] shrink-0 snap-start items-center gap-2 rounded-[var(--ph-radius-control)] border px-3.5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]",
+                "group relative flex min-h-[2.75rem] shrink-0 snap-start items-center gap-2 rounded-[var(--ph-radius-control)] border px-3.5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]",
                 active
                   ? "border-[var(--ph-selected-border)] bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)]"
                   : "border-ph-border bg-ph-surface text-ph-subtle hover:bg-[var(--ph-surface-hover)] hover:text-ph-ink",

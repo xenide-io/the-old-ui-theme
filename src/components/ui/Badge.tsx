@@ -30,7 +30,7 @@ const variantMap: Record<BadgeVariant, string> = {
 };
 
 const sizeMap: Record<BadgeSize, string> = {
-  sm: "text-[10px] px-1.5 py-0.5",
+  sm: "text-[0.625rem] px-1.5 py-0.5",
   md: "",
 };
 

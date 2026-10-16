@@ -85,7 +85,7 @@ export default function IconShowcase() {
                   <Icon size={16} />
                   <Icon size={24} />
                 </div>
-                <span className="max-w-full break-words text-[10px] font-medium tracking-wide text-ph-mutedtext">{name}</span>
+                <span className="max-w-full break-words text-[0.625rem] font-medium tracking-wide text-ph-mutedtext">{name}</span>
               </div>
             ))}
           </div>

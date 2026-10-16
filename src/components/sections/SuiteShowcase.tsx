@@ -292,7 +292,7 @@ export default function SuiteShowcase() {
               account footer.
             </p>
           </div>
-          <div className="overflow-hidden rounded-lg border border-ph-border-subtle bg-ph-raised h-[420px]">
+          <div className="overflow-hidden rounded-lg border border-ph-border-subtle bg-ph-raised h-[26.25rem]">
             <div className="hidden lg:block h-full">
               <SuiteAppLayout
                 sidebarWidth={220}
@@ -410,7 +410,7 @@ export default function SuiteShowcase() {
               the same tree in a drawer.
             </p>
           </div>
-          <div className="overflow-hidden rounded-lg border border-ph-border-subtle bg-ph-raised h-[420px]">
+          <div className="overflow-hidden rounded-lg border border-ph-border-subtle bg-ph-raised h-[26.25rem]">
             <div className="hidden lg:block h-full">
               <SuiteAppLayout
                 sidebarWidth={240}
@@ -460,7 +460,7 @@ export default function SuiteShowcase() {
                     }
                     secondaryNav={
                       <div className="space-y-1">
-                        <p className="px-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-ph-mutedtext">
+                        <p className="px-2 pb-1 text-[0.625rem] font-semibold uppercase tracking-wider text-ph-mutedtext">
                           Projects
                         </p>
                         <button
@@ -552,7 +552,7 @@ export default function SuiteShowcase() {
                 side="right"
               >
                 <div className="p-4 space-y-1">
-                  <p className="px-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-ph-mutedtext">
+                  <p className="px-2 pb-1 text-[0.625rem] font-semibold uppercase tracking-wider text-ph-mutedtext">
                     Projects
                   </p>
                   <button
@@ -871,7 +871,7 @@ export default function SuiteShowcase() {
                 <div className="flex h-8 items-center text-ph-ink">
                   <SuiteIcon name={name} size={24} />
                 </div>
-                <span className="max-w-full break-words text-[10px] font-medium tracking-wide text-ph-mutedtext">
+                <span className="max-w-full break-words text-[0.625rem] font-medium tracking-wide text-ph-mutedtext">
                   {name}
                 </span>
               </div>

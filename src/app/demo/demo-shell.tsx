@@ -56,7 +56,7 @@ function DemoRouteLinks({ pathname }: { pathname: string }) {
     <div className="mt-4 space-y-4 border-t border-ph-border pt-4">
       {secondaryGroups.map((group) => (
         <section key={group.label}>
-          <h2 className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ph-mutedtext">
+          <h2 className="mb-1 px-2 text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-ph-mutedtext">
             {group.label}
           </h2>
           <nav aria-label={group.label} className="space-y-0.5">
@@ -69,7 +69,7 @@ function DemoRouteLinks({ pathname }: { pathname: string }) {
                   aria-current={active ? "page" : undefined}
                   className={`flex min-h-9 items-center rounded-[var(--ph-radius-app)] px-2.5 py-2 text-sm transition-colors ${
                     active
-                      ? "bg-ph-muted font-medium text-ph-ink shadow-[inset_2px_0_0_var(--ph-accent)]"
+                      ? "bg-ph-muted font-medium text-ph-ink shadow-[inset_0.125rem_0_0_var(--ph-accent)]"
                       : "text-ph-subtle hover:bg-ph-muted hover:text-ph-ink"
                   }`}
                 >

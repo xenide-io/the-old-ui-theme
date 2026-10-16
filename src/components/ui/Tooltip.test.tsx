@@ -102,10 +102,14 @@ describe("Tooltip", () => {
     expect(trigger).toHaveFocus();
   });
 
-  it("keeps hoverable content open while the pointer moves from its trigger", async () => {
+  it("keeps hoverable content open while the pointer moves from its trigger when opted in", async () => {
     const user = userEvent.setup();
     render(
-      <Tooltip content="Hoverable details" delayDuration={0}>
+      <Tooltip
+        content="Hoverable details"
+        delayDuration={0}
+        disableHoverableContent={false}
+      >
         <button type="button">Hover target</button>
       </Tooltip>,
     );
@@ -121,10 +125,10 @@ describe("Tooltip", () => {
     await waitFor(() => expect(screen.queryByRole("tooltip")).not.toBeInTheDocument());
   });
 
-  it("closes when the trigger is left if hoverable content is disabled", async () => {
+  it("closes when the trigger is left by default (content never blocks the pointer)", async () => {
     const user = userEvent.setup();
     render(
-      <Tooltip content="Non-hoverable details" delayDuration={0} disableHoverableContent>
+      <Tooltip content="Non-hoverable details" delayDuration={0}>
         <button type="button">Hover target</button>
       </Tooltip>,
     );
@@ -135,6 +139,39 @@ describe("Tooltip", () => {
     await user.unhover(trigger);
 
     await waitFor(() => expect(screen.queryByRole("tooltip")).not.toBeInTheDocument());
+  });
+
+  it("flips to the opposite side when the requested side overflows the viewport", async () => {
+    const user = userEvent.setup();
+    const originalInnerHeight = window.innerHeight;
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 100 });
+    const rect = vi
+      .spyOn(HTMLElement.prototype, "getBoundingClientRect")
+      .mockImplementation(function (this: HTMLElement) {
+        if (this.getAttribute("role") === "tooltip") {
+          return new DOMRect(0, 0, 80, 20);
+        }
+        // Trigger sits at the very bottom: a "bottom" tooltip cannot fit below.
+        return new DOMRect(40, 80, 20, 20);
+      });
+
+    try {
+      render(
+        <Tooltip content="Flip details" side="bottom" delayDuration={0}>
+          <button type="button">Flip target</button>
+        </Tooltip>,
+      );
+
+      await user.hover(screen.getByRole("button", { name: "Flip target" }));
+      const tooltip = await screen.findByRole("tooltip");
+      await waitFor(() => expect(tooltip).toHaveAttribute("data-side", "top"));
+    } finally {
+      rect.mockRestore();
+      Object.defineProperty(window, "innerHeight", {
+        configurable: true,
+        value: originalInnerHeight,
+      });
+    }
   });
 
   it("keeps content within its collision padding", async () => {
@@ -162,7 +199,13 @@ describe("Tooltip", () => {
       await user.hover(screen.getByRole("button", { name: "Padded target" }));
       const tooltip = await screen.findByRole("tooltip");
       await waitFor(() => {
-        expect(tooltip.parentElement).toHaveStyle({ left: "16px", top: "16px" });
+        // The requested top side has no room, so it flips below the trigger and
+        // still respects the collision padding on both axes.
+        expect(tooltip).toHaveAttribute("data-side", "bottom");
+        expect(tooltip.parentElement).toHaveStyle({ left: "16px" });
+        const top = parseFloat((tooltip.parentElement as HTMLElement).style.top);
+        expect(top).toBeGreaterThanOrEqual(16);
+        expect(top).toBeLessThanOrEqual(100 - 30 - 16);
       });
     } finally {
       rect.mockRestore();

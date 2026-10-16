@@ -762,7 +762,7 @@ export function SuiteIntegrationPicker({
                               {schemes.map((scheme) => (
                                 <span
                                   key={scheme}
-                                  className="rounded border border-ph-border bg-ph-muted/50 px-1.5 py-0.5 text-[11px] text-ph-mutedtext"
+                                  className="rounded border border-ph-border bg-ph-muted/50 px-1.5 py-0.5 text-[0.6875rem] text-ph-mutedtext"
                                   data-test={`${dataTest}-${item.id}-auth-${scheme.toLowerCase()}`}
                                 >
                                   {authSchemeLabel(scheme)}

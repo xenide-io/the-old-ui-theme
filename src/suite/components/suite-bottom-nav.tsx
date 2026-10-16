@@ -56,7 +56,7 @@ export function SuiteBottomNav({
       <div
         aria-hidden
         className="shrink-0 lg:hidden"
-        style={{ height: "calc(60px + env(safe-area-inset-bottom))" }}
+        style={{ height: "calc(3.75rem + env(safe-area-inset-bottom))" }}
       />
       <nav
         aria-label={ariaLabel}
@@ -91,7 +91,7 @@ export function SuiteBottomNav({
               }
               aria-current={active ? "page" : undefined}
               className={cn(
-                "suite-bottom-nav__item relative flex min-h-[60px] min-w-0 flex-col items-center justify-center gap-1 px-1 pb-1.5 pt-2 text-[length:var(--ph-type-overline)] font-medium leading-none text-ph-mutedtext transition-colors duration-200 focus-visible:outline-hidden focus-visible:shadow-[inset_0_0_0_3px_color-mix(in_oklab,var(--ph-focus-ring)_30%,transparent)] motion-reduce:transition-none",
+                "suite-bottom-nav__item relative flex min-h-[3.75rem] min-w-0 flex-col items-center justify-center gap-1 px-1 pb-1.5 pt-2 text-[length:var(--ph-type-overline)] font-medium leading-none text-ph-mutedtext transition-colors duration-200 focus-visible:outline-hidden focus-visible:shadow-[inset_0_0_0_0.1875rem_color-mix(in_oklab,var(--ph-focus-ring)_30%,transparent)] motion-reduce:transition-none",
                 active && "font-semibold text-ph-brand",
               )}
             >

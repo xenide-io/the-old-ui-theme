@@ -142,7 +142,7 @@ export function BrandSpinner({
             />
           </>
         ) : variant === "squares" ? (
-          <g className="origin-[20px_20px] motion-safe:animate-spin">
+          <g className="origin-[1.25rem_1.25rem] motion-safe:animate-spin">
             <rect
               x="9" y="9" width="22" height="22" rx="5"
               fill="none" stroke="currentColor" strokeWidth="2.4"
@@ -176,7 +176,7 @@ export function BrandSpinner({
               strokeOpacity="0.25"
               strokeWidth="2"
             />
-            <g className="origin-[20px_20px] animate-spin motion-reduce:animate-none">
+            <g className="origin-[1.25rem_1.25rem] animate-spin motion-reduce:animate-none">
               <circle
                 cx="20"
                 cy="20"
@@ -188,7 +188,7 @@ export function BrandSpinner({
                 strokeDasharray="22 72"
               />
             </g>
-            <g className="origin-[20px_20px] animate-[spin_1.6s_linear_infinite_reverse] motion-reduce:animate-none">
+            <g className="origin-[1.25rem_1.25rem] animate-[spin_1.6s_linear_infinite_reverse] motion-reduce:animate-none">
               <circle
                 cx="20"
                 cy="20"

@@ -1833,7 +1833,7 @@ function BrandIcon({
 }) {
   return (
     <span
-      className={`relative flex ${className} shrink-0 items-center justify-center overflow-hidden rounded border border-ph-border bg-ph-surface text-[9px] font-semibold text-ph-subtle`}
+      className={`relative flex ${className} shrink-0 items-center justify-center overflow-hidden rounded border border-ph-border bg-ph-surface text-[0.5625rem] font-semibold text-ph-subtle`}
     >
       <span aria-hidden>{label.charAt(0)}</span>
       <img

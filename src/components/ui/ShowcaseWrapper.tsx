@@ -61,7 +61,7 @@ export function ShowcaseWrapper({
       <div
         className={cn(
           "gap-6",
-          showCode ? "lg:grid lg:grid-cols-[1fr_minmax(360px,420px)]" : "block"
+          showCode ? "lg:grid lg:grid-cols-[1fr_minmax(22.5rem,26.25rem)]" : "block"
         )}
       >
         <div className={cn("min-w-0", showCode && "lg:pr-2")}>{children}</div>

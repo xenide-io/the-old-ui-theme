@@ -46,7 +46,7 @@ export function SuiteMobileHeader({
     <header
       data-test={dataTest}
       className={cn(
-        "suite-app-bar no-print sticky top-0 z-30 flex min-h-[56px] shrink-0 items-center gap-1 border-b border-ph-border px-2 lg:hidden",
+        "suite-app-bar no-print sticky top-0 z-30 flex min-h-[3.5rem] shrink-0 items-center gap-1 border-b border-ph-border px-2 lg:hidden",
         className,
       )}
     >

@@ -1,6 +1,11 @@
 "use client";
 
-import type { CSSProperties, Key, ReactNode } from "react";
+import type {
+  CSSProperties,
+  HTMLAttributes,
+  Key,
+  ReactNode,
+} from "react";
 import { cn } from "@/lib/cn";
 
 export type TableVariant = "default" | "report";
@@ -12,6 +17,11 @@ export interface TableColumn<T> {
   className?: string;
 }
 
+/** Row attributes, including `data-*` hooks that `HTMLAttributes` omits. */
+export type TableRowProps = HTMLAttributes<HTMLTableRowElement> & {
+  [key: `data-${string}`]: string | number | undefined;
+};
+
 export interface TableProps<T> {
   data: T[];
   columns: TableColumn<T>[];
@@ -19,6 +29,8 @@ export interface TableProps<T> {
   compact?: boolean;
   ribbon?: boolean;
   getRowStyle?: (row: T) => CSSProperties | undefined;
+  /** Extra attributes per row — useful for `data-test` hooks on <tr>. */
+  getRowProps?: (row: T, index: number) => TableRowProps | undefined;
   getRowKey?: (row: T, index: number) => Key;
   className?: string;
   tableClassName?: string;
@@ -34,6 +46,7 @@ export function Table<T>({
   compact = false,
   ribbon = false,
   getRowStyle,
+  getRowProps,
   getRowKey,
   className,
   tableClassName,
@@ -81,7 +94,11 @@ export function Table<T>({
             )
           ) : (
             data.map((row, i) => (
-              <tr key={getRowKey?.(row, i) ?? i} style={getRowStyle?.(row)}>
+              <tr
+                key={getRowKey?.(row, i) ?? i}
+                style={getRowStyle?.(row)}
+                {...getRowProps?.(row, i)}
+              >
                 {columns.map((col) => (
                   <td key={col.key} className={col.className}>
                     {col.cell(row)}

@@ -20,7 +20,7 @@ export interface AvatarProps extends ComponentPropsWithoutRef<"div"> {
 }
 
 const sizeMap: Record<AvatarSize, string> = {
-  xs: "h-8 w-8 text-[10px]",
+  xs: "h-8 w-8 text-[0.625rem]",
   sm: "h-10 w-10 text-xs",
   md: "h-12 w-12 text-base",
   lg: "h-16 w-16 text-xl",
@@ -66,7 +66,7 @@ export function Avatar({
         />
       )}
       {badge && (
-        <span className="absolute -bottom-1 -right-1 flex min-w-[22px] items-center justify-center rounded-full bg-ph-brand px-1.5 py-px text-[10px] font-bold text-[var(--ph-on-accent)]">
+        <span className="absolute -bottom-1 -right-1 flex min-w-[1.375rem] items-center justify-center rounded-full bg-ph-brand px-1.5 py-px text-[0.625rem] font-bold text-[var(--ph-on-accent)]">
           {badge}
         </span>
       )}

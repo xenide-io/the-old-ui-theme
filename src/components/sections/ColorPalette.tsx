@@ -56,7 +56,7 @@ function SwatchGrid({
             }}
           >
             <p className="text-sm font-semibold">{c.label}</p>
-            <p className="mt-1 font-mono text-[11px] opacity-90">{c.token}</p>
+            <p className="mt-1 font-mono text-[0.6875rem] opacity-90">{c.token}</p>
           </div>
         ))}
       </div>

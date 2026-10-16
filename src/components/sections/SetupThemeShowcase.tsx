@@ -241,7 +241,7 @@ export default function SetupThemeShowcase() {
                   <h4 className="font-semibold text-ph-ink">{theme.name}</h4>
                   <p className="text-xs text-ph-mutedtext">{theme.id}</p>
                 </div>
-                <span className="rounded-full border border-ph-border bg-ph-surface px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ph-mutedtext">
+                <span className="rounded-full border border-ph-border bg-ph-surface px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-ph-mutedtext">
                   {theme.colorScheme}
                 </span>
               </div>
@@ -252,10 +252,10 @@ export default function SetupThemeShowcase() {
                     className={`rounded-lg border border-ph-border p-2 ${item.text}`}
                     style={{ background: `var(${item.token})` }}
                   >
-                    <div className="text-[10px] font-bold uppercase tracking-wide">
+                    <div className="text-[0.625rem] font-bold uppercase tracking-wide">
                       {item.label}
                     </div>
-                    <div className="mt-1 truncate font-mono text-[9px] opacity-80">
+                    <div className="mt-1 truncate font-mono text-[0.5625rem] opacity-80">
                       {item.token}
                     </div>
                   </div>

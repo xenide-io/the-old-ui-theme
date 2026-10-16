@@ -42,7 +42,12 @@ export interface TooltipProps {
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   delayDuration?: number;
-  /** Prevents the pointer from keeping the tooltip open over its content. */
+  /**
+   * Keep the tooltip open while the pointer sits over its content. OFF by
+   * default: an interactive tooltip captures the pointer, so it can block the
+   * controls underneath it (e.g. a menu the tooltip overlaps). Only opt in for
+   * content the user genuinely needs to hover.
+   */
   disableHoverableContent?: boolean;
 }
 
@@ -66,7 +71,32 @@ function tooltipPosition(
   align: TooltipAlign,
   offset: number,
   collisionPadding: number,
-) {
+): { left: number; top: number; side: TooltipSide } {
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  // Flip to the opposite side when the requested side overflows the viewport.
+  // Clamping alone would park the tooltip over its own trigger — e.g. a
+  // bottom-anchored button whose tooltip cannot fit below it.
+  const fitsSide: Record<TooltipSide, boolean> = {
+    top: trigger.top - offset - content.height >= collisionPadding,
+    bottom:
+      trigger.bottom + offset + content.height <=
+      viewportHeight - collisionPadding,
+    left: trigger.left - offset - content.width >= collisionPadding,
+    right:
+      trigger.right + offset + content.width <=
+      viewportWidth - collisionPadding,
+  };
+  const oppositeSide: Record<TooltipSide, TooltipSide> = {
+    top: "bottom",
+    bottom: "top",
+    left: "right",
+    right: "left",
+  };
+  const resolvedSide: TooltipSide =
+    fitsSide[side] || !fitsSide[oppositeSide[side]] ? side : oppositeSide[side];
+
   const horizontal =
     align === "start"
       ? trigger.left
@@ -80,14 +110,14 @@ function tooltipPosition(
         ? trigger.bottom
         : trigger.top + trigger.height / 2;
   const position =
-    side === "top"
+    resolvedSide === "top"
       ? {
           left: horizontal - content.width / 2,
           top: trigger.top - offset - content.height,
         }
-      : side === "bottom"
+      : resolvedSide === "bottom"
         ? { left: horizontal - content.width / 2, top: trigger.bottom + offset }
-        : side === "left"
+        : resolvedSide === "left"
           ? {
               left: trigger.left - offset - content.width,
               top: vertical - content.height / 2,
@@ -98,16 +128,17 @@ function tooltipPosition(
             };
   const maxLeft = Math.max(
     collisionPadding,
-    window.innerWidth - content.width - collisionPadding,
+    viewportWidth - content.width - collisionPadding,
   );
   const maxTop = Math.max(
     collisionPadding,
-    window.innerHeight - content.height - collisionPadding,
+    viewportHeight - content.height - collisionPadding,
   );
 
   return {
     left: Math.min(Math.max(position.left, collisionPadding), maxLeft),
     top: Math.min(Math.max(position.top, collisionPadding), maxTop),
+    side: resolvedSide,
   };
 }
 
@@ -141,7 +172,7 @@ export const Tooltip = forwardRef<
   defaultOpen = false,
   onOpenChange,
   delayDuration,
-  disableHoverableContent = false,
+  disableHoverableContent = true,
   ...rest
 }, forwardedRef) {
   const providerDelay = useContext(TooltipDelayContext);
@@ -282,7 +313,8 @@ export const Tooltip = forwardRef<
             <span
               style={{
                 position: "fixed",
-                ...position,
+                left: position?.left,
+                top: position?.top,
                 visibility: position ? undefined : "hidden",
               }}
               className="pointer-events-none z-[200]"
@@ -291,7 +323,7 @@ export const Tooltip = forwardRef<
                 ref={contentRef}
                 id={tooltipId}
                 role="tooltip"
-                data-side={side}
+                data-side={position?.side ?? side}
                 style={{ display: "block", ...style }}
                 className={cn(
                   "ph-tooltip-content",

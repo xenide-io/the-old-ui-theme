@@ -25,6 +25,17 @@ describe("Table", () => {
     ).toHaveAttribute("colspan", "1");
   });
 
+  it("applies per-row attributes from getRowProps", () => {
+    const { container } = render(
+      <Table
+        data={[{ name: "Ada" }]}
+        columns={[{ key: "name", header: "Name", cell: (row) => row.name }]}
+        getRowProps={(row) => ({ "data-test": `row-${row.name}` })}
+      />,
+    );
+    expect(container.querySelector('tr[data-test="row-Ada"]')).not.toBeNull();
+  });
+
   it("lets report pages own their empty state without an extra table row", () => {
     render(
       <Table

@@ -157,7 +157,7 @@ export function Calendar({ value, onChange, className }: CalendarProps) {
   }
 
   return (
-    <div className={cn("ph-calendar w-[280px] p-4", className)}>
+    <div className={cn("ph-calendar w-[17.5rem] p-4", className)}>
       <div className="mb-4 flex items-center justify-between">
         <button
           type="button"

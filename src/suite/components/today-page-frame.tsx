@@ -26,7 +26,7 @@ export function TodayPageFrame({ children }: { children: ReactNode }) {
       </div>
       <div
         data-width="full"
-        className="suite-page-stage suite-page-inset relative z-[1] flex w-full min-w-0 flex-1 flex-col [&_.list-row]:min-h-[52px] [&_.list-row]:sm:min-h-[44px]"
+        className="suite-page-stage suite-page-inset relative z-[1] flex w-full min-w-0 flex-1 flex-col [&_.list-row]:min-h-[3.25rem] [&_.list-row]:sm:min-h-[2.75rem]"
       >
         {children}
       </div>

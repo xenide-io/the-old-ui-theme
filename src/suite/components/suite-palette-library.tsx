@@ -437,7 +437,7 @@ export function SuitePaletteLibrary({
         </p>
       ) : (
         <>
-          <div className="max-h-[320px] overflow-y-auto rounded-[var(--ph-radius-surface)] border border-ph-border p-2 focus-within:border-[var(--ph-selected-border)]">
+          <div className="max-h-[20rem] overflow-y-auto rounded-[var(--ph-radius-surface)] border border-ph-border p-2 focus-within:border-[var(--ph-selected-border)]">
             <div className="grid grid-cols-6 gap-1.5 sm:grid-cols-8">
               {icons.map((icon) => (
                 <Tooltip key={icon.id} content={icon.name} side="bottom">

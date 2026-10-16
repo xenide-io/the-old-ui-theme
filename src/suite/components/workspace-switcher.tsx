@@ -151,7 +151,7 @@ export function SuiteWorkspaceSwitcher({
                         className="h-6 w-6 shrink-0 rounded object-cover"
                       />
                     ) : (
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-ph-muted text-[11px] font-semibold text-ph-ink">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-ph-muted text-[0.6875rem] font-semibold text-ph-ink">
                         {workspace.name.charAt(0).toUpperCase()}
                       </span>
                     )}

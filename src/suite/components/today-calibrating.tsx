@@ -45,7 +45,7 @@ export function TodayCalibrating({
       <h2 className="relative text-base font-semibold tracking-tight text-ph-ink sm:text-lg md:text-xl">
         Calibrating your day
       </h2>
-      <p className="relative mt-1.5 max-w-sm text-sm sm:text-[15px] leading-relaxed text-ph-subtle">
+      <p className="relative mt-1.5 max-w-sm text-sm sm:text-[0.9375rem] leading-relaxed text-ph-subtle">
         Pulling together tasks, time and updates from your workspace…
       </p>
       <div className="relative mt-5 flex justify-center">
