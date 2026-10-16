@@ -1050,6 +1050,11 @@ body {
     background: var(--ph-surface-inset);
   }
 
+  .ph-file-upload--active {
+    border-color: var(--ph-focus-ring);
+    background: color-mix(in oklab, var(--ph-focus-ring) 10%, var(--ph-surface-raised));
+  }
+
   .ph-file-upload:focus-within {
     border-color: color-mix(in oklab, var(--ph-focus-ring) 58%, var(--ph-border));
     box-shadow: 0 0 0 3px color-mix(in oklab, var(--ph-focus-ring) 24%, transparent);

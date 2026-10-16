@@ -13,6 +13,7 @@ import {
 } from "iconoir-react";
 import { Button } from "@/components/ui/Button";
 import { DatePicker } from "@/components/ui/DatePicker";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { Modal } from "@/components/ui/Modal";
 import { Select, Toggle } from "@/components/ui/Input";
 import { SuiteSkeletonList } from "./suite-skeleton";
@@ -134,7 +135,7 @@ const APP_MARK: Record<string, { label: string; icon: string }> = {
   turtletime: { label: "TurtleTime", icon: "/turtletime-icon.svg" },
   tides: { label: "Tides", icon: "/tides-icon.svg" },
   kraken: { label: "Kraken", icon: "/kraken-icon.svg" },
-  shellstack: { label: "ShellStack", icon: "/shellstack-icon.svg" },
+  shellstack: { label: "ShellStack", icon: "/icon-shellstack.svg" },
 };
 
 function logoUrl(slug: string) {
@@ -239,7 +240,7 @@ export function BridgeScreen({
   }
   const appMark = APP_MARK[target] ?? {
     label: "ShellStack",
-    icon: "/shellstack-icon.svg",
+    icon: "/icon-shellstack.svg",
   };
   const [query, setQuery] = useState("");
   const [selectedSlug, setSelectedSlug] = useState<string | null>(
@@ -842,32 +843,18 @@ export function BridgeScreen({
         {apps.length > 0 || workspaces.length > 0 ? (
           <div className="mt-2 flex flex-wrap items-center gap-3">
             {apps.length > 0 ? (
-              <div
-                className="flex flex-wrap gap-2"
-                role="tablist"
+              <SegmentedControl
+                variant="tabs"
                 aria-label="App"
-              >
-                {apps.map((app) => {
-                  const on = app.id === activeApp;
-                  return (
-                    <button
-                      key={app.id}
-                      type="button"
-                      role="tab"
-                      aria-selected={on}
-                      onClick={() => onAppChange?.(app.id)}
-                      className={`inline-flex h-11 items-center gap-2 rounded-full border px-3 text-sm font-medium ${
-                        on
-                          ? "border-ph-border bg-ph-muted text-ph-ink"
-                          : "border-ph-border bg-ph-surface text-ph-subtle hover:bg-ph-muted hover:text-ph-ink"
-                      }`}
-                    >
-                      <img src={app.icon} alt="" className="h-5 w-5" />
-                      {app.name}
-                    </button>
-                  );
-                })}
-              </div>
+                className="min-w-0"
+                value={activeApp}
+                onChange={(value) => onAppChange?.(value)}
+                options={apps.map((app) => ({
+                  value: app.id,
+                  label: app.name,
+                  icon: <img src={app.icon} alt="" className="h-4 w-4" />,
+                }))}
+              />
             ) : null}
             {workspaces.length > 0 ? (
               <div className="ml-auto w-full max-w-xs sm:w-auto sm:min-w-[12rem]">

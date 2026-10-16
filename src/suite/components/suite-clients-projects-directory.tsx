@@ -109,7 +109,8 @@ export interface SuiteClientsProjectsDirectoryProps {
 
 const DEFAULT_ICON = "";
 const DEFAULT_COLOR = "";
-const DIRECTORY_COLOURS: Array<[string, string]> = [
+/** Shared swatch palette for entity/document icons. */
+export const DIRECTORY_COLOURS: Array<[string, string]> = [
   ["#6366f1", "Indigo"],
   ["#0ea5e9", "Sky"],
   ["#10b981", "Green"],

@@ -239,7 +239,7 @@ export function SuiteSidebar({
         {contextSwitcher ? (
           <div
             className={cn(
-              "mb-4 w-full shrink-0",
+              "mb-2 w-full shrink-0",
               collapsed && "flex justify-center",
             )}
           >

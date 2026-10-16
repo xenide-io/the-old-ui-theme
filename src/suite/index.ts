@@ -252,6 +252,7 @@ export {
   type SuiteDirectoryProjectFields,
 } from "./components/suite-clients-projects-directory";
 export { SuiteEntityIcon } from "./components/suite-entity-icon";
+export { DIRECTORY_COLOURS } from "./components/suite-clients-projects-directory";
 export {
   SuitePaletteLibrary,
   type SuitePalettePick,

@@ -1,4 +1,4 @@
-import { forwardRef, useId, useState, type ChangeEvent, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { forwardRef, useId, useRef, useState, type ChangeEvent, type ComponentPropsWithoutRef, type Ref, type ReactNode } from "react";
 import { Eye, EyeClosed } from "iconoir-react";
 import { FormField } from "@/components/ui/FormField";
 import { ColorPicker } from "@/components/ui/ColorPicker";
@@ -426,6 +426,15 @@ export interface FileUploadProps extends Omit<ComponentPropsWithoutRef<"input">,
   wrapperClassName?: string;
 }
 
+function mergeRefs<T>(...refs: Array<Ref<T> | undefined>) {
+  return (node: T | null) => {
+    for (const ref of refs) {
+      if (typeof ref === "function") ref(node);
+      else if (ref) (ref as { current: T | null }).current = node;
+    }
+  };
+}
+
 export const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(function FileUpload({
   id: idProp,
   label,
@@ -436,12 +445,39 @@ export const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(function
 }, ref) {
   const autoId = useId();
   const id = idProp ?? autoId;
+  const innerRef = useRef<HTMLInputElement>(null);
+  const [dragging, setDragging] = useState(false);
+
+  // A dropped file never reaches the input on its own — push it through the
+  // input's file list and fire `change` so the caller's onChange still runs.
+  function assignDroppedFiles(files: FileList | null) {
+    const input = innerRef.current;
+    if (!input || !files?.length) return;
+    const transfer = new DataTransfer();
+    for (const file of Array.from(files)) transfer.items.add(file);
+    input.files = transfer.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
 
   return (
     <div className={cn("ph-field", wrapperClassName)}>
       {label && <label htmlFor={id} className="ph-label">{label}</label>}
-      <label htmlFor={id} className="ph-file-upload">
-        <input ref={ref} id={id} type="file" className={cn("sr-only", className)} {...props} />
+      <label
+        htmlFor={id}
+        data-dragging={dragging || undefined}
+        className={cn("ph-file-upload", dragging && "ph-file-upload--active")}
+        onDragOver={(event) => {
+          event.preventDefault();
+          if (!dragging) setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(event) => {
+          event.preventDefault();
+          setDragging(false);
+          assignDroppedFiles(event.dataTransfer?.files ?? null);
+        }}
+      >
+        <input ref={mergeRefs(innerRef, ref)} id={id} type="file" className={cn("sr-only", className)} {...props} />
         {prompt}
       </label>
     </div>
