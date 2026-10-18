@@ -1675,6 +1675,7 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
     aspect-ratio: 1;
     border-radius: 999px;
     transition: transform var(--ph-motion-fast) ease;
