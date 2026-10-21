@@ -1,5 +1,7 @@
 "use client";
 
+export { SnailAvatar, type CrewSpecies } from "@/components/ui/SnailAvatar";
+
 /**
  * Full UI surface — also published as `@xenide-io/the-old-ui-theme/ui`.
  * Scoped to primitives the ShellStack apps use, plus the demo-only docs
