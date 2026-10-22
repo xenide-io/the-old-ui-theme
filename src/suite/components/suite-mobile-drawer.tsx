@@ -21,7 +21,7 @@ export function SuiteMobileDrawer({
   closeLabel = "Close navigation",
   backdropLabel = "Close navigation",
   dialogLabel = "Navigation",
-  durationMs = 200,
+  durationMs = 240,
   dataTest,
   panelDataTest,
   backdropId,
@@ -98,7 +98,7 @@ export function SuiteMobileDrawer({
             data-test={panelDataTest}
             aria-modal="true"
             className={cn(
-              "fixed inset-y-0 left-0 z-50 flex h-dvh max-h-dvh w-[86%] max-w-72 flex-col overflow-hidden border-r border-ph-border bg-ph-surface shadow-[var(--ph-shadow-floating)] outline-hidden motion-safe:transition-transform motion-safe:ease-spring-fast lg:hidden",
+              "fixed inset-y-0 left-0 z-50 flex h-dvh max-h-dvh w-[86%] max-w-72 flex-col overflow-hidden border-r border-ph-border bg-ph-surface shadow-[var(--ph-shadow-floating)] outline-hidden motion-safe:transition-transform motion-safe:ease-out lg:hidden",
               side === "right" && "left-auto right-0",
               shown
                 ? "translate-x-0"
