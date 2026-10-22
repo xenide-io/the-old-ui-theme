@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, type ReactNode } from "react";
-import { NavArrowLeft, Sparks } from "iconoir-react";
+import { ChevronLeft as NavArrowLeft, Sparkles as Sparks } from 'lucide-react';
 
 import { Tooltip } from "../../components/ui/Tooltip";
 import { cn } from "../lib/cn";
@@ -39,6 +39,8 @@ export interface SuiteSidebarProps {
   /** Optional extra footer content placed next to the user menu. */
   footerExtras?: CollapsedNode;
   collapsed?: boolean;
+  /** Called when Cmd/Ctrl+B asks to toggle the sidebar. */
+  onCollapsedChange?: (collapsed: boolean) => void;
   className?: string;
   /** Use the richer surface background instead of canvas. */
   surface?: boolean;
@@ -77,6 +79,7 @@ export function SuiteSidebar({
   notificationBell,
   footerExtras,
   collapsed = false,
+  onCollapsedChange,
   className,
   surface = false,
   askAiOpen = false,
@@ -132,6 +135,28 @@ export function SuiteSidebar({
     });
     return () => cancelAnimationFrame(frame);
   }, [chatOpen]);
+
+  useEffect(() => {
+    if (!onCollapsedChange) return;
+    function onKey(event: KeyboardEvent) {
+      if (event.key.toLowerCase() !== "b" || !(event.metaKey || event.ctrlKey)) {
+        return;
+      }
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        target.closest(
+          'input, textarea, select, [contenteditable]:not([contenteditable="false"])',
+        )
+      ) {
+        return;
+      }
+      event.preventDefault();
+      onCollapsedChange?.(!collapsed);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [collapsed, onCollapsedChange]);
 
   function closeAskAi() {
     restoreAskAiFocusRef.current = true;
@@ -280,7 +305,7 @@ export function SuiteSidebar({
                       aria-current={active ? "page" : undefined}
                       onClick={item.onClick}
                       className={cn(
-                        "suite-sidebar-link group relative flex min-h-11 touch-manipulation items-center gap-2.5 rounded-[var(--ph-radius-control)] text-sm font-medium transition-colors",
+                        "suite-sidebar-link group relative flex min-h-11 touch-manipulation items-center gap-2.5 overflow-hidden rounded-[var(--ph-radius-control)] text-sm font-medium transition-[width,height,padding,background-color,color,transform] duration-150 ease-out active:scale-[0.98] active:duration-75",
                         active
                           ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)]"
                           : "text-ph-subtle hover:bg-[var(--ph-surface-hover)] hover:text-ph-ink",
@@ -297,8 +322,11 @@ export function SuiteSidebar({
                         aria-hidden
                       >
                         <Icon
-                          className="h-full w-full"
-                          strokeWidth={active ? 2 : 1.75}
+                          className={
+                            active
+                              ? "h-full w-full stroke-2"
+                              : "h-full w-full stroke-[1.75]"
+                          }
                         />
                       </span>
                       <span

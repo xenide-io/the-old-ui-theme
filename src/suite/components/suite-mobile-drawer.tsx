@@ -2,7 +2,7 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useState, type ReactNode } from "react";
-import { Xmark as X } from "iconoir-react";
+import { X } from 'lucide-react';
 
 import { cn } from "../lib/cn";
 

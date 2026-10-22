@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Plus, Xmark } from "iconoir-react";
+import { Plus, X as Xmark } from 'lucide-react';
 import {
   Alert,
   Badge,

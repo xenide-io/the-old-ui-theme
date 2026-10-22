@@ -10,7 +10,7 @@ import {
   type ReactNode,
   type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
-import { NavArrowDown, Search } from 'iconoir-react';
+import { ChevronDown as NavArrowDown, Search } from 'lucide-react';
 import {
   fetchPaletteCollection,
   fetchPaletteLibrary,

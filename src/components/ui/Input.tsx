@@ -1,5 +1,5 @@
 import { forwardRef, useId, useRef, useState, type ChangeEvent, type ComponentPropsWithoutRef, type Ref, type ReactNode } from "react";
-import { Eye, EyeClosed } from "iconoir-react";
+import { Eye, EyeOff as EyeClosed } from 'lucide-react';
 import { FormField } from "@/components/ui/FormField";
 import { ColorPicker } from "@/components/ui/ColorPicker";
 import { DatePicker, DateTimePicker } from "@/components/ui/DatePicker";

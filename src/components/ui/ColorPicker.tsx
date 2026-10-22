@@ -7,7 +7,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import { Check, NavArrowDown } from "iconoir-react";
+import { Check, ChevronDown as NavArrowDown } from 'lucide-react';
 import {
   Popover,
   PopoverContent,

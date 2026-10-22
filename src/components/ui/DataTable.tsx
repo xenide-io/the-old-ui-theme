@@ -9,7 +9,7 @@ import {
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table";
-import { NavArrowDown, NavArrowUp, Sort } from "iconoir-react";
+import { ChevronDown as NavArrowDown, ChevronUp as NavArrowUp, ArrowUpDown as Sort } from 'lucide-react';
 
 import { cn } from "@/lib/cn";
 import type { TableVariant } from "./Table";

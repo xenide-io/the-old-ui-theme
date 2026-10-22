@@ -8,14 +8,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import {
-  ArrowLeft,
-  MoreHoriz as MoreHorizontal,
-  Plus,
-  Prohibition,
-  Search,
-  Trash,
-} from "iconoir-react";
+import { ArrowLeft, Ellipsis as MoreHorizontal, Plus, Ban as Prohibition, Search, Trash2 as Trash } from 'lucide-react';
 import {
   Alert,
   Button,

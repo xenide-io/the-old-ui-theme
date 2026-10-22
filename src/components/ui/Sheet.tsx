@@ -9,7 +9,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { NavArrowDown, NavArrowRight } from "iconoir-react";
+import { ChevronDown as NavArrowDown, ChevronRight as NavArrowRight } from 'lucide-react';
 
 import { IconCheck } from "@/components/icons";
 

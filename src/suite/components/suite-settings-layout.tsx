@@ -51,7 +51,7 @@ export function SuiteSettingsLayout({
       )}
 
       {loading ?? (
-        <div className="suite-page-body mt-6 flex min-h-0 flex-1 flex-col">
+        <div className="suite-page-body flex min-h-0 flex-1 flex-col">
           {mobileNav ? (
             <div className="suite-settings-mobile-bar sticky top-0 z-20 mb-2 shrink-0 lg:hidden">
               {mobileNav}

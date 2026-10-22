@@ -8,7 +8,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from "react";
-import { Pause, Play } from "iconoir-react";
+import { Pause, Play } from 'lucide-react';
 import { ButtonChrome } from "@/components/ui/ButtonChrome";
 import { cn } from "@/lib/cn";
 

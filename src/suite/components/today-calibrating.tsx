@@ -1,6 +1,6 @@
 'use client';
 
-import { Refresh as RefreshCw, SunLight as Sun } from 'iconoir-react';
+import { RefreshCw, Sun } from 'lucide-react';
 
 import { cn } from '../lib/cn';
 import type { SuiteSpinnerComponent } from '../lib/injected';

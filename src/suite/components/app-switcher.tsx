@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { NavArrowDown as ChevronDown, OpenNewWindow } from "iconoir-react";
+import { ChevronDown, ExternalLink as OpenNewWindow } from 'lucide-react';
 
 import { Tooltip } from "../../components/ui/Tooltip";
 import { cn } from "../lib/cn";

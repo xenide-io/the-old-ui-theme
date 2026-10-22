@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Sparks } from "iconoir-react";
+import { Sparkles as Sparks } from 'lucide-react';
 
 import {
   SuiteAiPanel,

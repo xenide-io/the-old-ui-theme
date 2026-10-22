@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type CSSProperties, type ReactNode } from "react";
-import { NavArrowLeft, NavArrowRight } from "iconoir-react";
+import { ChevronLeft as NavArrowLeft, ChevronRight as NavArrowRight } from 'lucide-react';
 import { Button } from "../../components/ui/Button";
 import { SegmentedControl } from "../../components/ui/SegmentedControl";
 import { Tooltip } from "../../components/ui/Tooltip";

@@ -13,18 +13,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
 } from "react";
-import {
-  ArrowDown,
-  ArrowUp,
-  Check,
-  Copy,
-  EditPencil,
-  Erase,
-  NavArrowDown,
-  Sparks,
-  Square,
-  WarningTriangle,
-} from "iconoir-react";
+import { ArrowDown, ArrowUp, Check, Copy, Pencil as EditPencil, Eraser as Erase, ChevronDown as NavArrowDown, Sparkles as Sparks, Square, TriangleAlert as WarningTriangle } from 'lucide-react';
 
 import { Button } from "../../components/ui/Button";
 import { DropdownItem, DropdownMenu } from "../../components/ui/DropdownMenu";

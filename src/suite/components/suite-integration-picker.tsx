@@ -9,15 +9,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from "react";
-import {
-  Bridge3d,
-  EvPlug as Plug,
-  Filter,
-  NavArrowDown,
-  NavArrowUp,
-  Search,
-  Xmark,
-} from "iconoir-react";
+import { Landmark as Bridge3d, PlugZap as Plug, Filter, ChevronDown as NavArrowDown, ChevronUp as NavArrowUp, Search, X as Xmark } from 'lucide-react';
 import { Button, Input, Modal, Tooltip } from "@/components/ui";
 import { cn } from "@/lib/cn";
 

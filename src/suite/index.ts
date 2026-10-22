@@ -192,12 +192,6 @@ export {
   type DateInput,
 } from "./lib/dates";
 export {
-  SuiteMotionProvider,
-  m,
-  SUITE_SPRINGS,
-  type SuiteSpringName,
-} from "./lib/motion";
-export {
   SuitePage,
   SuitePageHeader,
   SuiteBreadcrumbs,

@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { Folder } from "iconoir-react";
+import { Folder } from 'lucide-react';
 import { paletteIconSrc } from "@/suite/lib/palette-api";
 import { cn } from "@/lib/cn";
 

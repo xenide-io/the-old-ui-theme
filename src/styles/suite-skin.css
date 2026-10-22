@@ -27,17 +27,41 @@ html {
   --suite-page-pad-x: var(--suite-space-4);
   --suite-page-pad-x-sm: var(--suite-space-5);
   --suite-page-pad-x-lg: var(--suite-space-6);
-  --suite-page-pad-y-top: var(--suite-space-2);
-  --suite-page-pad-y-top-sm: var(--suite-space-3);
-  --suite-page-pad-y-bottom: 1.25rem;
-  --suite-page-pad-y-bottom-sm: var(--suite-space-5);
+  --suite-page-pad-y-top: var(--suite-space-3);
+  --suite-page-pad-y-top-sm: var(--suite-space-4);
+  --suite-page-pad-y-bottom: var(--suite-space-6);
+  --suite-page-pad-y-bottom-sm: var(--suite-space-6);
   --suite-today-pad-y-top: var(--suite-page-pad-y-top);
   --suite-today-pad-y-top-sm: var(--suite-page-pad-y-top-sm);
   --suite-scroll-fade: var(--suite-space-5);
   --suite-section-gap: var(--suite-space-5);
-  --suite-header-gap: var(--suite-space-4);
+  --suite-header-gap: var(--suite-space-5);
+  --suite-card-gap: var(--suite-space-4);
+  --suite-card-pad: var(--suite-space-5);
   --suite-content-max: 96rem; /* used only by content/narrow caps, not default pages */
   --suite-reading-max: 48rem; /* ~max-w-3xl / 65ch */
+}
+
+/* Density is an app-level choice, not a user preference: one shared scale by
+   default, compact/spacious only when a product genuinely needs it. */
+[data-density="compact"] {
+  --suite-page-pad-y-top: var(--suite-space-2);
+  --suite-page-pad-y-top-sm: var(--suite-space-3);
+  --suite-page-pad-y-bottom: var(--suite-space-5);
+  --suite-section-gap: var(--suite-space-4);
+  --suite-header-gap: var(--suite-space-4);
+  --suite-card-gap: var(--suite-space-3);
+  --suite-card-pad: var(--suite-space-4);
+}
+
+[data-density="spacious"] {
+  --suite-page-pad-y-top: var(--suite-space-4);
+  --suite-page-pad-y-top-sm: var(--suite-space-5);
+  --suite-page-pad-y-bottom: var(--suite-space-7);
+  --suite-section-gap: var(--suite-space-6);
+  --suite-header-gap: var(--suite-space-6);
+  --suite-card-gap: var(--suite-space-5);
+  --suite-card-pad: var(--suite-space-6);
 }
 
 /* Phones/tablets retain native pan and pinch zoom. */
@@ -62,6 +86,7 @@ body {
   /* OpenRunde optical tweaks — crisper on high-dpi mobile/tablet. */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  line-height: var(--ph-leading-body);
 }
 
 /* Connected accounts: identity first, quiet status and actions below. */
@@ -574,6 +599,18 @@ html[data-marketing-paused] .marketing-landing::before {
 .suite-app-layout__sidebar {
   border-color: var(--ph-border-subtle);
   background: var(--ph-surface-inset);
+  /* Fast, click-only shell motion: 150ms in-out. */
+  transition: width 150ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.suite-app-layout__sidebar[data-resizing="true"] {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .suite-app-layout__sidebar {
+    transition: none;
+  }
 }
 
 .suite-sidebar {
@@ -693,14 +730,14 @@ html[data-marketing-paused] .marketing-landing::before {
   }
 }
 
-/* Today uses the same compact title inset as the other suite pages. */
-.today-page-frame .suite-page-inset {
-  padding-top: var(--suite-today-pad-y-top);
+/* Page header → content: one shared gap for every suite page. */
+.suite-page-header {
+  margin-bottom: var(--suite-header-gap);
 }
 
-/* Keep the opening compact; the sticky fade ends before the greeting. */
-.today-page-frame .suite-page-header + .suite-page-body {
-  margin-top: var(--suite-space-2);
+/* Keep Today on the same header rhythm as every other page. */
+.today-page-frame .suite-page-inset {
+  padding-top: var(--suite-today-pad-y-top);
 }
 
 .today-work-row {
@@ -1003,6 +1040,19 @@ html.dark .today-page-frame__cloud--2 {
   max-width: var(--suite-reading-max);
 }
 
+/* Shared flow and card-grid rhythm. Pages may use these instead of ad-hoc
+   space-y/gap values so every app keeps the same vertical cadence. */
+.suite-page-flow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--suite-section-gap);
+}
+.suite-card-grid {
+  display: grid;
+  gap: var(--suite-card-gap);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}
+
 /* ── Cards ──────────────────────────────────────────────────────────────
    Static cards stay flat. Only explicit interactive cards lift. */
 .ph-card-interactive:hover,
@@ -1011,6 +1061,13 @@ button:hover > .ph-card {
   border-color: var(--ph-border-control);
   box-shadow: var(--ph-shadow-raised);
   transform: translateY(-1px);
+}
+
+.ph-card-interactive:active,
+a:active > .ph-card,
+button:active > .ph-card {
+  transform: scale(0.99);
+  transition-duration: 80ms;
 }
 
 /* Press: physical "push in" — the single biggest native-feel signal. */
@@ -1558,6 +1615,10 @@ button:hover > .ph-card {
   }
   .suite-press:active,
   .ph-card.suite-press:active,
+  .ph-card-interactive:active,
+  a:active > .ph-card,
+  button:active > .ph-card,
+  .ph-btn:active:not(:disabled),
   .suite-press-card:active .ph-card {
     transform: none;
   }

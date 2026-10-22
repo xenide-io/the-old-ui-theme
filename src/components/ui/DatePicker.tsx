@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar as CalendarIcon, Xmark } from "iconoir-react";
+import { Calendar as CalendarIcon, X as Xmark } from 'lucide-react';
 import { Calendar } from "@/components/ui/Calendar";
 import {
   Popover,

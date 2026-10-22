@@ -1,16 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import {
-  Check,
-  InfoCircle,
-  Link,
-  Minus,
-  NavArrowDown,
-  NavArrowLeft,
-  Plus,
-  Search,
-} from "iconoir-react";
+import { Check, Info as InfoCircle, Link, Minus, ChevronDown as NavArrowDown, ChevronLeft as NavArrowLeft, Plus, Search } from 'lucide-react';
 import { Button } from "@/components/ui/Button";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";

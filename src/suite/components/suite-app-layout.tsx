@@ -1,6 +1,7 @@
 "use client";
 
-import { type ReactNode, type PointerEvent } from "react";
+import { type ReactNode, type PointerEvent, useEffect, useState } from "react";
+import { Effect } from "@animate-ui/react/primitives/effects/effect";
 
 import { cn } from "../lib/cn";
 import {
@@ -28,6 +29,10 @@ export interface SuiteAppLayoutProps {
   onResizeBy?: (delta: number) => void;
   /** Double-click to reset sidebar width. */
   onResetWidth?: () => void;
+  /** Current route path; changes retrigger the page entrance. */
+  routeKey?: string;
+  /** Optional app-level density preset. Default is the shared comfortable scale. */
+  density?: "compact" | "comfortable" | "spacious";
   className?: string;
 }
 
@@ -47,11 +52,27 @@ export function SuiteAppLayout({
   onStartResize,
   onResizeBy,
   onResetWidth,
+  routeKey,
+  density,
   className,
 }: SuiteAppLayoutProps) {
+  const [resizing, setResizing] = useState(false);
+
+  useEffect(() => {
+    if (!resizing) return;
+    const stop = () => setResizing(false);
+    window.addEventListener("pointerup", stop);
+    window.addEventListener("pointercancel", stop);
+    return () => {
+      window.removeEventListener("pointerup", stop);
+      window.removeEventListener("pointercancel", stop);
+    };
+  }, [resizing]);
+
   return (
     <div
       data-test="app-shell"
+      data-density={density && density !== "comfortable" ? density : undefined}
       className={cn(
         "suite-app-layout flex h-dvh overflow-hidden",
         className,
@@ -62,6 +83,7 @@ export function SuiteAppLayout({
         className="suite-app-layout__sidebar relative hidden shrink-0 flex-col overflow-visible border-r ease-out lg:flex"
         style={{ width: `${sidebarWidth}px` }}
         data-collapsed={collapsed ? "true" : "false"}
+        data-resizing={resizing ? "true" : undefined}
       >
         {/* ponytail: isolate so Ask AI cannot cover the resize handle */}
         <div className="relative z-0 h-full min-h-0 isolate">{sidebar}</div>
@@ -76,7 +98,14 @@ export function SuiteAppLayout({
             aria-valuetext={`${sidebarWidth} pixels`}
             data-test="sidebar-resize-handle"
             tabIndex={onResizeBy ? 0 : undefined}
-            onPointerDown={onStartResize}
+            onPointerDown={
+              onStartResize
+                ? (event) => {
+                    setResizing(true);
+                    onStartResize(event);
+                  }
+                : undefined
+            }
             onDoubleClick={onResetWidth}
             onKeyDown={(event) => {
               if (event.key === "Home") {
@@ -112,7 +141,15 @@ export function SuiteAppLayout({
             lockMainScroll ? "overflow-hidden" : "overflow-y-auto",
           )}
         >
-          {children}
+          <Effect
+            key={routeKey ?? "static"}
+            className="flex min-h-0 min-w-0 flex-1 flex-col"
+            fade={{ initialOpacity: 0.65 }}
+            slide={{ direction: "up", offset: 6 }}
+            transition={{ duration: 0.14, ease: [0.2, 0, 0, 1] }}
+          >
+            {children}
+          </Effect>
         </main>
         {bottomNav ? (
           <div className="shrink-0 lg:hidden">{bottomNav}</div>

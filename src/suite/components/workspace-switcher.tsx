@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Building, Check, NavArrowDown } from "iconoir-react";
+import { Building2 as Building, Check, ChevronDown as NavArrowDown } from 'lucide-react';
 
 import { cn } from "../lib/cn";
 import type {

@@ -14,15 +14,7 @@ import {
   type SuiteSidebarNavItem,
   useSidebarWidth,
 } from "@/suite";
-import {
-  Bell,
-  Flash,
-  Home,
-  NavArrowDown,
-  Settings,
-  TriangleFlag,
-  LogOut,
-} from "iconoir-react";
+import { Bell, Zap as Flash, House as Home, ChevronDown as NavArrowDown, Settings, Flag as TriangleFlag, LogOut } from 'lucide-react';
 
 const primaryRoutes: SuiteSidebarNavItem[] = [
   { label: "Overview", href: "/demo", icon: Home },

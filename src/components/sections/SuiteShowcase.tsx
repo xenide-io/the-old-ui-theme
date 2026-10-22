@@ -2,15 +2,7 @@
 
 import { useState, type ComponentPropsWithoutRef } from "react";
 import Image from "next/image";
-import {
-  Home,
-  Calendar,
-  Search,
-  Bell,
-  User,
-  Settings,
-  Plus,
-} from "iconoir-react";
+import { House as Home, Calendar, Search, Bell, User, Settings, Plus } from 'lucide-react';
 
 import {
   Button,

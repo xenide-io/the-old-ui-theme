@@ -1,19 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import {
-  Calendar,
-  Clock,
-  Coins,
-  Crown,
-  EditPencil,
-  Group,
-  Lock,
-  ShieldCheck,
-  Suitcase,
-  User,
-  ViewGrid,
-} from "iconoir-react";
+import { Calendar, Clock, Coins, Crown, Pencil as EditPencil, Users as Group, Lock, ShieldCheck, Briefcase as Suitcase, User, LayoutGrid as ViewGrid } from 'lucide-react';
 
 import { Alert } from "@/components/ui/Alert";
 import { Tooltip } from "@/components/ui/Tooltip";

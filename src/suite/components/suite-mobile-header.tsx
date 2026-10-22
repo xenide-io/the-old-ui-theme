@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentType, ReactNode } from "react";
-import { Menu } from "iconoir-react";
+import { Menu } from 'lucide-react';
 
 import { Tooltip } from "../../components/ui/Tooltip";
 import { cn } from "../lib/cn";

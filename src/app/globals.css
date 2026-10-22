@@ -151,6 +151,13 @@ body {
 }
 
 @layer components {
+  /* Lucide defaults: keep the suite's 16px box and 1.5 stroke. Utilities win. */
+  :where(svg.lucide) {
+    width: 1em;
+    height: 1em;
+    stroke-width: 1.5;
+  }
+
   .suite-sidebar-link:focus-visible {
     outline: none;
     box-shadow: var(--ph-focus-halo);
@@ -195,6 +202,11 @@ body {
   .ph-btn:focus-visible {
     outline: none;
     box-shadow: var(--ph-focus-halo);
+  }
+
+  .ph-btn:active:not(:disabled) {
+    transform: scale(0.97);
+    transition-duration: 80ms;
   }
 
   .ph-btn-sm {
@@ -689,6 +701,7 @@ body {
     background: var(--ph-surface-raised);
     border-radius: var(--ph-radius-surface);
     border-color: var(--ph-border-subtle);
+    box-shadow: var(--ph-chrome-inset-face-top);
     transition:
       border-color var(--ph-motion-fast) ease,
       box-shadow var(--ph-motion-fast) ease,
@@ -713,6 +726,11 @@ body {
     border-color: var(--ph-border-strong);
     box-shadow: var(--ph-shadow-raised);
     transform: translateY(-1px);
+  }
+
+  .ph-card-interactive:active {
+    transform: scale(0.99);
+    transition-duration: 80ms;
   }
 
   .ph-card-interactive:focus-within {
@@ -751,7 +769,8 @@ body {
   }
 
   .ph-card-body {
-    @apply flex flex-1 flex-col gap-3 p-5;
+    @apply flex flex-1 flex-col gap-3;
+    padding: var(--suite-card-pad);
   }
 
   .ph-card-media {
@@ -760,7 +779,9 @@ body {
   }
 
   .ph-card-title {
-    @apply flex items-center gap-2 text-lg font-semibold text-ph-ink;
+    @apply flex items-center gap-2 font-semibold text-ph-ink;
+    font-size: var(--ph-type-card);
+    line-height: var(--ph-leading-title);
   }
 
   .ph-card-actions {

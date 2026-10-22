@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Check } from "iconoir-react";
+import { Eye, Check } from 'lucide-react';
 
 import { cn } from "../lib/cn";
 import {

@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Check, WarningTriangle } from "iconoir-react";
+import { Check, TriangleAlert as WarningTriangle } from 'lucide-react';
 import { Badge } from "@/components/ui/Badge";
 
 export interface SuiteIntegrationConnectionProps {

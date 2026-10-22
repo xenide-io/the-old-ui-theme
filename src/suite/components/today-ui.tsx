@@ -1,6 +1,6 @@
 "use client";
 
-import { Refresh as RefreshCw } from "iconoir-react";
+import { RefreshCw } from 'lucide-react';
 import type { ReactNode } from "react";
 import { Tooltip } from "../../components/ui/Tooltip";
 import { cn } from "../lib/cn";
