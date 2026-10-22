@@ -20,6 +20,27 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
   }
+
+  /* Every interactive control reads as clickable. Utilities like
+     cursor-grab/cursor-text still win because they live in the utilities layer. */
+  :where(
+    button:not(:disabled),
+    a[href],
+    summary,
+    select:not(:disabled),
+    label[for],
+    [role="button"],
+    [role="tab"],
+    [role="option"],
+    [role="menuitem"],
+    [role="switch"]
+  ) {
+    cursor: pointer;
+  }
+
+  :where(button:disabled, select:disabled, [aria-disabled="true"]) {
+    cursor: not-allowed;
+  }
 }
 
 /* Open Runde — self-hosted rounded-sm variant of Inter */
