@@ -52,7 +52,7 @@ export function SuiteSettingsMobileNav({
             <Icon
               className={cn(
                 "h-4 w-4 shrink-0 transition-colors",
-                active ? "text-[var(--ph-selected-text)]" : "text-ph-mutedtext",
+                active ? "text-inherit" : "text-ph-mutedtext",
               )}
               aria-hidden
             />
@@ -71,7 +71,7 @@ export function SuiteSettingsMobileNav({
               className={cn(
                 "group relative flex min-h-[2.75rem] shrink-0 snap-start items-center gap-2 rounded-[var(--ph-radius-control)] border px-3.5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]",
                 active
-                  ? "border-[var(--ph-selected-border)] bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)]"
+                  ? "ph-settings-nav__item--active border-[var(--ph-selected-border)] font-semibold text-[var(--ph-selected-text)]"
                   : "border-ph-border bg-ph-surface text-ph-subtle hover:bg-[var(--ph-surface-hover)] hover:text-ph-ink",
               )}
             >

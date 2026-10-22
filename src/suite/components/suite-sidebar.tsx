@@ -255,10 +255,7 @@ export function SuiteSidebar({
         )}
       >
         <div
-          className={cn(
-            "flex h-14 shrink-0 items-center gap-1 border-b border-ph-border px-2",
-            surface ? "bg-ph-surface" : "bg-ph-canvas",
-          )}
+          className="flex h-14 shrink-0 items-center gap-1 border-b border-ph-border px-2"
         >
           <button
             ref={askAiBackRef}
@@ -354,7 +351,7 @@ export function SuiteSidebar({
                 <span
                   aria-hidden
                   data-suite-active-indicator
-                  className="pointer-events-none absolute left-0 top-0 z-0 rounded-[var(--ph-radius-control)] bg-[var(--ph-selected-bg)] transition-[transform,width,height] duration-150 ease-out motion-reduce:transition-none"
+                  className="ph-nav-current pointer-events-none absolute left-0 top-0 z-0 rounded-[var(--ph-radius-control)] transition-[transform,width,height] duration-150 ease-out motion-reduce:transition-none"
                   style={{
                     transform: `translate(${activeIndicator.left}px, ${activeIndicator.top}px)`,
                     width: activeIndicator.width,
@@ -380,7 +377,7 @@ export function SuiteSidebar({
                       className={cn(
                         "suite-sidebar-link group relative flex min-h-11 touch-manipulation items-center gap-2.5 overflow-hidden rounded-[var(--ph-radius-control)] text-sm font-medium transition-[width,height,padding,background-color,color,transform] duration-150 ease-out active:scale-[0.98] active:duration-75",
                         active
-                          ? "text-[var(--ph-selected-text)]"
+                          ? "font-semibold text-[var(--ph-selected-text)]"
                           : "text-ph-subtle hover:bg-[var(--ph-surface-hover)] hover:text-ph-ink",
                         collapsed
                           ? "mx-auto size-11 shrink-0 justify-center gap-0 px-0 py-0"
@@ -449,7 +446,7 @@ export function SuiteSidebar({
 
             {secondaryNav ? (
               <div
-                className="min-h-0 flex-1"
+                className="flex-1 shrink-0"
                 data-test="suite-sidebar-secondary-nav"
               >
                 {secondaryNav}

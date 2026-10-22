@@ -50,7 +50,7 @@ export const SUITE_APPS: readonly SuiteAppDefinition[] = [
     name: 'TurtleTime',
     description: 'Time tracking',
     icon: '/turtletime-icon.svg',
-    landing: '/today',
+    landing: '/tracker',
     baseUrlEnv: 'NEXT_PUBLIC_TURTLETIME_URL',
     baseUrlFallback: 'http://localhost:3000',
   },

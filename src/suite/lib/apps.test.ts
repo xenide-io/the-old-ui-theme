@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { classifySuiteHref, suiteAppSlugForNotificationSource } from "./apps";
+import {
+  SUITE_APP_MAP,
+  classifySuiteHref,
+  suiteAppSlugForNotificationSource,
+} from "./apps";
 
 const BASES = {
   tides: "http://localhost:3001",
@@ -44,5 +48,11 @@ describe("suiteAppSlugForNotificationSource", () => {
     expect(suiteAppSlugForNotificationSource("portal")).toBe("shellstack");
     expect(suiteAppSlugForNotificationSource("kraken")).toBe("kraken");
     expect(suiteAppSlugForNotificationSource("unknown")).toBeNull();
+  });
+});
+
+describe("suite app landings", () => {
+  it("sends TurtleTime to its tracker", () => {
+    expect(SUITE_APP_MAP.turtletime.landing).toBe("/tracker");
   });
 });

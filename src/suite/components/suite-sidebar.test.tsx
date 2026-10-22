@@ -55,6 +55,9 @@ describe("SuiteSidebar Ask AI", () => {
       "aria-current",
       "page",
     );
+    expect(document.querySelector("[data-suite-active-indicator]")).toHaveClass(
+      "ph-nav-current",
+    );
 
     fireEvent.keyDown(window, { key: "b", metaKey: true });
     expect(onCollapsedChange).toHaveBeenCalledWith(true);

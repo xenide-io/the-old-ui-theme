@@ -38,8 +38,8 @@ export interface SuiteUserMenuProps {
 }
 
 /**
- * Suite account context menu — one tap on the avatar opens a small menu with
- * profile settings and sign out. Desktop sidebars can also expose the legacy
+ * Suite account context menu — workspace choices, profile settings and sign out.
+ * Desktop sidebars can also expose the legacy
  * adjacent sign-out action without adding it to mobile chrome.
  */
 export function SuiteUserMenu({
@@ -64,10 +64,10 @@ export function SuiteUserMenu({
   const initials = fallbackInitials ?? computeInitials(name, email);
   const fallbackColor = avatarColorClass(email || name || "?");
 
-  // Visual avatar is 32px (Avatar `xs`); the 40px trigger keeps a comfortable
-  // tap target. Colour comes from theme `--ph-*` tokens.
+  // Visual avatar is 32px (Avatar `xs`); the trigger keeps a 44px tap target.
+  // Colour comes from theme `--ph-*` tokens.
   const avatar = (
-    <span className="inline-flex h-10 w-10 items-center justify-center">
+    <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center">
       <span className="inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-ph-border">
         {image ? (
           <Image
@@ -105,7 +105,10 @@ export function SuiteUserMenu({
           <span className="truncate text-xs text-ph-mutedtext">{subtitle}</span>
         ) : null}
       </span>
-      <ChevronsUpDown className="mr-1 h-3.5 w-3.5 shrink-0 text-ph-mutedtext" aria-hidden />
+      <ChevronsUpDown
+        className="mr-1 h-3.5 w-3.5 shrink-0 text-ph-mutedtext"
+        aria-hidden
+      />
     </span>
   ) : (
     avatar
@@ -124,7 +127,7 @@ export function SuiteUserMenu({
       modal={false}
       panelClassName="w-80 max-w-[calc(100vw-2rem)] p-1.5 [&_.ph-dropdown-item]:min-h-11"
       className={cn(
-        "[&_.ph-dropdown-trigger]:rounded-full",
+        "[&_.ph-dropdown-trigger]:min-h-11 [&_.ph-dropdown-trigger]:min-w-11 [&_.ph-dropdown-trigger]:rounded-full",
         showDetails &&
           "min-w-0 flex-1 [&_.ph-dropdown-trigger]:w-full [&_.ph-dropdown-trigger]:justify-start [&_.ph-dropdown-trigger]:rounded-[var(--ph-radius-control)]",
         showSignOutAction ? undefined : className,
@@ -134,19 +137,24 @@ export function SuiteUserMenu({
       <div className="flex min-w-0 items-center gap-2 px-2 py-3">
         <span className="shrink-0">{avatar}</span>
         <div className="min-w-0">
-        <p className="truncate text-sm font-medium text-ph-ink">
-          {name || email || "Account"}
-        </p>
-        {email ? (
-          <p className="truncate text-xs text-ph-mutedtext">{email}</p>
-        ) : null}
+          <p className="truncate text-sm font-medium text-ph-ink">
+            {name || email || "Account"}
+          </p>
+          {email ? (
+            <p className="truncate text-xs text-ph-mutedtext">{email}</p>
+          ) : null}
         </div>
       </div>
       {workspaceMenu ? (
-        <div className="mb-1 border-y border-ph-border py-1" data-test={`${dataTest}-workspaces`}>
+        <div
+          className="mb-1 border-y border-ph-border py-1"
+          data-test={`${dataTest}-workspaces`}
+        >
           {workspaceMenu}
         </div>
-      ) : <div className="my-1 border-t border-ph-border" />}
+      ) : (
+        <div className="my-1 border-t border-ph-border" />
+      )}
       <DropdownItem
         data-test={`${dataTest}-settings`}
         onClick={() => router.push(settingsHref)}

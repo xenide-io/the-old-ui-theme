@@ -12,6 +12,22 @@ import { SuiteClientsProjectsDirectory } from "@/suite/components/suite-clients-
 describe("SuiteClientsProjectsDirectory", () => {
   afterEach(cleanup);
 
+  it("does not open an editor for read-only workspace members", async () => {
+    const user = userEvent.setup();
+    const update = vi.fn();
+    render(
+      <SuiteClientsProjectsDirectory
+        clients={[{ id: "acme", name: "Acme" }]}
+        projects={[{ id: "project", name: "Website", clientId: "acme" }]}
+        canEdit={false}
+        onUpdateProject={update}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: /Website/ }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(update).not.toHaveBeenCalled();
+  });
+
   it("keeps client navigation and project creation in the compact browser", async () => {
     const user = userEvent.setup();
     const create = vi.fn();

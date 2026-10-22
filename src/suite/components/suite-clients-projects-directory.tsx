@@ -320,6 +320,7 @@ export function SuiteClientsProjectsDirectory({
   }
 
   function openNew(kind: "client" | "project") {
+    if (!canEdit) return;
     setMutationError(null);
     setDraft({
       name: "",
@@ -339,6 +340,7 @@ export function SuiteClientsProjectsDirectory({
     item: SuiteDirectoryClient | SuiteDirectoryProject,
     kind: "client" | "project",
   ) {
+    if (!canEdit) return;
     setMutationError(null);
     setDraft({
       name: item.name,
@@ -406,7 +408,7 @@ export function SuiteClientsProjectsDirectory({
   }
 
   async function save() {
-    if (!editing || !draft.name.trim() || saving) return;
+    if (!canEdit || !editing || !draft.name.trim() || saving) return;
     setSaving(true);
     setMutationError(null);
     try {
@@ -533,6 +535,7 @@ export function SuiteClientsProjectsDirectory({
                   aria-hidden
                 />
                 <Input
+                  data-test="directory-search"
                   hideLabel
                   aria-label="Search clients"
                   placeholder="Search clients..."
@@ -547,6 +550,7 @@ export function SuiteClientsProjectsDirectory({
               </div>
               {canEdit && onCreateClient ? (
                 <Button
+                  data-test="directory-new-client"
                   size="sm"
                   variant={compact ? "tertiary" : "primary"}
                   aria-label="New client"
@@ -583,6 +587,8 @@ export function SuiteClientsProjectsDirectory({
                       <button
                         type="button"
                         role="option"
+                        data-test="directory-client-group"
+                        data-client-id={client.id}
                         aria-selected={selected}
                         tabIndex={selected ? 0 : -1}
                         onClick={() => selectClient(client)}
@@ -712,6 +718,7 @@ export function SuiteClientsProjectsDirectory({
                         <div className="p-1">
                           {onUpdateClient ? (
                             <DropdownItem
+                              data-test="directory-edit-client"
                               onClick={() => openEdit(selectedClient, "client")}
                             >
                               Edit client
@@ -719,6 +726,7 @@ export function SuiteClientsProjectsDirectory({
                           ) : null}
                           {onUpdateClient && !selectedClient.is_internal ? (
                             <DropdownItem
+                              data-test="directory-archive-client"
                               onClick={() =>
                                 void toggleArchiveClient(selectedClient)
                               }
@@ -730,6 +738,7 @@ export function SuiteClientsProjectsDirectory({
                           ) : null}
                           {onDeleteClient ? (
                             <DropdownItem
+                              data-test="directory-delete-client"
                               className="text-red-600"
                               onClick={() =>
                                 void remove(selectedClient, "client")
@@ -750,6 +759,7 @@ export function SuiteClientsProjectsDirectory({
               )}
               {compact && canEdit && onCreateProject ? (
                 <Button
+                  data-test="directory-add-project-under-client"
                   size="sm"
                   variant="secondary"
                   className="shrink-0 max-sm:w-8 max-sm:px-0 [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11"
@@ -764,6 +774,7 @@ export function SuiteClientsProjectsDirectory({
             {!compact && canEdit && onCreateProject ? (
               <div className="border-b border-ph-border p-3">
                 <Button
+                  data-test="directory-add-project-under-client"
                   variant="primary"
                   icon={<Plus className="h-4 w-4" />}
                   onClick={() => openNew("project")}
@@ -775,7 +786,12 @@ export function SuiteClientsProjectsDirectory({
             <ul className="flex-1 p-2">
               {selectedClient && selectedProjects.length ? (
                 selectedProjects.map((project) => (
-                  <li key={project.id}>
+                  <li
+                    key={project.id}
+                    data-test="directory-project-row"
+                    data-project-id={project.id}
+                    data-archived={project.isArchived ? "true" : "false"}
+                  >
                     <div
                       className={cn(
                         "flex items-center rounded-[var(--ph-radius-control)] hover:bg-ph-canvas",
@@ -840,11 +856,13 @@ export function SuiteClientsProjectsDirectory({
                               {onUpdateProject ? (
                                 <>
                                   <DropdownItem
+                                    data-test="directory-edit-project"
                                     onClick={() => openEdit(project, "project")}
                                   >
                                     Edit project
                                   </DropdownItem>
                                   <DropdownItem
+                                    data-test="directory-archive-project"
                                     onClick={() => void toggleArchive(project)}
                                   >
                                     {project.isArchived
@@ -855,6 +873,7 @@ export function SuiteClientsProjectsDirectory({
                               ) : null}
                               {onDeleteProject ? (
                                 <DropdownItem
+                                  data-test="directory-delete-project"
                                   className="text-red-600"
                                   onClick={() =>
                                     void remove(project, "project")
@@ -882,6 +901,11 @@ export function SuiteClientsProjectsDirectory({
         </div>
       )}
       <Modal
+        dataTest={
+          editing?.kind.includes("project")
+            ? "directory-project-modal"
+            : "directory-client-modal"
+        }
         open={editing !== null}
         onClose={closeEditor}
         title={
@@ -899,6 +923,7 @@ export function SuiteClientsProjectsDirectory({
               Cancel
             </Button>
             <Button
+              data-test="modal-save"
               variant="primary"
               onClick={() => void save()}
               disabled={saving || !draft.name.trim()}
@@ -910,6 +935,11 @@ export function SuiteClientsProjectsDirectory({
       >
         <div className="space-y-3">
           <Input
+            data-test={
+              editing?.kind.includes("project")
+                ? "project-name-input"
+                : "directory-create-name"
+            }
             label="Name"
             autoFocus
             value={draft.name}
@@ -1043,7 +1073,15 @@ export function SuiteClientsProjectsDirectory({
             <Button variant="tertiary" onClick={() => setConfirming(null)}>
               Cancel
             </Button>
-            <Button variant="primary" onClick={() => void confirmRemove()}>
+            <Button
+              data-test={
+                confirming?.kind === "client"
+                  ? "directory-confirm-delete-client"
+                  : "directory-confirm-delete-project"
+              }
+              variant="primary"
+              onClick={() => void confirmRemove()}
+            >
               Delete
             </Button>
           </div>

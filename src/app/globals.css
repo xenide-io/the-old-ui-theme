@@ -2905,11 +2905,6 @@ body {
     background: var(--ph-surface-hover);
   }
 
-  .ph-settings-nav__item--active {
-    color: var(--ph-selected-text);
-    background: var(--ph-selected-bg);
-  }
-
   .ph-settings-nav__icon {
     @apply inline-flex h-4 w-4 items-center justify-center;
   }

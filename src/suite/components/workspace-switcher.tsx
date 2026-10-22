@@ -24,7 +24,7 @@ export interface SuiteWorkspaceGroup {
 }
 
 /**
- * Suite workspace switcher. Full-width bordered trigger; dropdown menu.
+ * Suite workspace choices, inline in an account menu or with a standalone trigger.
  * Apps inject workspace rows (or labelled groups) and the theme dropdown.
  */
 export function SuiteWorkspaceSwitcher({
@@ -105,20 +105,34 @@ export function SuiteWorkspaceSwitcher({
                 >
                   <span className="flex min-w-0 w-full items-center gap-3">
                     {workspace.image ? (
-                      <img src={workspace.image} alt="" className="h-8 w-8 shrink-0 rounded-lg border border-ph-border object-cover" />
+                      <img
+                        src={workspace.image}
+                        alt=""
+                        className="h-8 w-8 shrink-0 rounded-lg border border-ph-border object-cover"
+                      />
                     ) : (
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-ph-border bg-ph-muted text-xs font-semibold text-ph-ink">
+                      <span
+                        aria-hidden="true"
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-ph-border bg-ph-muted text-xs font-semibold text-ph-ink"
+                      >
                         {workspace.name.charAt(0).toUpperCase()}
                       </span>
                     )}
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium text-ph-ink">{workspace.name}</span>
+                      <span className="block truncate text-sm font-medium text-ph-ink">
+                        {workspace.name}
+                      </span>
                       {workspace.description ? (
-                        <span className="block truncate text-xs text-ph-mutedtext">{workspace.description}</span>
+                        <span className="block truncate text-xs text-ph-mutedtext">
+                          {workspace.description}
+                        </span>
                       ) : null}
                     </span>
                     {workspace.id === currentId ? (
-                      <Check className="h-4 w-4 shrink-0 text-ph-brand" aria-hidden="true" />
+                      <Check
+                        className="h-4 w-4 shrink-0 text-ph-brand"
+                        aria-hidden="true"
+                      />
                     ) : null}
                   </span>
                 </DropdownItem>
@@ -127,7 +141,9 @@ export function SuiteWorkspaceSwitcher({
           ))
         )}
       </div>
-      {footer ? <div className="mt-1 border-t border-ph-border pt-1">{footer}</div> : null}
+      {footer ? (
+        <div className="mt-1 border-t border-ph-border pt-1">{footer}</div>
+      ) : null}
     </div>
   );
 

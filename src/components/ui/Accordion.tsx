@@ -77,7 +77,7 @@ export function Accordion({
               )}
             >
               <div className="overflow-hidden">
-                <div className="px-5 pb-4 text-ph-subtle">{item.content}</div>
+                <div className="px-5 pb-4 pt-1 text-ph-subtle">{item.content}</div>
               </div>
             </div>
           </div>
