@@ -462,7 +462,9 @@ export function SuiteSidebar({
       <div
         className={cn(
           "shrink-0 border-t border-ph-border",
-          collapsed ? "p-1.5" : "p-3",
+          collapsed
+            ? "px-1.5 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+            : "px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]",
         )}
       >
         <div
