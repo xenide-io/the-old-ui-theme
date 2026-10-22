@@ -311,7 +311,7 @@ export function SuiteSidebar({
         className={cn(
           "flex min-h-0 flex-1 flex-col",
           chatOpen ? "min-h-0" : "overflow-y-auto",
-          collapsed ? "px-1.5 py-2" : "p-3",
+          collapsed ? "px-1.5 pt-2 pb-4" : "px-3 pt-3 pb-8",
         )}
       >
         {contextSwitcher ? (

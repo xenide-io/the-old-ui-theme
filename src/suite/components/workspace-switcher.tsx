@@ -34,6 +34,7 @@ export function SuiteWorkspaceSwitcher({
   onSelect,
   name,
   collapsed = false,
+  inline = false,
   emptyLabel = "No workspaces yet.",
   dropdownMenu: DropdownMenu,
   dropdownItem: DropdownItem,
@@ -48,6 +49,8 @@ export function SuiteWorkspaceSwitcher({
   onSelect: (workspace: SuiteWorkspaceEntry) => void;
   name: string;
   collapsed?: boolean;
+  /** Render workspace choices inside an existing account menu. */
+  inline?: boolean;
   emptyLabel?: string;
   dropdownMenu: SuiteDropdownMenuComponent;
   dropdownItem: SuiteDropdownItemComponent;
@@ -65,6 +68,70 @@ export function SuiteWorkspaceSwitcher({
   const current = sections
     .flatMap((section) => section.workspaces)
     .find((workspace) => workspace.id === currentId);
+
+  const menu = (
+    <div
+      id={triggerId ? `${triggerId}-menu` : "workspace-switcher-menu"}
+      className="p-1"
+      data-test="workspace-switcher-menu"
+    >
+      <div className={inline ? "max-h-64 overflow-y-auto" : undefined}>
+        {sections.length === 0 ? (
+          <p className="px-3 py-2 text-sm text-ph-mutedtext">{emptyLabel}</p>
+        ) : (
+          sections.map((section) => (
+            <div key={section.id} role="group" aria-label={section.label}>
+              <p className="px-2 py-2 text-[length:var(--ph-type-overline)] font-semibold uppercase tracking-[0.08em] text-ph-mutedtext">
+                {section.label}
+              </p>
+              {section.workspaces.map((workspace) => (
+                <DropdownItem
+                  key={workspace.id}
+                  id={`workspace-option-${workspace.id}`}
+                  aria-current={workspace.id === currentId ? "true" : undefined}
+                  data-test="workspace-option"
+                  data-workspace-id={workspace.id}
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={() => {
+                    setOpen(false);
+                    if (workspace.id !== currentId) onSelect(workspace);
+                  }}
+                  className={cn(
+                    appSwitcherMenuItemClass(),
+                    "min-h-11",
+                    inline && workspace.id === currentId &&
+                      "bg-[var(--ph-selected-bg)]",
+                  )}
+                >
+                  <span className="flex min-w-0 w-full items-center gap-3">
+                    {workspace.image ? (
+                      <img src={workspace.image} alt="" className="h-8 w-8 shrink-0 rounded-lg border border-ph-border object-cover" />
+                    ) : (
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-ph-border bg-ph-muted text-xs font-semibold text-ph-ink">
+                        {workspace.name.charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium text-ph-ink">{workspace.name}</span>
+                      {workspace.description ? (
+                        <span className="block truncate text-xs text-ph-mutedtext">{workspace.description}</span>
+                      ) : null}
+                    </span>
+                    {workspace.id === currentId ? (
+                      <Check className="h-4 w-4 shrink-0 text-ph-brand" aria-hidden="true" />
+                    ) : null}
+                  </span>
+                </DropdownItem>
+              ))}
+            </div>
+          ))
+        )}
+      </div>
+      {footer ? <div className="mt-1 border-t border-ph-border pt-1">{footer}</div> : null}
+    </div>
+  );
+
+  if (inline) return menu;
 
   return (
     <DropdownMenu
@@ -116,71 +183,7 @@ export function SuiteWorkspaceSwitcher({
         </span>
       }
     >
-      <div
-        id={triggerId ? `${triggerId}-menu` : "workspace-switcher-menu"}
-        className="p-1"
-        data-test="workspace-switcher-menu"
-      >
-        {sections.length === 0 ? (
-          <p className="px-3 py-2 text-sm text-ph-mutedtext">{emptyLabel}</p>
-        ) : (
-          sections.map((section) => (
-            <div key={section.id}>
-              <p className="px-3 py-2 text-[length:var(--ph-type-overline)] font-semibold uppercase tracking-[0.08em] text-ph-mutedtext">
-                {section.label}
-              </p>
-              {section.workspaces.map((workspace) => (
-                <DropdownItem
-                  key={workspace.id}
-                  id={`workspace-option-${workspace.id}`}
-                  aria-current={workspace.id === currentId ? "true" : undefined}
-                  data-test="workspace-option"
-                  data-workspace-id={workspace.id}
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => {
-                    setOpen(false);
-                    onSelect(workspace);
-                  }}
-                  className={appSwitcherMenuItemClass()}
-                >
-                  <span className="flex min-w-0 w-full items-center gap-3">
-                    {workspace.image ? (
-                      <img
-                        src={workspace.image}
-                        alt=""
-                        className="h-6 w-6 shrink-0 rounded object-cover"
-                      />
-                    ) : (
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-ph-muted text-[0.6875rem] font-semibold text-ph-ink">
-                        {workspace.name.charAt(0).toUpperCase()}
-                      </span>
-                    )}
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium text-ph-ink">
-                        {workspace.name}
-                      </span>
-                      {workspace.description ? (
-                        <span className="block truncate text-xs text-ph-mutedtext">
-                          {workspace.description}
-                        </span>
-                      ) : null}
-                    </span>
-                    {workspace.id === currentId ? (
-                      <Check
-                        className="h-4 w-4 shrink-0 text-ph-brand"
-                        aria-hidden="true"
-                      />
-                    ) : null}
-                  </span>
-                </DropdownItem>
-              ))}
-            </div>
-          ))
-        )}
-        {footer ? (
-          <div className="mt-1 border-t border-ph-border pt-1">{footer}</div>
-        ) : null}
-      </div>
+      {menu}
     </DropdownMenu>
   );
 }

@@ -837,7 +837,7 @@ export function BridgeScreen({
           actions={workspaceSwitcher}
         />
         {apps.length > 0 || workspaces.length > 0 ? (
-          <div className="mt-2 flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             {apps.length > 0 ? (
               <SegmentedControl
                 variant="tabs"
