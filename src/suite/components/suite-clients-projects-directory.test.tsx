@@ -12,6 +12,30 @@ import { SuiteClientsProjectsDirectory } from "@/suite/components/suite-clients-
 describe("SuiteClientsProjectsDirectory", () => {
   afterEach(cleanup);
 
+  it("shows a failed save inside the editor and keeps the draft", async () => {
+    const user = userEvent.setup();
+    render(
+      <SuiteClientsProjectsDirectory
+        clients={[]}
+        projects={[]}
+        canEdit
+        onCreateClient={vi
+          .fn()
+          .mockRejectedValue(new Error("Name is already in use."))}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "New client" }));
+    const dialog = screen.getByRole("dialog");
+    await user.type(within(dialog).getByRole("textbox", { name: "Name" }), "Acme");
+    await user.click(within(dialog).getByRole("button", { name: "Save" }));
+    expect(await within(dialog).findByRole("alert")).toHaveTextContent(
+      "Name is already in use.",
+    );
+    expect(within(dialog).getByRole("textbox", { name: "Name" })).toHaveValue(
+      "Acme",
+    );
+  });
+
   it("does not open an editor for read-only workspace members", async () => {
     const user = userEvent.setup();
     const update = vi.fn();

@@ -290,7 +290,7 @@ export function SuiteSidebar({
             "flex shrink-0 border-b border-ph-border",
             collapsed
               ? "flex-col items-center gap-1 px-1 py-2"
-              : "h-14 items-center justify-between gap-2 px-3",
+              : "min-h-14 items-center justify-between gap-2 px-3 py-1",
           )}
         >
           <div className={cn("min-w-0", collapsed ? "shrink-0" : "flex-1")}>

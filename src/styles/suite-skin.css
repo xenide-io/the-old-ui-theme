@@ -1103,6 +1103,26 @@ html.dark .today-page-frame__cloud--2 {
 
 /* Shared flow and card-grid rhythm. Pages may use these instead of ad-hoc
    space-y/gap values so every app keeps the same vertical cadence. */
+/* A short, one-shot lift when a tab panel changes. */
+.suite-tab-panel-enter {
+  animation: suite-tab-panel-in 220ms ease-out both;
+}
+@keyframes suite-tab-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .suite-tab-panel-enter {
+    animation: none;
+  }
+}
+
 .suite-page-flow {
   display: flex;
   flex-direction: column;
@@ -1578,7 +1598,7 @@ button:active > .ph-card {
 @keyframes suite-msg-settle {
   from {
     opacity: 0;
-    transform: translateY(0.25rem);
+    transform: translateY(0.5rem);
   }
   to {
     opacity: 1;

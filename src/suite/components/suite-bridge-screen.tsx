@@ -837,7 +837,7 @@ export function BridgeScreen({
           actions={workspaceSwitcher}
         />
         {apps.length > 0 || workspaces.length > 0 ? (
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="-mt-4 flex flex-wrap items-center gap-3">
             {apps.length > 0 ? (
               <SegmentedControl
                 variant="tabs"
@@ -872,6 +872,7 @@ export function BridgeScreen({
         ) : null}
         {error ? <p className="mt-3 text-sm text-ph-danger">{error}</p> : null}
       </SuitePage>
+      <div key={activeApp} className="suite-tab-panel-enter flex min-h-0 flex-1 flex-col">
       {loading ? (
         <div className="flex items-center justify-center px-8 py-10">
           <LoadingSpinner size="lg" label="Loading bridges…" />
@@ -890,6 +891,7 @@ export function BridgeScreen({
           </div>
         </div>
       )}
+      </div>
       <Modal
         open={pendingSync !== null}
         onClose={() => setPendingSync(null)}

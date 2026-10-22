@@ -499,7 +499,7 @@ export function SuiteClientsProjectsDirectory({
       data-compact={compact || undefined}
       className="space-y-3"
     >
-      {error || mutationError ? (
+      {error || (mutationError && !editing) ? (
         <Alert status="danger" live="assertive">
           {error || mutationError}
         </Alert>
@@ -934,6 +934,11 @@ export function SuiteClientsProjectsDirectory({
         }
       >
         <div className="space-y-3">
+          {mutationError ? (
+            <Alert status="danger" live="assertive">
+              {mutationError}
+            </Alert>
+          ) : null}
           <Input
             data-test={
               editing?.kind.includes("project")

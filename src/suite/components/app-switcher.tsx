@@ -14,7 +14,7 @@ import type {
 
 export function appSwitcherTriggerClass(open: boolean, collapsed = false) {
   return cn(
-    "group flex min-w-0 items-center gap-2 rounded-[var(--ph-radius-control)] border px-2 py-1.5 text-left transition-[color,background-color,border-color,box-shadow] duration-150",
+    "group flex min-w-0 items-center gap-2 rounded-[var(--ph-radius-control)] border px-2 py-1 text-left transition-[color,background-color,border-color,box-shadow] duration-150",
     collapsed ? "h-11 w-11 justify-center px-0 py-0" : "w-full",
     open
       ? "border-[var(--ph-selected-border)] bg-[var(--ph-selected-bg)] shadow-[var(--ph-shadow-control)]"
