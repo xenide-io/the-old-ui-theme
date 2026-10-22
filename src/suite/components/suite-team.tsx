@@ -217,7 +217,7 @@ export function SuiteTeamList({
             email={member.user.email}
             image={member.user.image}
             detail={member.user.email}
-            className="min-w-[14rem] flex-1"
+            className="min-w-0 basis-full flex-1 sm:min-w-[14rem] sm:basis-auto"
           />
           {/* Fixed columns keep role, apps and actions aligned down the list. */}
           <span className="w-28 shrink-0">
@@ -227,7 +227,7 @@ export function SuiteTeamList({
             <AppIcons member={member} />
           </span>
           {rowActions ? (
-            <span className="flex w-full shrink-0 items-center justify-end gap-1 sm:w-72">
+            <span className="flex w-full min-w-0 flex-wrap shrink-0 items-center justify-end gap-1 sm:w-72">
               {rowActions(member)}
             </span>
           ) : null}

@@ -154,6 +154,8 @@ export interface SelectProps extends Omit<ComponentPropsWithoutRef<"select">, "s
   helperText?: string;
   size?: InputSize;
   wrapperClassName?: string;
+  /** Leading icon for the selected value. Native options cannot contain SVG. */
+  icon?: ReactNode;
   children: ReactNode;
 }
 
@@ -167,6 +169,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   className,
   wrapperClassName,
   disabled,
+  icon,
   children,
   required,
   "aria-describedby": ariaDescribedBy,
@@ -179,23 +182,34 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   return (
     <FormField controlId={id} label={label} hideLabel={hideLabel} helperText={helperText} error={error} required={required} disabled={disabled} className={wrapperClassName}>
       {(fieldProps) => (
-        <select
-          {...fieldProps}
-          ref={ref}
-          disabled={disabled}
-          required={required}
-          aria-describedby={joinIds(ariaDescribedBy, fieldProps["aria-describedby"])}
-          className={cn(
-            "ph-select w-full",
-            sizeMap[size],
-            hasError && "ph-input-error",
-            disabled && "cursor-not-allowed opacity-60",
-            className
-          )}
-          {...props}
-        >
-          {children}
-        </select>
+        <span className="relative block">
+          {icon ? (
+            <span
+              className="pointer-events-none absolute left-3 top-1/2 flex -translate-y-1/2 items-center text-ph-mutedtext [&_svg]:h-4 [&_svg]:w-4"
+              aria-hidden
+            >
+              {icon}
+            </span>
+          ) : null}
+          <select
+            {...fieldProps}
+            ref={ref}
+            disabled={disabled}
+            required={required}
+            aria-describedby={joinIds(ariaDescribedBy, fieldProps["aria-describedby"])}
+            className={cn(
+              "ph-select w-full",
+              sizeMap[size],
+              hasError && "ph-input-error",
+              disabled && "cursor-not-allowed opacity-60",
+              icon ? "pl-9" : undefined,
+              className
+            )}
+            {...props}
+          >
+            {children}
+          </select>
+        </span>
       )}
     </FormField>
   );

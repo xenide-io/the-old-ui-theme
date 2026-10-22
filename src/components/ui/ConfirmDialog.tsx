@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 
@@ -19,6 +20,8 @@ export interface ConfirmDialogProps {
   confirmDisabled?: boolean;
   /** Extra content under the description, e.g. a typed-name confirmation field. */
   children?: ReactNode;
+  /** Override the default destructive/confirm glyph. */
+  icon?: ReactNode;
 }
 
 /**
@@ -38,7 +41,11 @@ export function ConfirmDialog({
   confirmDataTest,
   confirmDisabled = false,
   children,
+  icon,
 }: ConfirmDialogProps) {
+  const resolvedIcon =
+    icon ??
+    (destructive ? <TriangleAlert className="h-5 w-5" aria-hidden /> : null);
   return (
     <Modal
       open={open}
@@ -48,6 +55,18 @@ export function ConfirmDialog({
       className="ph-confirm-dialog"
     >
       <div className="ph-confirm-dialog__body">
+        {resolvedIcon ? (
+          <span
+            className={
+              destructive
+                ? "ph-confirm-dialog__icon ph-confirm-dialog__icon--danger"
+                : "ph-confirm-dialog__icon"
+            }
+            aria-hidden
+          >
+            {resolvedIcon}
+          </span>
+        ) : null}
         <h2 className="ph-confirm-dialog__title">{title}</h2>
         {description ? (
           <p className="ph-confirm-dialog__text">{description}</p>
@@ -59,7 +78,7 @@ export function ConfirmDialog({
           variant="secondary"
           onClick={onCancel}
           disabled={loading}
-          autoFocus
+          data-autofocus
         >
           {cancelLabel}
         </Button>

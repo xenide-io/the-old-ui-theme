@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Check, Info as InfoCircle, Link, Minus, ChevronDown as NavArrowDown, ChevronLeft as NavArrowLeft, Plus, Search } from 'lucide-react';
+import { Check, Info as InfoCircle, Link, Minus, ChevronDown as NavArrowDown, ChevronLeft as NavArrowLeft, PlugZap, Plus, Search, Unplug } from 'lucide-react';
 import { Button } from "@/components/ui/Button";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
@@ -796,8 +796,9 @@ export function BridgeScreen({
             type="button"
             disabled={busy}
             onClick={() => onDisconnect(connection)}
-            className="rounded-md border border-ph-border px-3 py-2 text-sm font-medium text-ph-ink hover:bg-ph-muted focus-visible:ring-2 focus-visible:ring-ph-brand disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-md border border-ph-border px-3 py-2 text-sm font-medium text-ph-ink hover:bg-ph-muted focus-visible:ring-2 focus-visible:ring-ph-brand disabled:opacity-60"
           >
+            <Unplug className="h-4 w-4" aria-hidden />
             Disconnect
           </button>
         ) : (
@@ -805,8 +806,12 @@ export function BridgeScreen({
             type="button"
             disabled={busy}
             onClick={() => onConnect(selected)}
-            className="rounded-md bg-ph-brand px-3 py-2 text-sm font-medium text-[var(--ph-on-accent)] focus-visible:ring-2 focus-visible:ring-ph-brand disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-md bg-ph-brand px-3 py-2 text-sm font-medium text-[var(--ph-on-accent)] focus-visible:ring-2 focus-visible:ring-ph-brand disabled:opacity-60"
           >
+            <PlugZap
+              className="suite-icon-motion suite-icon-nudge h-4 w-4"
+              aria-hidden
+            />
             Connect {selected.label}
           </button>
         )}
@@ -943,7 +948,7 @@ export function BridgeScreen({
         <div
           role="status"
           aria-live="polite"
-          className="fixed right-6 bottom-6 z-[120] max-w-sm"
+          className="fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-[95] max-w-sm sm:right-6 sm:bottom-6"
         >
           <div className="ph-toast ph-toast-success">
             <Check className="h-4 w-4 shrink-0 text-ph-success" aria-hidden />

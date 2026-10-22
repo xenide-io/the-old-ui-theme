@@ -51,11 +51,11 @@ export interface TooltipProps {
   disableHoverableContent?: boolean;
 }
 
-const TooltipDelayContext = createContext(0);
+const TooltipDelayContext = createContext(300);
 
 export function TooltipProvider({
   children,
-  delayDuration = 0,
+  delayDuration = 300,
 }: TooltipProviderProps) {
   return (
     <TooltipDelayContext.Provider value={delayDuration}>

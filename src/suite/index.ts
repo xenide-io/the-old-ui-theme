@@ -202,6 +202,11 @@ export {
   type SuiteBreadcrumbsProps,
 } from "./components/suite-layout";
 export {
+  SuiteErrorPage,
+  SuiteNotFoundPage,
+  type SuiteErrorPageProps,
+} from "./components/suite-error-page";
+export {
   SuiteSkeleton,
   SuiteSkeletonCard,
   SuiteSkeletonList,

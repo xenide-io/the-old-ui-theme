@@ -1,7 +1,7 @@
 "use client";
 
 import * as Dialog from "@radix-ui/react-dialog";
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { IconClose } from "@/components/icons";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { cn } from "@/lib/cn";
@@ -81,6 +81,28 @@ export function Modal({
 }: ModalProps) {
   const canDismiss = Boolean(onClose);
   const restoreFocusRef = useRef<HTMLElement | null>(null);
+  const lastFocusRef = useRef<HTMLElement | null>(null);
+
+  // Capture the trigger before the dialog opens. Radix cannot restore focus to
+  // an external trigger when the dialog is controlled and there is no
+  // Dialog.Trigger in the tree.
+  useEffect(() => {
+    if (open) return;
+    const capture = () => {
+      const active = document.activeElement;
+      if (active instanceof HTMLElement && !active.closest('[role="dialog"]')) {
+        lastFocusRef.current = active;
+      }
+    };
+    document.addEventListener("pointerdown", capture, true);
+    document.addEventListener("keydown", capture, true);
+    document.addEventListener("focusin", capture, true);
+    return () => {
+      document.removeEventListener("pointerdown", capture, true);
+      document.removeEventListener("keydown", capture, true);
+      document.removeEventListener("focusin", capture, true);
+    };
+  }, [open]);
 
   return (
     <Dialog.Root
@@ -105,9 +127,10 @@ export function Modal({
           {...(description ? {} : { "aria-describedby": undefined })}
           onOpenAutoFocus={(event) => {
             restoreFocusRef.current =
-              document.activeElement instanceof HTMLElement
+              lastFocusRef.current ??
+              (document.activeElement instanceof HTMLElement
                 ? document.activeElement
-                : null;
+                : null);
             // Land on the first text field when there is one, so toolbar
             // buttons (pin, close) don't grab focus and pop their tooltips.
             const field = (
@@ -122,7 +145,8 @@ export function Modal({
           }}
           onCloseAutoFocus={(event) => {
             event.preventDefault();
-            restoreFocusRef.current?.focus();
+            const target = restoreFocusRef.current;
+            if (target?.isConnected) target.focus();
           }}
           onEscapeKeyDown={(event) => {
             if (!canDismiss || !closeOnEscape) event.preventDefault();

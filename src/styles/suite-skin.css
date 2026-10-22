@@ -695,6 +695,9 @@ html[data-marketing-paused] .marketing-landing::before {
    clipped pill at the edge reads as "scrolls". */
 .suite-settings-mobile-nav {
   margin-inline: calc(-1 * var(--suite-page-pad-x));
+  width: calc(100% + 2 * var(--suite-page-pad-x));
+  max-width: none;
+  min-width: 0;
 }
 
 .suite-settings-mobile-nav > div {
@@ -723,6 +726,7 @@ html[data-marketing-paused] .marketing-landing::before {
 @media (min-width: 640px) {
   .suite-settings-mobile-nav {
     margin-inline: calc(-1 * var(--suite-page-pad-x-sm));
+    width: calc(100% + 2 * var(--suite-page-pad-x-sm));
   }
   .suite-settings-mobile-nav > div {
     padding-inline: var(--suite-page-pad-x-sm);
@@ -1076,6 +1080,40 @@ button:active > .ph-card {
 }
 .suite-press:active {
   transform: scale(0.98);
+}
+
+/* ── Icon motion tier ──────────────────────────────────────────────────
+   State-changing actions only: bell, sparkles, refresh, arrows, send.
+   Never on repeated list icons, table rows, or destructive hover. */
+.suite-icon-motion {
+  transition: transform 140ms cubic-bezier(0.2, 0, 0, 1);
+}
+:where(a, button):hover .suite-icon-nudge {
+  transform: translateX(2px);
+}
+:where(a, button):active .suite-icon-pop {
+  transform: scale(0.88);
+}
+:where(a, button):hover .suite-icon-rotate {
+  transform: rotate(90deg);
+}
+:where(a, button):hover .suite-icon-pulse {
+  animation: suite-icon-pulse 550ms ease-in-out;
+}
+:where(a, button):hover .suite-icon-ring {
+  animation: suite-icon-ring 520ms ease-in-out;
+}
+@keyframes suite-icon-pulse {
+  0%, 100% { transform: scale(1); }
+  40% { transform: scale(1.14); }
+  70% { transform: scale(0.96); }
+}
+@keyframes suite-icon-ring {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(12deg); }
+  40% { transform: rotate(-8deg); }
+  60% { transform: rotate(6deg); }
+  80% { transform: rotate(-4deg); }
 }
 .suite-press-card:active .ph-card,
 .ph-card.suite-press:active {
@@ -1619,8 +1657,21 @@ button:active > .ph-card {
   a:active > .ph-card,
   button:active > .ph-card,
   .ph-btn:active:not(:disabled),
+  .ph-tab:active,
   .suite-press-card:active .ph-card {
     transform: none;
+  }
+  .suite-icon-motion {
+    transition: none;
+  }
+  :where(a, button):hover .suite-icon-nudge,
+  :where(a, button):active .suite-icon-pop,
+  :where(a, button):hover .suite-icon-rotate {
+    transform: none;
+  }
+  :where(a, button):hover .suite-icon-pulse,
+  :where(a, button):hover .suite-icon-ring {
+    animation: none;
   }
   /* Modal motion is inline (component-driven) — beat it with !important. */
   .ph-modal-overlay,

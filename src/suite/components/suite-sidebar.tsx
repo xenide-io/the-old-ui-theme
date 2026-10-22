@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { ChevronLeft as NavArrowLeft, Sparkles as Sparks } from 'lucide-react';
 
 import { Tooltip } from "../../components/ui/Tooltip";
@@ -90,6 +97,14 @@ export function SuiteSidebar({
   const { Link } = useSuiteNavigation();
   const showAskAi = Boolean(onAskAiOpenChange && askAi);
   const chatOpen = showAskAi && askAiOpen && !collapsed;
+  const navRef = useRef<HTMLElement>(null);
+  const [activeIndicator, setActiveIndicator] = useState<{
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  } | null>(null);
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
   const askAiButtonRef = useRef<HTMLButtonElement>(null);
   const askAiBackRef = useRef<HTMLButtonElement>(null);
   const restoreAskAiFocusRef = useRef(false);
@@ -158,6 +173,44 @@ export function SuiteSidebar({
     return () => window.removeEventListener("keydown", onKey);
   }, [collapsed, onCollapsedChange]);
 
+  const activeHref = navItems.find((item) => item.active)?.href;
+  const effectiveActiveHref = pendingHref ?? activeHref;
+
+  useEffect(() => {
+    setPendingHref(null);
+  }, [activeHref]);
+
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const measure = () => {
+      const active = nav.querySelector<HTMLElement>('a[aria-current="page"]');
+      if (!active) {
+        setActiveIndicator(null);
+        return;
+      }
+      const navBox = nav.getBoundingClientRect();
+      const linkBox = active.getBoundingClientRect();
+      setActiveIndicator({
+        left: linkBox.left - navBox.left,
+        top: linkBox.top - navBox.top,
+        width: linkBox.width,
+        height: linkBox.height,
+      });
+    };
+    measure();
+    const frame = requestAnimationFrame(measure);
+    const observer =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    observer?.observe(nav);
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [effectiveActiveHref, collapsed, navItems.length]);
+
   function closeAskAi() {
     restoreAskAiFocusRef.current = true;
     setAskAi(false);
@@ -187,7 +240,7 @@ export function SuiteSidebar({
           : "text-ph-mutedtext hover:bg-ph-muted hover:text-ph-ink",
       )}
     >
-      <Sparks className="h-4 w-4" aria-hidden />
+      <Sparks className="suite-icon-motion suite-icon-pulse h-4 w-4" aria-hidden />
     </button>
   );
 
@@ -292,22 +345,42 @@ export function SuiteSidebar({
           </div>
         ) : (
           <>
-            <nav aria-label="Pages" className="shrink-0 space-y-1">
+            <nav
+              ref={navRef}
+              aria-label="Pages"
+              className="relative shrink-0 space-y-1"
+            >
+              {activeIndicator ? (
+                <span
+                  aria-hidden
+                  data-suite-active-indicator
+                  className="pointer-events-none absolute left-0 top-0 z-0 rounded-[var(--ph-radius-control)] bg-[var(--ph-selected-bg)] transition-[transform,width,height] duration-150 ease-out motion-reduce:transition-none"
+                  style={{
+                    transform: `translate(${activeIndicator.left}px, ${activeIndicator.top}px)`,
+                    width: activeIndicator.width,
+                    height: activeIndicator.height,
+                  }}
+                />
+              ) : null}
               <div className="space-y-1">
                 {navItems.map((item) => {
                   const Icon = item.icon;
-                  const active = Boolean(item.active);
+                  const active =
+                    Boolean(item.active) || item.href === effectiveActiveHref;
                   const link = (
                     <Link
                       href={item.href}
                       id={item.id}
                       data-test={item.dataTest ?? "nav-link"}
                       aria-current={active ? "page" : undefined}
-                      onClick={item.onClick}
+                      onClick={() => {
+                        setPendingHref(item.href);
+                        item.onClick?.();
+                      }}
                       className={cn(
                         "suite-sidebar-link group relative flex min-h-11 touch-manipulation items-center gap-2.5 overflow-hidden rounded-[var(--ph-radius-control)] text-sm font-medium transition-[width,height,padding,background-color,color,transform] duration-150 ease-out active:scale-[0.98] active:duration-75",
                         active
-                          ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)]"
+                          ? "text-[var(--ph-selected-text)]"
                           : "text-ph-subtle hover:bg-[var(--ph-surface-hover)] hover:text-ph-ink",
                         collapsed
                           ? "mx-auto size-11 shrink-0 justify-center gap-0 px-0 py-0"

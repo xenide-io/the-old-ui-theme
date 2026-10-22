@@ -1,6 +1,6 @@
 "use client";
 
-import { RefreshCw } from 'lucide-react';
+import { ArrowRight, RefreshCw } from 'lucide-react';
 import type { ReactNode } from "react";
 import { Tooltip } from "../../components/ui/Tooltip";
 import { cn } from "../lib/cn";
@@ -234,7 +234,7 @@ export function TodayTopBar({
             aria-label={refreshing ? "Refreshing today" : "Refresh today"}
           >
             <RefreshCw
-              className={cn("h-4 w-4", refreshing && "animate-spin")}
+              className={cn("suite-icon-motion suite-icon-rotate h-4 w-4", refreshing && "animate-spin")}
               aria-hidden
             />
           </button>
@@ -411,6 +411,7 @@ export function TodayEmptyAction({
   title,
   description,
   actionLabel,
+  actionIcon,
   href,
   onClick,
   dataTest,
@@ -418,6 +419,7 @@ export function TodayEmptyAction({
   title: string;
   description?: string;
   actionLabel?: string;
+  actionIcon?: ReactNode;
   href?: string;
   onClick?: () => void;
   dataTest?: string;
@@ -439,6 +441,11 @@ export function TodayEmptyAction({
             href={href}
             className="ph-btn ph-btn-link mt-3 text-sm"
           >
+            {actionIcon ? (
+              <span className="ph-btn-icon suite-icon-motion suite-icon-nudge">
+                {actionIcon}
+              </span>
+            ) : null}
             {actionLabel}
           </a>
         ) : (
@@ -447,6 +454,11 @@ export function TodayEmptyAction({
             onClick={onClick}
             className="ph-btn ph-btn-link mt-3 text-sm"
           >
+            {actionIcon ? (
+              <span className="ph-btn-icon suite-icon-motion suite-icon-nudge">
+                {actionIcon}
+              </span>
+            ) : null}
             {actionLabel}
           </button>
         )
@@ -522,8 +534,12 @@ export function TodayAskAiCard({
           <span className="font-display text-sm font-bold tracking-tight text-ph-ink">
             {title}
           </span>
-          <span className="text-sm font-medium text-ph-brand transition group-hover:underline">
+          <span className="inline-flex items-center gap-1 text-sm font-medium text-ph-brand transition group-hover:underline">
             {cta}
+            <ArrowRight
+              className="suite-icon-motion suite-icon-nudge h-3.5 w-3.5"
+              aria-hidden
+            />
           </span>
         </span>
         <span className="mt-1 block text-sm leading-relaxed text-ph-subtle">

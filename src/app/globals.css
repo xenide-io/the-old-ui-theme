@@ -1501,6 +1501,23 @@ body {
     flex-direction: column;
     gap: 0.375rem;
     padding: 0.25rem 0.25rem 1rem;
+    align-items: center;
+  }
+
+  .ph-confirm-dialog__icon {
+    display: flex;
+    height: 2.5rem;
+    width: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    color: var(--ph-text-secondary);
+    background: var(--ph-muted);
+  }
+
+  .ph-confirm-dialog__icon--danger {
+    color: var(--ph-danger);
+    background: color-mix(in oklab, var(--ph-danger) 12%, transparent);
   }
 
   .ph-confirm-dialog__title {
@@ -2970,7 +2987,16 @@ body {
   }
 
   .ph-tab {
-    @apply cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-ph-mutedtext transition hover:text-ph-ink;
+    @apply cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-ph-mutedtext hover:text-ph-ink;
+    transition:
+      color var(--ph-motion-fast) ease,
+      background-color var(--ph-motion-fast) ease,
+      box-shadow var(--ph-motion-fast) ease,
+      transform 80ms ease-out;
+  }
+
+  .ph-tab:active {
+    transform: scale(0.98);
   }
 
   .ph-tab-active {
