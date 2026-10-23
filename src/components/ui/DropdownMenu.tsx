@@ -104,7 +104,7 @@ function DropdownContent({
   return (
     <DropdownPrimitive.Portal>
       <DropdownPrimitive.Content
-        className={cn("ph-dropdown-panel", panelClassName)}
+        className={cn("ph-dropdown-panel pointer-events-auto", panelClassName)}
         align={align}
         side={side}
         sideOffset={sideOffset}
@@ -142,7 +142,7 @@ export function DropdownMenu({
   open,
   defaultOpen,
   onOpenChange,
-  modal = false,
+  modal = true,
   disabled,
   ...props
 }: DropdownMenuProps) {
@@ -203,7 +203,7 @@ export function DropdownButton({
   open,
   defaultOpen,
   onOpenChange,
-  modal = false,
+  modal = true,
   disabled,
   ...props
 }: DropdownButtonProps) {

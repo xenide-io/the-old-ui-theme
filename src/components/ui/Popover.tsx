@@ -24,7 +24,7 @@ export const PopoverContent = forwardRef<
         align={align}
         sideOffset={sideOffset}
         collisionPadding={collisionPadding}
-        className={cn("ph-popover-panel", className)}
+        className={cn("ph-popover-panel pointer-events-auto", className)}
         {...props}
       />
     </PopoverPrimitive.Portal>
