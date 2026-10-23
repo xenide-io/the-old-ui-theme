@@ -62,7 +62,7 @@ describe("product layouts", () => {
 
     expect(screen.getByRole("button", { name: "Add filter" })).toBeInTheDocument();
     expect(screen.getByText("12 results")).toBeInTheDocument();
-    expect(screen.getByRole("group", { name: "Applied filters" })).toHaveTextContent("StatusActive");
+    expect(screen.getByRole("group", { name: "Applied filters" })).toHaveTextContent(/Status\s*is\s*Active/);
   });
 });
 

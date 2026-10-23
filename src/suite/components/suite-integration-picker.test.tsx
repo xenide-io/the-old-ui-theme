@@ -149,8 +149,16 @@ describe("SuiteIntegrationPicker", () => {
 
     expect(screen.getByText("OAuth 2.0")).toBeInTheDocument();
     expect(screen.getByText("API key")).toBeInTheDocument();
-    expect(screen.getByTitle("Bridge in TurtleTime")).toBeInTheDocument();
-    expect(screen.getByTitle("Bridge in Tides")).toBeInTheDocument();
+    expect(
+      document.querySelector(
+        '[data-test="suite-integration-picker-mixed-provider-app-turtletime"]',
+      ),
+    ).not.toBeNull();
+    expect(
+      document.querySelector(
+        '[data-test="suite-integration-picker-mixed-provider-app-tides"]',
+      ),
+    ).not.toBeNull();
 
     await user.click(screen.getByRole("button", { name: "Connect" }));
     await user.click(screen.getByRole("button", { name: /API key Select/ }));

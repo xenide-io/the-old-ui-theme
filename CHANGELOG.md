@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.2] - 2026-10-23
+
+### Fixed
+
+- The suite app switcher card no longer clips its top border at the top of the sidebar.
+- Applied filter chips expose the explicit `is` connector in their accessible text.
+- Suite integration picker bridge markers use the current catalogue presentation.
+
 ## [0.8.0] - 2026-09-04
 
 ### Added
