@@ -26,3 +26,12 @@ it("applies the shared sidebar hover background only to unselected destinations"
   }
   expect(skin.toString()).not.toContain(".suite-sidebar-tree-row.ph-nav-highlight:hover");
 });
+
+it("moves the selected-row pill instantly instead of sliding", () => {
+  const indicator = skin.nodes.find(
+    (node): node is Rule => node.type === "rule" && node.selector === ".suite-tree-indicator",
+  )!;
+  expect(indicator.nodes.some((node) => node.type === "decl" && node.prop === "transition")).toBe(false);
+  const nav = readFileSync(resolve("src/suite/components/suite-sidebar.tsx"), "utf8");
+  expect(nav).not.toContain("transition-[transform,width,height]");
+});

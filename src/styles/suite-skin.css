@@ -30,8 +30,8 @@
   background: color-mix(in oklab, var(--ph-text-primary) 10%, var(--ph-surface));
 }
 
-/* Shared active-row pill: it slides between rows with the same motion as the
-   primary sidebar selection. */
+/* Shared active-row pill. It snaps to the selected row: sliding between rows
+   reads as input lag next to the instant navigation, so only colour hovers animate. */
 .suite-tree-indicator {
   position: absolute;
   top: 0;
@@ -39,10 +39,6 @@
   z-index: 0;
   border-radius: 0.375rem;
   pointer-events: none;
-  transition:
-    transform 150ms ease-out,
-    width 150ms ease-out,
-    height 150ms ease-out;
 }
 
 .suite-sidebar-tree-row[data-suite-tree-current="true"]:hover {

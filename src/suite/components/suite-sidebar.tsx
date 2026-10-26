@@ -351,7 +351,7 @@ export function SuiteSidebar({
                 <span
                   aria-hidden
                   data-suite-active-indicator
-                  className="ph-nav-highlight pointer-events-none absolute left-0 top-0 z-0 rounded-[var(--ph-radius-control)] transition-[transform,width,height] duration-150 ease-out motion-reduce:transition-none"
+                  className="ph-nav-highlight pointer-events-none absolute left-0 top-0 z-0 rounded-[var(--ph-radius-control)]"
                   style={{
                     transform: `translate(${activeIndicator.left}px, ${activeIndicator.top}px)`,
                     width: activeIndicator.width,
