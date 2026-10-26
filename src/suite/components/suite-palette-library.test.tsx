@@ -43,6 +43,25 @@ describe('SuitePaletteLibrary', () => {
     expect(findPaletteIcons).not.toHaveBeenCalled();
   });
 
+  it('opens each tab on a real category and only searches the whole library', async () => {
+    const user = userEvent.setup();
+    render(<SuitePaletteLibrary onPick={vi.fn()} />);
+    const category = screen.getByRole('combobox', { name: 'Emoji category' });
+    expect(screen.queryByRole('option', { name: 'All categories' })).not.toBeInTheDocument();
+    expect(category).toHaveValue('activities');
+    await waitFor(() => expect(fetchPaletteEmojis).toHaveBeenLastCalledWith({
+      q: undefined, group: 'activities', include_variations: false, page: 1, size: 60,
+    }));
+    await user.type(screen.getByRole('searchbox', { name: 'Search emoji' }), 'party');
+    await waitFor(() => expect(fetchPaletteEmojis).toHaveBeenLastCalledWith(expect.objectContaining({
+      q: 'party', group: undefined,
+    })));
+    await user.click(screen.getByRole('tab', { name: 'Icons' }));
+    const collection = await screen.findByRole('combobox', { name: 'Icon collection' });
+    expect(screen.queryByRole('option', { name: 'All collections' })).not.toBeInTheDocument();
+    expect(collection).toHaveValue('office');
+  });
+
   it('keeps separate search queries and supports icon styles and pagination', async () => {
     const user = userEvent.setup();
     render(<SuitePaletteLibrary onPick={vi.fn()} />);

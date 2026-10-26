@@ -1,5 +1,18 @@
 export { TodayPageFrame } from "./components/today-page-frame";
 export { SuiteSidebarTree, SuiteSidebarSection, SuiteSidebarTreeBranch, type SuiteSidebarTreeNode } from "./components/sidebar-tree";
+export {
+  Bell as SuiteAnimatedBell,
+  type BellProps as SuiteAnimatedBellProps,
+} from "../components/animate-ui/icons/bell";
+export {
+  Pin as SuiteAnimatedPin,
+  type PinProps as SuiteAnimatedPinProps,
+} from "../components/animate-ui/icons/pin";
+export {
+  PinOff as SuiteAnimatedPinOff,
+  type PinOffProps as SuiteAnimatedPinOffProps,
+} from "../components/animate-ui/icons/pin-off";
+
 export { SuiteSidebarLinks } from "./components/sidebar-links";
 export { SuiteNotificationInbox } from "./components/notification-inbox";
 export { SuiteCalendarTimeGrid } from "./components/calendar-time-grid";

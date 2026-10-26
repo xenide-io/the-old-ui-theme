@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useId, useRef, useState, type DragEvent, type KeyboardEvent } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type DragEvent, type KeyboardEvent } from 'react';
 import { Check, ImagePlus, Search, Shapes, Smile, UploadCloud, X } from 'lucide-react';
 import {
   fetchPaletteCollection,
@@ -47,7 +47,7 @@ export function SuitePaletteLibrary({
   const [collections, setCollections] = useState<PaletteCollection[]>([]);
   const [collection, setCollection] = useState('');
   const [style, setStyle] = useState('');
-  const [group, setGroup] = useState('');
+  const [group, setGroup] = useState(PALETTE_EMOJI_GROUPS[0]?.value ?? '');
   const [variations, setVariations] = useState(false);
   const [queries, setQueries] = useState({ emoji: '', icons: '' });
   const [items, setItems] = useState<PaletteIcon[]>([]);
@@ -66,6 +66,15 @@ export function SuitePaletteLibrary({
   const query = tab === 'icons' ? queries.icons : queries.emoji;
   const emoji = tab === 'emoji';
   const label = emoji ? 'emoji' : 'icons';
+  const searching = query.trim().length > 0;
+  const visibleCollections = useMemo(
+    () => [...collections].filter((item) => !style || item.style === style)
+      .sort((a, b) => a.name.localeCompare(b.name)),
+    [collections, style],
+  );
+  // Each tab opens on one real category. Only a search spans the whole library,
+  // so the picker never requests an "everything" grid.
+  const activeCollection = collection || visibleCollections[0]?.slug || '';
 
   useEffect(() => {
     if (tab !== 'icons') return;
@@ -96,25 +105,25 @@ export function SuitePaletteLibrary({
         let count: number;
         if (tab === 'emoji') {
           const result = await fetchPaletteEmojis({
-            q: query.trim() || undefined, group: group || undefined,
+            q: query.trim() || undefined, group: searching ? undefined : group || undefined,
             include_variations: variations, page, size: PAGE_SIZE,
           });
           next = result.results;
           count = result.total;
         } else if (query.trim()) {
           const result = await findPaletteIcons({
-            q: query.trim(), collection: collection || undefined, style: style || undefined,
+            q: query.trim(), collection: undefined, style: style || undefined,
             limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE,
           });
           next = result.results;
           count = result.total;
-        } else if (collection) {
-          const result = await fetchPaletteCollection(collection, { page, size: PAGE_SIZE });
+        } else if (activeCollection) {
+          const result = await fetchPaletteCollection(activeCollection, { page, size: PAGE_SIZE });
           next = result.icons;
           count = result.count;
         } else {
-          // Collection previews provide a small, varied starting grid without hundreds of requests.
-          next = [...new Map(collections.filter((item) => !style || item.style === style)
+          // Before collections resolve, previews keep the grid small and varied.
+          next = [...new Map(visibleCollections
             .flatMap((item) => item.preview.map((url) => ({
               id: url, name: item.name, tags: [], url,
             }))).map((item) => [item.url, item])).values()].slice(0, 120);
@@ -131,7 +140,7 @@ export function SuitePaletteLibrary({
       }
     }, query.trim() ? 250 : 0);
     return () => { cancelled = true; clearTimeout(timer); };
-  }, [tab, query, group, variations, collection, style, collections, page, retry]);
+  }, [tab, query, searching, group, variations, activeCollection, style, visibleCollections, page, retry]);
 
   // Infinite scroll: the next page loads as the grid approaches its end.
   const loadNextPage = useCallback(() => {
@@ -215,7 +224,7 @@ export function SuitePaletteLibrary({
             <div className="relative" data-test="palette-toolbar">
               <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ph-mutedtext" aria-hidden />
               <input type="search" value={query} maxLength={80} aria-label={`Search ${label}`}
-                placeholder={emoji ? 'Search emoji…' : 'Search all icons…'}
+                placeholder={emoji ? 'Search all emoji…' : 'Search all icons…'}
                 onChange={(event) => { setQueries((current) => ({ ...current, [tab]: event.target.value })); setPage(1); }}
                 className="ph-input h-11 min-w-0 w-full !pl-10 !pr-10 text-sm" />
               {query ? <button type="button" aria-label="Clear search" className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-ph-mutedtext hover:bg-ph-muted"
@@ -225,9 +234,12 @@ export function SuitePaletteLibrary({
               {emoji ? (
                 <>
                   <select aria-label="Emoji category" value={group} className="ph-select h-9 min-w-0 flex-1 text-sm"
-                    onChange={(event) => { setGroup(event.target.value); setPage(1); }}>
-                    <option value="">All categories</option>
-                    {PALETTE_EMOJI_GROUPS.map((group) => <option key={group.value} value={group.value}>{group.label}</option>)}
+                    onChange={(event) => {
+                      setGroup(event.target.value);
+                      setQueries((current) => ({ ...current, emoji: '' }));
+                      setPage(1);
+                    }}>
+                    {PALETTE_EMOJI_GROUPS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                   </select>
                   <label className="flex min-h-9 items-center gap-2 text-xs text-ph-mutedtext">
                     <input type="checkbox" checked={variations} onChange={(event) => { setVariations(event.target.checked); setPage(1); }} />
@@ -236,11 +248,13 @@ export function SuitePaletteLibrary({
                 </>
               ) : (
                 <>
-                  <select aria-label="Icon collection" value={collection} className="ph-select h-9 min-w-0 flex-1 text-sm"
-                    onChange={(event) => { setCollection(event.target.value); setPage(1); }}>
-                    <option value="">All collections</option>
-                    {[...collections].filter((item) => !style || item.style === style).sort((a, b) => a.name.localeCompare(b.name))
-                      .map((item) => <option key={item.slug} value={item.slug}>{item.name}</option>)}
+                  <select aria-label="Icon collection" value={activeCollection} className="ph-select h-9 min-w-0 flex-1 text-sm"
+                    onChange={(event) => {
+                      setCollection(event.target.value);
+                      setQueries((current) => ({ ...current, icons: '' }));
+                      setPage(1);
+                    }}>
+                    {visibleCollections.map((item) => <option key={item.slug} value={item.slug}>{item.name}</option>)}
                   </select>
                   <select aria-label="Filter by icon type" value={style} className="ph-select h-9 min-w-0 max-w-[45%] text-sm"
                     onChange={(event) => { setStyle(event.target.value); setCollection(''); setPage(1); }}>
