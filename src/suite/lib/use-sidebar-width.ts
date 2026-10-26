@@ -13,7 +13,7 @@ export const SIDEBAR_RAIL_WIDTH = 56;
 export const SIDEBAR_COLLAPSE_THRESHOLD = 80;
 export const SIDEBAR_MIN_EXPANDED_WIDTH = 180;
 export const SIDEBAR_MAX_WIDTH = 640;
-export const SIDEBAR_DEFAULT_WIDTH = 320;
+export const SIDEBAR_DEFAULT_WIDTH = 280;
 
 /** Shared across Tides / TurtleTime / Kraken / ShellStack / Shelly. */
 export const SUITE_SIDEBAR_WIDTH_KEY = "shellstack:sidebar-width";
@@ -127,8 +127,8 @@ export function useSidebarWidth(
   const fallbackWidth = snapWidth(clampWidth(defaultWidth));
   // The suite apps are client-only SPAs (no SSR), so the stored width can be
   // read during the first render. Starting at the default and correcting it in
-  // an effect made the sidebar visibly pop from 320 to the saved width on every
-  // load and app switch.
+  // an effect made the sidebar visibly pop from the default to the saved width
+  // on every load and app switch.
   const [width, setWidth] = useState(() => {
     if (typeof window === "undefined") return fallbackWidth;
     const stored = readSidebarWidth(storageKey);

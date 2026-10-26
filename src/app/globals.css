@@ -2900,8 +2900,7 @@ body {
     @apply flex min-h-9 items-center gap-2 rounded-[var(--ph-radius-control)] px-2.5 py-2 text-sm text-ph-subtle;
   }
 
-  .ph-settings-nav__item:hover {
-    color: var(--ph-text-primary);
+  .ph-settings-nav__item:not(.ph-settings-nav__item--active):hover {
     background: var(--ph-surface-hover);
   }
 

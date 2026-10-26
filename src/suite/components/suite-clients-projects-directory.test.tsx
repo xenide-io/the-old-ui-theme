@@ -121,7 +121,7 @@ describe("SuiteClientsProjectsDirectory", () => {
     await user.click(screen.getByRole("button", { name: "New client" }));
 
     expect(
-      screen.getByRole("button", { name: "Browse library" }),
+      screen.getByRole("button", { name: "Choose icon" }),
     ).toBeInTheDocument();
     expect(screen.queryByRole("radio")).toBeNull();
   });

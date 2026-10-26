@@ -10,6 +10,85 @@
    (No @layer blocks here — Tailwind rejects them in imported files.)
    ───────────────────────────────────────────────────────────────────────── */
 
+/* Opt-in tree navigation: Kraken keeps its existing, product-specific tree. */
+.suite-sidebar-tree-row,
+.suite-sidebar-tree-control,
+.suite-tree-navigation .suite-sidebar-link {
+  transition:
+    background-color 150ms ease-out,
+    color 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.suite-sidebar-tree-row:active {
+  transform: scale(0.985);
+}
+
+.suite-sidebar-tree-row:not([data-suite-tree-current="true"]):not(.ph-nav-highlight):hover,
+.suite-sidebar-tree-control:hover,
+.suite-tree-navigation .suite-sidebar-link:not([aria-current="page"]):hover {
+  background: color-mix(in oklab, var(--ph-text-primary) 10%, var(--ph-surface));
+}
+
+/* Shared active-row pill: it slides between rows with the same motion as the
+   primary sidebar selection. */
+.suite-tree-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  border-radius: 0.375rem;
+  pointer-events: none;
+  transition:
+    transform 150ms ease-out,
+    width 150ms ease-out,
+    height 150ms ease-out;
+}
+
+.suite-sidebar-tree-row[data-suite-tree-current="true"]:hover {
+  background: transparent;
+}
+
+/* Branches and section content share the sidebar's 150ms motion. */
+.suite-tree-branch {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 150ms ease-out,
+    opacity 150ms ease-out;
+}
+
+.suite-tree-branch.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.suite-tree-branch-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .suite-sidebar-tree-row,
+  .suite-sidebar-tree-control,
+  .suite-tree-navigation .suite-sidebar-link {
+    transition: none;
+  }
+
+  .suite-sidebar-tree-row:active {
+    transform: none;
+  }
+
+  .suite-tree-branch {
+    transition: none;
+  }
+
+  .suite-tree-indicator {
+    transition: none;
+  }
+}
+
 html {
   /* Native-app touch: no grey flash on tap, no double-tap zoom delay. */
   touch-action: manipulation;
@@ -766,13 +845,13 @@ html[data-marketing-paused] .marketing-landing::before {
   background: var(--ph-surface-inset);
 }
 
+.ph-nav-highlight,
+.ph-nav-highlight:hover,
 .ph-nav-current,
 .ph-nav-current:hover,
 .ph-settings-nav__item--active,
 .ph-settings-nav__item--active:hover {
-  color: var(--ph-selected-text);
   background: color-mix(in oklab, var(--ph-selected-text) 16%, var(--ph-surface));
-  font-weight: 600;
 }
 
 @supports not (backdrop-filter: blur(1px)) {

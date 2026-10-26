@@ -14,7 +14,6 @@ import {
   Button,
   DropdownItem,
   DropdownMenu,
-  FileUpload,
   Input,
   Modal,
   Select,
@@ -117,14 +116,12 @@ function DirectoryIconPicker({
   preview,
   label,
   color,
-  onFileChange,
   onClear,
   onBrowse,
 }: {
   preview?: string | null;
   label?: string;
   color?: string | null;
-  onFileChange: (file: File | null) => void;
   onClear: () => void;
   onBrowse?: () => void;
 }) {
@@ -132,40 +129,36 @@ function DirectoryIconPicker({
     <div className="space-y-2">
       <span className="mb-1.5 block text-sm font-medium text-ph-ink">Icon</span>
       <div className="rounded-[var(--ph-radius-surface)] border border-ph-border bg-[var(--ph-surface-inset)] p-3">
-        <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onBrowse}
+          disabled={!onBrowse}
+          aria-label="Choose icon"
+          className="group flex w-full items-center gap-3 rounded-lg text-left transition focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]"
+        >
           <SuiteEntityIcon
             imageUrl={preview}
             label={label}
             color={color}
             tinted
-            className="h-9 w-9 text-base"
+            className="h-10 w-10 text-base"
           />
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-ph-ink">
-              {preview ? "Custom image" : "No icon yet"}
-            </p>
-            <p className="text-xs text-ph-mutedtext">
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-medium text-ph-ink">
+              {preview ? "Current icon" : "No icon yet"}
+            </span>
+            <span className="block text-xs text-ph-mutedtext">
               {preview
-                ? "Shown on cards and lists."
-                : "Browse the library or upload your own."}
-            </p>
-          </div>
+                ? "Click to change it."
+                : "Click to choose an emoji, icon or upload."}
+            </span>
+          </span>
           {onBrowse ? (
-            <button
-              type="button"
-              onClick={onBrowse}
-              className="rounded-md border border-ph-border px-3 py-1.5 text-xs font-medium text-ph-ink hover:border-ph-brand hover:bg-ph-surface"
-            >
-              Browse library
-            </button>
+            <span className="text-xs font-medium text-ph-mutedtext group-hover:text-ph-brand">
+              Edit
+            </span>
           ) : null}
-        </div>
-        <div className="mt-3">
-          <FileUpload
-            accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml,.svg"
-            onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
-          />
-        </div>
+        </button>
         {preview ? (
           <button
             type="button"
@@ -377,6 +370,7 @@ export function SuiteClientsProjectsDirectory({
       clearIconImage: false,
     }));
     setPreview(URL.createObjectURL(file));
+    setLibraryOpen(false);
   }
 
   function clearImage() {
@@ -961,7 +955,6 @@ export function SuiteClientsProjectsDirectory({
                 ? clients.find((client) => client.id === draftClientId)?.color
                 : undefined)
             }
-            onFileChange={chooseImage}
             onClear={clearImage}
             onBrowse={() => setLibraryOpen(true)}
           />
@@ -1061,11 +1054,11 @@ export function SuiteClientsProjectsDirectory({
         </div>
       </Modal>
       {libraryOpen ? (
-        <Modal open onClose={() => setLibraryOpen(false)} title="Icon library">
+        <Modal open onClose={() => setLibraryOpen(false)} title="Choose an icon" size="lg" className="!max-w-xl">
           {renderIconLibrary ? (
             renderIconLibrary({ onPick: pickFromLibrary })
           ) : (
-            <SuitePaletteLibrary onPick={pickFromLibrary} />
+            <SuitePaletteLibrary onPick={pickFromLibrary} selectedUrl={preview} onUpload={chooseImage} error={mutationError} />
           )}
         </Modal>
       ) : null}

@@ -58,6 +58,8 @@ export function SuiteEntityIcon({
       ? automaticEntityColour(label ?? "")
       : null;
   const neutralBackground = "var(--ph-muted, rgba(127,127,127,0.08))";
+  // Fluent emoji are full-colour artwork; a tint plate would change them.
+  const isEmoji = Boolean(imageUrl?.includes("/svgrepo/fluent-emoji/"));
 
   if (imageUrl) {
     const src = tinted && tint ? paletteIconSrc(imageUrl, tint) : imageUrl;
@@ -69,7 +71,11 @@ export function SuiteEntityIcon({
           className,
         )}
         style={{
-          backgroundColor: tint ? `${tint}18` : neutralBackground,
+          backgroundColor: isEmoji
+            ? "transparent"
+            : tint
+              ? `${tint}18`
+              : neutralBackground,
           ...style,
         }}
       >

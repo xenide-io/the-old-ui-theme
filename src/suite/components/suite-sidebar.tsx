@@ -308,7 +308,7 @@ export function SuiteSidebar({
         className={cn(
           "flex min-h-0 flex-1 flex-col",
           chatOpen ? "min-h-0" : "overflow-y-auto",
-          collapsed ? "px-1.5 pt-2 pb-4" : "px-3 pt-3 pb-8",
+          collapsed ? "px-1.5 pt-2 pb-4" : "px-2 pt-3 pb-8",
         )}
       >
         {contextSwitcher ? (
@@ -345,13 +345,13 @@ export function SuiteSidebar({
             <nav
               ref={navRef}
               aria-label="Pages"
-              className="relative shrink-0 space-y-1"
+              className="relative shrink-0"
             >
               {activeIndicator ? (
                 <span
                   aria-hidden
                   data-suite-active-indicator
-                  className="ph-nav-current pointer-events-none absolute left-0 top-0 z-0 rounded-[var(--ph-radius-control)] transition-[transform,width,height] duration-150 ease-out motion-reduce:transition-none"
+                  className="ph-nav-highlight pointer-events-none absolute left-0 top-0 z-0 rounded-[var(--ph-radius-control)] transition-[transform,width,height] duration-150 ease-out motion-reduce:transition-none"
                   style={{
                     transform: `translate(${activeIndicator.left}px, ${activeIndicator.top}px)`,
                     width: activeIndicator.width,
@@ -359,7 +359,7 @@ export function SuiteSidebar({
                   }}
                 />
               ) : null}
-              <div className="space-y-1">
+              <div className={collapsed ? "space-y-1" : "space-y-0.5"}>
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   const active =
@@ -375,13 +375,12 @@ export function SuiteSidebar({
                         item.onClick?.();
                       }}
                       className={cn(
-                        "suite-sidebar-link group relative flex min-h-11 touch-manipulation items-center gap-2.5 overflow-hidden rounded-[var(--ph-radius-control)] text-sm font-medium transition-[width,height,padding,background-color,color,transform] duration-150 ease-out active:scale-[0.98] active:duration-75",
-                        active
-                          ? "font-semibold text-[var(--ph-selected-text)]"
-                          : "text-ph-subtle hover:bg-[var(--ph-surface-hover)] hover:text-ph-ink",
+                        "suite-sidebar-link group relative flex min-h-8 touch-manipulation items-center gap-2.5 overflow-hidden rounded-[var(--ph-radius-control)] text-sm font-medium transition-[width,height,padding,background-color,color,transform] duration-150 ease-out active:scale-[0.98] active:duration-75 [@media(pointer:coarse)]:min-h-11",
+                        "text-ph-subtle",
+                        !active && "hover:bg-[var(--ph-surface-hover)]",
                         collapsed
                           ? "mx-auto size-11 shrink-0 justify-center gap-0 px-0 py-0"
-                          : "w-full px-2.5 py-2",
+                          : "w-full px-2.5 py-1",
                       )}
                     >
                       <span
@@ -392,21 +391,11 @@ export function SuiteSidebar({
                         aria-hidden
                       >
                         <Icon
-                          className={
-                            active
-                              ? "h-full w-full stroke-2"
-                              : "h-full w-full stroke-[1.75]"
-                          }
+                          className="h-full w-full stroke-[1.75]"
                         />
                       </span>
                       <span
-                        className={cn(
-                          "relative truncate",
-                          active
-                            ? "text-[var(--ph-selected-text)]"
-                            : "text-ph-subtle group-hover:text-ph-ink",
-                          collapsed && "sr-only",
-                        )}
+                          className={cn("relative truncate", collapsed && "sr-only")}
                       >
                         {item.label}
                       </span>

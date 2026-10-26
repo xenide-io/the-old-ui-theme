@@ -22,6 +22,7 @@ function paletteUrl(): string {
 }
 
 export interface PaletteCollection {
+  kind: 'icon' | 'emoji';
   slug: string;
   name: string;
   blurb: string;
@@ -40,6 +41,45 @@ export interface PaletteIcon {
   name: string;
   tags: string[];
   url: string;
+}
+
+export interface PaletteEmoji extends PaletteIcon {
+  emoji: string;
+  hexcode: string;
+  group: string;
+  subgroup: string;
+  variation: boolean;
+}
+
+/** Emoji groups in Unicode order, shared by the emoji pickers. */
+export const PALETTE_EMOJI_GROUPS: ReadonlyArray<{
+  value: string;
+  label: string;
+  short: string;
+}> = [
+  { value: 'smileys-emotion', label: 'Smileys & emotion', short: 'Smileys' },
+  { value: 'people-body', label: 'People & body', short: 'People' },
+  { value: 'animals-nature', label: 'Animals & nature', short: 'Nature' },
+  { value: 'food-drink', label: 'Food & drink', short: 'Food' },
+  { value: 'travel-places', label: 'Travel & places', short: 'Travel' },
+  { value: 'activities', label: 'Activities', short: 'Activities' },
+  { value: 'objects', label: 'Objects', short: 'Objects' },
+  { value: 'symbols', label: 'Symbols', short: 'Symbols' },
+  { value: 'component', label: 'Components', short: 'Components' },
+];
+
+export function fetchPaletteEmojis(options?: {
+  q?: string;
+  group?: string;
+  include_variations?: boolean;
+  page?: number;
+  size?: number;
+}): Promise<{ total: number; page: number; page_size: number; results: PaletteEmoji[] }> {
+  return paletteGetCached('/emojis', options, 60_000);
+}
+
+export function fetchPaletteIcons(): Promise<PaletteLibrary> {
+  return paletteGetCached('/icons', undefined, 5 * 60_000);
 }
 
 export interface PaletteCollectionDetail {
@@ -99,7 +139,7 @@ async function paletteGetCached<T>(
   params: Record<string, string | number | boolean> | undefined,
   ttlMs: number,
 ): Promise<T> {
-  const key = `${path}?${toQuery(params)}`;
+  const key = `${paletteUrl()}${path}?${toQuery(params)}`;
   const now = Date.now();
   const hit = cache.get(key);
   if (hit && hit.expires > now) return hit.value as T;
@@ -133,8 +173,9 @@ export function findPaletteIcons(options: {
   collection?: string;
   style?: string;
   limit?: number;
+  offset?: number;
 }): Promise<{ query: string; total: number; limit: number; results: PaletteHit[] }> {
-  return paletteGet('/find', options);
+  return paletteGet('/icons/search', options);
 }
 
 /**
@@ -150,5 +191,6 @@ export function paletteIconSrc(
 ): string | null | undefined {
   if (!imageUrl || !color) return imageUrl;
   if (!imageUrl.includes('/svgrepo/')) return imageUrl;
+  if (imageUrl.includes('/svgrepo/fluent-emoji/')) return imageUrl;
   return `${paletteUrl()}/render?src=${encodeURIComponent(imageUrl)}&color=${encodeURIComponent(color)}`;
 }

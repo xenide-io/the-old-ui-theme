@@ -1,4 +1,4 @@
-import { cleanup, render, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -8,8 +8,13 @@ import {
 } from "./use-sidebar-width";
 
 function WidthProbe() {
-  const { width } = useSidebarWidth();
-  return <div data-testid="width">{width}</div>;
+  const { width, resetWidth } = useSidebarWidth();
+  return (
+    <div>
+      <span data-testid="width">{width}</span>
+      <button onClick={resetWidth}>Reset width</button>
+    </div>
+  );
 }
 
 const store = new Map<string, string>();
@@ -54,6 +59,19 @@ afterEach(() => {
 });
 
 describe("useSidebarWidth app-switch sync", () => {
+  it("defaults to 280px and preserves saved widths until reset", () => {
+    const { unmount } = render(<WidthProbe />);
+    expect(screen.getByTestId("width")).toHaveTextContent("280");
+    unmount();
+
+    persistSidebarWidth(SUITE_SIDEBAR_WIDTH_KEY, 360);
+    render(<WidthProbe />);
+    expect(screen.getByTestId("width")).toHaveTextContent("360");
+    fireEvent.click(screen.getByRole("button", { name: "Reset width" }));
+    expect(screen.getByTestId("width")).toHaveTextContent("280");
+    expect(localStorage.getItem(SUITE_SIDEBAR_WIDTH_KEY)).toBe("280");
+  });
+
   it("picks up a cookie written by another app after pageshow", async () => {
     persistSidebarWidth(SUITE_SIDEBAR_WIDTH_KEY, 280);
     render(<WidthProbe />);

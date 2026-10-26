@@ -31,4 +31,23 @@ describe("SuiteEntityIcon fallback", () => {
       backgroundColor: `${automaticEntityColour("Acme")}18`,
     });
   });
+
+  it("shows Fluent emoji in their original colours", () => {
+    const { container } = render(
+      <SuiteEntityIcon
+        label="Party"
+        color="#123456"
+        tinted
+        imageUrl="https://media.xenide.io/svgrepo/fluent-emoji/1f389.svg"
+      />,
+    );
+    const image = container.querySelector("img");
+    expect(image).toHaveAttribute(
+      "src",
+      "https://media.xenide.io/svgrepo/fluent-emoji/1f389.svg",
+    );
+    expect((container.firstChild as HTMLElement).style.backgroundColor).toMatch(
+      /^(transparent|rgba\(0, 0, 0, 0\))$/,
+    );
+  });
 });

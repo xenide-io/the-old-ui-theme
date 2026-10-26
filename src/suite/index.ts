@@ -1,4 +1,7 @@
 export { TodayPageFrame } from "./components/today-page-frame";
+export { SuiteSidebarTree, SuiteSidebarSection, SuiteSidebarTreeBranch, type SuiteSidebarTreeNode } from "./components/sidebar-tree";
+export { SuiteSidebarLinks } from "./components/sidebar-links";
+export { SuiteNotificationInbox } from "./components/notification-inbox";
 export { SuiteCalendarTimeGrid } from "./components/calendar-time-grid";
 export {
   SuiteCalendarToolbar,
@@ -258,13 +261,17 @@ export {
 } from "./components/suite-palette-library";
 export {
   fetchPaletteLibrary,
+  fetchPaletteIcons,
+  fetchPaletteEmojis,
   fetchPaletteCollection,
   findPaletteIcons,
   setPaletteUrl,
+  PALETTE_EMOJI_GROUPS,
   type PaletteCollection,
   type PaletteCollectionDetail,
   type PaletteHit,
   type PaletteIcon,
+  type PaletteEmoji,
   type PaletteLibrary,
 } from "./lib/palette-api";
 export {

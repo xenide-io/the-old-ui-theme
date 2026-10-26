@@ -78,7 +78,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:lib": "tsup --entry.index src/index.ts --entry.ui src/components/ui/index.ts --entry.suite src/suite/index.ts --entry.theme-boot src/suite/lib/theme-boot.ts --entry.tailwind-preset tailwind-preset.ts --format cjs,esm --dts --external react,react-dom,next,lucide-react,motion,@tanstack/react-table,@animate-ui/react --clean --tsconfig ./tsconfig.lib.json",
+    "build:lib": "tsup --entry.index src/index.ts --entry.ui src/components/ui/index.ts --entry.suite src/suite/index.ts --entry.theme-boot src/suite/lib/theme-boot.ts --entry.tailwind-preset tailwind-preset.ts --format cjs,esm --dts --external react,react-dom,next,lucide-react,motion,@tanstack/react-table,@animate-ui/react,@radix-ui/react-dialog,@radix-ui/react-dropdown-menu,@radix-ui/react-popover --clean --tsconfig ./tsconfig.lib.json",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",

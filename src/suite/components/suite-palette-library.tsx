@@ -1,490 +1,305 @@
 'use client';
 
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-  type KeyboardEvent as ReactKeyboardEvent,
-} from 'react';
-import { ChevronDown as NavArrowDown, Search } from 'lucide-react';
+import { useCallback, useEffect, useId, useRef, useState, type DragEvent, type KeyboardEvent } from 'react';
+import { Check, ImagePlus, Search, Shapes, Smile, UploadCloud, X } from 'lucide-react';
 import {
   fetchPaletteCollection,
-  fetchPaletteLibrary,
+  fetchPaletteEmojis,
+  fetchPaletteIcons,
   findPaletteIcons,
+  PALETTE_EMOJI_GROUPS,
   type PaletteCollection,
   type PaletteIcon,
 } from '@/suite/lib/palette-api';
+import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { cn } from '@/lib/cn';
+import { trackSuiteEvent } from '@/lib/suite-analytics';
 
 const PAGE_SIZE = 60;
-const DISCOVER_LIMIT = 120;
-
-const ICON_TYPES = [
-  { value: 'all', label: 'All types' },
-  { value: 'line', label: 'Line' },
-  { value: 'solid', label: 'Solid' },
-  { value: 'duotone', label: 'Duotone' },
-  { value: 'color', label: 'Colour' },
-  { value: 'mixed', label: 'Mixed' },
-];
 
 export interface SuitePalettePick {
   url: string;
   name?: string;
 }
 
-function FilterSelect({
-  label,
-  value,
-  onChange,
-  children,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  children: ReactNode;
-}) {
-  return (
-    <div className="min-w-0">
-      <select
-        aria-label={label}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="ph-select h-full min-w-0 w-full py-2 pl-3 pr-10"
-      >
-        {children}
-      </select>
-    </div>
-  );
-}
-
-/**
- * Browse and search the Palette icon library: a search box plus a library
- * filter and an icon-type filter. Searching is global; the filters narrow it.
- * Drop it in a modal and use `onPick` to receive the chosen icon URL.
- */
+/** Shared emoji, icon and upload chooser. Hosts own saving and file validation. */
 export function SuitePaletteLibrary({
   onPick,
+  selectedUrl,
+  onUpload,
+  uploading = false,
+  uploadHint = 'PNG, JPG, GIF, WebP or SVG. Maximum 512 KB.',
+  uploadAccept = 'image/png,image/jpeg,image/gif,image/webp,image/svg+xml,.svg',
+  error: uploadError,
 }: {
   onPick: (icon: SuitePalettePick) => void;
+  selectedUrl?: string | null;
+  onUpload?: (file: File) => void;
+  uploading?: boolean;
+  uploadHint?: string;
+  uploadAccept?: string;
+  error?: string | null;
 }) {
+  const [tab, setTab] = useState(
+    selectedUrl?.includes('/svgrepo/') && !selectedUrl.includes('/fluent-emoji/') ? 'icons' : 'emoji',
+  );
   const [collections, setCollections] = useState<PaletteCollection[]>([]);
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [collectionFilter, setCollectionFilter] = useState('');
-  const [libraryOpen, setLibraryOpen] = useState(false);
-  const [libraryQuery, setLibraryQuery] = useState('');
-  const libraryRef = useRef<HTMLDivElement>(null);
-  const libraryTriggerRef = useRef<HTMLButtonElement>(null);
-  const libraryListboxId = useId();
-  const [icons, setIcons] = useState<PaletteIcon[]>([]);
+  const [collection, setCollection] = useState('');
+  const [style, setStyle] = useState('');
+  const [group, setGroup] = useState('');
+  const [variations, setVariations] = useState(false);
+  const [queries, setQueries] = useState({ emoji: '', icons: '' });
+  const [items, setItems] = useState<PaletteIcon[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const requestId = useRef(0);
-
-  const libraryOptions = useMemo(() => {
-    const list = collections.filter(
-      (item) => typeFilter === 'all' || item.style === typeFilter,
-    );
-    return [...list].sort(
-      (a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name),
-    );
-  }, [collections, typeFilter]);
-
-  // A pleasant default when browsing "All libraries" with no search.
-  const discoverIcons = useMemo<PaletteIcon[]>(() => {
-    const seen = new Set<string>();
-    const out: PaletteIcon[] = [];
-    for (const collection of libraryOptions) {
-      for (const url of collection.preview) {
-        if (seen.has(url)) continue;
-        seen.add(url);
-        out.push({ id: url, name: collection.name, tags: [], url });
-        if (out.length >= DISCOVER_LIMIT) return out;
-      }
-    }
-    return out;
-  }, [libraryOptions]);
-
-  const loadCollection = useCallback(async (slug: string, nextPage = 1) => {
-    const id = ++requestId.current;
-    if (nextPage === 1) {
-      setLoading(true);
-      setIcons([]);
-    } else {
-      setLoadingMore(true);
-    }
-    setError(null);
-    try {
-      const detail = await fetchPaletteCollection(slug, {
-        page: nextPage,
-        size: PAGE_SIZE,
-      });
-      if (id !== requestId.current) return;
-      setTotal(detail.count);
-      setPage(nextPage);
-      setIcons((current) =>
-        nextPage === 1 ? detail.icons : [...current, ...detail.icons],
-      );
-    } catch (err) {
-      if (id === requestId.current) {
-        setError(err instanceof Error ? err.message : 'Could not load icons.');
-      }
-    } finally {
-      if (id === requestId.current) {
-        setLoading(false);
-        setLoadingMore(false);
-      }
-    }
-  }, []);
+  const [retry, setRetry] = useState(0);
+  const [focused, setFocused] = useState(0);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const pagePending = useRef(false);
+  const [dragging, setDragging] = useState(false);
+  const panelId = useId();
+  const query = tab === 'icons' ? queries.icons : queries.emoji;
+  const emoji = tab === 'emoji';
+  const label = emoji ? 'emoji' : 'icons';
 
   useEffect(() => {
+    if (tab !== 'icons') return;
     let cancelled = false;
-    fetchPaletteLibrary()
-      .then((library) => {
-        if (cancelled) return;
-        setCollections(library.collections);
-      })
-      .catch((err) => {
-        if (cancelled) return;
-        setError(err instanceof Error ? err.message : 'Could not load the library.');
-        setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    fetchPaletteIcons().then((library) => {
+      if (!cancelled) setCollections(library.collections);
+    }).catch((cause) => {
+      if (!cancelled) setError(cause instanceof Error ? cause.message : 'Could not load collections.');
+    });
+    return () => { cancelled = true; };
+  }, [tab, retry]);
 
-  // Drop a library selection that no longer matches the type filter.
   useEffect(() => {
-    if (!collections.length) return;
-    if (collectionFilter && !libraryOptions.some((c) => c.slug === collectionFilter)) {
-      setCollectionFilter('');
-    }
-  }, [libraryOptions, collectionFilter, collections.length]);
-
-  // Browse: one library, or the discover grid for "All libraries".
-  useEffect(() => {
-    if (query.trim()) return;
-    if (collectionFilter) {
-      void loadCollection(collectionFilter, 1);
-      return;
-    }
-    requestId.current += 1;
-    setLoading(false);
-    setPage(1);
-    setIcons(discoverIcons);
-    setTotal(discoverIcons.length);
-  }, [collectionFilter, query, loadCollection, discoverIcons]);
-
-  // Search across the whole library, scoped by the active filters.
-  useEffect(() => {
-    const term = query.trim();
-    if (!term) return;
-    const id = ++requestId.current;
-    setLoading(true);
+    if (tab === 'upload') return;
+    let cancelled = false;
+    setLoading(page === 1);
+    setLoadingMore(page > 1);
     setError(null);
-    const handle = setTimeout(async () => {
-      try {
-        const results = await findPaletteIcons({
-          q: term,
-          collection: collectionFilter || undefined,
-          style: typeFilter === 'all' ? undefined : typeFilter,
-          limit: 120,
-        });
-        if (id !== requestId.current) return;
-        setTotal(results.total);
-        setPage(1);
-        setIcons(
-          results.results.map((hit) => ({
-            id: `${hit.collection}/${hit.id}`,
-            name: hit.name,
-            tags: hit.tags,
-            url: hit.url,
-          })),
-        );
-      } catch (err) {
-        if (id === requestId.current) {
-          setError(err instanceof Error ? err.message : 'Search failed.');
-        }
-      } finally {
-        if (id === requestId.current) setLoading(false);
-      }
-    }, 250);
-    return () => clearTimeout(handle);
-  }, [query, collectionFilter, typeFilter]);
-
-  const searching = Boolean(query.trim());
-  const activeLibrary = collections.find((c) => c.slug === collectionFilter) ?? null;
-
-  const filteredLibraries = useMemo(() => {
-    const term = libraryQuery.trim().toLowerCase();
-    if (!term) return libraryOptions;
-    return libraryOptions.filter((c) => c.name.toLowerCase().includes(term));
-  }, [libraryOptions, libraryQuery]);
-
-  useEffect(() => {
-    if (!libraryOpen) return;
-    const onPointerDown = (event: PointerEvent) => {
-      if (!libraryRef.current?.contains(event.target as Node)) setLibraryOpen(false);
-    };
-    document.addEventListener('pointerdown', onPointerDown);
-    return () => document.removeEventListener('pointerdown', onPointerDown);
-  }, [libraryOpen]);
-
-  const closeLibrary = (restoreFocus = false) => {
-    setLibraryOpen(false);
-    if (restoreFocus) requestAnimationFrame(() => libraryTriggerRef.current?.focus());
-  };
-
-  const handleLibraryOptionKeyDown = (
-    event: ReactKeyboardEvent<HTMLButtonElement>,
-  ) => {
-    const options = Array.from(
-      libraryRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]') ?? [],
-    );
-    const index = options.indexOf(event.currentTarget);
-    let nextIndex: number;
-
-    switch (event.key) {
-      case 'ArrowDown':
-        nextIndex = (index + 1) % options.length;
-        break;
-      case 'ArrowUp':
-        nextIndex = (index - 1 + options.length) % options.length;
-        break;
-      case 'Home':
-        nextIndex = 0;
-        break;
-      case 'End':
-        nextIndex = options.length - 1;
-        break;
-      case 'Escape':
-        event.preventDefault();
-        closeLibrary(true);
-        return;
-      default:
-        return;
+    if (page === 1) {
+      setItems([]);
+      setFocused(0);
+      pagePending.current = false;
+      scrollRef.current?.scrollTo?.({ top: 0 });
     }
+    const timer = setTimeout(async () => {
+      try {
+        let next: PaletteIcon[];
+        let count: number;
+        if (tab === 'emoji') {
+          const result = await fetchPaletteEmojis({
+            q: query.trim() || undefined, group: group || undefined,
+            include_variations: variations, page, size: PAGE_SIZE,
+          });
+          next = result.results;
+          count = result.total;
+        } else if (query.trim()) {
+          const result = await findPaletteIcons({
+            q: query.trim(), collection: collection || undefined, style: style || undefined,
+            limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE,
+          });
+          next = result.results;
+          count = result.total;
+        } else if (collection) {
+          const result = await fetchPaletteCollection(collection, { page, size: PAGE_SIZE });
+          next = result.icons;
+          count = result.count;
+        } else {
+          // Collection previews provide a small, varied starting grid without hundreds of requests.
+          next = [...new Map(collections.filter((item) => !style || item.style === style)
+            .flatMap((item) => item.preview.map((url) => ({
+              id: url, name: item.name, tags: [], url,
+            }))).map((item) => [item.url, item])).values()].slice(0, 120);
+          count = next.length;
+        }
+        if (cancelled) return;
+        setItems((current) => page === 1 ? next : [...current, ...next]);
+        setTotal(count);
+      } catch (cause) {
+        if (!cancelled) setError(cause instanceof Error ? cause.message : 'Could not load the library.');
+      } finally {
+        pagePending.current = false;
+        if (!cancelled) { setLoading(false); setLoadingMore(false); }
+      }
+    }, query.trim() ? 250 : 0);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [tab, query, group, variations, collection, style, collections, page, retry]);
 
+  // Infinite scroll: the next page loads as the grid approaches its end.
+  const loadNextPage = useCallback(() => {
+    const element = scrollRef.current;
+    if (!element || pagePending.current || loading || loadingMore) return;
+    if (items.length >= total) return;
+    if (element.scrollHeight - element.scrollTop - element.clientHeight > 200) return;
+    pagePending.current = true;
+    setPage((value) => value + 1);
+  }, [items.length, total, loading, loadingMore]);
+
+  function chooseFile(file?: File | null) {
+    if (file) onUpload?.(file);
+  }
+
+  function handleDrop(event: DragEvent<HTMLButtonElement>) {
     event.preventDefault();
-    options[nextIndex]?.focus();
-  };
+    setDragging(false);
+    chooseFile(event.dataTransfer.files?.[0]);
+  }
+
+  function moveInGrid(event: KeyboardEvent<HTMLDivElement>) {
+    const buttons = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('button[data-palette-pick]'));
+    const index = buttons.indexOf(event.target as HTMLButtonElement);
+    if (index < 0) return;
+    const columns = getComputedStyle(event.currentTarget).gridTemplateColumns.split(' ').length;
+    const next = { ArrowRight: index + 1, ArrowLeft: index - 1, ArrowDown: index + columns,
+      ArrowUp: index - columns, Home: 0, End: buttons.length - 1 }[event.key];
+    if (next === undefined) return;
+    event.preventDefault();
+    buttons[Math.max(0, Math.min(next, buttons.length - 1))]?.focus();
+  }
 
   return (
-    <div className="space-y-3" data-test="palette-icon-library">
-      <div ref={libraryRef} className="space-y-2">
-        <div className="grid min-w-0 grid-cols-2 gap-2" data-test="palette-toolbar">
-          <div className="relative col-span-2 min-w-0">
-            <Search
-              className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ph-mutedtext"
-              aria-hidden
-            />
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search icons…"
-              aria-label="Search icons"
-              className="ph-input min-w-0 w-full py-2 pl-8 pr-3"
-            />
-          </div>
-          <button
-            ref={libraryTriggerRef}
-            type="button"
-            aria-haspopup="listbox"
-            aria-expanded={libraryOpen}
-            aria-controls={libraryOpen ? libraryListboxId : undefined}
-            onClick={() => setLibraryOpen((open) => !open)}
-            onKeyDown={(event) => {
-              if (event.key === 'Escape' && libraryOpen) {
-                event.preventDefault();
-                closeLibrary();
-              }
-            }}
-            className="ph-input flex min-w-0 w-full items-center gap-2 px-2.5 py-2 text-sm text-ph-ink"
-          >
-            <span className="min-w-0 flex-1 truncate text-left">
-              {activeLibrary?.name ?? "All libraries"}
-            </span>
-            <NavArrowDown
+    <div className="min-w-0 space-y-4" data-test="palette-icon-library" data-selected-url={selectedUrl || ''}>
+      <SegmentedControl
+        variant="tabs"
+        aria-label="Icon source"
+        aria-controls={panelId}
+        className="w-full"
+        value={tab}
+        onChange={(value) => { setTab(value); setPage(1); trackSuiteEvent('Icon Picker Tab Changed', { source: value }); }}
+        options={[
+          { value: 'emoji', label: 'Emoji', icon: <Smile />, id: `${panelId}-emoji` },
+          { value: 'icons', label: 'Icons', icon: <Shapes />, id: `${panelId}-icons` },
+          ...(onUpload ? [{ value: 'upload', label: 'Upload', icon: <UploadCloud />, id: `${panelId}-upload` }] : []),
+        ]}
+      />
+      <div id={panelId} role="tabpanel" aria-labelledby={`${panelId}-${tab}`} className="min-w-0 space-y-3">
+        {tab === 'upload' ? (
+          <div className="space-y-3">
+            <button type="button" disabled={uploading} onClick={() => fileRef.current?.click()}
+              onDragOver={(event) => { event.preventDefault(); setDragging(true); }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={handleDrop}
               className={cn(
-                "h-3.5 w-3.5 shrink-0 text-ph-mutedtext transition-transform",
-                libraryOpen && "rotate-180",
+                'group/upload flex w-full flex-col items-center justify-center gap-2.5 rounded-xl border-2 border-dotted border-ph-border bg-ph-muted/20 px-5 py-8 text-center transition-colors disabled:opacity-60',
+                dragging ? 'border-ph-brand bg-ph-brand/5' : 'hover:border-ph-brand hover:bg-ph-muted/40',
+              )}>
+              <span className={cn(
+                'flex h-11 w-11 items-center justify-center rounded-full border border-ph-border bg-ph-surface text-ph-mutedtext transition-colors',
+                dragging ? 'border-ph-brand text-ph-brand' : 'group-hover/upload:text-ph-ink',
+              )}>
+                <ImagePlus className="h-5 w-5" aria-hidden />
+              </span>
+              <span className="text-sm font-medium text-ph-ink">
+                {uploading ? 'Uploading…' : dragging ? 'Drop it here' : 'Drop an image or browse'}
+              </span>
+              <span className="max-w-[16rem] text-xs text-ph-mutedtext">{uploadHint}</span>
+            </button>
+            <input ref={fileRef} type="file" hidden data-test="icon-upload" aria-label="Upload icon image"
+              accept={uploadAccept}
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                event.target.value = '';
+                chooseFile(file);
+              }} />
+          </div>
+        ) : (
+          <>
+            <div className="relative" data-test="palette-toolbar">
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ph-mutedtext" aria-hidden />
+              <input type="search" value={query} maxLength={80} aria-label={`Search ${label}`}
+                placeholder={emoji ? 'Search emoji…' : 'Search all icons…'}
+                onChange={(event) => { setQueries((current) => ({ ...current, [tab]: event.target.value })); setPage(1); }}
+                className="ph-input h-11 min-w-0 w-full !pl-10 !pr-10 text-sm" />
+              {query ? <button type="button" aria-label="Clear search" className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-ph-mutedtext hover:bg-ph-muted"
+                onClick={() => { setQueries((current) => ({ ...current, [tab]: '' })); setPage(1); }}><X className="h-4 w-4" aria-hidden /></button> : null}
+            </div>
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
+              {emoji ? (
+                <>
+                  <select aria-label="Emoji category" value={group} className="ph-select h-9 min-w-0 flex-1 text-sm"
+                    onChange={(event) => { setGroup(event.target.value); setPage(1); }}>
+                    <option value="">All categories</option>
+                    {PALETTE_EMOJI_GROUPS.map((group) => <option key={group.value} value={group.value}>{group.label}</option>)}
+                  </select>
+                  <label className="flex min-h-9 items-center gap-2 text-xs text-ph-mutedtext">
+                    <input type="checkbox" checked={variations} onChange={(event) => { setVariations(event.target.checked); setPage(1); }} />
+                    Skin tones & variations
+                  </label>
+                </>
+              ) : (
+                <>
+                  <select aria-label="Icon collection" value={collection} className="ph-select h-9 min-w-0 flex-1 text-sm"
+                    onChange={(event) => { setCollection(event.target.value); setPage(1); }}>
+                    <option value="">All collections</option>
+                    {[...collections].filter((item) => !style || item.style === style).sort((a, b) => a.name.localeCompare(b.name))
+                      .map((item) => <option key={item.slug} value={item.slug}>{item.name}</option>)}
+                  </select>
+                  <select aria-label="Filter by icon type" value={style} className="ph-select h-9 min-w-0 max-w-[45%] text-sm"
+                    onChange={(event) => { setStyle(event.target.value); setCollection(''); setPage(1); }}>
+                    <option value="">All styles</option>
+                    {[['line', 'Line'], ['solid', 'Solid'], ['duotone', 'Duotone'], ['color', 'Colour'], ['mixed', 'Mixed']]
+                      .map(([value, name]) => <option key={value} value={value}>{name}</option>)}
+                  </select>
+                </>
               )}
-              aria-hidden
-            />
-          </button>
-          <FilterSelect
-            label="Filter by icon type"
-            value={typeFilter}
-            onChange={setTypeFilter}
-          >
-            {ICON_TYPES.map((type) => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </FilterSelect>
-        </div>
-
-        {libraryOpen ? (
-          <div className="rounded-[var(--ph-radius-overlay)] border border-[var(--ph-border-control)] bg-[var(--ph-surface-overlay)] p-2 shadow-[var(--ph-shadow-floating)]">
-            <div className="relative mb-2">
-              <Search
-                className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ph-mutedtext"
-                aria-hidden
-              />
-              <input
-                type="search"
-                autoFocus
-                value={libraryQuery}
-                onChange={(event) => setLibraryQuery(event.target.value)}
-                placeholder="Search libraries…"
-                aria-label="Search libraries"
-                className="ph-input w-full bg-[var(--ph-surface-inset)] py-1.5 pl-8 pr-3"
-                onKeyDown={(event) => {
-                  if (event.key === 'ArrowDown') {
-                    event.preventDefault();
-                    libraryRef.current
-                      ?.querySelector<HTMLButtonElement>('[role="option"]')
-                      ?.focus();
-                  } else if (event.key === 'Escape') {
-                    event.preventDefault();
-                    closeLibrary(true);
-                  }
-                }}
-              />
             </div>
-            <ul
-              role="listbox"
-              id={libraryListboxId}
-              aria-label="Libraries"
-              className="max-h-56 overflow-y-auto"
-            >
-              <li>
-                <button
-                  type="button"
-                  role="option"
-                  aria-selected={!collectionFilter}
-                  tabIndex={-1}
-                  onKeyDown={handleLibraryOptionKeyDown}
-                  onClick={() => {
-                    setCollectionFilter("");
-                    closeLibrary(true);
-                  }}
-                  className={cn(
-                    "flex w-full items-center rounded-[var(--ph-radius-control)] px-2 py-1.5 text-left text-sm focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]",
-                    !collectionFilter
-                      ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)]"
-                      : "text-ph-ink hover:bg-[var(--ph-surface-hover)]",
-                  )}
-                >
-                  All libraries
-                </button>
-              </li>
-              {filteredLibraries.map((collection) => (
-                <li key={collection.slug}>
-                  <button
-                    type="button"
-                    role="option"
-                    aria-selected={collectionFilter === collection.slug}
-                    tabIndex={-1}
-                    onKeyDown={handleLibraryOptionKeyDown}
-                    onClick={() => {
-                      setCollectionFilter(collection.slug);
-                      closeLibrary(true);
-                    }}
-                    className={cn(
-                      "flex w-full items-center justify-between gap-2 rounded-[var(--ph-radius-control)] px-2 py-1.5 text-left text-sm focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]",
-                      collectionFilter === collection.slug
-                        ? "bg-[var(--ph-selected-bg)] text-[var(--ph-selected-text)]"
-                        : "text-ph-ink hover:bg-[var(--ph-surface-hover)]",
-                    )}
-                  >
-                    <span className="truncate">{collection.name}</span>
-                    <span className="shrink-0 text-xs text-ph-mutedtext">
-                      {collection.count}
-                    </span>
-                  </button>
-                </li>
-              ))}
-              {filteredLibraries.length === 0 ? (
-                <li className="px-2 py-4 text-center text-sm text-ph-mutedtext">
-                  No libraries match.
-                </li>
-              ) : null}
-            </ul>
-          </div>
-        ) : null}
+            <div ref={scrollRef} onScroll={loadNextPage} data-test="palette-scroll" aria-busy={loading || loadingMore}
+              className="h-64 overflow-y-auto overscroll-contain rounded-xl border border-ph-border bg-ph-muted/20 p-2 sm:h-72">
+              {loading ? (
+                <div role="status" className="flex h-full items-center justify-center text-sm text-ph-mutedtext">Loading {label}…</div>
+              ) : error && !items.length ? (
+                <div role="alert" className="flex h-full flex-col items-center justify-center gap-3 px-4 text-center text-sm text-ph-mutedtext">
+                  <p>Could not load {label}. Please try again.</p>
+                  <button type="button" className="ph-btn" onClick={() => setRetry((value) => value + 1)}>Try again</button>
+                </div>
+              ) : !items.length ? (
+                <div role="status" className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
+                  <Search className="h-6 w-6 text-ph-mutedtext" aria-hidden />
+                  <p className="text-sm font-medium text-ph-ink">No {label} found</p>
+                  <p className="text-xs text-ph-mutedtext">Try a different word or category.</p>
+                </div>
+              ) : (
+                <div onKeyDown={moveInGrid} className="grid grid-cols-[repeat(auto-fill,minmax(2.75rem,1fr))] gap-1.5">
+                  {items.map((item, index) => {
+                    const selected = selectedUrl === item.url;
+                    return <Tooltip key={item.url} content={item.name} side="bottom">
+                      <button type="button" data-palette-pick aria-label={`Use ${item.name}`} aria-pressed={selected}
+                        tabIndex={focused === index ? 0 : -1} onFocus={() => setFocused(index)}
+                        onClick={() => {
+                          trackSuiteEvent('Icon Selected', { source: tab, collection: emoji ? 'fluent-emoji' : collection || 'all' });
+                          onPick({ url: item.url, name: item.name });
+                        }}
+                        className={cn('relative flex aspect-square min-h-11 items-center justify-center rounded-lg border p-2 transition-colors focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]',
+                          selected
+                            ? 'border-[var(--ph-selected-border)] bg-[var(--ph-selected-bg)]'
+                            : 'border-ph-border/60 bg-ph-surface hover:border-ph-brand hover:bg-ph-muted/40')}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={item.url} alt="" loading="lazy" decoding="async" className="h-7 w-7 object-contain" />
+                        {selected ? <Check className="absolute right-0.5 top-0.5 h-3 w-3 rounded-full bg-ph-surface text-ph-brand" aria-hidden /> : null}
+                      </button>
+                    </Tooltip>;
+                  })}
+                </div>
+              )}
+              {loadingMore ? <p role="status" className="py-3 text-center text-xs text-ph-mutedtext">Loading more…</p> : null}
+              {error && items.length ? <p role="alert" className="p-2 text-sm text-ph-danger">Could not load more. <button type="button" onClick={() => setRetry((value) => value + 1)}>Try again</button></p> : null}
+            </div>
+            <div role="status" className="flex items-center justify-between gap-2 text-xs text-ph-mutedtext">
+              <span>{loading ? 'Finding your next icon…' : `${items.length} of ${total.toLocaleString()} ${label}`}</span>
+              <span>{emoji ? 'Microsoft Fluent' : 'SVG library'}</span>
+            </div>
+          </>
+        )}
+        {uploadError ? <p role="alert" className="text-sm text-ph-danger">{uploadError}</p> : null}
       </div>
-
-      {error ? (
-        <p className="text-sm text-ph-danger">{error}</p>
-      ) : loading ? (
-        <p className="py-8 text-center text-sm text-ph-mutedtext">Loading icons…</p>
-      ) : icons.length === 0 ? (
-        <p className="py-8 text-center text-sm text-ph-mutedtext">
-          No icons matched. Try another word or filter.
-        </p>
-      ) : (
-        <>
-          <div className="max-h-[20rem] overflow-y-auto rounded-[var(--ph-radius-surface)] border border-ph-border p-2 focus-within:border-[var(--ph-selected-border)]">
-            <div className="grid grid-cols-6 gap-1.5 sm:grid-cols-8">
-              {icons.map((icon) => (
-                <Tooltip key={icon.id} content={icon.name} side="bottom">
-                <button
-                  type="button"
-                  onClick={() => onPick({ url: icon.url, name: icon.name })}
-                  aria-label={`Use ${icon.name}`}
-                  className="flex h-10 items-center justify-center rounded-[var(--ph-radius-control)] border border-transparent p-1.5 hover:border-[var(--ph-selected-border)] hover:bg-[var(--ph-surface-hover)] focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={icon.url}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    className="h-6 w-6"
-                  />
-                </button>
-                </Tooltip>
-              ))}
-            </div>
-          </div>
-          <div className="flex items-center justify-between text-xs text-ph-mutedtext">
-            <span>
-              {icons.length} of {total}
-              {searching
-                ? ' matching'
-                : activeLibrary
-                  ? ` in ${activeLibrary.name}`
-                  : ' across all libraries'}
-            </span>
-            {!searching && activeLibrary && icons.length < total ? (
-              <button
-                type="button"
-                disabled={loadingMore}
-                onClick={() => void loadCollection(activeLibrary.slug, page + 1)}
-                className={cn(
-                  'font-medium text-ph-brand hover:underline',
-                  loadingMore && 'opacity-50',
-                )}
-              >
-                {loadingMore ? 'Loading…' : 'Load more'}
-              </button>
-            ) : null}
-          </div>
-        </>
-      )}
     </div>
   );
 }
