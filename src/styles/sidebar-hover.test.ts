@@ -35,3 +35,10 @@ it("moves the selected-row pill instantly instead of sliding", () => {
   const nav = readFileSync(resolve("src/suite/components/suite-sidebar.tsx"), "utf8");
   expect(nav).not.toContain("transition-[transform,width,height]");
 });
+
+it("keeps the route entrance short and free of travel", () => {
+  const css = skin.toString();
+  const animation = /\.suite-route-transition\s*\{([^}]*)\}/.exec(css)![1];
+  expect(animation).toContain("90ms");
+  expect(css).not.toContain("translateY(6px)");
+});
