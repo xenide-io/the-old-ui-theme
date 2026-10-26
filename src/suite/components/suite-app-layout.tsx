@@ -1,7 +1,6 @@
 "use client";
 
 import { type ReactNode, type PointerEvent, useEffect, useState } from "react";
-import { Effect } from "@animate-ui/react/primitives/effects/effect";
 
 import { cn } from "../lib/cn";
 import {
@@ -141,15 +140,12 @@ export function SuiteAppLayout({
             lockMainScroll ? "overflow-hidden" : "overflow-y-auto",
           )}
         >
-          <Effect
+          <div
             key={routeKey ?? "static"}
-            className="flex min-h-0 min-w-0 flex-1 flex-col"
-            fade={{ initialOpacity: 0.65 }}
-            slide={{ direction: "up", offset: 6 }}
-            transition={{ duration: 0.14, ease: [0.2, 0, 0, 1] }}
+            className="suite-route-transition flex min-h-0 min-w-0 flex-1 flex-col"
           >
             {children}
-          </Effect>
+          </div>
         </main>
         {bottomNav ? (
           <div className="shrink-0 lg:hidden">{bottomNav}</div>

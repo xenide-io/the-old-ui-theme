@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { Bell } from "lucide-react";
 
 import { Tooltip } from "../../components/ui/Tooltip";
 import { trackSuiteEvent } from "../../lib/suite-analytics";
 import type { SuiteDropdownMenuComponent } from "../lib/injected";
 import { useSuiteNotifications } from "../lib/suite-notifications";
-import { Bell as SuiteAnimatedBell } from "../../components/animate-ui/icons/bell";
 
 export type {
   SuiteNotification,
@@ -81,7 +81,7 @@ export function SuiteNotificationBell({
         >
         <span className="relative inline-flex h-11 w-11 items-center justify-center overflow-visible rounded-full text-ph-mutedtext transition-colors hover:bg-ph-muted hover:text-ph-ink">
           <span className="relative inline-flex h-5 w-5">
-            <SuiteAnimatedBell className="h-5 w-5" strokeWidth={1.75} animateOnHover aria-hidden />
+            <Bell className="suite-icon-motion suite-icon-ring h-5 w-5" strokeWidth={1.75} aria-hidden />
             {unread > 0 ? (
               <span className="pointer-events-none absolute -right-2 -top-2 z-[1] flex h-4 min-w-4 items-center justify-center rounded-full bg-ph-brand px-1 text-[0.5625rem] font-semibold leading-none text-[var(--ph-on-accent)] ring-2 ring-ph-surface">
                 {unread > 9 ? "9+" : unread}
