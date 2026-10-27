@@ -2,7 +2,8 @@
 
 import type { CSSProperties } from "react";
 import { Folder } from 'lucide-react';
-import { paletteIconSrc } from "@/suite/lib/palette-api";
+import { hasMonoIcon, paletteIconSrc } from "@/suite/lib/palette-api";
+import { SuiteIconImage } from "./suite-icon-image";
 import { cn } from "@/lib/cn";
 
 const ENTITY_COLOURS = [
@@ -40,6 +41,7 @@ export function SuiteEntityIcon({
   roundedClass = "rounded-md",
   style,
   tinted = false,
+  mono,
 }: {
   imageUrl?: string | null;
   label?: string | null;
@@ -49,6 +51,8 @@ export function SuiteEntityIcon({
   style?: CSSProperties;
   /** Recolour a monochrome icon to `color` (via CSS mask). */
   tinted?: boolean;
+  /** Single-colour artwork, from Palette or the URL's `mono` hint. */
+  mono?: boolean;
 }) {
   const hasColor =
     typeof color === "string" && /^#[0-9a-fA-F]{3,8}$/.test(color);
@@ -60,9 +64,13 @@ export function SuiteEntityIcon({
   const neutralBackground = "var(--ph-muted, rgba(127,127,127,0.08))";
   // Fluent emoji are full-colour artwork; a tint plate would change them.
   const isEmoji = Boolean(imageUrl?.includes("/svgrepo/fluent-emoji/"));
+  // Monochrome icons inherit the theme text colour (white in dark mode); a tint
+  // replaces that with the entity colour.
+  const isMono = !isEmoji && (mono ?? hasMonoIcon(imageUrl));
 
   if (imageUrl) {
-    const src = tinted && tint ? paletteIconSrc(imageUrl, tint) : imageUrl;
+    const src =
+      isMono || !tinted || !tint ? imageUrl : paletteIconSrc(imageUrl, tint);
     return (
       <span
         className={cn(
@@ -79,10 +87,10 @@ export function SuiteEntityIcon({
           ...style,
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={src ?? undefined}
-          alt=""
+        <SuiteIconImage
+          url={src ?? imageUrl}
+          mono={isMono}
+          tint={isMono && tinted ? tint : null}
           className="h-full w-full object-contain"
         />
       </span>

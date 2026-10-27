@@ -41,6 +41,8 @@ export interface PaletteIcon {
   name: string;
   tags: string[];
   url: string;
+  /** Single-colour artwork: render as a mask so it follows the theme text colour. */
+  mono?: boolean;
 }
 
 export interface PaletteEmoji extends PaletteIcon {
@@ -176,6 +178,43 @@ export function findPaletteIcons(options: {
   offset?: number;
 }): Promise<{ query: string; total: number; limit: number; results: PaletteHit[] }> {
   return paletteGet('/icons/search', options);
+}
+
+/**
+ * Monochrome hint carried in the stored icon URL. A document only keeps the URL,
+ * so the hint lets every later surface (page icon, sidebar, directory) mask the
+ * SVG without needing Palette's manifest at render time.
+ */
+const MONO_QUERY = "mono=1";
+
+/** True when the URL carries the monochrome hint. */
+export function hasMonoIcon(url: string | null | undefined): boolean {
+  return Boolean(url && /[?&]mono=1(?:&|$)/.test(url));
+}
+
+/** The URL to store for a single-colour Palette icon. */
+export function monoIconUrl(url: string): string {
+  if (!url.includes("/svgrepo/") || url.includes("/svgrepo/fluent-emoji/")) return url;
+  if (hasMonoIcon(url)) return url;
+  return `${url}${url.includes("?") ? "&" : "?"}${MONO_QUERY}`;
+}
+
+/** The same icon without the monochrome hint, for comparisons and rendering. */
+export function paletteIconBase(url: string): string {
+  return url.replace(/([?&])mono=1&?/, "$1").replace(/[?&]$/, "");
+}
+
+/**
+ * Same-origin URL for masking a single-colour icon.
+ *
+ * A CSS mask loads its image with CORS; the media host sends no CORS headers, so
+ * the mask is served by Palette instead (which does). Palette returns the SVG
+ * unchanged apart from its paint, and the mask only reads the alpha channel.
+ */
+export function paletteMaskSrc(url: string): string {
+  const base = paletteIconBase(url);
+  if (!base.includes("/svgrepo/") || base.includes("/svgrepo/fluent-emoji/")) return url;
+  return `${paletteUrl()}/render?src=${encodeURIComponent(base)}`;
 }
 
 /**

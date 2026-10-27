@@ -11,6 +11,10 @@ vi.mock('@/suite/lib/palette-api', () => ({
   fetchPaletteCollection: vi.fn().mockResolvedValue({ count: 1, icons: [{ id: 'office', name: 'Office', url: '/office.svg', tags: [] }] }),
   fetchPaletteEmojis: vi.fn(),
   findPaletteIcons: vi.fn().mockResolvedValue({ total: 1, results: [{ id: 'rocket', name: 'Rocket', collection: 'office', tags: [], url: '/rocket.svg' }] }),
+  hasMonoIcon: vi.fn().mockReturnValue(false),
+  monoIconUrl: vi.fn((url: string) => url),
+  paletteIconBase: vi.fn((url: string) => url),
+  paletteMaskSrc: vi.fn((url: string) => url),
   PALETTE_EMOJI_GROUPS: [
     { value: 'activities', label: 'Activities', short: 'Activities' },
     { value: 'animals-nature', label: 'Animals & nature', short: 'Nature' },

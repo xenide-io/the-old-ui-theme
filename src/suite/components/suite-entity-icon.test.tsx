@@ -50,4 +50,37 @@ describe("SuiteEntityIcon fallback", () => {
       /^(transparent|rgba\(0, 0, 0, 0\))$/,
     );
   });
+
+  it("masks single-colour icons so they follow the theme text colour", () => {
+    const { container } = render(
+      <SuiteEntityIcon
+        label="Folder"
+        imageUrl="https://media.xenide.io/svgrepo/office/folder.svg?mono=1"
+      />,
+    );
+    // No <img>: the artwork is a mask painted with currentColor.
+    expect(container.querySelector("img")).toBeNull();
+    const mask = container.querySelector<HTMLElement>("[aria-hidden='true'].bg-current");
+    expect(mask).not.toBeNull();
+    // The mask comes from Palette (CORS); the media host itself sends no CORS.
+    expect(mask!.style.maskImage || mask!.style.webkitMaskImage).toContain(
+      encodeURIComponent("https://media.xenide.io/svgrepo/office/folder.svg"),
+    );
+    expect(mask!.style.backgroundColor).toBe("");
+  });
+
+  it("uses the entity colour for a tinted single-colour icon", () => {
+    const { container } = render(
+      <SuiteEntityIcon
+        label="Folder"
+        color="#123456"
+        tinted
+        mono
+        imageUrl="https://media.xenide.io/svgrepo/office/folder.svg"
+      />,
+    );
+    expect(container.querySelector("img")).toBeNull();
+    const mask = container.querySelector<HTMLElement>("[aria-hidden='true'].bg-current");
+    expect(mask!.style.backgroundColor).toBe("rgb(18, 52, 86)");
+  });
 });

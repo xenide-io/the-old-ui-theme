@@ -4,6 +4,8 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState, type DragEven
 import { Check, ImagePlus, Search, Shapes, Smile, UploadCloud, X } from 'lucide-react';
 import {
   fetchPaletteCollection,
+  monoIconUrl,
+  paletteIconBase,
   fetchPaletteEmojis,
   fetchPaletteIcons,
   findPaletteIcons,
@@ -14,6 +16,7 @@ import {
 import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { cn } from '@/lib/cn';
+import { SuiteIconImage } from '@/suite/components/suite-icon-image';
 import { trackSuiteEvent } from '@/lib/suite-analytics';
 
 const PAGE_SIZE = 60;
@@ -283,20 +286,24 @@ export function SuitePaletteLibrary({
               ) : (
                 <div onKeyDown={moveInGrid} className="grid grid-cols-[repeat(auto-fill,minmax(2.75rem,1fr))] gap-1.5">
                   {items.map((item, index) => {
-                    const selected = selectedUrl === item.url;
+                    // A picked mono icon stores the URL with the `mono` hint.
+                    const selected =
+                      Boolean(selectedUrl) && paletteIconBase(selectedUrl!) === item.url;
                     return <Tooltip key={item.url} content={item.name} side="bottom">
                       <button type="button" data-palette-pick aria-label={`Use ${item.name}`} aria-pressed={selected}
                         tabIndex={focused === index ? 0 : -1} onFocus={() => setFocused(index)}
                         onClick={() => {
                           trackSuiteEvent('Icon Selected', { source: tab, collection: emoji ? 'fluent-emoji' : collection || 'all' });
-                          onPick({ url: item.url, name: item.name });
+                          onPick({
+                            url: item.mono ? monoIconUrl(item.url) : item.url,
+                            name: item.name,
+                          });
                         }}
                         className={cn('relative flex aspect-square min-h-11 items-center justify-center rounded-lg border p-2 transition-colors focus-visible:outline-hidden focus-visible:shadow-[var(--ph-focus-halo)]',
                           selected
                             ? 'border-[var(--ph-selected-border)] bg-[var(--ph-selected-bg)]'
                             : 'border-ph-border/60 bg-ph-surface hover:border-ph-brand hover:bg-ph-muted/40')}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={item.url} alt="" loading="lazy" decoding="async" className="h-7 w-7 object-contain" />
+                        <SuiteIconImage url={item.url} mono={item.mono} className="h-7 w-7 object-contain" />
                         {selected ? <Check className="absolute right-0.5 top-0.5 h-3 w-3 rounded-full bg-ph-surface text-ph-brand" aria-hidden /> : null}
                       </button>
                     </Tooltip>;
