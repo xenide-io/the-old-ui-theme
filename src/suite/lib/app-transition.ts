@@ -152,7 +152,7 @@ function glyphSvg(app: SuiteTransitionSlug): SVGSVGElement {
 function createGlyphStage(app: SuiteTransitionSlug): HTMLSpanElement {
   const stage = document.createElement("span");
   stage.setAttribute("data-suite-handoff-glyph", "");
-  stage.style.cssText = `position:fixed;left:50%;top:50%;width:${GLYPH_SIZE}px;height:${GLYPH_SIZE}px;transform:translate(-50%,-50%);display:grid;place-items:center;opacity:0;pointer-events:none;`;
+  stage.style.cssText = `position:fixed;left:50%;top:50%;width:${GLYPH_SIZE}px;height:${GLYPH_SIZE}px;transform:translate(-50%,-50%) scale(.72);display:grid;place-items:center;opacity:0;pointer-events:none;z-index:3;`;
   stage.appendChild(glyphSvg(app));
   return stage;
 }
@@ -239,9 +239,11 @@ export function startSuiteAppTransition(
   cue.setAttribute("data-suite-handoff-cue", "");
   cue.textContent = "?";
   cue.style.cssText =
-    "position:fixed;left:50%;top:50%;display:grid;place-items:center;width:32px;height:32px;border-radius:999px;background:#fff;color:#111;font:700 18px/1 system-ui,sans-serif;box-shadow:0 10px 28px rgba(0,0,0,.22);opacity:0;transform:translate(-50%,calc(-100% - 72px)) scale(.6);pointer-events:none;";
+    "position:fixed;left:50%;top:50%;display:grid;place-items:center;width:32px;height:32px;border-radius:999px;background:#fff;color:#111;font:700 18px/1 system-ui,sans-serif;box-shadow:0 10px 28px rgba(0,0,0,.22);opacity:0;transform:translate(-50%,calc(-100% - 72px)) scale(.6);pointer-events:none;z-index:3;";
 
-  overlay.append(vehicle, cue);
+  const glyph = createGlyphStage(app);
+  vehicle.style.zIndex = "1";
+  overlay.append(vehicle, cue, glyph);
   document.body.appendChild(overlay);
   document.getElementById("root")?.setAttribute("inert", "");
 
@@ -253,7 +255,7 @@ export function startSuiteAppTransition(
     window.innerWidth / 2 - (box.left + box.width / 2);
   const dy =
     window.innerHeight / 2 - (box.top + box.height / 2);
-  const scale = Math.min(2.4, Math.max(1.5, 104 / Math.max(box.width, 1)));
+  const scale = Math.min(1.2, Math.max(1, 64 / Math.max(box.width, 1)));
 
   let ready = Promise.resolve();
   if (typeof vehicle.animate === "function") {
@@ -306,24 +308,20 @@ export function startSuiteAppTransition(
     covered = true;
     // Let the confused beat land before the iris swallows it.
     await new Promise((resolve) => window.setTimeout(resolve, CUE_HOLD_MS));
+    idleNode?.getAnimations?.().forEach((animation) => animation.cancel());
     vehicle.style.transition = "opacity 150ms ease";
     cue.style.transition = "opacity 120ms ease";
+    glyph.style.transition = `opacity ${MORPH_MS}ms ease, transform ${MORPH_MS}ms cubic-bezier(.22,1,.36,1)`;
     vehicle.style.opacity = "0";
     cue.style.opacity = "0";
+    glyph.style.opacity = "1";
+    glyph.style.transform = "translate(-50%,-50%) scale(1)";
+    // Let the assistant become the destination object before the iris closes.
+    await new Promise((resolve) => window.setTimeout(resolve, MORPH_MS));
     const disc = document.createElement("div");
     disc.setAttribute("data-suite-handoff-cover", "");
-    disc.style.cssText = `position:fixed;inset:0;background:${colour};clip-path:circle(0px at 50% 50%);`;
-    const chip = document.createElement("span");
-    chip.setAttribute("data-suite-handoff-chip", "");
-    chip.style.cssText =
-      "position:absolute;left:50%;top:50%;width:64px;height:64px;transform:translate(-50%,-50%);border-radius:18px;background:#fff;display:grid;place-items:center;box-shadow:0 18px 40px rgba(0,0,0,.24);";
-    const chipImage = document.createElement("img");
-    chipImage.src = SUITE_APP_MAP[app].icon;
-    chipImage.alt = "";
-    chipImage.style.cssText = "width:44px;height:44px;object-fit:contain;";
-    chip.appendChild(chipImage);
-    disc.appendChild(chip);
-    overlay.appendChild(disc);
+    disc.style.cssText = `position:fixed;inset:0;z-index:2;background:${colour};clip-path:circle(0px at 50% 50%);`;
+    overlay.insertBefore(disc, glyph);
     const radius =
       Math.ceil(Math.hypot(window.innerWidth, window.innerHeight) / 2) + 24;
     if (typeof disc.animate === "function") {

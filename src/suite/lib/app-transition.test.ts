@@ -70,11 +70,12 @@ describe("startSuiteAppTransition", () => {
 
     await handle.cover();
     expect(overlay?.querySelector("[data-suite-handoff-cover]")).not.toBeNull();
-    expect(
-      overlay
-        ?.querySelector<HTMLImageElement>("[data-suite-handoff-chip] img")
-        ?.getAttribute("src"),
-    ).toContain("tides-icon.svg");
+    const glyph = overlay?.querySelector<HTMLElement>(
+      "[data-suite-handoff-glyph]",
+    );
+    expect(glyph?.querySelector("svg")).not.toBeNull();
+    expect(glyph?.querySelector("img")).toBeNull();
+    expect(glyph?.style.opacity).toBe("1");
   });
 
   it("clones the companion without duplicating ids", () => {

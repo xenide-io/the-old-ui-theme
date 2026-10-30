@@ -14,6 +14,113 @@ import {
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const IRIS_OPEN_MS = 420;
+const RETURN_MS = 520;
+
+interface ReturnFlight {
+  finished: Promise<void>;
+}
+
+/**
+ * Flies the centre glyph to the destination companion's home and swaps it for
+ * the real assistant. The app shell is already rendered behind the iris.
+ */
+function startReturnFlight(cover: HTMLElement): ReturnFlight | null {
+  if (
+    typeof Element === "undefined" ||
+    typeof Element.prototype.animate !== "function"
+  ) {
+    return null;
+  }
+  const glyph = cover.querySelector<HTMLElement>("[data-suite-handoff-glyph]");
+  const avatar = document.querySelector<HTMLElement>("[data-assistant-avatar]");
+  if (!glyph || !avatar) return null;
+
+  const avatarRect = avatar.getBoundingClientRect();
+  const glyphRect = glyph.getBoundingClientRect();
+  if (avatarRect.width < 8 || avatarRect.height < 8) return null;
+
+  const stage = avatar.closest<HTMLElement>('[data-test="floating-assistant"]');
+  const hideNode = stage ?? avatar;
+  const previousVisibility = hideNode.style.visibility;
+
+  const flight = document.createElement("div");
+  flight.setAttribute("data-suite-handoff-flight", "");
+  flight.setAttribute("aria-hidden", "true");
+  flight.style.cssText =
+    "position:fixed;inset:0;z-index:2147483647;overflow:hidden;pointer-events:none;";
+
+  const ghost = glyph.cloneNode(true) as HTMLElement;
+  ghost.style.position = "absolute";
+  ghost.style.left = `${glyphRect.left}px`;
+  ghost.style.top = `${glyphRect.top}px`;
+  ghost.style.width = `${glyphRect.width}px`;
+  ghost.style.height = `${glyphRect.height}px`;
+  ghost.style.transform = "none";
+  ghost.style.opacity = "1";
+
+  const clone = avatar.cloneNode(true) as HTMLElement;
+  clone.removeAttribute("data-assistant-avatar");
+  clone.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
+  clone.style.position = "absolute";
+  clone.style.left = `${avatarRect.left}px`;
+  clone.style.top = `${avatarRect.top}px`;
+  clone.style.width = `${avatarRect.width}px`;
+  clone.style.height = `${avatarRect.height}px`;
+  clone.style.display = "grid";
+  clone.style.placeItems = "center";
+  clone.style.transform = "scale(.78)";
+  clone.style.opacity = "0";
+
+  flight.append(ghost, clone);
+  document.body.appendChild(flight);
+  hideNode.style.visibility = "hidden";
+
+  const dx =
+    avatarRect.left +
+    avatarRect.width / 2 -
+    (glyphRect.left + glyphRect.width / 2);
+  const dy =
+    avatarRect.top +
+    avatarRect.height / 2 -
+    (glyphRect.top + glyphRect.height / 2);
+
+  const fly = ghost.animate(
+    [
+      { transform: "translate(0px,0px) scale(1)", opacity: 1 },
+      {
+        transform: `translate(${dx * 0.35}px,${dy * 0.35 - 18}px) scale(.92)`,
+        offset: 0.4,
+        opacity: 1,
+      },
+      { transform: `translate(${dx}px,${dy}px) scale(.78)`, opacity: 0 },
+    ],
+    {
+      duration: RETURN_MS,
+      easing: "cubic-bezier(.22,1,.36,1)",
+      fill: "forwards",
+    },
+  );
+  const materialise = clone.animate(
+    [
+      { opacity: 0, transform: "scale(.78)" },
+      { opacity: 0, offset: 0.55 },
+      { opacity: 1, transform: "scale(1)" },
+    ],
+    { duration: RETURN_MS, easing: "ease-out", fill: "forwards" },
+  );
+
+  return {
+    finished: Promise.all([
+      fly.finished.catch(() => undefined),
+      materialise.finished.catch(() => undefined),
+    ])
+      .then(() => undefined)
+      .finally(() => {
+        flight.remove();
+        hideNode.style.visibility = previousVisibility;
+      }),
+  };
+}
 
 function reducedMotion(): boolean {
   try {
@@ -72,6 +179,12 @@ export function playSuiteHandoffEnter(): void {
   ) {
     clearSuiteHandoffCover();
     return;
+  }
+
+  try {
+    startReturnFlight(cover);
+  } catch {
+    // The iris still opens if the return flight cannot run.
   }
 
   const radius =
