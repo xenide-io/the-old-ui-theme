@@ -1,4 +1,6 @@
 export { TodayPageFrame } from "./components/today-page-frame";
+export { SuiteCompanion, type CompanionCatalogue, type CompanionCharacter } from "./components/companion";
+export { SuiteFloatingAssistant } from "./components/floating-assistant";
 export { SuiteSidebarTree, SuiteSidebarSection, SuiteSidebarTreeBranch, type SuiteSidebarTreeNode } from "./components/sidebar-tree";
 export { SuiteSidebarLinks } from "./components/sidebar-links";
 export { SuiteNotificationInbox } from "./components/notification-inbox";
@@ -32,6 +34,17 @@ export {
   type SuiteWebPushState,
   type SuiteNotificationSettingsProps,
 } from "./components/suite-notification-settings";
+export {
+  APP_TRANSITION_COLOURS,
+  startSuiteAppTransition,
+  type SuiteAppTransitionHandle,
+  type SuiteTransitionSlug,
+} from "./lib/app-transition";
+export {
+  clearSuiteHandoffCover,
+  playSuiteHandoffEnter,
+} from "./lib/suite-handoff";
+export { useSuiteHandoffEnter } from "./lib/use-suite-handoff";
 export {
   SuiteNotificationsProvider,
   useSuiteNotifications,
@@ -320,3 +333,5 @@ export {
   SuiteRoleSimulator,
   SuiteRoleSimulatorMenuItem,
 } from "./components/suite-role-simulator";
+export * from "./components/companion-provider";
+export * from "./components/companion-settings";

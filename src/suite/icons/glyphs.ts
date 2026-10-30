@@ -57,6 +57,7 @@ export type SuiteIconName =
   | "stack-hex"
   | "crew-bot"
   | "shelly-snail"
+  | "shellhub-character"
   | "workspace"
   | "organisation"
   | "integration-plug"
@@ -122,8 +123,36 @@ export const SUITE_GLYPHS: Record<SuiteIconName, SuiteGlyph> = {
       { kind: "path", d: "M9.6 14.6q2.4 1.7 4.8 0", accent: true },
     ],
   },
+  "shellhub-character": {
+    description: "ShellHub — Pixel, the default outlined terminal assistant",
+    elements: [
+      { kind: "rect", x: 2, y: 4, width: 20, height: 16, rx: 4, accent: true },
+      {
+        kind: "path",
+        d: "M272 456 252 714H347L327 456Z",
+        filled: true,
+        transform:
+          "translate(-2.4 -2.4) scale(.45) translate(13.03488 40.60465) scale(.02325581 -.02325581)",
+      },
+      {
+        kind: "path",
+        d: "M272 456 252 714H347L327 456Z",
+        filled: true,
+        transform:
+          "translate(-2.4 -2.4) scale(.45) translate(37.03488 40.60465) scale(.02325581 -.02325581)",
+      },
+      {
+        kind: "path",
+        d: "M150 230V310H450V230Z",
+        filled: true,
+        transform:
+          "translate(-2.4 -2.4) scale(.45) translate(23 45.1) scale(.03 -.03)",
+      },
+    ],
+  },
   "shelly-snail": {
-    description: "Shelly — smiling snail with spiral shell and ball-tipped antennae",
+    description:
+      "Shelly — smiling snail with spiral shell and ball-tipped antennae",
     elements: [
       {
         kind: "path",

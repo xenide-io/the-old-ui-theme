@@ -60,11 +60,11 @@ export const APP_ACCENTS: Record<SuiteAccentSlug, SuiteAppAccent> = {
     onTileAccent: "#a5f3fc",
   },
   shelly: {
-    label: "ShellyHub",
-    accent: "#0078D4",
-    tile: "#1B1B1F",
-    onTile: "#ECECF1",
-    onTileAccent: "#00BCF2",
+    label: "ShellHub",
+    accent: "#AC3E26",
+    tile: "#25232B",
+    onTile: "#F8F3EF",
+    onTileAccent: "#F5A28D",
   },
 };
 
@@ -75,5 +75,5 @@ export const APP_GLYPHS: Record<SuiteAccentSlug, SuiteIconName> = {
   kraken: "squid-doc",
   shellstack: "stack-hex",
   crew: "crew-bot",
-  shelly: "shelly-snail",
+  shelly: "shellhub-character",
 };

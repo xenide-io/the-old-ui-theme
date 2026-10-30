@@ -65,7 +65,7 @@ export const SUITE_APPS: readonly SuiteAppDefinition[] = [
   },
   {
     slug: 'shelly',
-    name: 'ShellyHub',
+    name: 'ShellHub',
     description: 'AI teammates',
     icon: '/shelly-icon.svg',
     landing: '/today',

@@ -19,7 +19,7 @@ const APP_META: Record<SuiteAppSlug, { name: string }> = {
   tides: { name: "Tides" },
   turtletime: { name: "TurtleTime" },
   kraken: { name: "Kraken" },
-  shelly: { name: "ShellyHub" },
+  shelly: { name: "ShellHub" },
 };
 
 const SUITE_APPS: SuiteAppSlug[] = [

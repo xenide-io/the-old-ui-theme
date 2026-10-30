@@ -55,9 +55,22 @@ describe("persistSuiteAskAiOpen", () => {
     expect(window.location.search).toBe("");
   });
 
-  it("does not reopen Shelly from a leftover flag when switching apps", () => {
+  it("restores Shelly after a same-app reload", () => {
     persistSuiteAskAiOpen(true);
     window.history.replaceState(null, "", "/tracker");
+    expect(consumeSuiteAskAiOpenFromLocation()).toBe(true);
+  });
+
+  it("honours a closed handoff instead of reopening an old destination session", () => {
+    persistSuiteAskAiOpen(true);
+    window.history.replaceState(
+      null,
+      "",
+      pathWithSuiteAskAiOpen("/tracker?view=week#today", false),
+    );
     expect(consumeSuiteAskAiOpenFromLocation()).toBe(false);
+    expect(readSuiteAskAiOpen()).toBe(false);
+    expect(window.location.search).toBe("?view=week");
+    expect(window.location.hash).toBe("#today");
   });
 });

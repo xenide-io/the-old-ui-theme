@@ -967,6 +967,15 @@ body {
     @apply cursor-not-allowed opacity-[0.65];
   }
 
+  /* Compact focus treatment for selects inside dense settings panels. */
+  .ph-select-quiet:focus-visible {
+    border-color: color-mix(in oklab, var(--ph-focus-ring) 42%, var(--ph-border));
+    box-shadow:
+      0 0 0 0.125rem color-mix(in oklab, var(--ph-focus-ring) 16%, transparent),
+      var(--ph-chrome-inset-face-top),
+      var(--ph-chrome-inset-face-bottom);
+  }
+
   .ph-textarea {
     @apply ph-input-base min-h-[6rem] resize-y py-2;
     min-height: 6rem;

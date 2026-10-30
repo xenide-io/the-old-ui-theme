@@ -13,7 +13,18 @@ import {
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
 } from "react";
-import { ArrowDown, ArrowUp, Check, Copy, Pencil as EditPencil, Eraser as Erase, ChevronDown as NavArrowDown, Sparkles as Sparks, Square, TriangleAlert as WarningTriangle } from 'lucide-react';
+import {
+  ArrowDown,
+  ArrowUp,
+  Check,
+  Copy,
+  Pencil as EditPencil,
+  Eraser as Erase,
+  ChevronDown as NavArrowDown,
+  Sparkles as Sparks,
+  Square,
+  TriangleAlert as WarningTriangle,
+} from "lucide-react";
 
 import { Button } from "../../components/ui/Button";
 import { DropdownItem, DropdownMenu } from "../../components/ui/DropdownMenu";
@@ -54,25 +65,27 @@ export function readSuiteAskAiOpen(): boolean {
 }
 
 /** Stamp a destination path so the other app opens Shelly after SSO. */
-export function pathWithSuiteAskAiOpen(path: string): string {
+export function pathWithSuiteAskAiOpen(path: string, open = true): string {
   const url = new URL((path || "/").trim() || "/", "http://local.invalid");
-  url.searchParams.set(SUITE_ASK_AI_OPEN_QUERY, "1");
+  url.searchParams.set(SUITE_ASK_AI_OPEN_QUERY, open ? "1" : "0");
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
-/** Open Shelly only after a `?shelly=1` handoff — not a leftover session flag. */
+/** An explicit app handoff wins over the destination's saved same-tab state. */
 export function consumeSuiteAskAiOpenFromLocation(): boolean {
   if (typeof window === "undefined") return false;
   const url = new URL(window.location.href);
-  if (url.searchParams.get(SUITE_ASK_AI_OPEN_QUERY) !== "1") return false;
-  persistSuiteAskAiOpen(true);
+  const value = url.searchParams.get(SUITE_ASK_AI_OPEN_QUERY);
+  if (value !== "1" && value !== "0") return readSuiteAskAiOpen();
+  const open = value === "1";
+  persistSuiteAskAiOpen(open);
   url.searchParams.delete(SUITE_ASK_AI_OPEN_QUERY);
   window.history.replaceState(
     window.history.state,
     "",
     `${url.pathname}${url.search}${url.hash}`,
   );
-  return true;
+  return open;
 }
 
 export type SuiteAiActionStatus =
@@ -163,6 +176,7 @@ export function SuiteAiPanel({
   cancelMessage,
   clearChat,
   brandIcon: BrandIcon,
+  activityIcon: ActivityIcon,
   spinner: Spinner,
   open: openProp,
   onOpenChange,
@@ -171,6 +185,7 @@ export function SuiteAiPanel({
   onSameAppNavigate,
   resolveAction,
   isWaitingForReply = false,
+  chatRevision = 0,
 }: {
   presets?: SuiteAiPreset[];
   emptyState?: ReactNode;
@@ -194,6 +209,7 @@ export function SuiteAiPanel({
   cancelMessage?: () => Promise<{ messages?: SuiteAiChatMessage[] }>;
   clearChat: () => Promise<void>;
   brandIcon?: ComponentType<{ className?: string }>;
+  activityIcon?: ComponentType<{ className?: string }>;
   spinner: ComponentType<{ className?: string }>;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -210,6 +226,8 @@ export function SuiteAiPanel({
   ) => Promise<{ messages: SuiteAiChatMessage[] }>;
   /** A durable background job is still preparing the assistant reply. */
   isWaitingForReply?: boolean;
+  /** Refresh server messages without remounting the composer and losing its draft. */
+  chatRevision?: number;
 }) {
   const inputId = useId();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -311,15 +329,15 @@ export function SuiteAiPanel({
       pendingPromptRef.current = null;
       if (pending) setPrompt(pending);
     });
-  }, [open, hydrate]);
+  }, [open, hydrate, chatRevision]);
 
   useEffect(() => {
     if (open && atBottom) scrollToBottom();
   }, [messages, waiting, open, atBottom, scrollToBottom]);
 
   useEffect(() => {
-    if (open && !hydrating) textareaRef.current?.focus();
-  }, [open, hydrating]);
+    if (open) textareaRef.current?.focus();
+  }, [open]);
 
   // Warm the lazily-imported Markdown renderer as soon as the panel opens, so a
   // reply never flashes a placeholder while its chunk is still downloading.
@@ -719,54 +737,59 @@ export function SuiteAiPanel({
                   className="suite-msg-in suite-msg-in--user flex justify-end"
                   data-test="ask-ai-user"
                 >
-                  <div className="group flex items-end gap-1.5">
-                    {!waiting ? (
-                      <div className="mb-0.5 flex items-center gap-0.5 opacity-100 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:opacity-100">
-                        <Tooltip
-                          content={
+                  <div className="group flex w-full min-w-0 items-end justify-end gap-1.5">
+                    <div
+                      inert={waiting}
+                      style={{ visibility: waiting ? "hidden" : undefined }}
+                      className="mb-0.5 flex shrink-0 items-center gap-0.5 opacity-100 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:opacity-100"
+                    >
+                      <Tooltip
+                        content={
+                          copiedIndex === index
+                            ? "Copied to clipboard"
+                            : "Copy message"
+                        }
+                        side="top"
+                      >
+                        <button
+                          type="button"
+                          onClick={() =>
+                            void handleCopy(index, message.content)
+                          }
+                          aria-label={
                             copiedIndex === index
                               ? "Copied to clipboard"
                               : "Copy message"
                           }
-                          side="top"
+                          data-test="ask-ai-copy"
+                          className="ph-btn ph-btn-ghost ph-btn-square ph-btn-xs h-7 w-7 text-ph-mutedtext"
                         >
-                          <button
-                            type="button"
-                            onClick={() =>
-                              void handleCopy(index, message.content)
-                            }
-                            aria-label={
-                              copiedIndex === index
-                                ? "Copied to clipboard"
-                                : "Copy message"
-                            }
-                            data-test="ask-ai-copy"
-                            className="ph-btn ph-btn-ghost ph-btn-square ph-btn-xs h-7 w-7 text-ph-mutedtext"
-                          >
-                            {copiedIndex === index ? (
-                              <Check className="h-3.5 w-3.5" />
-                            ) : (
-                              <Copy className="h-3.5 w-3.5" />
-                            )}
-                          </button>
-                        </Tooltip>
-                        <Tooltip content="Edit this message" side="top">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setEditDraft(message.content);
-                              setEditingIndex(index);
-                            }}
-                            aria-label="Edit this message"
-                            data-test="ask-ai-edit"
-                            className="ph-btn ph-btn-ghost ph-btn-square ph-btn-xs h-7 w-7 text-ph-mutedtext"
-                          >
-                            <EditPencil className="h-3.5 w-3.5" />
-                          </button>
-                        </Tooltip>
-                      </div>
-                    ) : null}
-                    <div className="w-fit max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-ph-brand px-3 py-2 text-sm leading-relaxed text-[var(--ph-on-accent)] [overflow-wrap:anywhere]">
+                          {copiedIndex === index ? (
+                            <Check className="h-3.5 w-3.5" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
+                        </button>
+                      </Tooltip>
+                      <Tooltip content="Edit this message" side="top">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditDraft(message.content);
+                            setEditingIndex(index);
+                          }}
+                          aria-label="Edit this message"
+                          data-test="ask-ai-edit"
+                          className="ph-btn ph-btn-ghost ph-btn-square ph-btn-xs h-7 w-7 text-ph-mutedtext"
+                        >
+                          <EditPencil className="h-3.5 w-3.5" />
+                        </button>
+                      </Tooltip>
+                    </div>
+                    <div
+                      data-test="ask-ai-user-bubble"
+                      className="w-fit min-w-0 max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-ph-brand px-3 py-2 text-sm leading-relaxed text-[var(--ph-on-accent)] [overflow-wrap:anywhere]"
+                    >
                       {message.content}
                     </div>
                   </div>
@@ -780,10 +803,10 @@ export function SuiteAiPanel({
                 data-test="ask-ai-assistant"
               >
                 <span
-                  className="suite-msg-avatar mb-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ph-brand/10 text-ph-brand"
+                  className="suite-msg-avatar mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center text-ph-brand"
                   aria-hidden
                 >
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon className="h-8 w-8" />
                 </span>
                 <div className="suite-msg-bubble min-w-0 max-w-[85%] space-y-2">
                   <div className="rounded-2xl rounded-bl-md bg-ph-muted px-3 py-2 text-sm leading-relaxed text-ph-ink">
@@ -968,8 +991,15 @@ export function SuiteAiPanel({
 
           {waiting ? (
             <div className="flex items-end gap-2" aria-hidden>
-              <span className="mb-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ph-brand/10 text-ph-brand">
-                <Icon className="h-3.5 w-3.5" />
+              <span
+                className="mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center text-ph-brand"
+                data-test="ask-ai-activity-avatar"
+              >
+                {ActivityIcon ? (
+                  <ActivityIcon className="h-8 w-8" />
+                ) : (
+                  <Icon className="h-6 w-6" />
+                )}
               </span>
               <div className="flex items-center gap-1.5 rounded-2xl rounded-bl-md bg-ph-muted px-3 py-2.5">
                 <span className="suite-think-dot h-1.5 w-1.5 rounded-full bg-ph-mutedtext" />
@@ -1075,9 +1105,7 @@ export function SuiteAiPanel({
               className="shrink-0"
               aria-label="Send message"
               tooltip={
-                prompt.trim()
-                  ? "Send message"
-                  : "Write a message to send"
+                prompt.trim() ? "Send message" : "Write a message to send"
               }
               icon={<ArrowUp className="h-4 w-4" />}
             />
