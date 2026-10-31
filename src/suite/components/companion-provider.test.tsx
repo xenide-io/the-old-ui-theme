@@ -8,7 +8,7 @@ describe("companion app themes", () => {
       tides: { light: "microsoft-onenote", dark: "rose-pine-moon" },
       turtletime: { light: "google-sheets", dark: "turtletime" },
       kraken: { light: "sepia-light", dark: "sepia-dark" },
-      shelly: { light: "pastel-sky", dark: "shelly" },
+      shelly: { light: "microsoft-powerpoint", dark: "ubuntu-terminal" },
     });
   });
 

@@ -60,6 +60,9 @@ describe("SuiteEntityIcon fallback", () => {
     );
     // No <img>: the artwork is a mask painted with currentColor.
     expect(container.querySelector("img")).toBeNull();
+    expect((container.firstChild as HTMLElement).style.color).toBe(
+      "var(--ph-text-primary)",
+    );
     const mask = container.querySelector<HTMLElement>("[aria-hidden='true'].bg-current");
     expect(mask).not.toBeNull();
     // The mask comes from Palette (CORS); the media host itself sends no CORS.

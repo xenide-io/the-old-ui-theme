@@ -32,6 +32,13 @@ function plantCover(): HTMLElement {
   return cover;
 }
 
+function stubFlightAnimation() {
+  vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+    callback(performance.now() + 1_000);
+    return 1;
+  });
+}
+
 beforeEach(() => {
   document.body.innerHTML = "";
   sessionStorage.clear();
@@ -59,10 +66,7 @@ describe("clearSuiteHandoffCover", () => {
 describe("playSuiteHandoffEnter", () => {
   it("opens the iris and clears the boot paint", () => {
     const cover = plantCover();
-    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
-      callback(performance.now() + 1_000);
-      return 1;
-    });
+    stubFlightAnimation();
 
     playSuiteHandoffEnter();
 
@@ -72,12 +76,12 @@ describe("playSuiteHandoffEnter", () => {
     expect(document.documentElement.style.backgroundColor).toBe("");
   });
 
-  it("flies the glyph back to the companion and restores it", async () => {
+  it("flies the real companion from the centre back to its home", async () => {
     const cover = plantCover();
-    const glyph = document.createElement("span");
-    glyph.setAttribute("data-suite-handoff-glyph", "");
-    cover.appendChild(glyph);
-    glyph.getBoundingClientRect = () => rect(692, 422, 56, 56);
+    const centre = document.createElement("span");
+    centre.setAttribute("data-suite-handoff-companion", "");
+    centre.getBoundingClientRect = () => rect(688, 418, 64, 64);
+    cover.appendChild(centre);
 
     const stage = document.createElement("div");
     stage.setAttribute("data-test", "floating-assistant");
@@ -88,10 +92,7 @@ describe("playSuiteHandoffEnter", () => {
     stage.appendChild(avatar);
     document.body.appendChild(stage);
 
-    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
-      callback(performance.now() + 1_000);
-      return 1;
-    });
+    stubFlightAnimation();
 
     playSuiteHandoffEnter();
     expect(stage.style.visibility).toBe("hidden");
@@ -99,6 +100,7 @@ describe("playSuiteHandoffEnter", () => {
 
     expect(document.querySelector("[data-suite-handoff-flight]")).toBeNull();
     expect(stage.style.visibility).toBe("");
+    expect(avatar.isConnected).toBe(true);
   });
 
   it("unlocks the page when the cover never painted", () => {

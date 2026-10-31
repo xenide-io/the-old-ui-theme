@@ -84,6 +84,9 @@ export function SuiteEntityIcon({
             : tint
               ? `${tint}18`
               : neutralBackground,
+          // Monochrome artwork is a mask; ink follows the theme (white in
+          // dark mode). Intrinsic colour artwork stays an <img> untouched.
+          color: isMono && !tinted ? "var(--ph-text-primary)" : undefined,
           ...style,
         }}
       >

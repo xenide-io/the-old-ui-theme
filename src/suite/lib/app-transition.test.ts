@@ -18,7 +18,7 @@ const rect = (left: number, top: number, width: number, height: number) =>
 function avatar() {
   const node = document.createElement("span");
   node.setAttribute("data-assistant-avatar", "");
-  node.innerHTML = '<svg><g id="avatar-inner"></g></svg>';
+  node.innerHTML = '<svg data-companion="dot"><g class="terminal-body"><path fill="var(--ph-canvas)" stroke="url(#g)" /><g class="face-pose"><path /></g></g></svg>';
   node.getBoundingClientRect = () => rect(1300, 800, 56, 56);
   document.body.appendChild(node);
   return node;
@@ -29,10 +29,12 @@ beforeEach(() => {
   document.documentElement.style.backgroundColor = "";
   document.documentElement.style.overflow = "";
   sessionStorage.clear();
+  window.name = "";
 });
 
 afterEach(() => {
   document.body.innerHTML = "";
+  window.name = "";
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
 });
@@ -51,50 +53,49 @@ describe("startSuiteAppTransition", () => {
     expect(handle.cover).toBeTypeOf("function");
   });
 
-  it("walks the companion to the centre, holds the confused beat, then irises", async () => {
-    const node = avatar();
+  it("walks the companion to the centre, changes palette, then closes the iris", async () => {
+    avatar();
     const handle = startSuiteAppTransition("tides");
 
     const overlay = document.getElementById("suite-app-transition");
     expect(overlay).not.toBeNull();
-    expect(node.style.visibility).toBe("hidden");
     expect(document.getElementById("root")?.hasAttribute("inert")).toBe(true);
     expect(overlay?.querySelector("img")).toBeNull();
+    expect(overlay?.querySelector("[data-suite-handoff-cue]")).toBeNull();
+    expect(
+      overlay?.querySelectorAll("[data-suite-handoff-companion]").length,
+    ).toBe(1);
 
     await handle.ready;
-    const cue = overlay?.querySelector<HTMLElement>(
-      "[data-suite-handoff-cue]",
-    );
-    expect(cue?.style.opacity).toBe("1");
-    expect(cue?.textContent).toBe("?");
-
     await handle.cover();
     expect(overlay?.querySelector("[data-suite-handoff-cover]")).not.toBeNull();
-    const glyph = overlay?.querySelector<HTMLElement>(
-      "[data-suite-handoff-glyph]",
+    const stages = overlay?.querySelectorAll<HTMLElement>(
+      "[data-suite-handoff-companion]",
     );
-    expect(glyph?.querySelector("svg")).not.toBeNull();
-    expect(glyph?.querySelector("img")).toBeNull();
-    expect(glyph?.style.opacity).toBe("1");
+    expect(stages?.[0]?.querySelector(".suite-handoff-dot")).not.toBeNull();
   });
 
-  it("clones the companion without duplicating ids", () => {
+  it("uses the destination palette for the connection link", async () => {
     avatar();
     const handle = startSuiteAppTransition("kraken");
     const overlay = document.getElementById("suite-app-transition");
-    const clone = overlay?.querySelector("[data-assistant-avatar]");
-    expect(clone).toBeNull();
-    expect(overlay?.querySelector("#avatar-inner")).toBeNull();
-    expect(overlay?.querySelector("svg g")).not.toBeNull();
+    await handle.ready;
+    await handle.cover();
+    const target = overlay?.querySelectorAll<HTMLElement>(
+      "[data-suite-handoff-companion]",
+    )[0];
+    const body = target?.querySelector(".terminal-body > path");
+    expect(body?.getAttribute("fill")).toBe("#fafafa");
     handle.cancel();
   });
 
-  it("falls back to the destination icon when the companion is hidden", async () => {
+  it("falls back to the connection link when the avatar is hidden", async () => {
     const handle = startSuiteAppTransition("shellstack", { enabled: true });
-    const image = document.querySelector<HTMLImageElement>(
-      "#suite-app-transition img",
+    const stages = document.querySelectorAll(
+      "#suite-app-transition [data-suite-handoff-companion] svg",
     );
-    expect(image?.getAttribute("src")).toBe("/icon-shellstack.svg");
+    expect(stages.length).toBe(1);
+    expect(document.querySelector("#suite-app-transition img")).toBeNull();
     await handle.cover();
   });
 

@@ -3,18 +3,12 @@ import { useEffect } from "react";
 import { SUITE_HANDOFF_COVER_ID } from "./app-transition";
 import { playSuiteHandoffEnter } from "./suite-handoff";
 
-/** How long to hold the cover waiting for the destination shell to render. */
-const READY_TIMEOUT_MS = 2500;
+const READY_TIMEOUT_MS = 20000;
 
 /**
- * Opens the handoff cover once the destination app has rendered. Mount this in
- * each app's root component; it no-ops on normal loads and on the callback
- * page, which must keep the cover closed while it redeems the handoff code.
- *
- * `readySelector` is the app shell landmark (for example
- * `[data-test="app-shell"]`). Waiting for it hides the provider's full-page
- * spinner behind the cover instead of irising open onto it. A slow or failed
- * session reveals the page anyway after `READY_TIMEOUT_MS`.
+ * Opens the handoff cover once the destination app shell and the rendered
+ * companion face are ready. Waiting for the face prevents an empty companion
+ * clone from flying home, and keeps the full-page auth spinner behind the cover.
  */
 export function useSuiteHandoffEnter(readySelector?: string): void {
   useEffect(() => {
@@ -31,10 +25,17 @@ export function useSuiteHandoffEnter(readySelector?: string): void {
     const tick = (): void => {
       if (cancelled) return;
       const root = document.getElementById("root");
-      const ready =
+      const elapsed = performance.now() - started;
+      const shellReady =
         Boolean(root && root.childElementCount > 0) &&
         (!readySelector || Boolean(document.querySelector(readySelector)));
-      if (ready || performance.now() - started > READY_TIMEOUT_MS) {
+      const companionReady = Boolean(
+        document.querySelector("[data-assistant-avatar] .face-pose"),
+      );
+      if (
+        (shellReady && (companionReady || elapsed > 4000)) ||
+        elapsed > READY_TIMEOUT_MS
+      ) {
         playSuiteHandoffEnter();
         return;
       }

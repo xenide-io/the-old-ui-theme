@@ -36,6 +36,11 @@ export {
 } from "./components/suite-notification-settings";
 export {
   APP_TRANSITION_COLOURS,
+  SUITE_HANDOFF_LINK_DOT,
+  SUITE_HANDOFF_LINK_PATH,
+  suiteTransitionBackground,
+  suiteTransitionPalette,
+  suiteTransitionSurface,
   startSuiteAppTransition,
   type SuiteAppTransitionHandle,
   type SuiteTransitionSlug,
